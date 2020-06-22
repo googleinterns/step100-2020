@@ -1,5 +1,7 @@
-
-
+:root {
+  /* Add custom properties/variables here. example: */
+  --fullwidth: 100%;
+}
 
 #content {
   margin-left: auto;
