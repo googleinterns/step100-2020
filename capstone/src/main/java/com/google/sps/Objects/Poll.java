@@ -1,18 +1,20 @@
-package com.google.sps.data;
+package com.google.sps.Objects;
 
-public final class Poll{
+import java.util.ArrayList;
 
-    ArrayList<Option> options;
+public final class Poll {
 
-    public Poll(){
-        this.options = new ArrayList<Option>();
-    }
+  ArrayList<Option> options;
 
-    public void addOption(Option option){
-        this.options.add(option);
-    }
+  public Poll() {
+    this.options = new ArrayList<Option>();
+  }
 
-    public ArrayList<Option> getOptions() {
-        return options;
-    }
+  public void addOption(Option option) {
+    this.options.add(option);
+  }
+
+  public ArrayList<Option> getOptions() {
+    return options;
+  }
 }
