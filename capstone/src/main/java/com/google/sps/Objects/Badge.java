@@ -1,14 +1,14 @@
-package com.google.sps.data;
+package com.google.sps.Objects;
 
-public final class Badge{
+public final class Badge {
 
-    String challengeName;
+  String challengeName;
 
-    public Badge(String challengeName){
-        this.challengeName = challengeName;
-    }
+  public Badge(String challengeName) {
+    this.challengeName = challengeName;
+  }
 
-    public String getChallengeName(){
-        return this.challengeName;
-    }
+  public String getChallengeName() {
+    return this.challengeName;
+  }
 }
