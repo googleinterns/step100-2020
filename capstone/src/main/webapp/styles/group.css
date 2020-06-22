@@ -1,10 +1,23 @@
 :root {
   --green: #73c586;
-  --lightgreen: #c5d6cb;
-  --yellowgreen: #e8eed1;
-  --lightblue: #d1e3eb;
+  --light-green: #c5d6cb;
+  --yellow-green: #e8eed1;
+  --light-blue: #d1e3eb;
+  --near-white: #fcfcfc;
 }
 
 body {
   font-family: "Roboto", sans-serif;
+}
+
+.poll-container {
+  position: absolute;
+  background: #fcfcfc;
+  border-radius: 10px;
+  width: 834px;
+}
+
+.section-text {
+  font-size: 36px;
+  font-weight: bold;
 }
