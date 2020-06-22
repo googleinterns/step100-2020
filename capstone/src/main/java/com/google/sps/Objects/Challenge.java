@@ -31,4 +31,8 @@ public final class Challenge {
   public ArrayList<User> usersCompleted() {
     return usersCompleted;
   }
+
+  public void addUserCompleted(User user) {
+    this.usersCompleted.add(user);
+  }
 }
