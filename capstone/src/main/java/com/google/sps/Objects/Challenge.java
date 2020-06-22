@@ -1,5 +1,6 @@
-package com.google.sps.data;
+package com.google.sps.Objects;
 
+import java.util.ArrayList;
 
 public final class Challenge{
 
