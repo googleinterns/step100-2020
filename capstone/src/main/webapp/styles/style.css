@@ -1,6 +1,22 @@
 :root {
   /* Add custom properties/variables here. example: */
   --fullwidth: 100%;
+
+  /* Colors */
+  --dark-green: #73C586;
+  --light-green: #E8EED1;
+  --light-pink: #F5CEDA;
+  --orange: #F7CE82;
+  --light-blue: #D1E3EB;
+  --background: #F4F6F2;
+  --black: #000000;
+  --text-gray: #8A8686;
+  --white: #FFFFFF;
+  --placeholder-gray: #EEEEEE;
+  --header-green: #C5D6C8;
+  --badges-gray: #C4C4C4;
+  --badges-background: #F5F5F7;
+  --purple: #D1B3FB;
 }
 
 #content {
