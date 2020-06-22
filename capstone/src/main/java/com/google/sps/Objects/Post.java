@@ -12,8 +12,7 @@ public final class Post {
   private final String img;
   private final ArrayList<User> likes;
 
-  public Post(User author, String postText, ArrayList<Comment> comments, String challengeName,
-      long timestamp, String img, ArrayList<User> likes) {
+  public Post(User author, String postText, ArrayList<Comment> comments, String challengeName, long timestamp, String img, ArrayList<User> likes) {
     this.timestamp = timestamp;
     this.postText = postText;
     this.author = author;
@@ -49,5 +48,13 @@ public final class Post {
 
   public ArrayList<User> getLikes() {
     return likes;
+  }
+
+  public void addComment(Comment newComment) {
+    this.comments.add(newComment);
+  }
+
+  public void addNewLike(User newLike) {
+    this.likes.add(newLike);
   }
 }
