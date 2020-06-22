@@ -44,4 +44,16 @@ public final class User {
   public ArrayList<String> getInterests() {
     return interests;
   }
+
+  public void addBadge(Badge newBadge) {
+    this.badges.add(newBadge);
+  }
+
+  public void addInterest(String newInterest) {
+    this.interests.add(newInterest);
+  }
+
+  public void addGroup(Group newGroup) {
+    this.groups.add(newGroup);
+  }
 }
