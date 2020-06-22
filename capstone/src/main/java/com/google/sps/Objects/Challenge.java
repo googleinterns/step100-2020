@@ -2,7 +2,7 @@ package com.google.sps.Objects;
 
 import java.util.ArrayList;
 
-public final class Challenge{
+public final class Challenge {
 
     private final String challengeName;
     private final long timestamp;

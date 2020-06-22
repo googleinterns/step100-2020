@@ -2,7 +2,7 @@ package com.google.sps.Objects;
 
 import java.util.ArrayList;
 
-public final class Group{
+public final class Group {
 
     private final ArrayList<User> members;
     private final ArrayList<Challenge> challenges;
@@ -14,7 +14,7 @@ public final class Group{
     public Group(ArrayList<User> members, ArrayList<Challenge> challenges, ArrayList<Post> posts, Poll poll, String groupName, String headerImg) {
         this.members = members;
         this.challenges = challenges;
-        this.post = post;
+        this.posts = posts;
         this.poll = poll;
         this.groupName = groupName;
         this.headerImg = headerImg;
