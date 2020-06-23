@@ -40,14 +40,15 @@ function authenticateUser() {
 }
 
 /*
- * Sign up the user.
+ * Sign up the user. Placeholder code.
  */
 function signUpUser() {
+  // Get the user's first name and last name value through the form.
+
+  // Send a POST request to the signup servlet with the user's name as params.
   fetch('/signup')
- .then(response => response.json())
- .then((login) => {
-   if (document.getElementsByClassName('comments').length > 0) {
-     addAuthText(login, 'comment', 'comments', 'url', toggleCommentsForm);
-   }
- });
+  .then(response => response.json())
+  .then((login) => {
+    // Do something with the response.
+  });
 }
