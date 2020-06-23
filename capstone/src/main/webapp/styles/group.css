@@ -17,6 +17,10 @@ body {
   width: 834px;
 }
 
+.inner-poll-container {
+  margin: 40px;
+}
+
 .section-text {
   font-size: 36px;
   font-weight: bold;
@@ -46,6 +50,7 @@ p {
   background-color: #eeeeee;
   padding-left: 20px;
   font-size: 24px;
+  outline: none;
 }
 
 .votes-label {
