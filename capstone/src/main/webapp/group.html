@@ -18,15 +18,41 @@
       <div class="section-text">
           Poll
       </div>
-      <div id="options-container"></div>
-
-      <input
-        id="input-box"
-        name="input-box"
-        placeholder="Add a suggestion"
-        onkeydown = "if (event.keyCode == 13)
-                        addOption()"
-      ></input>
+      <div class="options-container">
+        <div class="option-container">
+          <p>Create a movie scene</p>
+      
+          <svg width="690" height="55">
+            <rect height="55" width="690" class="poll-rect"></rect>
+            <rect height="55" width="200" class="poll-inner-rect" </rect>
+          </svg>
+      
+          <span class="round">
+            <input type="checkbox" id="checkbox" />
+            <label for="checkbox"></label>
+          </span>
+          <div class="votes-label">7 votes</div>
+        </div>
+        
+        <div class="option-container">
+          <p>Create a movie scene</p>
+      
+          <svg width="690" height="55">
+            <rect height="55" width="690" class="poll-rect"></rect>
+            <rect height="55" width="200" class="poll-inner-rect" </rect>
+          </svg>
+      
+          <span class="round">
+            <input type="checkbox" id="checkbox" />
+            <label for="checkbox"></label>
+          </span>
+          <div class="votes-label">7 votes</div>
+        </div>
+        
+        </br>
+        </br>
+        <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addOption()"></input>
+      </div>
     </div>
 
     <script src="scripts/poll.js"></script>
