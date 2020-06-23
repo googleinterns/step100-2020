@@ -5,22 +5,22 @@ import java.util.ArrayList;
 public final class Option {
 
   private final String text;
-  private ArrayList<Integer> votes;
+  private ArrayList<String> userVotes;
 
   public Option(String text) {
     this.text = text;
-    this.votes = new ArrayList<Integer>();
+    this.userVotes = new ArrayList<String>();
   }
 
   public String getText() {
     return this.text;
   }
 
-  public void addVote(int id) {
-    this.votes.add(id);
+  public void addVote(String id) {
+    this.userVotes.add(id);
   }
 
-  public ArrayList<Integer> getVotes() {
-    return votes;
+  public ArrayList<String> getVotes() {
+    return userVotes;
   }
 }
