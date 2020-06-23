@@ -1,6 +1,9 @@
 const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
 
+/**
+ * Gets options data from server.
+ */
 function getPollOptions() {
   fetch("/poll")
     .then(response => response.json())
@@ -11,6 +14,10 @@ function getPollOptions() {
     });
 }
 
+/**
+ * Loads in each option on the poll.
+ * @param {object} option
+ */
 function createOptionElementLoad(option) {
   let innerBar = "200";
   let numVotes = option["userVotes"].length;
