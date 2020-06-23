@@ -30,24 +30,44 @@ function loadPage() {
  */
 function authenticateUser() {
   fetch('/login')
- .then(response => response.json())
- .then((login) => {
+  .then(response => response.json())
+  .then((login) => {
     // need to set button's url to login url.
     const loginUrl = login.url;
     const loginButton = document.getElementById('login-btn');
     loginButton.setAttribute('href', loginUrl);
- });
+  });
 }
 
 /*
  * Sign up the user.
  */
 function signUpUser() {
+  // get the user's first name and last name value through the form
+
+  // send a POST request to the sign up servlet with the name as params
   fetch('/signup')
- .then(response => response.json())
- .then((login) => {
-   if (document.getElementsByClassName('comments').length > 0) {
-     addAuthText(login, 'comment', 'comments', 'url', toggleCommentsForm);
-   }
- });
+  .then(response => response.json())
+  .then((login) => {
+    // 
+  });
+}
+
+
+let loginToggle = document.getElementById("login");
+let registerToggle = document.getElementById("register");
+/* 
+ * Toggle login form.
+ */
+function login() {
+  loginToggle.style.left = "50px";
+  registerToggle.style.left = "450px";
+}
+
+/* 
+ * Toggle register form.
+ */
+function register() {
+  loginToggle.style.left = "-400px";
+  registerToggle.style.left = "50px";
 }

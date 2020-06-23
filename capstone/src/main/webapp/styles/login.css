@@ -30,6 +30,63 @@ body {
   font-weight: bold;
 }
 
+#left-side #login-btn {
+  background-color: var(--dark-green);
+  border: none;
+  border-radius: 12px;
+  color: var(--white);
+  display: inline-block;
+  font-size: 16px;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.form-box {
+  height: 480px;
+  overflow: hidden;
+  padding: 5px;
+  width: 380px;
+}
+
+.button-box {
+  margin: 35px auto;
+  position: relative;
+  width: 220px;
+}
+
+.toggle-btn {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  outline: none;
+  padding: 10px 30px;
+}
+
+.input-group {
+  top: 180px;
+  transition: .5s;
+  width: 280px;
+  position: relative;
+}
+
+.input-field {
+  background: transparent;
+  border: 1px solid var(--text-gray);
+  border-radius: 5px;
+  margin: 5px 0;
+  padding: 10px 0;
+  width: 100%;
+}
+
+#register {
+  left: 50px;
+}
+
+#login {
+ left: 450px;
+}
+
 .content #right-side {
   align-items: center;
   display: flex;

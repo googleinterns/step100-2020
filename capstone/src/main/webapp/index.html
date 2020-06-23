@@ -14,7 +14,20 @@
     <div class="content" id="content">
       <div id="left-side">
         <h1>AppName</h1>
-        <a id="login-btn" onclick="loginUser()">Sign In</a>
+        <div class="form-box"> 
+          <div class="button-box">
+            <button type="button" class="toggle-btn" onclick="login()">Register</button>
+            <button type="button" class="toggle-btn" onclick="register()">Log in</button>
+          </div>
+          <form id="register" class="input-group">
+            <input type="text" class="input-field" placeholder="First Name" required>
+            <input type="text" class="input-field" placeholder="Last Name" required>
+            <a id="login-btn" onclick="loginUser()">Sign in with Google</a>
+          </form>
+          <form id="login" class="input-group">
+            <a id="login-btn" onclick="loginUser()">Sign in with Google</a>
+          </form>
+        </div>
       </div>
       <div id="right-side">
         <p>This is our capstone project. A graphic can go here.</p>
