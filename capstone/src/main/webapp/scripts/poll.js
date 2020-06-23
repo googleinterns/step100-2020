@@ -2,8 +2,6 @@ const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
 
 function createOptionElement(text) {
-  console.log(text);
-
   let innerBar = "200";
   let numVotes = "4";
 
