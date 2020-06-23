@@ -16,7 +16,6 @@ import com.google.sps.Objects.Option;
 public class PollServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("here -------------------------");
     Option option1 = new Option("Option 1");
     option1.addVote("1");
     option1.addVote("2");
@@ -30,7 +29,6 @@ public class PollServlet extends HttpServlet {
     options.add(option3);
     String json = new Gson().toJson(options);
     response.setContentType("application/json");
-    System.out.println(json + "----------------------");
     response.getWriter().println(json);
   }
 }
