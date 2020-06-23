@@ -7,8 +7,6 @@ function getPollOptions() {
     .then(options => {
       options.forEach(option => {
         createOptionElementLoad(option);
-        console.log(option["text"]);
-        console.log(option["userVotes"].length);
       });
     });
 }
