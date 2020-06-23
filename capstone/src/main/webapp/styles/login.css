@@ -1,0 +1,22 @@
+html, body {
+  margin: 0; 
+  padding: 0;
+}
+
+.content {
+  display: flex;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+#left-side {
+  background-color: var(--white);
+  width: auto;
+}
+
+#right-side {
+  background-color: var(--dark-green);
+  width: 55%;
+}
