@@ -32,8 +32,8 @@ body {
 
 .content #right-side {
   align-items: center;
-  display: flex;
   background-color: var(--dark-green);
+  display: flex;
   height: 100vh;
   justify-content: center;
   min-height: 100%;
