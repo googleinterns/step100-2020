@@ -4,24 +4,26 @@ import java.util.ArrayList;
 
 public final class User {
 
-  private final int userId;
+  private final String userId;
   private final String name;
+  private final String firstname;
   private final String email;
   private final ArrayList<Badge> badges;
-  private final ArrayList<Group> groups;
+  private final ArrayList<String> groups;
   private final ArrayList<String> interests;
 
-  public User(int userId, String name, String email, ArrayList<Badge> badges,
-      ArrayList<Group> groups, ArrayList<String> interests) {
+  public User(String userId, String firstname, String lastname, String email, 
+      ArrayList<Badge> badges, ArrayList<String> groups, ArrayList<String> interests) {
     this.userId = userId;
-    this.name = name;
+    this.name = firstname + " " + lastname;
+    this.firstname = firstname;
     this.email = email;
     this.badges = badges;
     this.groups = groups;
     this.interests = interests;
   }
 
-  public int getUserId() {
+  public String getUserId() {
     return userId;
   }
 
@@ -37,7 +39,7 @@ public final class User {
     return badges;
   }
 
-  public ArrayList<Group> getGroups() {
+  public ArrayList<String> getGroups() {
     return groups;
   }
 
@@ -53,7 +55,8 @@ public final class User {
     this.interests.add(newInterest);
   }
 
-  public void addGroup(Group newGroup) {
-    this.groups.add(newGroup);
+  /* Adds a unique groupId string to the user's list of groups. */
+  public void addGroup(String newGroupId) {
+    this.groups.add(newGroupId);
   }
 }
