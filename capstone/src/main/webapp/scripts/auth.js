@@ -52,3 +52,31 @@ function signUpUser() {
     // Do something with the response.
   });
 }
+
+/* 
+ * Toggle login form.
+ */
+function login() {
+  let loginForm = document.getElementById("login");
+  let loginToggle = document.getElementById("login-toggle");
+  let registerForm = document.getElementById("register");
+  let registerToggle = document.getElementById("reg-toggle");
+  loginForm.style.display = "flex";
+  registerForm.style.display = "none";
+  loginToggle.classList.add("selected");
+  registerToggle.classList.remove("selected");
+}
+
+/* 
+ * Toggle register form.
+ */
+function register() {
+  let loginForm = document.getElementById("login");
+  let loginToggle = document.getElementById("login-toggle");
+  let registerForm = document.getElementById("register"); 
+  let registerToggle = document.getElementById("reg-toggle");
+  loginForm.style.display = "none";
+  registerForm.style.display = "flex";
+  loginToggle.classList.remove("selected");
+  registerToggle.classList.add("selected");
+}

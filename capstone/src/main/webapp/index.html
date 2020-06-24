@@ -9,12 +9,31 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
     <script src="scripts/script.js"></script>
     <script src="scripts/auth.js"></script>
+    <script src="https://kit.fontawesome.com/095e696daa.js" crossorigin="anonymous"></script>
   </head>
   <body>
     <div class="content" id="content">
       <div id="left-side">
-        <h1>AppName</h1>
-        <a id="login-btn" onclick="loginUser()">Sign In</a>
+        <div class="wrapper">
+          <h1>AppName</h1>
+          <div class="form-box"> 
+            <div class="button-box">
+              <button class="toggle-btn selected" id="login-toggle" onclick="login()">
+                Log in</button>
+              <button class="toggle-btn" id="reg-toggle" onclick="register()">Register</button>
+            </div>
+            <form id="login" class="input-group">
+              <a id="login-btn"><i class="fab fa-google"></i> Sign in with Google</a>
+            </form>
+            <form id="register" class="input-group">
+              <input type="text" class="input-field" placeholder="First Name" required>
+              <input type="text" class="input-field" placeholder="Last Name" required>
+              <a id="login-btn" onclick="signUpUser()"><i class="fab fa-google"></i>
+                Sign up with Google
+              </a>
+            </form>
+          </div>
+        </div>
       </div>
       <div id="right-side">
         <p>This is our capstone project. A graphic can go here.</p>
