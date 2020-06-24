@@ -1,0 +1,41 @@
+html, body {
+  height: 100vh;
+  margin: 0; 
+  min-height: 100vh;
+  padding: 0;
+}
+
+.content {
+  align-items: center;
+  display: flex;
+  justify-content:center;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+.content #left-side {
+  align-items: center;
+  background-color: var(--white);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: center;
+  width: 45%;
+}
+
+#left-side h1 {
+  color: var(--dark-green);
+  font-weight: bold;
+}
+
+.content #right-side {
+  align-items: center;
+  background-color: var(--dark-green);
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  min-height: 100%;
+  width: 55%;
+}
