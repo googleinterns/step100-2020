@@ -13,7 +13,7 @@ function getPollOptions() {
 }
 
 function renderOptionElement(option) {
-  let innerBar = "200";
+  let innerBarLength = "200";
   let numVotes = option["votes"].length;
   let text = option["text"];
 
@@ -24,6 +24,8 @@ function renderOptionElement(option) {
   const challengeName = optionElementNode.querySelector("p");
   const challengeText = document.createTextNode(text);
   challengeName.appendChild(challengeText);
+  const innerBar = optionElementNode.getElementById("inner-bar");
+  innerBar.setAttribute("width", innerBarLength);
   const checkbox = optionElementNode.querySelector("input");
   checkbox.id = text;
   const label = optionElementNode.querySelector("label");
