@@ -8,8 +8,25 @@
       rel="stylesheet"
       type="text/css"
     />
+    <link rel="stylesheet" href="styles/group.css"></link>
+    <script src="scripts/poll.js"></script>
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Group</title>
   </head>
-  <body></body>
+
+  <body onload="getPollOptions()">
+    <div class="poll-container">
+      <div class="inner-poll-container">
+          <div class="section-text">
+              Poll
+          </div>
+          <div id="options-container"></div>
+          </div>
+        </br>
+        </br>
+        </br>
+        <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addOption()"></input>
+      </div>
+    </div>
+  </body>
 </html>
