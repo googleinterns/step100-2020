@@ -9,7 +9,7 @@ public final class User {
   private final String firstName;
   private final String lastName;
   private final String email;
-  private final int phoneNumber;
+  private final String phoneNumber;
   private final ArrayList<Badge> badges;
   private final ArrayList<String> groups;
   private final ArrayList<String> interests;
@@ -22,7 +22,7 @@ public final class User {
     this.email = email;
   }
 
-  public User(String userId, String firstName, String lastName, String email, int phoneNumber,
+  public User(String userId, String firstName, String lastName, String email, String phoneNumber,
       ArrayList<Badge> badges, ArrayList<String> groups, ArrayList<String> interests) {
     this.userId = userId;
     this.name = firstName + " " + lastName;
@@ -55,7 +55,7 @@ public final class User {
     return email;
   }
 
-  public int getPhoneNumber() {
+  public String getPhoneNumber() {
     return phoneNumber;
   }
 
@@ -81,7 +81,7 @@ public final class User {
     this.name = getFirstName() + " " + lastName;
   }
 
-  public void setPhoneNumber(int newPhoneNumber) {
+  public void setPhoneNumber(String newPhoneNumber) {
     this.phoneNumber = newPhoneNumber;
   }
 
