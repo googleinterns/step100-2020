@@ -39,11 +39,11 @@ public class PostDataServlet extends HttpServlet {
 
     // Receives submitted post 
     long timestamp = System.currentTimeMillis();
-    User author = null;
+    String authorId = null;
     String postText = "here is some text";
     String challengeName = "Challenge Name";
     String img = "";
-    ArrayList<User> likes = new ArrayList<>();
+    ArrayList<String> likes = new ArrayList<>();
     ArrayList<Comment> comments = new ArrayList<>();
 
     // Creates entity with submitted data
