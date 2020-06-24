@@ -6,18 +6,30 @@ public final class User {
 
   private final String userId;
   private final String name;
-  private final String firstname;
+  private final String firstName;
+  private final String lastName;
   private final String email;
+  private final int phoneNumber;
   private final ArrayList<Badge> badges;
   private final ArrayList<String> groups;
   private final ArrayList<String> interests;
 
-  public User(String userId, String firstname, String lastname, String email, 
+  public User(String userId, String firstName, String lastName, String email) {
+    this.userId = userId;
+    this.name = firstName + " " + lastName;
+    this.firstName = firstname;
+    this.lastName = lastName;
+    this.email = email;
+  }
+
+  public User(String userId, String firstName, String lastName, String email, int phoneNumber,
       ArrayList<Badge> badges, ArrayList<String> groups, ArrayList<String> interests) {
     this.userId = userId;
-    this.name = firstname + " " + lastname;
-    this.firstname = firstname;
+    this.name = firstName + " " + lastName;
+    this.firstName = firstname;
+    this.lastName = lastName;
     this.email = email;
+    this.phoneNumber = phoneNumber;
     this.badges = badges;
     this.groups = groups;
     this.interests = interests;
@@ -31,8 +43,20 @@ public final class User {
     return name;
   }
 
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
   public String getEmail() {
     return email;
+  }
+
+  public int getPhoneNumber() {
+    return phoneNumber;
   }
 
   public ArrayList<Badge> getBadges() {
@@ -45,6 +69,20 @@ public final class User {
 
   public ArrayList<String> getInterests() {
     return interests;
+  }
+
+  public void setFirstName (String firstName) {
+    this.firstName = firstName;
+    this.name = firstName + " " + getLastName();
+  }
+
+  public void setLastName (String lastName) {
+    this.lastName = lastName;
+    this.name = getFirstName() + " " + lastName;
+  }
+
+  public void setPhoneNumber(int newPhoneNumber) {
+    this.phoneNumber = newPhoneNumber;
   }
 
   public void addBadge(Badge newBadge) {
