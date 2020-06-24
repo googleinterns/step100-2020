@@ -41,10 +41,11 @@ function renderOptionElement(option) {
   innerBar.setAttribute("width", innerBarLength);
   //Set id for checkbox
   const checkbox = optionElementNode.querySelector("input");
-  checkbox.id = text;
+  const id = option["id"];
+  checkbox.id = id;
   //Set for field for label
   const label = optionElementNode.querySelector("label");
-  label.htmlFor = text;
+  label.htmlFor = id;
   //Set number of votes per challenge option
   const votesLabel = optionElementNode.getElementById("num-votes");
   const votesString = numVotes === 1 ? "vote" : "votes";
