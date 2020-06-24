@@ -35,7 +35,7 @@ function authenticateUser() {
     // need to set button's url to login url.
     const loginUrl = login.url;
     const loginButtons = document.getElementsByClassName("login-btn");
-    for(let i=0; i<loginButtons.length; i++) {
+    for(let i = 0; i < loginButtons.length; i++) {
       loginButtons[i].setAttribute('href', loginUrl);
     }
  });
@@ -46,12 +46,18 @@ function authenticateUser() {
  */
 function signUpUser() {
   // Get the user's first name and last name value through the form.
+  const firstName = document.getElementById('first').value;
+  const lastName = document.getElementById('last').value;
 
+  const params = new URLSearchParams();
+  params.append('first', firstName);
+  params.append('last', lastName);
   // Send a POST request to the signup servlet with the user's name as params.
-  fetch('/signup')
+  fetch('/signup', {method: 'POST', body: params})
   .then(response => response.json())
-  .then((login) => {
-    // Do something with the response.
+  .then((ignore) => {
+    // clear form text
+    document.getElementById('register').reset();
   });
 }
 
