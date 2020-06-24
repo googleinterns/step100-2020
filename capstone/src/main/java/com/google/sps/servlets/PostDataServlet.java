@@ -35,6 +35,33 @@ import com.google.sps.Objects.Comment;
 @WebServlet("/post")
 public class PostDataServlet extends HttpServlet {
 
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    Query query = new Query("Post").addSort(SortDirection.DESCENDING);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    List<Post> posts = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+    
+      long timestamp = (long) entity.getProperty("timestamp");
+      String authorId = (String) entity.getProperty("authorId");
+      String postText = (String) entity.getProperty("postText");
+      String challengeName = (String) entity.getProperty("challengeName");
+      String img = (String) entity.getProperty("img");
+      ArrayList<String> likes = entity.getProperty("likes");
+      ArrayList<Comment> commetns = entity.getProperty("comments");
+      Post userPost = new Post(authorId, postText, comments, challengeName, timestamp, img, likes);
+      posts.add(userPost);
+    }
+
+    // Convert to json
+    response.setContentType("application/json;");
+    response.getWriter().println(new Gson().toJson(posts));
+  }
+
+
    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     // Receives submitted post 
@@ -48,7 +75,7 @@ public class PostDataServlet extends HttpServlet {
 
     // Creates entity with submitted data
     Entity taskEntity = new Entity("Post");
-    taskEntity.setProperty("author", author);
+    taskEntity.setProperty("authorId", authorId);
     taskEntity.setProperty("timestamp", timestamp);
     taskEntity.setProperty("postText", postText);
     taskEntity.setProperty("challengeName", challengeName);
