@@ -7,4 +7,59 @@
 
 body {
   font-family: "Roboto", sans-serif;
+  background-color: #F4F6F2;
+}
+
+/* Post Comment */
+.group-content {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+}
+
+.group-header {
+  display: block;
+  border-radius: 10px;
+  position: absolute;
+  background: #C5D6C8;
+  max-height: 200px;
+}
+
+.create-post {
+  display: block;
+  background: #fcfcfc;
+  border-radius: 10px;
+  margin-top: 40px;
+  position: absolute;
+  height: 80px;
+  width: 100%;
+}
+
+.user-img {
+  height: 60px;
+  width: 60px;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #F7CE82;
+  align-content: left;
+  margin-left: 20px;
+  vertical-align: center;
+}
+
+#post-content {
+  background-color: #EEEEEE;
+  border-radius: 10px;
+  align-content: left;
+  margin-left: 100px;
+  height: 55px;
+  width: 75%;
+  outline-color: #EEEEEE;
+  vertical-align: center;
+}
+
+.post-btn {
+  align-content: right;
+  height: 30px;
+  width: 30px;
 }
