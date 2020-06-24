@@ -9,6 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
 import com.google.sps.Objects.Option;
 
@@ -17,19 +22,30 @@ public class PollServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Option option1 = new Option("Option 1");
-    option1.addVote("1");
-    option1.addVote("2");
-    Option option2 = new Option("Option 2");
-    option2.addVote("1");
-    Option option3 = new Option("Option 3");
-    option3.addVote("3");
+    Query query = new Query("Option");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
     List<Option> options = new ArrayList<Option>();
-    options.add(option1);
-    options.add(option2);
-    options.add(option3);
+    for (Entity entity : results.asIterable()) {
+      long id = entity.getKey().getId();
+      String text = (String) entity.getProperty("text");
+      List<String> votes = (ArrayList<String>) entity.getProperty("votes");
+      Option option = new Option(id, text, votes);
+      options.add(option);
+    }
+
     String json = new Gson().toJson(options);
     response.setContentType("application/json");
     response.getWriter().println(json);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String text = request.getParameter("text");
+    Entity optionEntity = new Entity("Option");
+    optionEntity.setProperty("text", text);
+    optionEntity.setProperty("votes", new ArrayList<String>());
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(optionEntity);
   }
 }

@@ -1,6 +1,6 @@
 package com.google.sps.Objects;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents each option of the poll. Has text field and keeps track of users
@@ -13,16 +13,18 @@ public final class Option {
 
   private final String text;
   // List of userIds of people who voted for option
-  private ArrayList<String> votes;
+  private List<String> votes;
+  private final long id;
 
   /**
-   * Constructor that takes in text and initializes list of user votes.
+   * Constructor that takes in id of option, text, and list of user votes.
    *
    * @param text String representing option name
    */
-  public Option(String text) {
+  public Option(long id, String text, List<String> votes) {
     this.text = text;
-    this.votes = new ArrayList<String>();
+    this.votes = votes;
+    this.id = id;
   }
 
   /**
@@ -48,7 +50,7 @@ public final class Option {
    *
    * @return list of user ids
    */
-  public ArrayList<String> getVotes() {
+  public List<String> getVotes() {
     return votes;
   }
 }

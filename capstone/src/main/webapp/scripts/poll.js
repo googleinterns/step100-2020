@@ -2,9 +2,12 @@ const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
 
 function getPollOptions() {
+  console.log("getting options");
   fetch("/poll")
     .then(response => response.json())
     .then(options => {
+      const optionsContainer = document.getElementById("options-container");
+      optionsContainer.innerHTML = "";
       options.forEach(option => {
         // createOptionElementLoad(option);
         renderOptionElement(option);
@@ -14,7 +17,10 @@ function getPollOptions() {
 
 function renderOptionElement(option) {
   let innerBarLength = "200";
-  let numVotes = option["votes"].length;
+  let numVotes = 0;
+  if (option["votes"]) {
+    numVotes = option["votes"].length;
+  }
   let text = option["text"];
 
   const optionsContainer = document.getElementById("options-container");
@@ -32,9 +38,17 @@ function renderOptionElement(option) {
   label.htmlFor = text;
   //Set number of votes per challenge option
   const votesLabel = optionElementNode.getElementById("num-votes");
-  const votesString = numVotes === 1 ? "task" : "tasks";
+  const votesString = numVotes === 1 ? "vote" : "votes";
   votesLabel.innerText = `${numVotes} ${votesString}`;
   optionsContainer.appendChild(optionElementNode);
+}
+
+function addPollOption() {
+  const text = document.getElementById("input-box").value;
+  if (text.trim() === "") return;
+  document.getElementById("input-box").value = "";
+  fetch(`poll?text=${text}`, { method: "POST" });
+  setTimeout(getPollOptions, 500);
 }
 
 function createOptionElement(text) {
