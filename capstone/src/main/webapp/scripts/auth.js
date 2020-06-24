@@ -34,8 +34,10 @@ function authenticateUser() {
  .then((login) => {
     // need to set button's url to login url.
     const loginUrl = login.url;
-    const loginButton = document.getElementById('login-btn');
-    loginButton.setAttribute('href', loginUrl);
+    const loginButtons = document.getElementsByClassName("login-btn");
+    for(let i=0; i<loginButtons.length; i++) {
+      loginButtons[i].setAttribute('href', loginUrl);
+    }
  });
 }
 
