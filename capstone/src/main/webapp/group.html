@@ -28,5 +28,22 @@
         <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addOption()"></input>
       </div>
     </div>
+
+    <template id="option-template">
+      <div class="option-container">
+        <p></p>
+        <svg width="690" height="55">
+          <rect height="55" width="690" class="poll-rect"/>
+          <rect height="55" width="200" id="inner-bar" class="poll-inner-rect"/>
+        </svg>
+    
+        <span class="check-container">
+          <input type="checkbox">
+          <label></label>
+        </span>
+        <div id="num-votes" class="votes-label"></div>
+      </div>
+    </template>
+
   </body>
 </html>
