@@ -1,6 +1,9 @@
 const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
 
+/**
+ * Get poll options from server and load to DOM.
+ */
 function getPollOptions() {
   fetch("/poll")
     .then(response => response.json())
@@ -13,13 +16,18 @@ function getPollOptions() {
     });
 }
 
+/**
+ * Uses template in group HTML file and changes text depending on data
+ * being loaded.
+ * @param {object} option
+ */
 function renderOptionElement(option) {
   let innerBarLength = "200";
   let numVotes = 0;
   if (option["votes"]) {
     numVotes = option["votes"].length;
   }
-  let text = option["text"];
+  const text = option["text"];
 
   const optionsContainer = document.getElementById("options-container");
   const optionElement = document.getElementById("option-template");
@@ -28,10 +36,13 @@ function renderOptionElement(option) {
   const challengeName = optionElementNode.querySelector("p");
   const challengeText = document.createTextNode(text);
   challengeName.appendChild(challengeText);
+  //Set length of inner bar for poll
   const innerBar = optionElementNode.getElementById("inner-bar");
   innerBar.setAttribute("width", innerBarLength);
+  //Set id for checkbox
   const checkbox = optionElementNode.querySelector("input");
   checkbox.id = text;
+  //Set for field for label
   const label = optionElementNode.querySelector("label");
   label.htmlFor = text;
   //Set number of votes per challenge option
@@ -41,6 +52,9 @@ function renderOptionElement(option) {
   optionsContainer.appendChild(optionElementNode);
 }
 
+/**
+ * Add new option to poll.
+ */
 function addPollOption() {
   const text = document.getElementById("input-box").value;
   if (text.trim() === "") return;
