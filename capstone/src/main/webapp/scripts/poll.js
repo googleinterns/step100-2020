@@ -43,6 +43,8 @@ function renderOptionElement(option) {
   const checkbox = optionElementNode.querySelector("input");
   const id = option["id"];
   checkbox.id = id;
+  /* if checkbox id is contained in list of options users voted for, mark as checked */
+  //   checkbox.checked = true;
   //Set for field for label
   const label = optionElementNode.querySelector("label");
   label.htmlFor = id;
