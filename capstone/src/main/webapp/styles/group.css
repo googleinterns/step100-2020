@@ -1,10 +1,115 @@
 :root {
   --green: #73c586;
-  --lightgreen: #c5d6cb;
-  --yellowgreen: #e8eed1;
-  --lightblue: #d1e3eb;
+  --light-green: #c5d6cb;
+  --yellow-green: #e8eed1;
+  --light-blue: #d1e3eb;
+  --near-white: #fcfcfc;
 }
 
 body {
   font-family: "Roboto", sans-serif;
+}
+
+.poll-container {
+  position: absolute;
+  background: #fcfcfc;
+  border-radius: 10px;
+  width: 834px;
+  padding-bottom: 40px;
+}
+
+.inner-poll-container {
+  margin: 40px 40px 100px 40px;
+}
+
+.section-text {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+p {
+  font-size: 24px;
+}
+
+#options-container {
+  width: 720px;
+}
+
+.poll-rect {
+  fill: rgb(232, 238, 209);
+}
+
+.poll-inner-rect {
+  fill: rgb(115, 197, 134);
+}
+
+#input-box {
+  width: 677px;
+  height: 55px;
+  border-radius: 25px;
+  border: none;
+  background-color: #eeeeee;
+  padding-left: 20px;
+  font-size: 24px;
+  outline: none;
+  margin: 0 40px;
+}
+
+.votes-label {
+  position: relative;
+  float: right;
+  right: 27px;
+  font-size: 24px;
+  color: #8a8686;
+}
+
+input[type="checkbox"] {
+  display: none;
+}
+
+.check-container {
+  position: relative;
+  bottom: 30px;
+  left: 10px;
+}
+
+input[type="checkbox"] + label {
+  z-index: 15;
+  position: absolute;
+  left: 0;
+  top: -1px;
+  bottom: 10px;
+  right: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  width: 20px;
+  border: 4px solid #444;
+  height: 20px;
+}
+
+.tag {
+  margin-left: 40px;
+}
+
+input[type="checkbox"]:checked + label {
+  z-index: 15;
+  display: inline-block;
+  transform: rotate(-50deg) translate(5px, -9px);
+  transition: all 0.3s ease;
+  width: 20px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: var(--green);
+  border-left-color: transparent;
+  height: 20px;
+}
+
+input[type="checkbox"]:checked + label:before {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 15px;
+  border-left: 4px solid #2ecc7a;
 }
