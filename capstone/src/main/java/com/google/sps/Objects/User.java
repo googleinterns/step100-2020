@@ -66,7 +66,7 @@ public final class User {
     return badges;
   }
 
-  public LinkedHashSet<String> getGroups() {
+  public LinkedHashSet<Group> getGroups() {
     return groups;
   }
 
