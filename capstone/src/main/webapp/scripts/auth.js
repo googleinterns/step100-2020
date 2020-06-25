@@ -41,9 +41,7 @@ function authenticateUser() {
     const loginStatus = login.loggedIn;
 
     if (loginStatus) {
-      firstName = document.getElementById('first').value;
-      lastName = document.getElementById('last').value;
-      signUpUser(firstName, lastName);
+      signUpUser();
     }
  });
 }
@@ -51,42 +49,11 @@ function authenticateUser() {
 /*
  * Sign up the user for the app if they have not already signed up.
  */
-function signUpUser(firstName, lastName) {
-  const params = new URLSearchParams();
-  params.append('first', firstName);
-  params.append('last', lastName);
+function signUpUser() {
   // Send a POST request to the signup servlet with the user's name as params.
-  fetch('/signup', {method: 'POST', body: params})
+  fetch('/signup', {method: 'POST'})
   .then(() => {
     // Redirect to group page once logged in.
     window.location.href = 'group.html';
   });
-}
-
-/* 
- * Toggle login form.
- */
-function login() {
-  let loginForm = document.getElementById("login");
-  let loginToggle = document.getElementById("login-toggle");
-  let registerForm = document.getElementById("register");
-  let registerToggle = document.getElementById("reg-toggle");
-  loginForm.style.display = "flex";
-  registerForm.style.display = "none";
-  loginToggle.classList.add("selected");
-  registerToggle.classList.remove("selected");
-}
-
-/* 
- * Toggle register form.
- */
-function register() {
-  let loginForm = document.getElementById("login");
-  let loginToggle = document.getElementById("login-toggle");
-  let registerForm = document.getElementById("register"); 
-  let registerToggle = document.getElementById("reg-toggle");
-  loginForm.style.display = "none";
-  registerForm.style.display = "flex";
-  loginToggle.classList.remove("selected");
-  registerToggle.classList.add("selected");
 }
