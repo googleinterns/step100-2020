@@ -1,5 +1,6 @@
 const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
+const TRANSITION_MILLIS = 300;
 
 /**
  * Get poll options from server and load to DOM.
@@ -16,11 +17,17 @@ function getPollOptions() {
       return options["votedOptions"];
     })
     .then(votedOptions => {
-      check(votedOptions);
+      handleCheck(votedOptions);
     });
 }
 
-function check(votedOptions) {
+/**
+ * Handles whether checkbox is checked. Takes in list of
+ * options for which current user has voted checks if id of
+ * current checkbox is in that list.
+ * @param {array} votedOptions
+ */
+function handleCheck(votedOptions) {
   const checkboxes = document.querySelectorAll("input[type=checkbox]");
   for (let i = 0; i < checkboxes.length; i++) {
     let checkbox = checkboxes[i];
@@ -64,8 +71,6 @@ function renderOptionElement(option) {
   const checkbox = optionElementNode.querySelector("input");
   const id = option["id"];
   checkbox.id = id;
-  /* if checkbox id is contained in list of options users voted for, mark as checked */
-  //   checkbox.checked = true;
   //Set for field for label
   const label = optionElementNode.querySelector("label");
   label.htmlFor = id;
@@ -94,8 +99,8 @@ function addPollOption() {
  * @param {String} id
  * @param {String} checked
  */
-function handleCheckbox(id, checked) {
+function handleCheckboxCount(id, checked) {
   fetch(`update-votes?id=${id}&checked=${checked}`, { method: "POST" }).then(
-    setTimeout(getPollOptions, 700)
+    setTimeout(getPollOptions, TRANSITION_MILLIS)
   );
 }
