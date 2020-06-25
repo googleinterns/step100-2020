@@ -1,3 +1,8 @@
+function init() {
+  fetchBlobstoreUrlAndShowForm();
+  loadPosts();
+}
+
 function loadPosts() {
   fetch('/post').then(response => response.json()).then((posts) => {
     const allPostsList = document.getElementById('posts-container');
@@ -27,4 +32,17 @@ function createSinglePost(post) {
   postDiv.append(postContent);
 
   return postDiv;
+}
+
+// Gets URL for uploaded image
+function fetchBlobstoreUrlAndShowForm() {
+  fetch('/blobstore-handler')
+    .then((response) => {
+    return response.text();
+    })
+    .then((imageUploadUrl) => {
+    const messageForm = document.getElementById('comments-form');
+    messageForm.action = imageUploadUrl;
+    //messageForm.classList.remove('hidden');
+  });
 }
