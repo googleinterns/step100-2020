@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.Objects.Badge;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -28,6 +29,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.LinkedHashSet;
 
 @WebServlet("/signup")
 public class SignUpServlet extends HttpServlet {
@@ -54,9 +56,14 @@ public class SignUpServlet extends HttpServlet {
       } catch (EntityNotFoundException e) {
         // If the user doesn't exist in Datastore, then create the user.
         Entity userEntity = new Entity("User", userId);
+        userEntity.setProperty("userId", userId);
         userEntity.setProperty("firstName", first);
         userEntity.setProperty("lastName", last);
         userEntity.setProperty("email", email);
+        userEntity.setProperty("phoneNumber", "");
+        userEntity.setProperty("badges", new LinkedHashSet<String>());
+        userEntity.setProperty("groups", new LinkedHashSet<String>());
+        userEntity.setProperty("interests", new LinkedHashSet<String>());
         datastore.put(userEntity);
       }
     }

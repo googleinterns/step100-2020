@@ -1,6 +1,6 @@
 package com.google.sps.Objects;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 public final class User {
 
@@ -10,9 +10,9 @@ public final class User {
   private String lastName;
   private final String email;
   private String phoneNumber;
-  private final ArrayList<Badge> badges;
-  private final ArrayList<String> groups;
-  private final ArrayList<String> interests;
+  private final LinkedHashSet<Badge> badges;
+  private final LinkedHashSet<Group> groups;
+  private final LinkedHashSet<String> interests;
 
   public User(String userId, String firstName, String lastName, String email) {
     this.userId = userId;
@@ -20,13 +20,13 @@ public final class User {
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
-    this.badges = new ArrayList<Badge>();
-    this.groups = new ArrayList<String>();
-    this.interests = new ArrayList<String>();
+    this.badges = new LinkedHashSet<Badge>();
+    this.groups = new LinkedHashSet<Group>();
+    this.interests = new LinkedHashSet<String>();
   }
 
   public User(String userId, String firstName, String lastName, String email, String phoneNumber,
-      ArrayList<Badge> badges, ArrayList<String> groups, ArrayList<String> interests) {
+      LinkedHashSet<Badge> badges, LinkedHashSet<Group> groups, LinkedHashSet<String> interests) {
     this.userId = userId;
     this.name = firstName + " " + lastName;
     this.firstName = firstName;
@@ -62,15 +62,15 @@ public final class User {
     return phoneNumber;
   }
 
-  public ArrayList<Badge> getBadges() {
+  public LinkedHashSet<Badge> getBadges() {
     return badges;
   }
 
-  public ArrayList<String> getGroups() {
+  public LinkedHashSet<String> getGroups() {
     return groups;
   }
 
-  public ArrayList<String> getInterests() {
+  public LinkedHashSet<String> getInterests() {
     return interests;
   }
 
@@ -96,8 +96,7 @@ public final class User {
     this.interests.add(newInterest);
   }
 
-  /* Adds a unique groupId string to the user's list of groups. */
-  public void addGroup(String newGroupId) {
-    this.groups.add(newGroupId);
+  public void addGroup(Group newGroup) {
+    this.groups.add(newGroup);
   }
 }
