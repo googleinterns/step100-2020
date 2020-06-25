@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,6 +33,12 @@ public class UpdateVotesServlet extends HttpServlet {
     }
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+//    UserService userService = UserServiceFactory.getUserService();
+//    if (userService.isUserLoggedIn()) {
+//      final String userId = userService.getCurrentUser().getUserId();
+//    }
+    // get userId of current logged in user
+    final String userId = "200";
 
     // Get entity from datastore based on id
     Entity optionEntity = null;
@@ -42,24 +49,28 @@ public class UpdateVotesServlet extends HttpServlet {
       return;
     }
 
-    ArrayList<String> votes = (ArrayList<String>) optionEntity.getProperty("votes");
-    if (votes != null) {
-      // If user checked checkbox, add user id to list of votes for current option
-      if (checked.equals("true")) {
-        votes.add("100");
-      } else {
-        // If user unchecked checkbox, remove user from list of votes
-        votes.remove("100");
-      }
-    } else {
-      /*
-       * If current option does not have any votes, initialize ArrayList and add user
-       * id to list
-       */
+    /*
+     * Using ArrayList here because datastore will only return type ArrayList.
+     * Casting it to a HashSet will still have O(n) time complexity, so ArrayLists
+     * seem to be the best option in this scenario.
+     */
+    List<String> votes = (ArrayList<String>) optionEntity.getProperty("votes");
+    /*
+     * If current option does not have any votes, initialize ArrayList.
+     */
+    if (votes == null) {
       votes = new ArrayList<String>();
-      votes.add("100");
     }
-
+    /*
+     * If checkbox is unchecked and list of votes contains user, remove user id to
+     * list of votes for current option
+     */
+    if (checked.equals("false") && votes.contains(userId)) {
+      votes.remove(userId);
+    } else if (checked.equals("true") && !votes.contains(userId)) {
+      // If checkbox is checked and list of votes contains user, add user id to list
+      votes.add(userId);
+    }
     // Update datastore
     optionEntity.setProperty("votes", votes);
     datastore.put(optionEntity);

@@ -53,6 +53,9 @@ function renderOptionElement(option) {
   optionsContainer.appendChild(optionElementNode);
 }
 
+function handleCheckbox() {
+  const userId = "200";
+}
 /**
  * Add new option to poll.
  */
