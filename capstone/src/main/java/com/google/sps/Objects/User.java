@@ -5,11 +5,11 @@ import java.util.ArrayList;
 public final class User {
 
   private final String userId;
-  private final String name;
-  private final String firstName;
-  private final String lastName;
+  private String name;
+  private String firstName;
+  private String lastName;
   private final String email;
-  private final String phoneNumber;
+  private String phoneNumber;
   private final ArrayList<Badge> badges;
   private final ArrayList<String> groups;
   private final ArrayList<String> interests;
@@ -17,16 +17,19 @@ public final class User {
   public User(String userId, String firstName, String lastName, String email) {
     this.userId = userId;
     this.name = firstName + " " + lastName;
-    this.firstName = firstname;
+    this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
+    this.badges = new ArrayList<>();
+    this.groups = new ArrayList<>();
+    this.interests = new ArrayList<>();
   }
 
   public User(String userId, String firstName, String lastName, String email, String phoneNumber,
       ArrayList<Badge> badges, ArrayList<String> groups, ArrayList<String> interests) {
     this.userId = userId;
     this.name = firstName + " " + lastName;
-    this.firstName = firstname;
+    this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
     this.phoneNumber = phoneNumber;

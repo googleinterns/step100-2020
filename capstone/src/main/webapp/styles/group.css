@@ -60,9 +60,16 @@ body {
 }
 
 .post-btn {
-  align-content: right;
+  margin-left: 30px;
   height: 30px;
-  width: 30px;
+  width: 60px;
+  border-radius: 20%;
+  background: #c5d6cb;
+}
+
+.posts-container {
+  margin-top: 500px;
+  display: block;
 }
 
 .post-div {
@@ -89,7 +96,7 @@ body {
   text-align: left;
 }
 
-.author {
+.align-vertical {
   display: inline-block;
   vertical-align: middle;
 }

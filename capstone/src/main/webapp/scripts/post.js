@@ -13,11 +13,11 @@ function createSinglePost(post) {
   postDiv.className = "post-div";
 
   const profileImgDiv = document.createElement('div');
-  profileImgDiv.className = "post-img author";
+  profileImgDiv.className = "post-img align-vertical";
   postDiv.appendChild(profileImgDiv);
 
   const postAuthor = document.createElement('h3');
-  postAuthor.className = "post-author author";
+  postAuthor.className = "post-author align-vertical";
   postAuthor.innerText = post.authorId;
   postDiv.append(postAuthor);
 
