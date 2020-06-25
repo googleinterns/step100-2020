@@ -60,6 +60,19 @@ function addPollOption() {
   const text = document.getElementById("input-box").value;
   if (text.trim() === "") return;
   document.getElementById("input-box").value = "";
-  fetch(`poll?text=${text}`, { method: "POST" });
-  setTimeout(getPollOptions, 500);
+  fetch(`poll?text=${text}`, { method: "POST" }).then(
+    setTimeout(getPollOptions, 500)
+  );
+}
+
+/**
+ * Handles changing the number of votes when the checkbox is either
+ * checked or unchecked.
+ * @param {String} id
+ * @param {String} checked
+ */
+function handleCheckbox(id, checked) {
+  fetch(`update-votes?id=${id}&checked=${checked}`, { method: "POST" }).then(
+    setTimeout(getPollOptions, 700)
+  );
 }
