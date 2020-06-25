@@ -38,25 +38,13 @@ public class LoginServlet extends HttpServlet {
     String email = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
 
+    // first check if entity exists, if so then do nothing.
+    // try to get entity by key and if get() returns error, it doesn't exist
+
     Entity userEntity = new Entity("User", userId);
     userEntity.setProperty("firstName", first);
     userEntity.setProperty("lastName", last);
     userEntity.setProperty("email", email);
-
-    Transaction txn = datastore.newTransaction();
-    try {
-      user = txn.get(taskKey);
-      if (user == null) {
-        user = Entity.newBuilder(taskKey).build();
-        txn.put(user);
-        txn.commit();
-      }
-    } finally {
-      if (txn.isActive()) {
-        txn.rollback();
-      }
-    }
-
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(userEntity);
