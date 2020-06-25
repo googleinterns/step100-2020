@@ -3,6 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link
+      href="http://fonts.googleapis.com/css?family=Roboto"
+      rel="stylesheet"
+      type="text/css"
+    />
     <link rel="stylesheet" href="styles/group.css"></link>
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script src="scripts/post.js"></script>
@@ -13,20 +19,19 @@
     
     <div class="group-content">
 
-      <div class="group-header">
-      </div>
-
       <div class="create-post">
         <form id="post-form" method="POST" action="/post" >
           <span class="user-img align-vertical"></span>
-          <textarea id="post-input" class="align-vertical" placeholder="Post a status" name="post-input" ></textarea>
-          <input class="post-btn align-vertical" type="submit"/>
+
+          <input type="text" id="post-input" class="align-vertical" name="post-input" value="Post a status">
+          <i class="fa-paper-plane" ></i>
+          <button type="submit"><i class="fa-paper-plane align-vertical" ></i><button>
         </form>
       </div>
 
-
-      <ul id="posts-container"></ul>
-
+      <div class="post-feed">
+        <div id="posts-container"></div>
+      </div>
     </div>
   </body>
 </html>

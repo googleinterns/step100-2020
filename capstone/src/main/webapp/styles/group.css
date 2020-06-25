@@ -18,21 +18,13 @@ body {
   width: 40%;
 }
 
-.group-header {
-  display: block;
-  border-radius: 10px;
-  position: absolute;
-  background: #C5D6C8;
-  height: 200px;
-}
-
 .create-post {
   display: block;
   background: #fcfcfc;
   border-radius: 10px;
   margin-top: 40px;
   position: absolute;
-  height: 80px;
+  height: 120px;
   width: 100%;
 }
 
@@ -53,10 +45,16 @@ body {
   border-radius: 10px;
   align-content: left;
   margin-left: 100px;
-  height: 50px;
-  margin-top: 10px;
-  width: 75%;
-  outline-color: #EEEEEE;
+  height: 40px;
+  width: 70%;
+  color: #8A8686;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 28px;
+  padding-left: 8px;
+  outline: none;
 }
 
 .post-btn {
@@ -67,16 +65,18 @@ body {
   background: #c5d6cb;
 }
 
-.posts-container {
-  margin-top: 500px;
+.post-feed {
+  margin-top: 150px;
+  position: absolute;
   display: block;
+  width: 100%;
 }
 
 .post-div {
-  display: block;
   background: #fcfcfc;
   margin-top: 20px;
-  padding: 20px 30px 30px 30px;
+  padding: 20px 30px 20px 30px;
+  position: relative;
 }
 
 .post-img {
@@ -90,13 +90,27 @@ body {
 .post-author {
   text-align: left;
   margin-left: 20px;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 28px;
 }
 
 .post-content {
   text-align: left;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 28px;
 }
 
 .align-vertical {
   display: inline-block;
   vertical-align: middle;
+}
+
+.fa-paper-plane {
+  height: 30px;
 }
