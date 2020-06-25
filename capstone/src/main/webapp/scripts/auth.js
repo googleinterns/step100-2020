@@ -33,31 +33,33 @@ function authenticateUser() {
  .then(response => response.json())
  .then((login) => {
     // need to set button's url to login url.
-    const loginUrl = login.url;
+    const loginUrl = login.loginurl;
     const loginButtons = document.getElementsByClassName("login-btn");
     for(let i = 0; i < loginButtons.length; i++) {
       loginButtons[i].setAttribute('href', loginUrl);
+    }
+    const loginStatus = login.loggedIn;
+
+    if (loginStatus) {
+      firstName = document.getElementById('first').value;
+      lastName = document.getElementById('last').value;
+      signUpUser(firstName, lastName);
     }
  });
 }
 
 /*
- * Sign up the user. Placeholder code.
+ * Sign up the user for the app if they have not already signed up.
  */
-function signUpUser() {
-  // Get the user's first name and last name value through the form.
-  const firstName = document.getElementById('first').value;
-  const lastName = document.getElementById('last').value;
-
+function signUpUser(firstName, lastName) {
   const params = new URLSearchParams();
   params.append('first', firstName);
   params.append('last', lastName);
   // Send a POST request to the signup servlet with the user's name as params.
   fetch('/signup', {method: 'POST', body: params})
-  .then(response => response.json())
-  .then((ignore) => {
-    // clear form text
-    document.getElementById('register').reset();
+  .then(() => {
+    // Redirect to group page once logged in.
+    window.location.href = 'group.html';
   });
 }
 

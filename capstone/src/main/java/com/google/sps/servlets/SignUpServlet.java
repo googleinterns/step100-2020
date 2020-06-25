@@ -19,6 +19,9 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
@@ -27,26 +30,35 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/signup")
-public class LoginServlet extends HttpServlet {
+public class SignUpServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
-    // Get the input from the form.
-    String first = request.getParameter("first");
-    String last = request.getParameter("last");
-    String email = userService.getCurrentUser().getEmail();
-    String userId = userService.getCurrentUser().getUserId();
+    if (userService.isUserLoggedIn()) {
+      // Get the input from the form.
+      String first = request.getParameter("first");
+      String last = request.getParameter("last");
+      String email = userService.getCurrentUser().getEmail();
+      String userId = userService.getCurrentUser().getUserId();
 
-    // first check if entity exists, if so then do nothing.
-    // try to get entity by key and if get() returns error, it doesn't exist
+      if (first.equals("") && last.equals("")) {
+        first = userService.getCurrentUser().getNickname();
+      }
 
-    Entity userEntity = new Entity("User", userId);
-    userEntity.setProperty("firstName", first);
-    userEntity.setProperty("lastName", last);
-    userEntity.setProperty("email", email);
-
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(userEntity);
+      // Check if user already exists in Datastore. If so, do nothing.
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      Key entityKey = KeyFactory.createKey("User", userId);
+      try {
+        datastore.get(entityKey);
+      } catch (EntityNotFoundException e) {
+        // If the user doesn't exist in Datastore, then create the user.
+        Entity userEntity = new Entity("User", userId);
+        userEntity.setProperty("firstName", first);
+        userEntity.setProperty("lastName", last);
+        userEntity.setProperty("email", email);
+        datastore.put(userEntity);
+      }
+    }
   }
 }
