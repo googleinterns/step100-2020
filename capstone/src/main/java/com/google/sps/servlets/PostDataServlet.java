@@ -38,20 +38,20 @@ public class PostDataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    Query query = new Query("Post").addSort(SortDirection.DESCENDING);
+    Query query = new Query("Post");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
     List<Post> posts = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-    
+      
       long timestamp = (long) entity.getProperty("timestamp");
       String authorId = (String) entity.getProperty("authorId");
       String postText = (String) entity.getProperty("postText");
       String challengeName = (String) entity.getProperty("challengeName");
       String img = (String) entity.getProperty("img");
-      ArrayList<String> likes = entity.getProperty("likes");
-      ArrayList<Comment> commetns = entity.getProperty("comments");
+      ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
+      ArrayList<Comment> comments = (ArrayList<Comment>) entity.getProperty("comments");
       Post userPost = new Post(authorId, postText, comments, challengeName, timestamp, img, likes);
       posts.add(userPost);
     }
@@ -66,8 +66,8 @@ public class PostDataServlet extends HttpServlet {
 
     // Receives submitted post 
     long timestamp = System.currentTimeMillis();
-    String authorId = null;
-    String postText = "here is some text";
+    String authorId = "Jane Doe";
+    String postText = request.getParameter("post-input");
     String challengeName = "Challenge Name";
     String img = "";
     ArrayList<String> likes = new ArrayList<>();

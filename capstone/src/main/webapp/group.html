@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles/group.css"></link>
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script src="scripts/post.js"></script>
     <title>Group</title>
   </head>
 
-  <body>
+  <body onload="loadPosts()">
     
     <div class="group-content">
 
@@ -16,10 +17,15 @@
       </div>
 
       <div class="create-post">
+        <form id="post-form" method="POST" action="/post" >
           <span class="user-img"></span>
-          <textarea id="post-content" placeholder="Post a status" name="post-input" ></textarea>
-          <button class="post-btn"><img src="images/next.png" /></button>
+          <textarea id="post-input" placeholder="Post a status" name="post-input" ></textarea>
+          <input class="post-btn" type="submit"/>
+        </form>
       </div>
+
+
+      <div id="posts-container"></div>
 
     </div>
   </body>

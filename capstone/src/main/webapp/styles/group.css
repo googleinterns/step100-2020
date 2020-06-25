@@ -23,7 +23,7 @@ body {
   border-radius: 10px;
   position: absolute;
   background: #C5D6C8;
-  max-height: 200px;
+  height: 200px;
 }
 
 .create-post {
@@ -43,23 +43,53 @@ body {
   border-radius: 50%;
   background-color: #F7CE82;
   align-content: left;
+  top: 50%;
+  transform: translateY(-50%);
   margin-left: 20px;
-  vertical-align: center;
 }
 
-#post-content {
+#post-input {
   background-color: #EEEEEE;
   border-radius: 10px;
   align-content: left;
   margin-left: 100px;
-  height: 55px;
+  height: 50px;
+  margin-top: 10px;
   width: 75%;
   outline-color: #EEEEEE;
-  vertical-align: center;
 }
 
 .post-btn {
   align-content: right;
   height: 30px;
   width: 30px;
+}
+
+.post-div {
+  display: block;
+  background: #fcfcfc;
+  margin-top: 20px;
+  padding: 20px 30px 30px 30px;
+}
+
+.post-img {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  background-color: #F7CE82;
+  align-content: left;
+}
+
+.post-author {
+  text-align: left;
+  margin-left: 20px;
+}
+
+.post-content {
+  text-align: left;
+}
+
+.author {
+  display: inline-block;
+  vertical-align: middle;
 }

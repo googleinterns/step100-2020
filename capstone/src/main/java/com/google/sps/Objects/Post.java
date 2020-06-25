@@ -54,7 +54,7 @@ public final class Post {
     this.comments.add(newComment);
   }
 
-  public void addNewLike(User newLike) {
-    this.likes.add(newLike);
+  public void addNewLike(String newLikeUserId) {
+    this.likes.add(newLikeUserId);
   }
 }
