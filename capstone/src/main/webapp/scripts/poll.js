@@ -10,10 +10,31 @@ function getPollOptions() {
     .then(options => {
       const optionsContainer = document.getElementById("options-container");
       optionsContainer.innerHTML = "";
-      options.forEach(option => {
+      options["options"].forEach(option => {
         renderOptionElement(option);
       });
+      return options["votedOptions"];
+    })
+    .then(votedOptions => {
+      check(votedOptions);
     });
+}
+
+function check(votedOptions) {
+  const checkboxes = document.querySelectorAll("input[type=checkbox]");
+  for (let i = 0; i < checkboxes.length; i++) {
+    let checkbox = checkboxes[i];
+    if (
+      votedOptions.find(function(checkboxId) {
+        return checkbox.id == checkboxId;
+      })
+    ) {
+      checkbox.checked = true;
+    } else {
+      checkbox.checked = false;
+    }
+  }
+  return;
 }
 
 /**
@@ -55,9 +76,6 @@ function renderOptionElement(option) {
   optionsContainer.appendChild(optionElementNode);
 }
 
-function handleCheckbox() {
-  const userId = "200";
-}
 /**
  * Add new option to poll.
  */

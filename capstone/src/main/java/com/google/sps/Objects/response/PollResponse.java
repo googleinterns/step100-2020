@@ -7,10 +7,10 @@ import com.google.sps.Objects.Option;
 public final class PollResponse {
 
   private final List<Option> options;
-  // List of ids of options for which current user voted for
-  private final List<String> votedOptions;
+  // List of ids of options for which current user voted
+  private final List<Long> votedOptions;
 
-  public PollResponse(List<Option> options, List<String> votedOptions) {
+  public PollResponse(List<Option> options, List<Long> votedOptions) {
     this.options = options;
     this.votedOptions = votedOptions;
   }
@@ -19,7 +19,7 @@ public final class PollResponse {
     return this.options;
   }
 
-  public List<String> getVotedOptions() {
+  public List<Long> getVotedOptions() {
     return this.votedOptions;
   }
 }

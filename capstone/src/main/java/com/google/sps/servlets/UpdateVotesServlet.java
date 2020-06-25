@@ -33,10 +33,6 @@ public class UpdateVotesServlet extends HttpServlet {
     }
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-//    UserService userService = UserServiceFactory.getUserService();
-//    if (userService.isUserLoggedIn()) {
-//      final String userId = userService.getCurrentUser().getUserId();
-//    }
     // get userId of current logged in user
     final String userId = "200";
 
