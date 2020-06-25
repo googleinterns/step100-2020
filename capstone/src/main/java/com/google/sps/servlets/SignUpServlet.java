@@ -29,7 +29,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
 
 @WebServlet("/signup")
 public class SignUpServlet extends HttpServlet {
@@ -38,14 +38,15 @@ public class SignUpServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
-      // Get the input from the form.
-      String first = request.getParameter("first");
-      String last = request.getParameter("last");
       String email = userService.getCurrentUser().getEmail();
       String userId = userService.getCurrentUser().getUserId();
+      String first = userService.getCurrentUser().getNickname();
+      String last = "";
 
-      if (first.equals("") && last.equals("")) {
-        first = userService.getCurrentUser().getNickname();
+      if (first.contains(" ")) {
+        String[] split = first.split(" ");
+        first = split[0];
+        last = split[1];
       }
 
       // Check if user already exists in Datastore. If so, do nothing.
@@ -61,9 +62,9 @@ public class SignUpServlet extends HttpServlet {
         userEntity.setProperty("lastName", last);
         userEntity.setProperty("email", email);
         userEntity.setProperty("phoneNumber", "");
-        userEntity.setProperty("badges", new LinkedHashSet<String>());
-        userEntity.setProperty("groups", new LinkedHashSet<String>());
-        userEntity.setProperty("interests", new LinkedHashSet<String>());
+        userEntity.setProperty("badges", new ArrayList<String>());
+        userEntity.setProperty("groups", new ArrayList<String>());
+        userEntity.setProperty("interests", new ArrayList<String>());
         datastore.put(userEntity);
       }
     }

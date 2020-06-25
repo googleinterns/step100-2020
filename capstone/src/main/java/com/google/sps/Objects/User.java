@@ -1,6 +1,6 @@
 package com.google.sps.Objects;
 
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
 
 public final class User {
 
@@ -10,9 +10,9 @@ public final class User {
   private String lastName;
   private final String email;
   private String phoneNumber;
-  private final LinkedHashSet<Badge> badges;
-  private final LinkedHashSet<Group> groups;
-  private final LinkedHashSet<String> interests;
+  private final ArrayList<Badge> badges;
+  private final ArrayList<Group> groups;
+  private final ArrayList<String> interests;
 
   public User(String userId, String firstName, String lastName, String email) {
     this.userId = userId;
@@ -20,13 +20,13 @@ public final class User {
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
-    this.badges = new LinkedHashSet<Badge>();
-    this.groups = new LinkedHashSet<Group>();
-    this.interests = new LinkedHashSet<String>();
+    this.badges = new ArrayList<Badge>();
+    this.groups = new ArrayList<Group>();
+    this.interests = new ArrayList<String>();
   }
 
   public User(String userId, String firstName, String lastName, String email, String phoneNumber,
-      LinkedHashSet<Badge> badges, LinkedHashSet<Group> groups, LinkedHashSet<String> interests) {
+      ArrayList<Badge> badges, ArrayList<Group> groups, ArrayList<String> interests) {
     this.userId = userId;
     this.name = firstName + " " + lastName;
     this.firstName = firstName;
@@ -62,15 +62,15 @@ public final class User {
     return phoneNumber;
   }
 
-  public LinkedHashSet<Badge> getBadges() {
+  public ArrayList<Badge> getBadges() {
     return badges;
   }
 
-  public LinkedHashSet<Group> getGroups() {
+  public ArrayList<Group> getGroups() {
     return groups;
   }
 
-  public LinkedHashSet<String> getInterests() {
+  public ArrayList<String> getInterests() {
     return interests;
   }
 
