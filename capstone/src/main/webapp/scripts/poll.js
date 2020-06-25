@@ -22,8 +22,8 @@ function getPollOptions() {
 }
 
 /**
- * Handles whether checkbox is checked. Takes in list of
- * options for which current user has voted checks if id of
+ * Handles whether checkbox is checked. Takes in list of ids of
+ * options for which current user has voted and checks if id of
  * current checkbox is in that list.
  * @param {array} votedOptions
  */

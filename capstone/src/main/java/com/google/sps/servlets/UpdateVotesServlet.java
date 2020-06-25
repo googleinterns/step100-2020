@@ -25,6 +25,7 @@ public class UpdateVotesServlet extends HttpServlet {
     // Get whether checkbox is currently checked
     String checked = request.getParameter("checked");
     long optionId;
+
     try {
       optionId = Long.parseLong(optionIdString);
     } catch (NumberFormatException e) {
