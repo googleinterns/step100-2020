@@ -14,17 +14,6 @@ public final class User {
   private final ArrayList<String> groups;
   private final ArrayList<String> interests;
 
-  public User(String userId, String firstName, String lastName, String email) {
-    this.userId = userId;
-    this.name = firstName + " " + lastName;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.email = email;
-    this.badges = new ArrayList<>();
-    this.groups = new ArrayList<>();
-    this.interests = new ArrayList<>();
-  }
-
   public User(String userId, String firstName, String lastName, String email, String phoneNumber,
       ArrayList<Badge> badges, ArrayList<String> groups, ArrayList<String> interests) {
     this.userId = userId;
@@ -74,12 +63,12 @@ public final class User {
     return interests;
   }
 
-  public void setFirstName (String firstName) {
+  public void setFirstName(String firstName) {
     this.firstName = firstName;
     this.name = firstName + " " + getLastName();
   }
 
-  public void setLastName (String lastName) {
+  public void setLastName(String lastName) {
     this.lastName = lastName;
     this.name = getFirstName() + " " + lastName;
   }
