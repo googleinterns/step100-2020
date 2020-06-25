@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/blobstore-handler")
+@WebServlet("/post-image-handler")
 public class BlobstoreServlet extends HttpServlet {
   
   @Override

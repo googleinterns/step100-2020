@@ -54,7 +54,11 @@ public final class Post {
     this.comments.add(newComment);
   }
 
-  public void addNewLike(String newLikeUserId) {
-    this.likes.add(newLikeUserId);
+  public void addLike(String userId) {
+    if (!likes.contains(userId)) this.likes.add(userId);
+  }
+
+  public void removeLike(String userId) {
+    this.likes.remove(userId);
   }
 }

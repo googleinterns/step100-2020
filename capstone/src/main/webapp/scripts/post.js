@@ -4,7 +4,7 @@ function init() {
 }
 
 function loadPosts() {
-  fetch('/post').then(response => response.json()).then((posts) => {
+  fetch('/group-post').then(response => response.json()).then((posts) => {
     const allPostsList = document.getElementById('posts-container');
     allPostsList.innerHTML = '';
     for (var i = 0; i < posts.length; i++) {
@@ -16,33 +16,43 @@ function loadPosts() {
 function createSinglePost(post) {
   const postDiv = document.createElement('div');
   postDiv.className = "post-div";
+  postDiv.appendChild(createProfileImg(post));
+  postDiv.append(createAuthor(post));
+  postDiv.append(createPostText(post));
+  return postDiv;
+}
 
-  const profileImgDiv = document.createElement('div');
+// Create HTML element for post profile img
+function createProfileImg() {
+   const profileImgDiv = document.createElement('div');
   profileImgDiv.className = "post-img align-vertical";
-  postDiv.appendChild(profileImgDiv);
+  return profileImgDiv;
+}
 
+// Create HTML element for post author name 
+function createAuthor(post) {
   const postAuthor = document.createElement('h3');
   postAuthor.className = "post-author align-vertical";
   postAuthor.innerText = post.authorId;
-  postDiv.append(postAuthor);
+  return postAuthor;
+}
 
+// Create HTML element for post text
+function createPostText(post) {
   const postContent = document.createElement('p');
   postContent.className = "post-content";
   postContent.innerText = post.postText;
-  postDiv.append(postContent);
-
-  return postDiv;
+  return postContent;
 }
 
 // Gets URL for uploaded image
 function fetchBlobstoreUrlAndShowForm() {
-  fetch('/blobstore-handler')
-    .then((response) => {
-    return response.text();
-    })
-    .then((imageUploadUrl) => {
+  fetch('/post-image-handler')
+  .then((response) => {
+  	return response.text();
+  })
+  .then((imageUploadUrl) => {
     const messageForm = document.getElementById('comments-form');
     messageForm.action = imageUploadUrl;
-    //messageForm.classList.remove('hidden');
   });
 }
