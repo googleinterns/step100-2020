@@ -64,12 +64,12 @@ public final class User {
     return interests;
   }
 
-  public void setFirstName (String firstName) {
+  public void setFirstName(String firstName) {
     this.firstName = firstName;
     this.name = firstName + " " + getLastName();
   }
 
-  public void setLastName (String lastName) {
+  public void setLastName(String lastName) {
     this.lastName = lastName;
     this.name = getFirstName() + " " + lastName;
   }
