@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.annotation.WebServlet;
@@ -14,8 +15,11 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.Objects.Option;
+import com.google.sps.Objects.comparator.OptionsComparator;
 import com.google.sps.Objects.response.PollResponse;
 
 @WebServlet("/poll")
@@ -23,11 +27,21 @@ public class PollServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String userId = "200";
+    String userId = "";
+    UserService userService = UserServiceFactory.getUserService();
+    if (userService.isUserLoggedIn()) {
+      userId = userService.getCurrentUser().getUserId();
+    } else {
+      System.err.println("ERROR: User is not logged in");
+    }
     Query query = new Query("Option");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     List<Option> options = new ArrayList<Option>();
+    /*
+     * List to keep track of options current user has voted for so that checkboxes
+     * can be marked as checked on frontend side
+     */
     List<Long> votedOptions = new ArrayList<Long>();
     for (Entity entity : results.asIterable()) {
       long id = entity.getKey().getId();
@@ -40,7 +54,9 @@ public class PollServlet extends HttpServlet {
         votedOptions.add(id);
       }
     }
-    PollResponse pollResponse = new PollResponse(options, votedOptions);
+    // Sort list of options based on number of votes
+    Collections.sort(options, new OptionsComparator());
+    PollResponse pollResponse = new PollResponse(options, votedOptions, userId);
     String json = new Gson().toJson(pollResponse);
     response.setContentType("application/json");
     response.getWriter().println(json);

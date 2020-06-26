@@ -14,6 +14,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 @WebServlet("/update-votes")
 public class UpdateVotesServlet extends HttpServlet {
@@ -35,7 +37,13 @@ public class UpdateVotesServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     // get userId of current logged in user
-    final String userId = "200";
+    String userId = "";
+    UserService userService = UserServiceFactory.getUserService();
+    if (userService.isUserLoggedIn()) {
+      userId = userService.getCurrentUser().getUserId();
+    } else {
+      System.err.println("ERROR: User is not logged in");
+    }
 
     // Get entity from datastore based on id
     Entity optionEntity = null;
@@ -59,13 +67,16 @@ public class UpdateVotesServlet extends HttpServlet {
       votes = new ArrayList<String>();
     }
     /*
-     * If checkbox is unchecked and list of votes contains user, remove user id to
+     * If checkbox is unchecked and list of votes contains user, remove user id from
      * list of votes for current option
      */
     if (checked.equals("false") && votes.contains(userId)) {
       votes.remove(userId);
     } else if (checked.equals("true") && !votes.contains(userId)) {
-      // If checkbox is checked and list of votes contains user, add user id to list
+      /*
+       * If checkbox is checked and list of votes does not contain user, add user id
+       * to list
+       */
       votes.add(userId);
     }
     // Update datastore

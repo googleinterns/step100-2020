@@ -1,6 +1,7 @@
 const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
 const TRANSITION_MILLIS = 300;
+let maxVotes;
 
 /**
  * Get poll options from server and load to DOM.
@@ -11,8 +12,9 @@ function getPollOptions() {
     .then(options => {
       const optionsContainer = document.getElementById("options-container");
       optionsContainer.innerHTML = "";
+      maxVotes = options["options"][0]["votes"].length;
       options["options"].forEach(option => {
-        renderOptionElement(option);
+        renderOptionElement(option, maxVotes);
       });
       return options["votedOptions"];
     })
@@ -49,12 +51,13 @@ function handleCheck(votedOptions) {
  * being loaded.
  * @param {object} option
  */
-function renderOptionElement(option) {
-  let innerBarLength = "200";
+function renderOptionElement(option, maxVotes) {
   let numVotes = 0;
   if (option["votes"]) {
     numVotes = option["votes"].length;
   }
+  //Calculate length of inner bar for poll
+  let innerBarLength = (numVotes / maxVotes) * BAR_WIDTH;
   const text = option["text"];
 
   const optionsContainer = document.getElementById("options-container");
