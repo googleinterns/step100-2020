@@ -1,6 +1,7 @@
 package com.google.sps.Objects;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public final class Post {
 
@@ -10,9 +11,9 @@ public final class Post {
   private final String challengeName;
   private final long timestamp;
   private final String img;
-  private final ArrayList<String> likes;
+  private final HashSet<String> likes;
 
-  public Post(String authorId, String postText, ArrayList<Comment> comments, String challengeName, long timestamp, String img, ArrayList<String> likes) {
+  public Post(String authorId, String postText, ArrayList<Comment> comments, String challengeName, long timestamp, String img, HashSet<String> likes){
     this.timestamp = timestamp;
     this.postText = postText;
     this.authorId = authorId;
@@ -46,7 +47,7 @@ public final class Post {
     return img;
   }
 
-  public ArrayList<String> getLikes() {
+  public HashSet<String> getLikes() {
     return likes;
   }
 
@@ -55,7 +56,7 @@ public final class Post {
   }
 
   public void addLike(String userId) {
-    if (!likes.contains(userId)) this.likes.add(userId);
+    this.likes.add(userId);
   }
 
   public void removeLike(String userId) {

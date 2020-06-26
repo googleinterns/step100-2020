@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashSet;
 import com.google.gson.Gson;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -53,7 +54,7 @@ public class GroupPostDataServlet extends HttpServlet {
     String postText = (String) entity.getProperty("postText");
     String challengeName = (String) entity.getProperty("challengeName");
     String img = (String) entity.getProperty("img");
-    ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
+    HashSet<String> likes = (HashSet<String>) entity.getProperty("likes");
     ArrayList<Comment> comments = (ArrayList<Comment>) entity.getProperty("comments");
     Post userPost = new Post(authorId, postText, comments, challengeName, timestamp, img, likes);
     return userPost;
@@ -67,7 +68,7 @@ public class GroupPostDataServlet extends HttpServlet {
     String postText = request.getParameter("post-input");
     String challengeName = "Challenge Name";
     String img = "";
-    ArrayList<String> likes = new ArrayList<>();
+    HashSet<String> likes = new HashSet<>();
     ArrayList<Comment> comments = new ArrayList<>();
 
     // Creates entity with submitted data and add to database
@@ -78,7 +79,7 @@ public class GroupPostDataServlet extends HttpServlet {
     response.sendRedirect("/group.html");
   }
 
-  public Entity createPostEntity(long timestamp, String authorId, String postText, String challengeName, String img, ArrayList<String> likes, ArrayList<Comment> comments) {
+  public Entity createPostEntity(long timestamp, String authorId, String postText, String challengeName, String img, HashSet<String> likes, ArrayList<Comment> comments) {
     Entity taskEntity = new Entity("Post");
     taskEntity.setProperty("authorId", authorId);
     taskEntity.setProperty("timestamp", timestamp);
