@@ -11,12 +11,12 @@ public final class User {
   private String lastName;
   private final String email;
   private String phoneNumber;
-  private final ArrayList<Badge> badges;
+  private final LinkedHashSet<Badge> badges;
   private final LinkedHashSet<Group> groups;
   private final ArrayList<String> interests;
 
   public User(String userId, String firstName, String lastName, String email, String phoneNumber,
-      ArrayList<Badge> badges, LinkedHashSet<Group> groups, ArrayList<String> interests) {
+      LinkedHashSet<Badge> badges, LinkedHashSet<Group> groups, ArrayList<String> interests) {
     this.userId = userId;
     this.name = firstName + " " + lastName;
     this.firstName = firstName;
@@ -52,7 +52,7 @@ public final class User {
     return phoneNumber;
   }
 
-  public ArrayList<Badge> getBadges() {
+  public LinkedHashSet<Badge> getBadges() {
     return badges;
   }
 
