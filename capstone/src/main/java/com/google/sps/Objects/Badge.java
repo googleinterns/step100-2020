@@ -6,10 +6,12 @@ public final class Badge {
 
   String challengeName;
   Image icon;
+  long timestamp;
 
-  public Badge(String challengeName, Image icon) {
+  public Badge(String challengeName, Image icon, long timestamp) {
     this.challengeName = challengeName;
     this.icon = icon;
+    this.timestamp = timestamp;
   }
 
   public String getChallengeName() {
@@ -18,5 +20,9 @@ public final class Badge {
 
   public Image getIcon() {
     return this.icon;
+  }
+
+  public long getTimestamp() {
+    return this.timestamp;
   }
 }
