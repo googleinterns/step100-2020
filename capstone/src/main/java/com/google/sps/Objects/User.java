@@ -1,6 +1,7 @@
 package com.google.sps.Objects;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 public final class User {
 
@@ -11,11 +12,11 @@ public final class User {
   private final String email;
   private String phoneNumber;
   private final ArrayList<Badge> badges;
-  private final ArrayList<Group> groups;
+  private final LinkedHashSet<Group> groups;
   private final ArrayList<String> interests;
 
   public User(String userId, String firstName, String lastName, String email, String phoneNumber,
-      ArrayList<Badge> badges, ArrayList<Group> groups, ArrayList<String> interests) {
+      ArrayList<Badge> badges, LinkedHashSet<Group> groups, ArrayList<String> interests) {
     this.userId = userId;
     this.name = firstName + " " + lastName;
     this.firstName = firstName;
@@ -55,7 +56,7 @@ public final class User {
     return badges;
   }
 
-  public ArrayList<Group> getGroups() {
+  public LinkedHashSet<Group> getGroups() {
     return groups;
   }
 
@@ -86,11 +87,6 @@ public final class User {
   }
 
   public void addGroup(Group newGroup) {
-    // Iterate through list, checking if Group already exists to ensure uniqueness.
-    // Could have used a HashSet here, but HashSets are not directly returned by Datastore,
-    // negating the search time complexity benefits.
-    if (!this.groups.contains(newGroup)) {
-      this.groups.add(newGroup);
-    }
+    this.groups.add(newGroup);
   }
 }
