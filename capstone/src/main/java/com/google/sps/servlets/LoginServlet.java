@@ -32,8 +32,6 @@ public class LoginServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
 
-    String loginUrl = userService.createLoginURL("/");
-    String logoutUrl = userService.createLogoutURL("/");
     String email = "";
     boolean isUserLoggedIn = false;
 
@@ -42,7 +40,8 @@ public class LoginServlet extends HttpServlet {
       isUserLoggedIn = true;
     }
 
-    LoginResponse loginResponse = new LoginResponse(loginUrl, logoutUrl, email, isUserLoggedIn);
+    LoginResponse loginResponse = new LoginResponse(
+        userService.createLoginURL("/"), userService.createLogoutURL("/"), email, isUserLoggedIn);
 
     // Send the JSON object as the response
     String json = new Gson().toJson(loginResponse);

@@ -14,17 +14,6 @@ public final class User {
   private final ArrayList<Group> groups;
   private final ArrayList<String> interests;
 
-  public User(String userId, String firstName, String lastName, String email) {
-    this.userId = userId;
-    this.name = firstName + " " + lastName;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.email = email;
-    this.badges = new ArrayList<Badge>();
-    this.groups = new ArrayList<Group>();
-    this.interests = new ArrayList<String>();
-  }
-
   public User(String userId, String firstName, String lastName, String email, String phoneNumber,
       ArrayList<Badge> badges, ArrayList<Group> groups, ArrayList<String> interests) {
     this.userId = userId;

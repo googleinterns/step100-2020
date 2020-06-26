@@ -32,12 +32,11 @@ function createLoginUrl() {
   fetch('/login')
  .then(response => response.json())
  .then((login) => {
-    // need to set button's url to login url.
+    // Need to set button's url to login url.
     const loginUrl = login.loginUrl;
     const loginButton = document.getElementById("login-btn");
     loginButton.setAttribute('href', loginUrl);
-    const loggedIn = login.loggedIn;
-    if (loggedIn) {
+    if (login.loggedIn) {
       afterUserSignsIn();
     }
  });
