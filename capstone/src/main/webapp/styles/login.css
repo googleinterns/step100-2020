@@ -93,7 +93,7 @@ body {
   width: 100%;
 }
 
-#left-side .login-btn {
+#left-side #login-btn {
   background-color: var(--dark-green);
   border: none;
   border-radius: 12px;
