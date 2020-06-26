@@ -31,23 +31,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
-@WebServlet("/signup")
-public class SignUpServlet extends HttpServlet {
+@WebServlet("/checkNewUser")
+public class CheckNewUserServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
-      String email = userService.getCurrentUser().getEmail();
       String userId = userService.getCurrentUser().getUserId();
-      String first = userService.getCurrentUser().getNickname();
-      String last = "";
-
-      if (first.contains(" ")) {
-        String[] split = first.split(" ");
-        first = split[0];
-        last = split[1];
-      }
 
       // Check if user already exists in Datastore. If so, do nothing.
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -56,17 +47,22 @@ public class SignUpServlet extends HttpServlet {
         datastore.get(entityKey);
       } catch (EntityNotFoundException e) {
         // If the user doesn't exist in Datastore, then create the user.
-        Entity userEntity = new Entity("User", userId);
-        userEntity.setProperty("userId", userId);
-        userEntity.setProperty("firstName", first);
-        userEntity.setProperty("lastName", last);
-        userEntity.setProperty("email", email);
-        userEntity.setProperty("phoneNumber", "");
-        userEntity.setProperty("badges", new ArrayList<String>());
-        userEntity.setProperty("groups", new ArrayList<String>());
-        userEntity.setProperty("interests", new ArrayList<String>());
+        Entity userEntity = createUserEntity(userService, userId);
         datastore.put(userEntity);
       }
     }
+  }
+
+  private Entity createUserEntity(UserService userService, String userId) {
+    Entity userEntity = new Entity("User", userId);
+    userEntity.setProperty("userId", userId);
+    userEntity.setProperty("firstName", userService.getCurrentUser().getNickname());
+    userEntity.setProperty("lastName", "");
+    userEntity.setProperty("email", userService.getCurrentUser().getEmail());
+    userEntity.setProperty("phoneNumber", "");
+    userEntity.setProperty("badges", new ArrayList<String>());
+    userEntity.setProperty("groups", new ArrayList<String>());
+    userEntity.setProperty("interests", new ArrayList<String>());
+    return userEntity;
   }
 }
