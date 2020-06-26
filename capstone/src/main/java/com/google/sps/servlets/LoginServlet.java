@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.Objects.LoginResponse;
+import com.google.gson.Gson;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
@@ -32,19 +34,18 @@ public class LoginServlet extends HttpServlet {
 
     String loginUrl = userService.createLoginURL("/");
     String logoutUrl = userService.createLogoutURL("/");
+    String email = "";
+    boolean isUserLoggedIn = false;
 
-    String json;
     if (userService.isUserLoggedIn()) {
-      json = String.format(
-        "{\"email\": \"%s\", \"loginurl\": \"%s\", \"logouturl\": \"%s\", \"loggedIn\": %b}",
-        userService.getCurrentUser().getEmail(), loginUrl, logoutUrl, true);
-    } else {
-      json = String.format(
-        "{\"email\": \"%s\", \"loginurl\": \"%s\", \"logouturl\": \"%s\", \"loggedIn\": %b}",
-        "null", loginUrl, logoutUrl, false);
+      email = userService.getCurrentUser().getEmail();
+      isUserLoggedIn = true;
     }
 
-    // Send the JSON as the response
+    LoginResponse loginResponse = new LoginResponse(loginUrl, logoutUrl, email, isUserLoggedIn);
+
+    // Send the JSON object as the response
+    String json = new Gson().toJson(loginResponse);
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }
