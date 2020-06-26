@@ -2,7 +2,9 @@ package com.google.sps.servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +27,7 @@ public class UpdateVotesServlet extends HttpServlet {
     // Get id of changed checkbox
     String optionIdString = request.getParameter("id");
     // Get whether checkbox is currently checked
-    String checked = request.getParameter("checked");
+    boolean isOptionChecked = Boolean.parseBoolean(request.getParameter("checked"));
     long optionId;
 
     try {
@@ -60,33 +62,37 @@ public class UpdateVotesServlet extends HttpServlet {
      * seem to be the best option in this scenario.
      */
     List<String> votes = (ArrayList<String>) optionEntity.getProperty("votes");
+    Set<String> votesSet;
     /*
      * If current option does not have any votes, initialize ArrayList.
      */
     if (votes == null) {
       votes = new ArrayList<String>();
+      votesSet = new HashSet<String>();
+    } else {
+      votesSet = new HashSet<String>(votes);
     }
     /*
      * If checkbox is unchecked and list of votes contains user, remove user id from
      * list of votes for current option
      */
-    if (checked.equals("false") && votes.contains(userId)) {
-      votes.remove(userId);
-    } else if (checked.equals("true") && !votes.contains(userId)) {
+    if (!isOptionChecked && votesSet.contains(userId)) {
+      votesSet.remove(userId);
+    } else if (isOptionChecked && !votesSet.contains(userId)) {
       /*
        * If checkbox is checked and list of votes does not contain user, add user id
        * to list
        */
-      votes.add(userId);
+      votesSet.add(userId);
     }
     // Update datastore
-    optionEntity.setProperty("votes", votes);
+    optionEntity.setProperty("votes", votesSet);
     datastore.put(optionEntity);
   }
 
   /**
    * Handles error for Java Servlet and displays that something went wrong.
-   * 
+   *
    * @param response    HttpServletResponse
    * @param errorString error message
    * @throws IOException exception thrown when cannot write to file

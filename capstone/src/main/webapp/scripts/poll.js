@@ -4,19 +4,20 @@ const TRANSITION_MILLIS = 300;
 let maxVotes;
 
 /**
- * Get poll options from server and load to DOM.
+ * Get poll data, which includes each poll option and the * list of options that the current logged in user has
+ * voted for, from server and load to DOM.
  */
 function getPollOptions() {
   fetch("/poll")
     .then(response => response.json())
-    .then(options => {
+    .then(pollData => {
       const optionsContainer = document.getElementById("options-container");
       optionsContainer.innerHTML = "";
-      maxVotes = options["options"][0]["votes"].length;
-      options["options"].forEach(option => {
+      maxVotes = pollData["options"][0]["votes"].length;
+      pollData["options"].forEach(option => {
         renderOptionElement(option, maxVotes);
       });
-      return options["votedOptions"];
+      return pollData["votedOptions"];
     })
     .then(votedOptions => {
       handleCheck(votedOptions);
