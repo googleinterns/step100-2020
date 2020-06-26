@@ -43,6 +43,7 @@ function createSinglePost(post) {
   postDiv.appendChild(createProfileImg(post));
   postDiv.append(createAuthor(post));
   postDiv.append(createPostText(post));
+  postDiv.append(createCommentBox());
   return postDiv;
 }
 
@@ -67,6 +68,16 @@ function createPostText(post) {
   postContent.className = "post-content";
   postContent.innerText = post.postText;
   return postContent;
+}
+
+// Create comment input HTML element
+function createCommentBox() {
+  const commentBox = document.createElement('input');
+  commentBox.type = "text";
+  commentBox.name = "comment-input";
+  commentBox.value = "Write a comment";
+  commentBox.id= "comment-input";
+  return commentBox;
 }
 
 // Gets URL for uploaded image
