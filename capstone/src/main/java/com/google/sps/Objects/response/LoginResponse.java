@@ -1,4 +1,4 @@
-package com.google.sps.Objects;
+package com.google.sps.Objects.response;
 
 /**
  * Contains information for the response sent by LoginServlet.
