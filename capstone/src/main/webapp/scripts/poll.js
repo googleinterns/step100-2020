@@ -63,6 +63,7 @@ function renderOptionElement(option, maxVotes) {
   const optionsContainer = document.getElementById("options-container");
   const optionElement = document.getElementById("option-template");
   const optionElementNode = document.importNode(optionElement.content, true);
+
   //Set name of challenge
   const challengeName = optionElementNode.querySelector("p");
   const challengeText = document.createTextNode(text);

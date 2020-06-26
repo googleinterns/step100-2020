@@ -66,8 +66,10 @@ public class PollServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String text = request.getParameter("text");
     Entity optionEntity = new Entity("Option");
+//    long timestamp = System.currentTimeMillis();
     optionEntity.setProperty("text", text);
     optionEntity.setProperty("votes", new ArrayList<String>());
+//    optionEntity.setProperty("timestamp", timestamp);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(optionEntity);
   }
