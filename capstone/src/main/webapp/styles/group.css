@@ -53,18 +53,36 @@ body {
   font-style: normal;
   font-weight: normal;
   font-size: 15px;
-  line-height: 28px;
   padding-left: 8px;
   outline: none;
+  border: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.camera-btn {
+  height: 40px;
+  background: #fcfcfc;
+  border: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 85%;
+  color:  #73c586;
 }
 
 .post-btn {
-  margin-left: 30px;
-  height: 30px;
-  width: 60px;
-  border-radius: 20%;
-  background: #c5d6cb;
+  height: 40px;
+  background: #fcfcfc;
+  border: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 90%;
+  color:  #73c586;
 }
+
 
 .post-feed {
   margin-top: 150px;
@@ -112,16 +130,13 @@ body {
   vertical-align: middle;
 }
 
-.fa-paper-plane {
-  height: 30px;
-}
-
 .poll-container {
   position: absolute;
   background: #fcfcfc;
   border-radius: 10px;
-  width: 834px;
+  width: 100%;
   padding-bottom: 40px;
+  margin-top: 200px;
 }
 
 .inner-poll-container {

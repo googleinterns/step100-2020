@@ -20,6 +20,12 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import java.util.Map;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -66,7 +72,7 @@ public class GroupPostDataServlet extends HttpServlet {
     String authorId = "Jane Doe";
     String postText = request.getParameter("post-input");
     String challengeName = "Challenge Name";
-    String img = "";
+    String img = getUploadedFileUrl(request, "image");
     ArrayList<String> likes = new ArrayList<>();
     ArrayList<Comment> comments = new ArrayList<>();
 
@@ -89,4 +95,19 @@ public class GroupPostDataServlet extends HttpServlet {
     taskEntity.setProperty("comments", comments);
     return taskEntity;
 	}
+
+   /** Returns a key that points to the uploaded file, or null if the user didn't upload a file. */
+  private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    List<BlobKey> blobKeys = blobs.get("image");
+
+    String blobKey;
+    if (blobKeys == null || blobKeys.isEmpty()) {
+      blobKey = null;
+    } else {
+      blobKey = blobKeys.get(0).getKeyString();
+    }
+    return blobKey;
+  }
 }

@@ -16,18 +16,21 @@
     <title>Group</title>
   </head>
 
-<<<<<<< HEAD
-  <body onload="loadPosts()">
+  <body onload="init()">
     
     <div class="group-content">
 
       <div class="create-post">
-        <form id="post-form" method="POST" action="/group-post">
+        <form id="post-form" method="POST" action="group-post">
           <span class="user-img align-vertical"></span>
 
           <input type="text" id="post-input" class="align-vertical" name="post-input" value="Post a status">
-          <i class="fa fa-camera" aria-hidden="true"></i>
-           <button type="submit"><i class="fa fa-paper-plane align-vertical"></i><button>
+
+          <input id='fileid' type='file' name='image' hidden/>
+          <button id="camera-btn" class="camera-btn align-vertical" ><i class="fa fa-camera-retro fa-2x"></i><button>
+
+          <button class="post-btn align-vertical" type="submit"><i class="fa fa-paper-plane fa-2x"></i><button>
+         
         </form>
       </div>
 
@@ -35,35 +38,10 @@
         <div id="posts-container"></div>
       </div>
     </div>
+
   </body>
 </html>
-=======
-  <body onload="getPollOptions()">
-    <div class="poll-container">
-      <div class="inner-poll-container">
-          <div class="section-text">
-              Poll
-          </div>
-          <div id="options-container"></div>
-          </div>
-        <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
-      </div>
-    </div>
 
-    <template id="option-template">
-      <div class="option-container">
-        <p></p>
-        <svg width="690" height="55">
-          <rect height="55" width="690" class="poll-rect"/>
-          <rect height="55" id="inner-bar" class="poll-inner-rect"/>
-        </svg>
-    
-        <span class="check-container">
-          <input type="checkbox">
-          <label></label>
-        </span>
-        <div id="num-votes" class="votes-label"></div>
-      </div>
-    </template>
+  
 
   
