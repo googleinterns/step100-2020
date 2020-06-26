@@ -97,6 +97,11 @@ public final class User {
   }
 
   public void addGroup(Group newGroup) {
-    this.groups.add(newGroup);
+    // Iterate through list, checking if Group already exists to ensure uniqueness.
+    // Could have used a HashSet here, but HashSets are not directly returned by Datastore,
+    // negating the search time complexity benefits.
+    if (!this.groups.contains(newGroup)) {
+      this.groups.add(newGroup);
+    }
   }
 }
