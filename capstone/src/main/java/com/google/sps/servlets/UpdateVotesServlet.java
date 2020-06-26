@@ -31,7 +31,7 @@ public class UpdateVotesServlet extends HttpServlet {
     try {
       optionId = Long.parseLong(optionIdString);
     } catch (NumberFormatException e) {
-      System.err.println("ERROR: Failed to parse to long");
+      this.sendError(response, "Cannot parse to long.");
       return;
     }
 
@@ -42,7 +42,7 @@ public class UpdateVotesServlet extends HttpServlet {
     if (userService.isUserLoggedIn()) {
       userId = userService.getCurrentUser().getUserId();
     } else {
-      System.err.println("ERROR: User is not logged in");
+      this.sendError(response, "User is not logged in.");
     }
 
     // Get entity from datastore based on id
@@ -50,7 +50,7 @@ public class UpdateVotesServlet extends HttpServlet {
     try {
       optionEntity = datastore.get(KeyFactory.createKey("Option", optionId));
     } catch (EntityNotFoundException e) {
-      System.err.println("ERROR: Could not get entity from datastore");
+      this.sendError(response, "Cannot get entity from datastore");
       return;
     }
 
@@ -82,5 +82,19 @@ public class UpdateVotesServlet extends HttpServlet {
     // Update datastore
     optionEntity.setProperty("votes", votes);
     datastore.put(optionEntity);
+  }
+
+  /**
+   * Handles error for Java Servlet and displays that something went wrong.
+   * 
+   * @param response    HttpServletResponse
+   * @param errorString error message
+   * @throws IOException exception thrown when cannot write to file
+   */
+  private void sendError(HttpServletResponse response, String errorString) throws IOException {
+    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Cannot parse to long.");
+    response.getWriter().print("<html><head><title>Oops an error happened!</title></head>");
+    response.getWriter().print("<body>Something bad happened uh-oh!</body>");
+    response.getWriter().println("</html>");
   }
 }
