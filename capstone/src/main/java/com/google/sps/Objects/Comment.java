@@ -4,12 +4,12 @@ public final class Comment {
 
   private final long timestamp;
   private final String commentText;
-  private final User user;
+  private final String userId;
 
-  public Comment(long timestamp, String commentText, User user) {
+  public Comment(long timestamp, String commentText, String userId) {
     this.timestamp = timestamp;
     this.commentText = commentText;
-    this.user = user;
+    this.userId = userId;
   }
 
   public long getTimestamp() {
@@ -20,7 +20,7 @@ public final class Comment {
     return commentText;
   }
 
-  public User getUser() {
-    return user;
+  public String getUser() {
+    return userId;
   }
 }

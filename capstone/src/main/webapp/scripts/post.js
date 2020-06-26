@@ -70,6 +70,24 @@ function createPostText(post) {
   return postContent;
 }
 
+// Create container for all post comments
+function createCommentsContainer(post) {
+  const commentsContainer = document.createElement('div');
+  postContent.className = "post-content";
+  const allComments = document.createElement('ul');
+  
+  for(comment of post.getComments()) {
+    allComments.appendChild(createSingleComment(comment));
+  }
+  commentsContainer.appendChild(allComments);
+  return commentsContainer;
+}
+
+function createSingleComment(comment) {
+  
+
+}
+
 // Create comment input HTML element
 function createCommentBox() {
   const commentBox = document.createElement('input');
