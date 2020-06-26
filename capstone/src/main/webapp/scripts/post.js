@@ -48,7 +48,7 @@ function createSinglePost(post) {
 
 // Create HTML element for post profile img
 function createProfileImg() {
-   const profileImgDiv = document.createElement('div');
+  const profileImgDiv = document.createElement('div');
   profileImgDiv.className = "post-img align-vertical";
   return profileImgDiv;
 }
@@ -72,11 +72,9 @@ function createPostText(post) {
 // Gets URL for uploaded image
 function fetchBlobstoreUrlAndShowForm() {
   console.log("in fetch");
-  fetch('/post-image-handler')
-  .then((response) => {
+  fetch('/post-image-handler').then((response) => {
   	return response.text();
-  })
-  .then((imageUploadUrl) => {
+  }).then((imageUploadUrl) => {
     const messageForm = document.getElementById('post-form');
     messageForm.action = imageUploadUrl;
     console.log(imageUploadUrl);

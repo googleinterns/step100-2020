@@ -72,7 +72,7 @@ public class GroupPostDataServlet extends HttpServlet {
     String authorId = "Jane Doe";
     String postText = request.getParameter("post-input");
     String challengeName = "Challenge Name";
-    String img = getUploadedFileUrl(request, "image");
+    String img = "";
     ArrayList<String> likes = new ArrayList<>();
     ArrayList<Comment> comments = new ArrayList<>();
 
