@@ -33,7 +33,7 @@ function createLoginUrl() {
  .then(response => response.json())
  .then((login) => {
     // need to set button's url to login url.
-    const loginUrl = login.loginurl;
+    const loginUrl = login.loginUrl;
     const loginButton = document.getElementById("login-btn");
     loginButton.setAttribute('href', loginUrl);
     const loggedIn = login.loggedIn;
