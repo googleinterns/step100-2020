@@ -107,6 +107,23 @@ body {
   line-height: 28px;
 }
 
+#comment-input {
+  background-color: #EEEEEE;
+  border-radius: 10px;
+  align-content: left;
+  margin-left: 100px;
+  height: 40px;
+  width: 70%;
+  color: #8A8686;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 28px;
+  padding-left: 8px;
+  outline: none;
+}
+
 .align-vertical {
   display: inline-block;
   vertical-align: middle;
