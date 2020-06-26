@@ -1,6 +1,8 @@
 function init() {
   fetchBlobstoreUrlAndShowForm();
   loadPosts();
+  getPollOptions();
+
 }
 
 function loadPosts() {
