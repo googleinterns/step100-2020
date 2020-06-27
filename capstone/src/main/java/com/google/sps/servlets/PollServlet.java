@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
@@ -34,7 +35,7 @@ public class PollServlet extends HttpServlet {
     } else {
       System.err.println("ERROR: User is not logged in");
     }
-    Query query = new Query("Option");
+    Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     List<Option> options = new ArrayList<Option>();
@@ -66,10 +67,10 @@ public class PollServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String text = request.getParameter("text");
     Entity optionEntity = new Entity("Option");
-//    long timestamp = System.currentTimeMillis();
+    long timestamp = System.currentTimeMillis();
     optionEntity.setProperty("text", text);
     optionEntity.setProperty("votes", new ArrayList<String>());
-//    optionEntity.setProperty("timestamp", timestamp);
+    optionEntity.setProperty("timestamp", timestamp);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(optionEntity);
   }

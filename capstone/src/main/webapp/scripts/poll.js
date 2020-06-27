@@ -1,11 +1,23 @@
 const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
-const TRANSITION_MILLIS = 300;
+const TRANSITION_MILLIS = 400;
 let maxVotes;
 
 /**
- * Get poll data, which includes each poll option and the * list of options that the current logged in user has
- * voted for, from server and load to DOM.
+ * Add new option to poll.
+ */
+function addPollOption() {
+  const text = document.getElementById("input-box").value;
+  if (text.trim() === "") return;
+  document.getElementById("input-box").value = "";
+  fetch(`poll?text=${text}`, { method: "POST" }).then(
+    setTimeout(getPollOptions, 500)
+  );
+}
+
+/**
+ * Get poll data, which includes each poll option and the * list of options
+ * that the current logged in user has voted for, from server and load to DOM.
  */
 function getPollOptions() {
   fetch("/poll")
@@ -13,13 +25,7 @@ function getPollOptions() {
     .then(pollData => {
       const optionsContainer = document.getElementById("options-container");
       optionsContainer.innerHTML = "";
-      let maxVotes;
-      let votesArray = pollData["options"][0]["votes"];
-      if (votesArray == null) {
-        maxVotes = 0;
-      } else {
-        maxVotes = votesArray.length;
-      }
+      let maxVotes = getMaxVotes(pollData);
       pollData["options"].forEach(option => {
         renderOptionElement(option, maxVotes);
       });
@@ -28,6 +34,24 @@ function getPollOptions() {
     .then(votedOptions => {
       handleCheck(votedOptions);
     });
+}
+
+/**
+ * Gets the maximum number of votes for the poll. The option with maximum
+ * number of votes should be the first option since the options are sorted in
+ * order of votes.
+ * @param {objct} pollData
+ */
+function getMaxVotes(pollData) {
+  let maxVotes;
+  // Gets the list of votes for the first poll option
+  let votesArray = pollData["options"][0]["votes"];
+  if (votesArray == null) {
+    maxVotes = 0;
+  } else {
+    maxVotes = votesArray.length;
+  }
+  return maxVotes;
 }
 
 /**
@@ -106,18 +130,6 @@ function renderOptionElement(option, maxVotes) {
   const votesString = numVotes === 1 ? "vote" : "votes";
   votesLabel.innerText = `${numVotes} ${votesString}`;
   optionsContainer.appendChild(optionElementNode);
-}
-
-/**
- * Add new option to poll.
- */
-function addPollOption() {
-  const text = document.getElementById("input-box").value;
-  if (text.trim() === "") return;
-  document.getElementById("input-box").value = "";
-  fetch(`poll?text=${text}`, { method: "POST" }).then(
-    setTimeout(getPollOptions, 500)
-  );
 }
 
 /**
