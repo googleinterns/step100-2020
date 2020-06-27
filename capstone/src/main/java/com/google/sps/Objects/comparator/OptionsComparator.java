@@ -4,6 +4,13 @@ import java.util.Comparator;
 
 import com.google.sps.Objects.Option;
 
+/**
+ * Comparator that compares the number of votes between poll options. Used to
+ * sort options in descending order based on number of votes per option.
+ *
+ * @author lucyqu
+ *
+ */
 public class OptionsComparator implements Comparator<Option> {
 
   @Override
