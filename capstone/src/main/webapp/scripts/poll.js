@@ -13,7 +13,13 @@ function getPollOptions() {
     .then(pollData => {
       const optionsContainer = document.getElementById("options-container");
       optionsContainer.innerHTML = "";
-      maxVotes = pollData["options"][0]["votes"].length;
+      let maxVotes;
+      let votesArray = pollData["options"][0]["votes"];
+      if (votesArray == null) {
+        maxVotes = 0;
+      } else {
+        maxVotes = votesArray.length;
+      }
       pollData["options"].forEach(option => {
         renderOptionElement(option, maxVotes);
       });
@@ -69,7 +75,12 @@ function renderOptionElement(option, maxVotes) {
     numVotes = option["votes"].length;
   }
   //Calculate length of inner bar for poll
-  let innerBarLength = (numVotes / maxVotes) * BAR_WIDTH;
+  let innerBarLength;
+  if (maxVotes == 0) {
+    innerBarLength = 0;
+  } else {
+    innerBarLength = (numVotes / maxVotes) * BAR_WIDTH;
+  }
   const text = option["text"];
 
   const optionsContainer = document.getElementById("options-container");
