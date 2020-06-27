@@ -52,6 +52,13 @@ public class UpdateVotesServlet extends HttpServlet {
     response.getWriter().println("</html>");
   }
 
+  /**
+   * Gets the id of the currently logged in user.
+   *
+   * @param response HttpServletResponse
+   * @return String user id
+   * @throws IOException exception thrown from send error method.
+   */
   private String getUserId(HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
@@ -62,6 +69,14 @@ public class UpdateVotesServlet extends HttpServlet {
     return "";
   }
 
+  /**
+   * Parses string to long.
+   *
+   * @param response       HttpServletResponse
+   * @param optionIdString id of the current option in the form of a String
+   * @return long representing the id of current option
+   * @throws IOException
+   */
   private long parseToLong(HttpServletResponse response, String optionIdString) throws IOException {
     try {
       return Long.parseLong(optionIdString);
@@ -71,6 +86,15 @@ public class UpdateVotesServlet extends HttpServlet {
     }
   }
 
+  /**
+   * Retrieves the option entity from the database based on id.
+   *
+   * @param response  HttpServletResponse
+   * @param optionId  id of current option
+   * @param datastore datastore holding all data
+   * @return Option entity
+   * @throws IOException error thrown from sendError method
+   */
   private Entity getEntityFromId(HttpServletResponse response, long optionId,
       DatastoreService datastore) throws IOException {
     try {
@@ -81,6 +105,18 @@ public class UpdateVotesServlet extends HttpServlet {
     }
   }
 
+  /**
+   * Updates the votes for a particular poll option. Gets an ArrayList from the
+   * database representing the list of people who have voted for a particular
+   * option, which is passed in as optionEntity. Converts this ArrayList to a Set
+   * and then checks whether the checkbox is checked and whether the set already
+   * contains the current user id and then updates the set accordingly.
+   *
+   * @param optionEntity    option entity from database
+   * @param isOptionChecked boolean whether checkbox is checked for current option
+   * @param userId          id of user
+   * @return set representing users who have voted for current option
+   */
   private Set<String> getUpdatedVotes(Entity optionEntity, boolean isOptionChecked, String userId) {
     /*
      * Using ArrayList here because datastore will only return type ArrayList.

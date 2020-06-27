@@ -26,7 +26,7 @@ function getPollOptions() {
 
 /**
  * Handles whether checkbox is checked. Takes in list of ids of
- * options for which current user has voted and checks if id of
+ * checkboxes for which current user has checked and checks if id of
  * current checkbox is in that list.
  * @param {array} votedOptions
  */
@@ -34,17 +34,28 @@ function handleCheck(votedOptions) {
   const checkboxes = document.querySelectorAll("input[type=checkbox]");
   for (let i = 0; i < checkboxes.length; i++) {
     let checkbox = checkboxes[i];
-    if (
-      votedOptions.find(function(checkboxId) {
-        return checkbox.id == checkboxId;
-      })
-    ) {
-      checkbox.checked = true;
-    } else {
-      checkbox.checked = false;
-    }
+    markCheckbox(votedOptions, checkbox);
   }
   return;
+}
+
+/**
+ * Mark whether checkbox is checked by seeing if current checkbox is in
+ * votedOptions, which contains the options for which the currently logged in
+ * user has voted.
+ * @param {object} votedOptions
+ * @param {object} checkbox
+ */
+function markCheckbox(votedOptions, checkbox) {
+  if (
+    votedOptions.find(function(checkboxId) {
+      return checkbox.id == checkboxId;
+    })
+  ) {
+    checkbox.checked = true;
+  } else {
+    checkbox.checked = false;
+  }
 }
 
 /**
