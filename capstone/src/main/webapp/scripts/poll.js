@@ -43,15 +43,9 @@ function getPollOptions() {
  * @param {objct} pollData
  */
 function getMaxVotes(pollData) {
-  let maxVotes;
-  // Gets the list of votes for the first poll option
-  let votesArray = pollData["options"][0]["votes"];
-  if (votesArray == null) {
-    maxVotes = 0;
-  } else {
-    maxVotes = votesArray.length;
-  }
-  return maxVotes;
+ // Gets the list of votes for the first poll option
+ let votesArray = pollData["options"][0]["votes"];
+ return !!votesArray ? votesArray.length : 0;
 }
 
 /**
