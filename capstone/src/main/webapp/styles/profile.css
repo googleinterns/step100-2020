@@ -1,0 +1,54 @@
+.content {
+  display: flex;
+  font-family: Roboto;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+
+.sidebar {
+  align-items: center;
+  background-color: var(--near-white);
+  color: var(--black);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: 20px;
+  width: 300px;
+  z-index: 1;
+}
+
+.main {
+  background-color: var(--background);
+  color: var(--black);
+  flex: 1 1 auto;
+  height: 100%;
+  overflow: scroll;
+  width: calc(100%-300px);
+}
+
+.main-content {
+  padding: 50px;
+}
+
+.main h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 650px) {
+  .content {
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    padding-top: 15px;
+  }
+
+  .main {
+    width: 100%;
+  }
+}
