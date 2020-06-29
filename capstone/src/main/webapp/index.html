@@ -39,10 +39,13 @@
           to fill out some information and register with our site.
         </p>
         <form id="register">
-          <input type="text" class="input-field" placeholder="First Name *" name="first" id="first" required>
-          <input type="text" class="input-field" placeholder="Last Name *" name="last" id="last" required>
+          <input type="text" class="input-field" placeholder="First Name *" name="first" id="first" 
+              required aria-required="true">
+          <input type="text" class="input-field" placeholder="Last Name *" name="last" id="last" 
+              required aria-required="true">
           <input type="text" class="input-field" placeholder="Phone Number" name="phone" id="phone">
-          <input type="text" class="input-field" placeholder="Interests (separate with commas)" name="interests" id="interests">
+          <input type="text" class="input-field" placeholder="Interests (separate with commas)" 
+              name="interests" id="interests">
           <button class="submit-btn" onclick="createNewUser()">Submit and continue to site</button>
         </form>
       </div>

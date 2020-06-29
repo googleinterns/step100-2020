@@ -72,24 +72,27 @@ function openRegisterModal() {
  * Sign up new user for the app.
  */
 function createNewUser() {
-  const firstName = document.getElementById('first').value;
-  const lastName = document.getElementById('last').value;
-  const phoneNumber = document.getElementById('phone').value;
-  const interests = document.getElementById('interests').value;
+  const registerForm = document.getElementById('register');
+  if (registerForm.reportValidity()) {
+    const firstName = document.getElementById('first').value;
+    const lastName = document.getElementById('last').value;
+    const phoneNumber = document.getElementById('phone').value;
+    const interests = document.getElementById('interests').value;
 
-  const params = new URLSearchParams();
-  params.append('first', firstName);
-  params.append('last', lastName);
-  params.append('phone', phoneNumber);
-  params.append('interests', interests);
+    const params = new URLSearchParams();
+    params.append('first', firstName);
+    params.append('last', lastName);
+    params.append('phone', phoneNumber);
+    params.append('interests', interests);
 
-  // Send a POST request to the servlet which registers a new user.
-  fetch('/createNewUser', {method: 'POST', body: params})
- .then(response => response.json())
- .then(() => {
-    // Clear form text.
-    document.getElementById('register').reset();
-    // Redirect to group page once registered.
-    window.location.href = 'group.html';
-  });
+    // Send a POST request to the servlet which registers a new user.
+    fetch('/createNewUser', {method: 'POST', body: params})
+    .then(response => response.json())
+    .then(() => {
+      // Clear form text.
+      document.getElementById('register').reset();
+      // Redirect to group page once registered.
+      window.location.href = 'group.html';
+    });
+  }
 }
