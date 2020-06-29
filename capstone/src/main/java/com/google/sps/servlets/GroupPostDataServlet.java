@@ -66,7 +66,6 @@ public class GroupPostDataServlet extends HttpServlet {
     for(EmbeddedEntity comment: commentEntitys) {
       comments.add(new Comment((long) comment.getProperty("timestamp"), (String) comment.getProperty("commentText"), (String) comment.getProperty("userId")));
     }
-    System.out.println(comments);
     Post userPost = new Post(authorId, postText, comments, challengeName, timestamp, img, likes);
     return userPost;
   }
@@ -83,9 +82,8 @@ public class GroupPostDataServlet extends HttpServlet {
     ArrayList<Comment> comments = new ArrayList<>();
     Comment newComment = new Comment(23408, "cute outfit", "i am a user");
     comments.add(new Comment(123904, "dgfdgfThere are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour" , "i am a user"));
+    comments.add(new Comment(123904, "queen love this dance we should make a tik tok next time" , "i am a user"));
     comments.add(newComment);
-    //comments.add(new Comment(23408, "cute outfit", "i am a user"));
-    System.out.println(comments);
 
     // Creates entity with submitted data and add to database
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

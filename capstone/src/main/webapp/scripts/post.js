@@ -1,6 +1,7 @@
 function init() {
   loadPosts();
   uploadImage();
+  
   //fetchBlobstoreUrlAndShowForm();
 }
 
@@ -35,6 +36,32 @@ function loadPosts() {
       allPostsList.appendChild(createSinglePost(posts[i]));
     }
   });
+}
+
+function commentListener() {
+  console.log("in comment listener");
+  document.getElementById('comment-btn').addEventListener('click', postComment);
+  function postComment() {
+    const commentVal = document.getElementById("comment-input").value;
+    console.log(commentVal);
+    const request = new Request('/post-comment', { method: "POST" });
+    fetch(request).then(() => {
+      loadPosts();
+    });
+  }
+}
+
+
+//document.getElementsByClassName('comment-btn').addEventListener('click', postComment);
+
+function postComment() {
+    console.log("in comment listener");
+    const commentVal = document.getElementById("comment-input").value;
+    console.log(commentVal);
+    const request = new Request('/post-comment', { method: "POST" });
+    fetch(request).then(() => {
+      loadPosts();
+    });
 }
 
 function createSinglePost(post) {
@@ -76,10 +103,8 @@ function createCommentsContainer(post) {
   const commentsContainer = document.createElement('div');
   commentsContainer.className = "comments-content";
   const allComments = document.createElement('ul');
-  console.log(post.comments);
   for(comment of post.comments) {
     allComments.appendChild(createSingleComment(comment));
-    console.log(comment);
   }
   commentsContainer.appendChild(allComments);
   return commentsContainer;
@@ -107,23 +132,24 @@ function createSingleComment(comment) {
 
 // Create comment input HTML element
 function createCommentBox() {
+  const commentBoxDiv = document.createElement('div');
+  commentBoxDiv.className = "comment-box-div";
+
   const commentBox = document.createElement('input');
   commentBox.type = "text";
   commentBox.name = "comment-input";
   commentBox.placeholder = "Write a comment";
   commentBox.id = "comment-input";
+  commentBoxDiv.appendChild(commentBox);
 
   const commentBtn = document.createElement('button');
-  commentBtn.className = "post-btn align-vertical";
+  commentBtn.className = "post-btn align-vertical comment-btn";
   commentBtn.type = "submit";
-  commentBox.appendChild(commentBtn);
+  commentBtn.innerHTML = "<img class='small-icon' src='images/send_plane.png' alt/>";
+  commentBtn.onclick = "postComment()";
+  commentBoxDiv.appendChild(commentBtn);
 
-  const commentIcon = document.createElement('img');
-  commentIcon.className = "small-icon";
-  commentIcon.src = "images/send_plane.png";
-  commentBtn.appendChild(commentIcon);
-
-  return commentBox;
+  return commentBoxDiv;
 }
 
 // Gets URL for uploaded image
