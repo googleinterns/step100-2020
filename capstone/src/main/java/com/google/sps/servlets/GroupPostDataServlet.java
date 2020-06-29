@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
@@ -60,7 +61,12 @@ public class GroupPostDataServlet extends HttpServlet {
     String challengeName = (String) entity.getProperty("challengeName");
     String img = (String) entity.getProperty("img");
     ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
-    ArrayList<Comment> comments = (ArrayList<Comment>) entity.getProperty("comments");
+    ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
+    ArrayList<Comment> comments = new ArrayList<>();
+    for(EmbeddedEntity comment: commentEntitys) {
+      comments.add(new Comment((long) comment.getProperty("timestamp"), (String) comment.getProperty("commentText"), (String) comment.getProperty("userId")));
+    }
+    System.out.println(comments);
     Post userPost = new Post(authorId, postText, comments, challengeName, timestamp, img, likes);
     return userPost;
   }
@@ -75,6 +81,11 @@ public class GroupPostDataServlet extends HttpServlet {
     String img = "";
     ArrayList<String> likes = new ArrayList<>();
     ArrayList<Comment> comments = new ArrayList<>();
+    Comment newComment = new Comment(23408, "cute outfit", "i am a user");
+    comments.add(new Comment(123904, "dgfdgfThere are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour" , "i am a user"));
+    comments.add(newComment);
+    //comments.add(new Comment(23408, "cute outfit", "i am a user"));
+    System.out.println(comments);
 
     // Creates entity with submitted data and add to database
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -92,7 +103,16 @@ public class GroupPostDataServlet extends HttpServlet {
     taskEntity.setProperty("challengeName", challengeName);
     taskEntity.setProperty("img", img);
     taskEntity.setProperty("likes", likes);
-    taskEntity.setProperty("comments", comments);
+
+    List<EmbeddedEntity> allComments = new ArrayList<>();
+    for(Comment comment: comments) {
+      EmbeddedEntity commentEntity = new EmbeddedEntity();
+      commentEntity.setProperty("timestamp", comment.getTimestamp());
+      commentEntity.setProperty("commentText", comment.getCommentText());
+      commentEntity.setProperty("userId", comment.getUser());
+      allComments.add(commentEntity);
+    }
+    taskEntity.setProperty("comments", allComments);
     return taskEntity;
 	}
 

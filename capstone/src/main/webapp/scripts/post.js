@@ -43,6 +43,7 @@ function createSinglePost(post) {
   postDiv.appendChild(createProfileImg(post));
   postDiv.append(createAuthor(post));
   postDiv.append(createPostText(post));
+  postDiv.append(createCommentsContainer(post));
   postDiv.append(createCommentBox());
   return postDiv;
 }
@@ -73,19 +74,35 @@ function createPostText(post) {
 // Create container for all post comments
 function createCommentsContainer(post) {
   const commentsContainer = document.createElement('div');
-  postContent.className = "post-content";
+  commentsContainer.className = "comments-content";
   const allComments = document.createElement('ul');
-  
-  for(comment of post.getComments()) {
+  console.log(post.comments);
+  for(comment of post.comments) {
     allComments.appendChild(createSingleComment(comment));
+    console.log(comment);
   }
   commentsContainer.appendChild(allComments);
   return commentsContainer;
 }
 
 function createSingleComment(comment) {
-  
+  const commentContainer = document.createElement('li');
+  commentContainer.className = "comment-content";
 
+  const commentUserImg = document.createElement('span');
+  commentUserImg.className = "comment-user align-vertical";
+  commentContainer.appendChild(commentUserImg);
+
+  const commentTextDiv = document.createElement('div');
+  commentTextDiv.className = "comment-text-div align-vertical";
+  commentContainer.appendChild(commentTextDiv);
+
+  const commentText = document.createElement('p');
+  commentText.className = "comment-text align-vertical";
+  commentText.innerText = comment.commentText;
+  commentTextDiv.appendChild(commentText);
+
+  return commentContainer;
 }
 
 // Create comment input HTML element
@@ -93,8 +110,19 @@ function createCommentBox() {
   const commentBox = document.createElement('input');
   commentBox.type = "text";
   commentBox.name = "comment-input";
-  commentBox.value = "Write a comment";
-  commentBox.id= "comment-input";
+  commentBox.placeholder = "Write a comment";
+  commentBox.id = "comment-input";
+
+  const commentBtn = document.createElement('button');
+  commentBtn.className = "post-btn align-vertical";
+  commentBtn.type = "submit";
+  commentBox.appendChild(commentBtn);
+
+  const commentIcon = document.createElement('img');
+  commentIcon.className = "small-icon";
+  commentIcon.src = "images/send_plane.png";
+  commentBtn.appendChild(commentIcon);
+
   return commentBox;
 }
 
