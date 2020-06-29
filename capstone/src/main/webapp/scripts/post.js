@@ -1,7 +1,6 @@
 function init() {
   loadPosts();
   uploadImage();
-  
   //fetchBlobstoreUrlAndShowForm();
 }
 
@@ -37,7 +36,6 @@ function loadPosts() {
     }
   }).then(() => {
     var elements = document.getElementsByClassName('post-btn align-vertical comment-btn');
-    console.log(elements.length);
     for (var i = 0; i < elements.length; i++) {
       elements[i].addEventListener("click", function() {
         postComment(this.id, this.id + "comment-input")
