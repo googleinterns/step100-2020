@@ -1,6 +1,6 @@
 const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
-const TRANSITION_MILLIS = 600;
+const TRANSITION_MILLIS = 700;
 let maxVotes;
 let topChallenge = "";
 
@@ -27,7 +27,7 @@ function getPollOptions() {
       const optionsContainer = document.getElementById("options-container");
       optionsContainer.innerHTML = "";
       let maxVotes = getMaxVotes(pollData);
-      pollData["options"]
+      topChallenge = pollData["options"][0]["text"];
       pollData["options"].forEach(option => {
         renderOptionElement(option, maxVotes);
       });
@@ -35,7 +35,13 @@ function getPollOptions() {
     })
     .then(votedOptions => {
       handleCheck(votedOptions);
-    });
+    })
+    .then(updateChallenge);
+}
+
+function updateChallenge() {
+  const weeklyChallenge = document.getElementById("weekly-challenge");
+  weeklyChallenge.innerText = topChallenge;
 }
 
 /**
@@ -92,6 +98,7 @@ function markCheckbox(votedOptions, checkbox) {
  * @param {object} option
  */
 function renderOptionElement(option, maxVotes) {
+  console.log("rendering");
   let numVotes = 0;
   if (option["votes"]) {
     numVotes = option["votes"].length;
@@ -141,3 +148,17 @@ function handleCheckboxCount(id, checked) {
     setTimeout(getPollOptions, TRANSITION_MILLIS)
   );
 }
+
+function getChallenge() {
+  console.log("here");
+  const weeklyChallenge = document.getElementById("weekly-challenge");
+  weeklyChallenge.innerText = topChallenge;
+  console.log("top challenge is " + topChallenge);
+}
+
+// window.addEventListener("load", function() {
+//   this.console.log("after load");
+//   const topChallenge = document.getElementsByClassName("option-container");
+//   console.log(topChallenge);
+//   console.log(topChallenge.length);
+// });

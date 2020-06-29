@@ -16,7 +16,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 
-@WebServlet("delete-option")
+@WebServlet("delete-top-option")
 public class DeletePollOptionServlet extends HttpServlet {
 
   @Override
