@@ -172,7 +172,7 @@ p{
   margin-top: 10px;
 }
 
-#comment-input {
+.comment-input {
   background-color: #EEEEEE;
   border-radius: 10px;
   height: 50px;

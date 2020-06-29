@@ -14,7 +14,7 @@ public final class Post {
   private final ArrayList<String> likes;
 
   public Post(long postId, String authorId, String postText, ArrayList<Comment> comments, String challengeName, long timestamp, String img, ArrayList<String> likes) {
-    this.posdId = postId;
+    this.postId = postId;
     this.timestamp = timestamp;
     this.postText = postText;
     this.authorId = authorId;

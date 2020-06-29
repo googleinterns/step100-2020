@@ -35,30 +35,26 @@ function loadPosts() {
     for (var i = 0; i < posts.length; i++) {
       allPostsList.appendChild(createSinglePost(posts[i]));
     }
+  }).then(() => {
+    var elements = document.getElementsByClassName('post-btn align-vertical comment-btn');
+    console.log(elements.length);
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].addEventListener("click", function(e) {
+        postComment(this.id, this.id + "comment-input")
+      });
+    }
   });
 }
 
-function commentListener() {
-  console.log("in comment listener");
-  document.getElementById('comment-btn').addEventListener('click', postComment);
-  function postComment() {
-    const commentVal = document.getElementById("comment-input").value;
-    console.log(commentVal);
-    const request = new Request('/post-comment', { method: "POST" });
-    fetch(request).then(() => {
-      loadPosts();
-    });
-  }
-}
-
-
-//document.getElementsByClassName('comment-btn').addEventListener('click', postComment);
-
-function postComment() {
+function postComment(buttonId, commentBoxId) {
     console.log("in comment listener");
-    const commentVal = document.getElementById("comment-input").value;
+    console.log(buttonId);
+    console.log(commentBoxId);
+
+    const commentVal = document.getElementById(commentBoxId).value;
     console.log(commentVal);
-    const request = new Request('/post-comment', { method: "POST" });
+
+    const request = new Request(`/post-comment?id=${buttonId}&comment-text=${commentVal}`, { method: "POST" });
     fetch(request).then(() => {
       loadPosts();
     });
@@ -139,13 +135,15 @@ function createCommentBox(post) {
   commentBox.type = "text";
   commentBox.name = "comment-input";
   commentBox.placeholder = "Write a comment";
-  commentBox.id = "comment-input";
+  commentBox.className = "comment-input";
+  commentBox.id = post.postId + "comment-input";
   commentBoxDiv.appendChild(commentBox);
 
   const commentBtn = document.createElement('button');
   commentBtn.className = "post-btn align-vertical comment-btn";
   commentBtn.type = "submit";
-  commentBtn.id = post.id;
+  commentBtn.id = post.postId;
+  //commentBtn.addEventListener("click", postComment(commentBtn.id, commentBox.id), false);
   commentBtn.innerHTML = "<img class='small-icon' src='images/send_plane.png' alt/>";
   commentBtn.onclick = "postComment()";
   commentBoxDiv.appendChild(commentBtn);

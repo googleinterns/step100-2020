@@ -62,11 +62,15 @@ public class GroupPostDataServlet extends HttpServlet {
     String challengeName = (String) entity.getProperty("challengeName");
     String img = (String) entity.getProperty("img");
     ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
-    ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
     ArrayList<Comment> comments = new ArrayList<>();
-    for(EmbeddedEntity comment: commentEntitys) {
-      comments.add(new Comment((long) comment.getProperty("timestamp"), (String) comment.getProperty("commentText"), (String) comment.getProperty("userId")));
+  
+    if (entity.getProperty("comments") != null) {
+      ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
+      for(EmbeddedEntity comment: commentEntitys) {
+        comments.add(new Comment((long) comment.getProperty("timestamp"), (String) comment.getProperty("commentText"), (String) comment.getProperty("userId")));
+      }
     }
+   
     Post userPost = new Post(postId, authorId, postText, comments, challengeName, timestamp, img, likes);
     return userPost;
   }
@@ -81,10 +85,6 @@ public class GroupPostDataServlet extends HttpServlet {
     String img = "";
     ArrayList<String> likes = new ArrayList<>();
     ArrayList<Comment> comments = new ArrayList<>();
-    Comment newComment = new Comment(23408, "cute outfit", "i am a user");
-    comments.add(new Comment(123904, "dgfdgfThere are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour" , "i am a user"));
-    comments.add(new Comment(123904, "queen love this dance we should make a tik tok next time" , "i am a user"));
-    comments.add(newComment);
 
     // Creates entity with submitted data and add to database
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -103,7 +103,7 @@ public class GroupPostDataServlet extends HttpServlet {
     taskEntity.setProperty("img", img);
     taskEntity.setProperty("likes", likes);
 
-    List<EmbeddedEntity> allComments = new ArrayList<>();
+    ArrayList<EmbeddedEntity> allComments = new ArrayList<>();
     for(Comment comment: comments) {
       EmbeddedEntity commentEntity = new EmbeddedEntity();
       commentEntity.setProperty("timestamp", comment.getTimestamp());
