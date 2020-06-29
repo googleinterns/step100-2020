@@ -77,11 +77,7 @@ function handleCheck(votedOptions) {
  * @param {object} checkbox
  */
 function markCheckbox(votedOptions, checkbox) {
-  if (
-    votedOptions.find(function(checkboxId) {
-      return checkbox.id == checkboxId;
-    })
-  ) {
+  if (votedOptions.find(checkboxId => checkbox.id == checkboxId)) {
     checkbox.checked = true;
   } else {
     checkbox.checked = false;
