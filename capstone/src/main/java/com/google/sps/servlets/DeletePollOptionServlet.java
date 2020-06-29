@@ -15,10 +15,9 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.sps.Objects.Option;
 
 @WebServlet("delete-option")
-public class DeleteOption extends HttpServlet {
+public class DeletePollOptionServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -26,7 +25,6 @@ public class DeleteOption extends HttpServlet {
     Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
     ;
     PreparedQuery results = datastore.prepare(query);
-    List<Option> options = new ArrayList<Option>();
     int maxVotes = 0;
     long maxVotesId = 0;
     for (Entity entity : results.asIterable()) {

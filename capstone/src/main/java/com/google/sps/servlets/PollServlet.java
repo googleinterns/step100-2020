@@ -33,7 +33,7 @@ public class PollServlet extends HttpServlet {
     if (userService.isUserLoggedIn()) {
       userId = userService.getCurrentUser().getUserId();
     } else {
-      System.err.println("ERROR: User is not logged in");
+      this.sendError(response, "ERROR: User is not logged in");
     }
     Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -73,5 +73,19 @@ public class PollServlet extends HttpServlet {
     optionEntity.setProperty("timestamp", timestamp);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(optionEntity);
+  }
+
+  /**
+   * Handles error for Java Servlet and displays that something went wrong.
+   *
+   * @param response    HttpServletResponse
+   * @param errorString error message
+   * @throws IOException exception thrown when cannot write to file
+   */
+  private void sendError(HttpServletResponse response, String errorString) throws IOException {
+    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Cannot parse to long.");
+    response.getWriter().print("<html><head><title>Oops an error happened!</title></head>");
+    response.getWriter().print("<body>Something bad happened uh-oh!</body>");
+    response.getWriter().println("</html>");
   }
 }
