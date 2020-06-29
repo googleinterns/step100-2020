@@ -19,8 +19,12 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
+import error.ErrorHandler;
+
 @WebServlet("/update-votes")
 public class UpdateVotesServlet extends HttpServlet {
+
+  private ErrorHandler errorHandler = new ErrorHandler();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -39,20 +43,6 @@ public class UpdateVotesServlet extends HttpServlet {
   }
 
   /**
-   * Handles error for Java Servlet and displays that something went wrong.
-   *
-   * @param response    HttpServletResponse
-   * @param errorString error message
-   * @throws IOException exception thrown when cannot write to file
-   */
-  private void sendError(HttpServletResponse response, String errorString) throws IOException {
-    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Cannot parse to long.");
-    response.getWriter().print("<html><head><title>Oops an error happened!</title></head>");
-    response.getWriter().print("<body>Something bad happened uh-oh!</body>");
-    response.getWriter().println("</html>");
-  }
-
-  /**
    * Gets the id of the currently logged in user.
    *
    * @param response HttpServletResponse
@@ -64,7 +54,7 @@ public class UpdateVotesServlet extends HttpServlet {
     if (userService.isUserLoggedIn()) {
       return userService.getCurrentUser().getUserId();
     } else {
-      this.sendError(response, "User is not logged in.");
+      errorHandler.sendError(response, "User is not logged in.");
     }
     return "";
   }
@@ -81,7 +71,7 @@ public class UpdateVotesServlet extends HttpServlet {
     try {
       return Long.parseLong(optionIdString);
     } catch (NumberFormatException e) {
-      this.sendError(response, "Cannot parse to long.");
+      errorHandler.sendError(response, "Cannot parse to long.");
       return 0;
     }
   }
@@ -100,7 +90,7 @@ public class UpdateVotesServlet extends HttpServlet {
     try {
       return datastore.get(KeyFactory.createKey("Option", optionId));
     } catch (EntityNotFoundException e) {
-      this.sendError(response, "Cannot get entity from datastore");
+      errorHandler.sendError(response, "Cannot get entity from datastore");
       return null;
     }
   }
@@ -129,7 +119,6 @@ public class UpdateVotesServlet extends HttpServlet {
      * If current option does not have any votes, initialize ArrayList.
      */
     if (votes == null) {
-      votes = new ArrayList<String>();
       votesSet = new HashSet<String>();
     } else {
       votesSet = new HashSet<String>(votes);

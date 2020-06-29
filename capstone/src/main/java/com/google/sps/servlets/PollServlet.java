@@ -23,8 +23,12 @@ import com.google.sps.Objects.Option;
 import com.google.sps.Objects.comparator.OptionsComparator;
 import com.google.sps.Objects.response.PollResponse;
 
+import error.ErrorHandler;
+
 @WebServlet("/poll")
 public class PollServlet extends HttpServlet {
+
+  private ErrorHandler errorHandler = new ErrorHandler();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -33,7 +37,7 @@ public class PollServlet extends HttpServlet {
     if (userService.isUserLoggedIn()) {
       userId = userService.getCurrentUser().getUserId();
     } else {
-      System.err.println("ERROR: User is not logged in");
+      errorHandler.sendError(response, "User is not logged in.");
     }
     Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
