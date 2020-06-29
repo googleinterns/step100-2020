@@ -2,6 +2,7 @@ const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
 const TRANSITION_MILLIS = 600;
 let maxVotes;
+let topChallenge = "";
 
 /**
  * Add new option to poll.
@@ -26,6 +27,7 @@ function getPollOptions() {
       const optionsContainer = document.getElementById("options-container");
       optionsContainer.innerHTML = "";
       let maxVotes = getMaxVotes(pollData);
+      pollData["options"]
       pollData["options"].forEach(option => {
         renderOptionElement(option, maxVotes);
       });
