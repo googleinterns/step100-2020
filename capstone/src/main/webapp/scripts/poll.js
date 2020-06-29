@@ -1,6 +1,6 @@
 const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
-const TRANSITION_MILLIS = 400;
+const TRANSITION_MILLIS = 600;
 let maxVotes;
 
 /**

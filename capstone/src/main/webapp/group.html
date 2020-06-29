@@ -15,11 +15,19 @@
   </head>
 
   <body onload="getPollOptions()">
+    <div class="challenge-container">
+      <h2>
+        Challenge of the Week
+      </h2>
+      <p>
+        Recreate a movie scene
+      </p>
+    </div>
     <div class="poll-container">
       <div class="inner-poll-container">
-          <div class="section-text">
+          <h2>
               Poll
-          </div>
+          </h2>
           <div id="options-container"></div>
           </div>
         <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
