@@ -51,7 +51,6 @@ function afterUserSignsIn() {
   fetch('/checkNewUser')
  .then(response => response.json())
  .then((user) => {
-    // TODO: Redirect newly registered users to a separate place.
     if (user.isUserNew) {
       openRegisterModal();
     } else {
