@@ -64,19 +64,27 @@ public class GroupPostDataServlet extends HttpServlet {
     ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
     ArrayList<Comment> comments = new ArrayList<>();
   
+    // Create list of comment objects from list of comment entities 
     if (entity.getProperty("comments") != null) {
-      ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
-      for(EmbeddedEntity comment: commentEntitys) {
-        comments.add(new Comment((long) comment.getProperty("timestamp"), (String) comment.getProperty("commentText"), (String) comment.getProperty("userId")));
-      }
+      createCommentObjectList(comments, entity);
     }
-   
+    
     Post userPost = new Post(postId, authorId, postText, comments, challengeName, timestamp, img, likes);
     return userPost;
   }
 
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void createCommentObjectList(ArrayList<Comment> comments, Entity entity) {
+    ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
+    for(EmbeddedEntity comment: commentEntitys) {
+      comments.add(
+        new Comment((long) comment.getProperty("timestamp"), 
+        (String)comment.getProperty("commentText"), 
+        (String) comment.getProperty("userId"))
+      );
+    }
+  }
 
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Receives submitted post 
     long timestamp = System.currentTimeMillis();
     String authorId = "Jane Doe";
@@ -102,7 +110,12 @@ public class GroupPostDataServlet extends HttpServlet {
     taskEntity.setProperty("challengeName", challengeName);
     taskEntity.setProperty("img", img);
     taskEntity.setProperty("likes", likes);
+    taskEntity.setProperty("comments", createCommentEntities(comments));
+    return taskEntity;
+	}
 
+  // Create list of comment entities from list of comment objects
+  private ArrayList<EmbeddedEntity> createCommentEntities(ArrayList<Comment> comments) {
     ArrayList<EmbeddedEntity> allComments = new ArrayList<>();
     for(Comment comment: comments) {
       EmbeddedEntity commentEntity = new EmbeddedEntity();
@@ -110,10 +123,9 @@ public class GroupPostDataServlet extends HttpServlet {
       commentEntity.setProperty("commentText", comment.getCommentText());
       commentEntity.setProperty("userId", comment.getUser());
       allComments.add(commentEntity);
-    }
-    taskEntity.setProperty("comments", allComments);
-    return taskEntity;
-	}
+    } 
+    return allComments;
+  }
 
    /** Returns a key that points to the uploaded file, or null if the user didn't upload a file. */
   private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {

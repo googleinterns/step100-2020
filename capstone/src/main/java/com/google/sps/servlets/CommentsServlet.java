@@ -25,6 +25,7 @@ public class CommentsServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
    
+    // Get post id and comment text
     Long postId = Long.parseLong(request.getParameter("id"));
     String commentText = request.getParameter("comment-text");
 
@@ -32,22 +33,15 @@ public class CommentsServlet extends HttpServlet {
     Entity postEntity = this.getPostFromId(response, postId, datastore);
     ArrayList<EmbeddedEntity> allComments = (ArrayList<EmbeddedEntity>) postEntity.getProperty("comments");
 
-    EmbeddedEntity commentEntity = new EmbeddedEntity();
-    commentEntity.setProperty("timestamp", System.currentTimeMillis());
-    commentEntity.setProperty("commentText", commentText);
-    commentEntity.setProperty("userId", "user");
-
-    allComments.add(createCommentEntity(commentText, "user"));
-
+    // Create comment entity and add to comment arraylist for post
     if(allComments == null) {
       ArrayList<EmbeddedEntity> comments = new ArrayList<>();
-      comments.add(commentEntity);
+      comments.add(createCommentEntity(commentText, "user"));
       postEntity.setProperty("comments", comments);
     } else {
-      allComments.add(commentEntity);
+      allComments.add(createCommentEntity(commentText, "user"));
       postEntity.setProperty("comments", allComments);
     }
-   
     datastore.put(postEntity);
   }
 
