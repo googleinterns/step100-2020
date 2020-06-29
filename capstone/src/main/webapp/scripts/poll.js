@@ -43,9 +43,9 @@ function getPollOptions() {
  * @param {objct} pollData
  */
 function getMaxVotes(pollData) {
- // Gets the list of votes for the first poll option
- let votesArray = pollData["options"][0]["votes"];
- return !!votesArray ? votesArray.length : 0;
+  // Gets the list of votes for the first poll option
+  let votesArray = pollData["options"][0]["votes"];
+  return !!votesArray ? votesArray.length : 0;
 }
 
 /**
@@ -56,26 +56,29 @@ function getMaxVotes(pollData) {
  */
 function handleCheck(votedOptions) {
   const checkboxes = document.querySelectorAll("input[type=checkbox]");
+  let votedOptionsSet = convertToSet(votedOptions);
   for (let i = 0; i < checkboxes.length; i++) {
     let checkbox = checkboxes[i];
-    markCheckbox(votedOptions, checkbox);
+    markCheckbox(votedOptionsSet, checkbox);
   }
   return;
+}
+
+function convertToSet(votedOptions) {
+  let votedOptionsSet = {};
+  votedOptions.forEach(option => (votedOptionsSet[option] = 1));
+  return votedOptionsSet;
 }
 
 /**
  * Mark whether checkbox is checked by seeing if current checkbox is in
  * votedOptions, which contains the options for which the currently logged in
  * user has voted.
- * @param {object} votedOptions
+ * @param {object} votedOptionsSet
  * @param {object} checkbox
  */
-function markCheckbox(votedOptions, checkbox) {
-  if (
-    votedOptions.find(function(checkboxId) {
-      return checkbox.id == checkboxId;
-    })
-  ) {
+function markCheckbox(votedOptionsSet, checkbox) {
+  if (checkbox.id in votedOptionsSet) {
     checkbox.checked = true;
   } else {
     checkbox.checked = false;
