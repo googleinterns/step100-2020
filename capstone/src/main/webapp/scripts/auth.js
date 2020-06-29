@@ -21,34 +21,37 @@
  * Handles all functions to trigger when page loads.
  */
 function loadPage() {
-  authenticateUser();
+  createLoginUrl();
 }
 
 /*
- * Fetch the authentication status of the user from the server.
  * Create the login url for the Users API.
+ * Fetch the authentication status of the user from the server.
  */
-function authenticateUser() {
+function createLoginUrl() {
   fetch('/login')
  .then(response => response.json())
  .then((login) => {
-    // need to set button's url to login url.
-    const loginUrl = login.url;
-    const loginButton = document.getElementById('login-btn');
+    // Need to set button's url to login url.
+    const loginUrl = login.loginUrl;
+    const loginButton = document.getElementById("login-btn");
     loginButton.setAttribute('href', loginUrl);
+    if (login.loggedIn) {
+      afterUserSignsIn();
+    }
  });
 }
 
 /*
- * Sign up the user. Placeholder code.
+ * Sign up the user for the app if they have not already signed up.
+ * Redirect logged in users to the correct page.
  */
-function signUpUser() {
-  // Get the user's first name and last name value through the form.
-
-  // Send a POST request to the signup servlet with the user's name as params.
-  fetch('/signup')
-  .then(response => response.json())
-  .then((login) => {
-    // Do something with the response.
+function afterUserSignsIn() {
+  // Send a POST request to the servlet which checks if a user is newly registered.
+  fetch('/checkNewUser', {method: 'POST'})
+  .then(() => {
+    // TODO: Redirect newly registered users to a separate place.
+    // Redirect to group page once logged in.
+    window.location.href = 'group.html';
   });
 }
