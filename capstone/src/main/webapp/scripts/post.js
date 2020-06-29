@@ -71,7 +71,7 @@ function createSinglePost(post) {
   postDiv.append(createAuthor(post));
   postDiv.append(createPostText(post));
   postDiv.append(createCommentsContainer(post));
-  postDiv.append(createCommentBox());
+  postDiv.append(createCommentBox(post));
   return postDiv;
 }
 
@@ -131,7 +131,7 @@ function createSingleComment(comment) {
 }
 
 // Create comment input HTML element
-function createCommentBox() {
+function createCommentBox(post) {
   const commentBoxDiv = document.createElement('div');
   commentBoxDiv.className = "comment-box-div";
 
@@ -145,6 +145,7 @@ function createCommentBox() {
   const commentBtn = document.createElement('button');
   commentBtn.className = "post-btn align-vertical comment-btn";
   commentBtn.type = "submit";
+  commentBtn.id = post.id;
   commentBtn.innerHTML = "<img class='small-icon' src='images/send_plane.png' alt/>";
   commentBtn.onclick = "postComment()";
   commentBoxDiv.appendChild(commentBtn);

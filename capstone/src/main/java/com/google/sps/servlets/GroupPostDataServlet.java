@@ -55,6 +55,7 @@ public class GroupPostDataServlet extends HttpServlet {
   }
 
   public Post getPostEntity(Entity entity) {
+    long postId = entity.getKey().getId();
     long timestamp = (long) entity.getProperty("timestamp");
     String authorId = (String) entity.getProperty("authorId");
     String postText = (String) entity.getProperty("postText");
@@ -66,7 +67,7 @@ public class GroupPostDataServlet extends HttpServlet {
     for(EmbeddedEntity comment: commentEntitys) {
       comments.add(new Comment((long) comment.getProperty("timestamp"), (String) comment.getProperty("commentText"), (String) comment.getProperty("userId")));
     }
-    Post userPost = new Post(authorId, postText, comments, challengeName, timestamp, img, likes);
+    Post userPost = new Post(postId, authorId, postText, comments, challengeName, timestamp, img, likes);
     return userPost;
   }
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public final class Post {
 
+  private final long postId;
   private final String authorId;
   private final String postText;
   private final ArrayList<Comment> comments;
@@ -12,7 +13,8 @@ public final class Post {
   private final String img;
   private final ArrayList<String> likes;
 
-  public Post(String authorId, String postText, ArrayList<Comment> comments, String challengeName, long timestamp, String img, ArrayList<String> likes) {
+  public Post(long postId, String authorId, String postText, ArrayList<Comment> comments, String challengeName, long timestamp, String img, ArrayList<String> likes) {
+    this.posdId = postId;
     this.timestamp = timestamp;
     this.postText = postText;
     this.authorId = authorId;

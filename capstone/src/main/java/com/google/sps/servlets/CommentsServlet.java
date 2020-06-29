@@ -31,17 +31,32 @@ import com.google.sps.Objects.Comment;
 public class CommentsServlet extends HttpServlet {
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Long postId= Long.parseLong(request.getParameter("id"));
+    String commentText = request.getParameter("comment-text");
+  
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Entity postEntity = this.getPostFromId(response, postId, datastore);
+    List<EmbeddedEntity> allComments = postEntity.get("comments");
 
+    EmbeddedEntity commentEntity = new EmbeddedEntity();
+    commentEntity.setProperty("timestamp", System.currentTimeMillis());
+    commentEntity.setProperty("commentText", commentText);
+    commentEntity.setProperty("userId", "user");
 
+    // Update datastore
+    postEntity.setProperty("comments", commentsList);
+    datastore.put(postEntity);
   }
 
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-
-
-
-
+  private Entity getPostFromId(HttpServletResponse response, long postId,
+      DatastoreService datastore) throws IOException {
+    try {
+      return datastore.get(KeyFactory.createKey("Post", postId));
+    } catch (EntityNotFoundException e) {
+      this.sendError(response, "Cannot get entity from datastore");
+      return null;
+    }
   }
 
 }
