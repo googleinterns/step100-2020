@@ -151,15 +151,6 @@ function handleCheckboxCount(id, checked) {
 }
 
 function getChallenge() {
-  console.log("here");
   const weeklyChallenge = document.getElementById("weekly-challenge");
   weeklyChallenge.innerText = topChallenge;
-  console.log("top challenge is " + topChallenge);
 }
-
-// window.addEventListener("load", function() {
-//   this.console.log("after load");
-//   const topChallenge = document.getElementsByClassName("option-container");
-//   console.log(topChallenge);
-//   console.log(topChallenge.length);
-// });
