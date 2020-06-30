@@ -41,6 +41,11 @@ function loadPosts() {
         postComment(this.id, this.id + "comment-input")
       });
     }
+
+    let icon = document.querySelector('ion-icon');
+    icon.onclick = function(){
+    icon.classList.toggle('active');
+    }
   });
 }
 
@@ -59,6 +64,7 @@ function createSinglePost(post) {
   postDiv.appendChild(createProfileImg(post));
   postDiv.append(createAuthor(post));
   postDiv.append(createPostText(post));
+  postDiv.append(createLikesContainer(post));
   postDiv.append(createCommentsContainer(post));
   postDiv.append(createCommentBox(post));
   return postDiv;
@@ -85,6 +91,25 @@ function createPostText(post) {
   postContent.className = "post-content";
   postContent.innerText = post.postText;
   return postContent;
+}
+
+function createLikesContainer(post) {
+  const likesDiv = document.createElement('div');
+  likesDiv.className = "likes-div";
+
+  const likesLabel = document.createElement('p');
+  likesLabel.className = "likes-label vertical-align";
+  likesLabel.id = post.postId + "likes-label";
+  likesLabel.innerText = "0 likes";
+  likesDiv.appendChild(likesLabel);
+
+  const likeIcon = document.createElement('ion-icon');
+  likeIcon.className = "vertical-align";
+  likeIcon.name = "heart";
+  likeIcon.id = post.postId + "like";
+  likesDiv.appendChild(likeIcon);
+
+  return likesDiv;
 }
 
 // Create container for all post comments

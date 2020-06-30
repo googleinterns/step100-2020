@@ -27,6 +27,7 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import java.util.Map;
+import java.util.HashSet;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -54,26 +55,26 @@ public class GroupPostDataServlet extends HttpServlet {
     response.getWriter().println(new Gson().toJson(posts));
   }
 
-  public Post getPostEntity(Entity entity) {
+  private Post getPostEntity(Entity entity) {
     long postId = entity.getKey().getId();
     long timestamp = (long) entity.getProperty("timestamp");
     String authorId = (String) entity.getProperty("authorId");
     String postText = (String) entity.getProperty("postText");
     String challengeName = (String) entity.getProperty("challengeName");
     String img = (String) entity.getProperty("img");
-    ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
+    HashSet<String> likes = (entity.getProperty("likes") == null) ? new HashSet<>() : new HashSet<String>((ArrayList<String>) entity.getProperty("likes"));   
     ArrayList<Comment> comments = new ArrayList<>();
   
     // Create list of comment objects from list of comment entities 
     if (entity.getProperty("comments") != null) {
       createCommentObjectList(comments, entity);
     }
-    
+
     Post userPost = new Post(postId, authorId, postText, comments, challengeName, timestamp, img, likes);
     return userPost;
   }
 
-  public void createCommentObjectList(ArrayList<Comment> comments, Entity entity) {
+  private void createCommentObjectList(ArrayList<Comment> comments, Entity entity) {
     ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
     for(EmbeddedEntity comment: commentEntitys) {
       comments.add(
@@ -102,7 +103,7 @@ public class GroupPostDataServlet extends HttpServlet {
     response.sendRedirect("/group.html");
   }
 
-  public Entity createPostEntity(long timestamp, String authorId, String postText, String challengeName, String img, ArrayList<String> likes, ArrayList<Comment> comments) {
+  private Entity createPostEntity(long timestamp, String authorId, String postText, String challengeName, String img, ArrayList<String> likes, ArrayList<Comment> comments) {
     Entity taskEntity = new Entity("Post");
     taskEntity.setProperty("authorId", authorId);
     taskEntity.setProperty("timestamp", timestamp);
