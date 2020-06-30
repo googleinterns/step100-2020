@@ -40,15 +40,15 @@ function getPollOptions() {
 }
 
 function checkWeek() {
-  postChallenge();
-  console.log("in check week");
+  getChallenge();
   let now = new Date();
   let firstDay = new Date();
   console.log("this week " + firstDay);
   let nextWeek = new Date(firstDay.getTime() + 7 * 24 * 60 * 60 * 1000);
+  //get the due date from the database. if the due date already passed, then update to be new challenge
   console.log("next week " + nextWeek);
   let millisTillNextWeek =
-    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 51, 0, 0) -
+    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 19, 27, 0, 0) -
     now;
   console.log(millisTillNextWeek);
   if (millisTillNextWeek < 0) {
@@ -60,16 +60,22 @@ function checkWeek() {
   }
 }
 
-function postChallenge() {
+function getChallenge() {
   console.log("in get challenge");
   const weeklyChallenge = document.getElementById("weekly-challenge");
   weeklyChallenge.innerText = topChallenge;
-  fetch(`challenge?name=${topChallenge}`, { method: "POST" });
 }
 
 function updatePoll() {
   console.log("in update poll");
   fetch("delete-top-option", { method: "POST" }).then(postChallenge);
+}
+
+function postChallenge() {
+  console.log("in post challenge");
+  const weeklyChallenge = document.getElementById("weekly-challenge");
+  weeklyChallenge.innerText = topChallenge;
+  fetch(`challenge?name=${topChallenge}`, { method: "POST" });
 }
 
 /**
