@@ -119,7 +119,8 @@ public class GroupPostDataServlet extends HttpServlet {
     response.sendRedirect("/group.html");
   }
 
-  private Entity createPostEntity(long timestamp, String authorName, String       postText, String challengeName, String img, ArrayList<String> likes,          ArrayList<Comment> comments) {
+  private Entity createPostEntity(long timestamp, String authorName, 
+    String postText, String challengeName, String img, ArrayList<String> likes, ArrayList<Comment> comments) {
     Entity taskEntity = new Entity("Post");
     taskEntity.setProperty("authorId", authorName);
     taskEntity.setProperty("timestamp", timestamp);
