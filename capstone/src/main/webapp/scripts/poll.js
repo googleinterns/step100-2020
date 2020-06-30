@@ -48,7 +48,7 @@ function checkWeek() {
   let nextWeek = new Date(firstDay.getTime() + 7 * 24 * 60 * 60 * 1000);
   console.log("next week " + nextWeek);
   let millisTillNextWeek =
-    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 25, 0, 0) -
+    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 43, 0, 0) -
     now;
   console.log(millisTillNextWeek);
   if (millisTillNextWeek < 0) {
@@ -68,7 +68,6 @@ function postChallenge() {
 
 function updatePoll() {
   console.log("in update poll");
-  //call delete in api
   fetch("delete-top-option", { method: "POST" }).then(postChallenge);
 }
 

@@ -19,14 +19,20 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 @WebServlet("delete-top-option")
 public class DeletePollOptionServlet extends HttpServlet {
 
+  private int maxVotes = 0;
+  private long maxVotesId = 0;
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
     ;
     PreparedQuery results = datastore.prepare(query);
-    int maxVotes = 0;
-    long maxVotesId = 0;
+    this.setMaxVotesAndId(results);
+    this.deleteEntity(results, datastore);
+  }
+
+  private void setMaxVotesAndId(PreparedQuery results) {
     for (Entity entity : results.asIterable()) {
       long id = entity.getKey().getId();
       List<String> votes = (ArrayList<String>) entity.getProperty("votes");
@@ -36,13 +42,16 @@ public class DeletePollOptionServlet extends HttpServlet {
       } else {
         numVotes = 0;
       }
-      if (numVotes > maxVotes) {
-        maxVotes = numVotes;
-        maxVotesId = id;
+      if (numVotes > this.maxVotes) {
+        this.maxVotes = numVotes;
+        this.maxVotesId = id;
       }
     }
+  }
+
+  private void deleteEntity(PreparedQuery results, DatastoreService datastore) {
     for (Entity optionEntity : results.asIterable()) {
-      if (optionEntity.getKey().getId() == maxVotesId) {
+      if (optionEntity.getKey().getId() == this.maxVotesId) {
         datastore.delete(optionEntity.getKey());
         break;
       }
