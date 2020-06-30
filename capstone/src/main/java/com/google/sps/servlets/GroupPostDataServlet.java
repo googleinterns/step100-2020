@@ -119,7 +119,7 @@ public class GroupPostDataServlet extends HttpServlet {
     response.sendRedirect("/group.html");
   }
 
-  private Entity createPostEntity(long timestamp, String authorName, String postText, String challengeName, String img, ArrayList<String> likes, ArrayList<Comment> comments) {
+  private Entity createPostEntity(long timestamp, String authorName, String       postText, String challengeName, String img, ArrayList<String> likes,          ArrayList<Comment> comments) {
     Entity taskEntity = new Entity("Post");
     taskEntity.setProperty("authorId", authorName);
     taskEntity.setProperty("timestamp", timestamp);
@@ -148,7 +148,7 @@ public class GroupPostDataServlet extends HttpServlet {
   private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
-    List<BlobKey> blobKeys = blobs.get("image");
+    List<BlobKey> blobKeys = blobs.get(formInputElementName);
 
     String blobKey;
     if (blobKeys == null || blobKeys.isEmpty()) {
