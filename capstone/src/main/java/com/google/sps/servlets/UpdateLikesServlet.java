@@ -20,6 +20,8 @@ import error.ErrorHandler;
 @WebServlet("/update-likes")
 public class UpdateLikesServlet extends HttpServlet {
 
+  //private ErrorHandler errorHandler = new ErrorHandler();
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get post id and action of user (liked or unliked)
@@ -54,7 +56,7 @@ public class UpdateLikesServlet extends HttpServlet {
     if(userService.isUserLoggedIn()) {
       return userService.getCurrentUser().getUserId();
     }
-    errorHandler.sendError(response, "User is not logged in.");
+    //errorHandler.sendError(response, "User is not logged in.");
     return "";
   }
 
@@ -62,7 +64,7 @@ public class UpdateLikesServlet extends HttpServlet {
     try {
       return datastore.get(KeyFactory.createKey("Post", postId));
     } catch (EntityNotFoundException e) {
-      errorHandler.sendError(response, "Post does not exist.")
+      //errorHandler.sendError(response, "Post does not exist.");
       return null;
     }
   }

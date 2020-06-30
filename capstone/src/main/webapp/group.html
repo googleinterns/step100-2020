@@ -37,7 +37,6 @@
           <button id="camera-btn" class="camera-btn align-vertical"><img class="medium-icon" src="images/camera.png" alt/></button>
 
           <button class="post-btn align-vertical" type="submit"><img class="medium-icon" src="images/send_plane.png" alt/></button>
-         
         </form>
       </div>
 
@@ -47,13 +46,12 @@
      
       <div class="poll-container">
         <div class="inner-poll-container">
-            <div class="section-text">
-                Poll
-            </div>
-            <div id="options-container"></div>
-            </div>
-          <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
+          <div class="section-text">
+            Poll
+          </div>
+          <div id="options-container"></div>
         </div>
+        <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
       </div>
 
       <template id="option-template">
@@ -71,6 +69,7 @@
           <div id="num-votes" class="votes-label"></div>
         </div>
       </template>
+
     </div>
 
   </body>
