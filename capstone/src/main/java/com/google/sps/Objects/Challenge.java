@@ -7,9 +7,10 @@ public final class Challenge {
   private final String challengeName;
   private final long timestamp;
   private final Badge badge;
-  private final ArrayList<User> usersCompleted;
+  private final ArrayList<String> usersCompleted;
 
-  public Challenge(String challengeName, long timestamp, Badge badge, ArrayList<User> usersCompleted) {
+  public Challenge(String challengeName, long timestamp, Badge badge,
+      ArrayList<String> usersCompleted) {
     this.timestamp = timestamp;
     this.challengeName = challengeName;
     this.badge = badge;
@@ -28,11 +29,11 @@ public final class Challenge {
     return badge;
   }
 
-  public ArrayList<User> usersCompleted() {
+  public ArrayList<String> usersCompleted() {
     return usersCompleted;
   }
 
-  public void addUserCompleted(User user) {
+  public void addUserCompleted(String user) {
     this.usersCompleted.add(user);
   }
 }

@@ -16,10 +16,20 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 
+/**
+ * This servlet is called weekly to delete the top challenge suggestion so that
+ * the new weekly challenge can be updated to be the next top voted suggestion
+ * following the one that has just been deleted.
+ *
+ * @author lucyqu
+ *
+ */
 @WebServlet("delete-top-option")
 public class DeletePollOptionServlet extends HttpServlet {
 
+  // Keeps track of max number of votes an option has
   private int maxVotes = 0;
+  // Keeps track of the option with the max number of votes
   private long maxVotesId = 0;
 
   @Override
@@ -32,6 +42,11 @@ public class DeletePollOptionServlet extends HttpServlet {
     this.deleteEntity(results, datastore);
   }
 
+  /**
+   * Sets the variables maxVotes and maxVotesId by iterating through the entities.
+   *
+   * @param results queried results
+   */
   private void setMaxVotesAndId(PreparedQuery results) {
     for (Entity entity : results.asIterable()) {
       long id = entity.getKey().getId();
@@ -49,6 +64,12 @@ public class DeletePollOptionServlet extends HttpServlet {
     }
   }
 
+  /**
+   * Deletes the option entity with the maximum number of votes.
+   *
+   * @param results   queried results
+   * @param datastore database storing information
+   */
   private void deleteEntity(PreparedQuery results, DatastoreService datastore) {
     for (Entity optionEntity : results.asIterable()) {
       if (optionEntity.getKey().getId() == this.maxVotesId) {

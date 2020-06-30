@@ -115,9 +115,6 @@ public class UpdateVotesServlet extends HttpServlet {
      */
     List<String> votes = (ArrayList<String>) optionEntity.getProperty("votes");
     Set<String> votesSet;
-    /*
-     * If current option does not have any votes, initialize ArrayList.
-     */
     if (votes == null) {
       votesSet = new HashSet<String>();
     } else {

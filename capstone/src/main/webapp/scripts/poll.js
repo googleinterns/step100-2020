@@ -48,7 +48,7 @@ function checkWeek() {
   let nextWeek = new Date(firstDay.getTime() + 7 * 24 * 60 * 60 * 1000);
   console.log("next week " + nextWeek);
   let millisTillNextWeek =
-    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 43, 0, 0) -
+    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 51, 0, 0) -
     now;
   console.log(millisTillNextWeek);
   if (millisTillNextWeek < 0) {
@@ -64,6 +64,7 @@ function postChallenge() {
   console.log("in get challenge");
   const weeklyChallenge = document.getElementById("weekly-challenge");
   weeklyChallenge.innerText = topChallenge;
+  fetch(`challenge?name=${topChallenge}`, { method: "POST" });
 }
 
 function updatePoll() {
