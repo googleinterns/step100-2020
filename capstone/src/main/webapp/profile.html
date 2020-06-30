@@ -8,19 +8,25 @@
     <link rel="stylesheet" href="styles/profile.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
     <script src="scripts/script.js"></script>
-    <script src="scripts/auth.js"></script>
+    <script src="scripts/profile.js"></script>
   </head>
   <body>
     <div class="content" id="content">
       <div id="sidebar" class="sidebar">
         <div class="wrapper">
-          <h2>Name</h2>
+          <div id="profile-pic"></div>
+          <h2 id="name-container"></h2>
+          <div id="badge-container"></div>
+          <div id="buttons-container"></div>
+          <img src="images/edit.svg"></img>
         </div>
       </div>
       <div id="main" class="main">
         <div class="main-content">
           <h1 id="email">Email</h1>
+          <p id="email-container"></p>
           <h1 id="phone">Phone Number</h1>
+          <p id="phone-container"></p>
           <h1 id="interests">Interests</h1>
           <h1 id="groups">Groups</h1>
           <h1 id="ongoing-challenges">Ongoing Challenges</h1>
