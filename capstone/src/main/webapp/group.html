@@ -23,7 +23,6 @@
       <div class="create-post">
         <form id="post-form" method="POST" action="/group-post">
           <span class="user-img align-vertical"></span>
-
           <input type="text" id="post-input" class="align-vertical" name="post-input" value="Post a status">
           <i class="fa fa-camera" aria-hidden="true"></i>
            <button type="submit"><i class="fa fa-paper-plane align-vertical"></i><button>
@@ -36,13 +35,12 @@
      
       <div class="poll-container">
         <div class="inner-poll-container">
-            <div class="section-text">
-                Poll
-            </div>
-            <div id="options-container"></div>
-            </div>
-          <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
+          <div class="section-text">
+            Poll
+          </div>
+          <div id="options-container"></div>
         </div>
+        <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
       </div>
 
       <template id="option-template">
@@ -60,6 +58,7 @@
           <div id="num-votes" class="votes-label"></div>
         </div>
       </template>
+
     </div>
   </body>
 </html>
