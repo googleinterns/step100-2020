@@ -14,6 +14,9 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.Objects.User;
+import com.google.sps.Objects.Group;
+import com.google.sps.Objects.Badge;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -24,18 +27,17 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import com.google.gson.Gson;
-import java.io.PrintWriter;
-import com.google.sps.Objects.User;
-import com.google.sps.Objects.Group;
 
 /**
  * Servlet to handle returning User data from the Datastore.
@@ -49,19 +51,19 @@ public class UserDataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
+    User currentUser = null;
+
     if (userService.isUserLoggedIn()) {
       String userId = userService.getCurrentUser().getUserId();
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      Key entityKey = KeyFactory.createKey("User", userId);
+      try {
+        currentUser = getUserObject(datastore.get(entityKey));
+      }   catch (EntityNotFoundException e) {
+        // display error, this shouldn't happen
+      }
     } else {
       // display error - this shouldn't happen
-    }
-
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Key entityKey = KeyFactory.createKey("User", userId);
-    User currentUser;
-    try {
-      currentUser = getUserObject(datastore.get(entityKey));
-    } catch (EntityNotFoundException e) {
-      // If the user doesn't exist in Datastore - display error, this shouldn't happen
     }
 
     // Convert to json
