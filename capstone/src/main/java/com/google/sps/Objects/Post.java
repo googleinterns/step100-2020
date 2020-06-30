@@ -14,7 +14,16 @@ public final class Post {
   private final String img;
   private final HashSet<String> likes;
 
-  public Post(long postId, String authorId, String postText, ArrayList<Comment> comments, String challengeName, long timestamp, String img, HashSet<String> likes) {
+  public Post(
+    long postId, 
+    String authorId, 
+    String postText, 
+    ArrayList<Comment> comments, 
+    String challengeName, 
+    long timestamp, 
+    String img, 
+    HashSet<String> likes
+  ) {
     this.postId = postId;
     this.timestamp = timestamp;
     this.postText = postText;

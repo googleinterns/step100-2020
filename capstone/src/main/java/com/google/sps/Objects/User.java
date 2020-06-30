@@ -14,8 +14,7 @@ public final class User {
   private final ArrayList<String> groups;
   private final ArrayList<String> interests;
 
-  public User(String userId, String firstName, String lastName, String email, String phoneNumber,
-      ArrayList<Badge> badges, ArrayList<String> groups, ArrayList<String> interests) {
+  public User(String userId, String firstName, String lastName, String email, String phoneNumber, ArrayList<Badge> badges, ArrayList<String> groups, ArrayList<String> interests) {
     this.userId = userId;
     this.name = firstName + " " + lastName;
     this.firstName = firstName;

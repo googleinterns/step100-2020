@@ -73,7 +73,9 @@ public class GroupPostDataServlet extends HttpServlet {
     String postText = (String) entity.getProperty("postText");
     String challengeName = (String) entity.getProperty("challengeName");
     String img = (String) entity.getProperty("img");
-    HashSet<String> likes = (entity.getProperty("likes") == null) ? new HashSet<>() : new HashSet<String>((ArrayList<String>) entity.getProperty("likes"));   
+    HashSet<String> likes = (entity.getProperty("likes") == null) 
+      ? new HashSet<>() 
+      : new HashSet<String>((ArrayList<String>) entity.getProperty("likes"));   
     ArrayList<Comment> comments = new ArrayList<>();
   
     // Create list of comment objects from list of comment entities 
