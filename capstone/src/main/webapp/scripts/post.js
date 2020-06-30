@@ -5,15 +5,12 @@ function init() {
 }
 
 function uploadImage() {
-  console.log("in upload image");
   document.getElementById('camera-btn').addEventListener('click', openDialog);
     function openDialog() {
-      console.log("in open dialogue");
         document.getElementById('fileid').click();
         document.getElementById('fileid').addEventListener('change', fetchBlobstoreUrlAndShowForm);
 
         function fetchBlobstoreUrlAndShowForm() {
-          console.log("in fetch");
           fetch('/post-image-handler')
           .then((response) => {
             return response.text();
@@ -21,7 +18,6 @@ function uploadImage() {
           .then((imageUploadUrl) => {
             const messageForm = document.getElementById('post-form');
             messageForm.action = imageUploadUrl;
-            console.log(imageUploadUrl);
           });
         }
     }
@@ -180,12 +176,10 @@ function createCommentBox(post) {
 
 // Gets URL for uploaded image
 function fetchBlobstoreUrlAndShowForm() {
-  console.log("in fetch");
   fetch('/post-image-handler').then((response) => {
   	return response.text();
   }).then((imageUploadUrl) => {
     const messageForm = document.getElementById('post-form');
     messageForm.action = imageUploadUrl;
-    console.log(imageUploadUrl);
   });
 }
