@@ -58,7 +58,7 @@ public final class Post {
   }
 
   public void addLike(String userId) {
-    if (!likes.contains(userId)) this.likes.add(userId);
+    this.likes.add(userId);
   }
 
   public void removeLike(String userId) {

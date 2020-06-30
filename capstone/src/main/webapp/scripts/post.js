@@ -32,19 +32,19 @@ function loadPosts() {
     const posts = postsResp.posts;
     const allPostsList = document.getElementById('posts-container');
     allPostsList.innerHTML = '';
-    for (var i = 0; i < posts.length; i++) {
+    for (let i = 0; i < posts.length; i++) {
       allPostsList.appendChild(createSinglePost(posts[i]));
     }
   }).then(() => {
-    var elements = document.getElementsByClassName('post-btn align-vertical comment-btn');
-    for (var i = 0; i < elements.length; i++) {
+    let elements = document.getElementsByClassName('post-btn align-vertical comment-btn');
+    for (let i = 0; i < elements.length; i++) {
       elements[i].addEventListener("click", function() {
         postComment(this.id, this.id + "comment-input")
       });
     }
 
-    var likeBtns = document.getElementsByClassName('like-icon vertical-align');
-    for (var i = 0; i < likeBtns.length; i++) {
+    let likeBtns = document.getElementsByClassName('like-icon vertical-align');
+    for (let i = 0; i < likeBtns.length; i++) {
       likeBtns[i].addEventListener("click", function() {
         //this.classList.toggle("active");
         likeToggled(this.id, true);
@@ -174,9 +174,7 @@ function createCommentBox(post) {
   commentBtn.type = "submit";
   commentBtn.id = post.postId;
   commentBtn.innerHTML = "<img class='small-icon' src='images/send_plane.png' alt/>";
-  commentBtn.onclick = "postComment()";
   commentBoxDiv.appendChild(commentBtn);
-
   return commentBoxDiv;
 }
 

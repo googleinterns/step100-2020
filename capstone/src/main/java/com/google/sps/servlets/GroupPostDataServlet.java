@@ -90,8 +90,8 @@ public class GroupPostDataServlet extends HttpServlet {
     for(EmbeddedEntity comment: commentEntitys) {
       comments.add(
         new Comment((long) comment.getProperty("timestamp"), 
-        (String)comment.getProperty("commentText"), 
-        (String) comment.getProperty("userId"))
+          (String)comment.getProperty("commentText"), 
+          (String) comment.getProperty("userId"))
       );
     }
   }
