@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link
-      href="http://fonts.googleapis.com/css?family=Roboto"
+      href="https://fonts.googleapis.com/css?family=Roboto"
       rel="stylesheet"
       type="text/css"
     />
@@ -44,11 +44,38 @@
       <div class="post-feed">
         <div id="posts-container"></div>
       </div>
+     
+      <div class="poll-container">
+        <div class="inner-poll-container">
+            <div class="section-text">
+                Poll
+            </div>
+            <div id="options-container"></div>
+            </div>
+          <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
+        </div>
+      </div>
+
+      <template id="option-template">
+        <div class="option-container">
+          <p></p>
+          <svg width="690" height="55">
+            <rect height="55" width="690" class="poll-rect"/>
+            <rect height="55" id="inner-bar" class="poll-inner-rect"/>
+          </svg>
+      
+          <span class="check-container">
+            <input type="checkbox">
+            <label></label>
+          </span>
+          <div id="num-votes" class="votes-label"></div>
+        </div>
+      </template>
     </div>
 
   </body>
 </html>
 
-  
+
 
   

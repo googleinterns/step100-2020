@@ -14,37 +14,45 @@
 
 package com.google.sps.servlets;
 
-import com.google.sps.Objects.response.LoginResponse;
-import com.google.gson.Gson;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 
-@WebServlet("/login")
-public class LoginServlet extends HttpServlet {
+@WebServlet("/checkNewUser")
+public class CheckNewUserServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
-
-    String email = "";
-    boolean isUserLoggedIn = false;
+    boolean isUserNew = false;
 
     if (userService.isUserLoggedIn()) {
-      email = userService.getCurrentUser().getEmail();
-      isUserLoggedIn = true;
+      String userId = userService.getCurrentUser().getUserId();
+
+      // Check if user already exists in Datastore. If so, do nothing.
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      Key entityKey = KeyFactory.createKey("User", userId);
+      try {
+        datastore.get(entityKey);
+      } catch (EntityNotFoundException e) {
+        // If the user doesn't exist in Datastore.
+        isUserNew = true;
+      }
     }
 
-    LoginResponse loginResponse = new LoginResponse(
-        userService.createLoginURL("/"), userService.createLogoutURL("/"), email, isUserLoggedIn);
-
-    // Send the JSON object as the response
-    String json = new Gson().toJson(loginResponse);
+    String json = String.format("{\"isUserNew\": %b}", isUserNew);
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }

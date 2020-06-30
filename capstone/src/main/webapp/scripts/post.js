@@ -1,5 +1,6 @@
 function init() {
   loadPosts();
+  getPollOptions();
   uploadImage();
   //fetchBlobstoreUrlAndShowForm();
 }
@@ -179,7 +180,7 @@ function fetchBlobstoreUrlAndShowForm() {
   fetch('/post-image-handler').then((response) => {
   	return response.text();
   }).then((imageUploadUrl) => {
-    const messageForm = document.getElementById('post-form');
+    const messageForm = document.getElementById('post-form')
     messageForm.action = imageUploadUrl;
   });
 }
