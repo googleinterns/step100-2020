@@ -14,7 +14,6 @@
 
 package com.google.sps.servlets;
 
-import com.google.sps.Objects.Badge;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -35,8 +34,10 @@ import java.util.ArrayList;
 public class CheckNewUserServlet extends HttpServlet {
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
+    boolean isUserNew = false;
+
     if (userService.isUserLoggedIn()) {
       String userId = userService.getCurrentUser().getUserId();
 
@@ -46,23 +47,13 @@ public class CheckNewUserServlet extends HttpServlet {
       try {
         datastore.get(entityKey);
       } catch (EntityNotFoundException e) {
-        // If the user doesn't exist in Datastore, then create the user.
-        Entity userEntity = createUserEntity(userService, userId);
-        datastore.put(userEntity);
+        // If the user doesn't exist in Datastore.
+        isUserNew = true;
       }
     }
-  }
 
-  private Entity createUserEntity(UserService userService, String userId) {
-    Entity userEntity = new Entity("User", userId);
-    userEntity.setProperty("userId", userId);
-    userEntity.setProperty("firstName", userService.getCurrentUser().getNickname());
-    userEntity.setProperty("lastName", "");
-    userEntity.setProperty("email", userService.getCurrentUser().getEmail());
-    userEntity.setProperty("phoneNumber", "");
-    userEntity.setProperty("badges", new ArrayList<String>());
-    userEntity.setProperty("groups", new ArrayList<String>());
-    userEntity.setProperty("interests", new ArrayList<String>());
-    return userEntity;
+    String json = String.format("{\"isUserNew\": %b}", isUserNew);
+    response.setContentType("application/json;");
+    response.getWriter().println(json);
   }
 }

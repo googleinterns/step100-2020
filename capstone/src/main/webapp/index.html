@@ -17,8 +17,8 @@
         <div class="wrapper">
           <h1>AppName</h1>
           <div class="form-box"> 
-            <div class="button-box">
-              <button class="toggle-btn" id="login-toggle" onclick="login()">
+            <div class="label-box">
+              <button class="login-label" id="login-toggle">
                 Log in</button>
             </div>
             <form id="login" class="input-group">
@@ -29,6 +29,25 @@
       </div>
       <div id="right-side">
         <p>This is our capstone project. A graphic can go here.</p>
+      </div>
+    </div>
+
+    <div class="register-modal" id="register-modal">
+      <div class="modal-content">
+        <h2>Welcome!</h2>
+        <p>We have detected that you are a new user. Please take a moment
+          to fill out some information and register with our site.
+        </p>
+        <form id="register">
+          <input type="text" class="input-field" placeholder="First Name *" name="first" id="first" 
+              required aria-required="true">
+          <input type="text" class="input-field" placeholder="Last Name *" name="last" id="last" 
+              required aria-required="true">
+          <input type="text" class="input-field" placeholder="Phone Number" name="phone" id="phone">
+          <input type="text" class="input-field" placeholder="Interests (separate with commas)" 
+              name="interests" id="interests">
+          <button class="submit-btn" onclick="createNewUser()">Submit and continue to site</button>
+        </form>
       </div>
     </div>
   </body>

@@ -1,21 +1,22 @@
 package com.google.sps.Objects;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public final class Post {
 
-  private final User author;
+  private final String authorId;
   private final String postText;
   private final ArrayList<Comment> comments;
   private final String challengeName;
   private final long timestamp;
   private final String img;
-  private final ArrayList<User> likes;
+  private final HashSet<String> likes;
 
-  public Post(User author, String postText, ArrayList<Comment> comments, String challengeName, long timestamp, String img, ArrayList<User> likes) {
+  public Post(String authorId, String postText, ArrayList<Comment> comments, String challengeName, long timestamp, String img, HashSet<String> likes){
     this.timestamp = timestamp;
     this.postText = postText;
-    this.author = author;
+    this.authorId = authorId;
     this.comments = comments;
     this.challengeName = challengeName;
     this.img = img;
@@ -30,8 +31,8 @@ public final class Post {
     return postText;
   }
 
-  public User getAuthor() {
-    return author;
+  public String getAuthorId() {
+    return authorId;
   }
 
   public ArrayList<Comment> getComments() {
@@ -46,7 +47,7 @@ public final class Post {
     return img;
   }
 
-  public ArrayList<User> getLikes() {
+  public HashSet<String> getLikes() {
     return likes;
   }
 
@@ -54,7 +55,11 @@ public final class Post {
     this.comments.add(newComment);
   }
 
-  public void addNewLike(User newLike) {
-    this.likes.add(newLike);
+  public void addLike(String userId) {
+    this.likes.add(userId);
+  }
+
+  public void removeLike(String userId) {
+    this.likes.remove(userId);
   }
 }

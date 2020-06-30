@@ -8,6 +8,129 @@
 
 body {
   font-family: "Roboto", sans-serif;
+  background-color: #F4F6F2;
+}
+
+/* Post Comment */
+.group-content {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+}
+
+.create-post {
+  display: block;
+  background: #fcfcfc;
+  border-radius: 10px;
+  margin-top: 40px;
+  position: absolute;
+  height: 120px;
+  width: 100%;
+}
+
+.user-img {
+  height: 60px;
+  width: 60px;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #F7CE82;
+  align-content: left;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 20px;
+}
+
+#post-input {
+  background-color: #EEEEEE;
+  border-radius: 10px;
+  align-content: left;
+  margin-left: 100px;
+  height: 40px;
+  width: 70%;
+  color: #8A8686;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 28px;
+  padding-left: 8px;
+  outline: none;
+}
+
+.post-btn {
+  margin-left: 30px;
+  height: 30px;
+  width: 60px;
+  border-radius: 20%;
+  background: #c5d6cb;
+}
+
+.post-feed {
+  margin-top: 150px;
+  position: absolute;
+  display: block;
+  width: 100%;
+}
+
+.post-div {
+  background: #fcfcfc;
+  margin-top: 20px;
+  padding: 20px 30px 20px 30px;
+  position: relative;
+}
+
+.post-img {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  background-color: #F7CE82;
+  align-content: left;
+}
+
+.post-author {
+  text-align: left;
+  margin-left: 20px;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 28px;
+}
+
+.post-content {
+  text-align: left;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 28px;
+}
+
+#comment-input {
+  background-color: #EEEEEE;
+  border-radius: 10px;
+  align-content: left;
+  margin-left: 100px;
+  height: 40px;
+  width: 70%;
+  color: #8A8686;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 28px;
+  padding-left: 8px;
+  outline: none;
+}
+
+.align-vertical {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.fa-paper-plane {
+  height: 30px;
 }
 
 .poll-container {
@@ -113,3 +236,4 @@ input[type="checkbox"]:checked + label:before {
   height: 15px;
   border-left: 4px solid #2ecc7a;
 }
+
