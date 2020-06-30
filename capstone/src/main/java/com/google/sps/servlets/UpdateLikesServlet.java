@@ -29,6 +29,10 @@ public class UpdateLikesServlet extends HttpServlet {
     String userId = this.getUserId(response);
     Entity post = this.getPostFromId(response, postId, datastore);
     ArrayList<String> likes = (ArrayList<String>) post.getProperty("likes");
+    if (likes == null) {
+      likes = new ArrayList<>();
+    }
+    System.out.println(likes);
     this.getUpdatedVotes(isLiked, userId, likes);
 
     // Update datastore

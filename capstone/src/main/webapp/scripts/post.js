@@ -28,7 +28,8 @@ function uploadImage() {
 }
 
 function loadPosts() {
-  fetch('/group-post').then(response => response.json()).then((posts) => {
+  fetch('/group-post').then(response => response.json()).then((postsResp) => {
+    const posts = postsResp.posts;
     const allPostsList = document.getElementById('posts-container');
     allPostsList.innerHTML = '';
     for (var i = 0; i < posts.length; i++) {
@@ -42,11 +43,22 @@ function loadPosts() {
       });
     }
 
-    let icon = document.querySelector('ion-icon');
-    icon.onclick = function(){
-    icon.classList.toggle('active');
+    var likeBtns = document.getElementsByClassName('like-icon vertical-align');
+    for (var i = 0; i < likeBtns.length; i++) {
+      likeBtns[i].addEventListener("click", function() {
+        //this.classList.toggle("active");
+        likeToggled(this.id, true);
+      });
     }
   });
+}
+
+function likeToggled(likeId, liked) {
+  const postId = likeId.substring(0, likeId.length - 4);
+  const request = new Request(`/update-likes?id=${postId}&liked=${liked}`, { method: "POST" });
+  fetch(request).then(() => {
+    loadPosts();
+  }); 
 }
 
 // Performs POST request to add comment to post 
@@ -104,7 +116,7 @@ function createLikesContainer(post) {
   likesDiv.appendChild(likesLabel);
 
   const likeIcon = document.createElement('ion-icon');
-  likeIcon.className = "vertical-align";
+  likeIcon.className = "like-icon vertical-align";
   likeIcon.name = "heart";
   likeIcon.id = post.postId + "like";
   likesDiv.appendChild(likeIcon);

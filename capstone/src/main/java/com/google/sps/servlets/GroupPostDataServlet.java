@@ -34,6 +34,7 @@ import java.net.URL;
 import com.google.sps.Objects.User;
 import com.google.sps.Objects.Post;
 import com.google.sps.Objects.Comment;
+import com.google.sps.Objects.PostResponse;
 
 @WebServlet("/group-post")
 public class GroupPostDataServlet extends HttpServlet {
@@ -41,18 +42,28 @@ public class GroupPostDataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+    String userId = "";
+    UserService userService = UserServiceFactory.getUserService();
+    if (userService.isUserLoggedIn()) {
+      userId = userService.getCurrentUser().getUserId();
+    }
+
     Query query = new Query("Post").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
     List<Post> posts = new ArrayList<>();
+    List<Long> likedPosts = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
       posts.add(getPostEntity(entity));
+      ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
+      if(likes != null && likes.contains(userId)) likedPosts.add(entity.getKey().getId());
     }
 
     // Convert to json
+    PostResponse postsRes = new PostResponse(posts, likedPosts, userId);
     response.setContentType("application/json;");
-    response.getWriter().println(new Gson().toJson(posts));
+    response.getWriter().println(new Gson().toJson(postsRes));
   }
 
   private Post getPostEntity(Entity entity) {
