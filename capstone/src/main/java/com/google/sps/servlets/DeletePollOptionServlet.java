@@ -30,7 +30,12 @@ public class DeletePollOptionServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
       long id = entity.getKey().getId();
       List<String> votes = (ArrayList<String>) entity.getProperty("votes");
-      int numVotes = votes.size();
+      int numVotes;
+      if (votes != null) {
+        numVotes = votes.size();
+      } else {
+        numVotes = 0;
+      }
       if (numVotes > maxVotes) {
         maxVotes = numVotes;
         maxVotesId = id;

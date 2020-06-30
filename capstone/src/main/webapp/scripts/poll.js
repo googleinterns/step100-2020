@@ -36,12 +36,40 @@ function getPollOptions() {
     .then(votedOptions => {
       handleCheck(votedOptions);
     })
-    .then(updateChallenge);
+    .then(checkWeek);
 }
 
-function updateChallenge() {
+function checkWeek() {
+  postChallenge();
+  console.log("in check week");
+  let now = new Date();
+  let firstDay = new Date();
+  console.log("this week " + firstDay);
+  let nextWeek = new Date(firstDay.getTime() + 7 * 24 * 60 * 60 * 1000);
+  console.log("next week " + nextWeek);
+  let millisTillNextWeek =
+    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 25, 0, 0) -
+    now;
+  console.log(millisTillNextWeek);
+  if (millisTillNextWeek < 0) {
+    millisTillNextWeek += 60000;
+    console.log("reset to " + millisTillNextWeek);
+  }
+  if (millisTillNextWeek >= 0) {
+    setTimeout(updatePoll, millisTillNextWeek);
+  }
+}
+
+function postChallenge() {
+  console.log("in get challenge");
   const weeklyChallenge = document.getElementById("weekly-challenge");
   weeklyChallenge.innerText = topChallenge;
+}
+
+function updatePoll() {
+  console.log("in update poll");
+  //call delete in api
+  fetch("delete-top-option", { method: "POST" }).then(postChallenge);
 }
 
 /**
@@ -64,7 +92,7 @@ function getMaxVotes(pollData) {
  */
 function handleCheck(votedOptions) {
   const checkboxes = document.querySelectorAll("input[type=checkbox]");
-  let votedOptionsSet = convertToSet(votedOptions);
+  let votedOptionsSet = convertToMap(votedOptions);
   for (let i = 0; i < checkboxes.length; i++) {
     let checkbox = checkboxes[i];
     markCheckbox(votedOptionsSet, checkbox);
@@ -72,7 +100,11 @@ function handleCheck(votedOptions) {
   return;
 }
 
-function convertToSet(votedOptions) {
+/**
+ * Converts list to hashmap.
+ * @param {object} votedOptions
+ */
+function convertToMap(votedOptions) {
   let votedOptionsSet = {};
   votedOptions.forEach(option => (votedOptionsSet[option] = 1));
   return votedOptionsSet;
@@ -147,9 +179,4 @@ function handleCheckboxCount(id, checked) {
   fetch(`update-votes?id=${id}&checked=${checked}`, { method: "POST" }).then(
     setTimeout(getPollOptions, TRANSITION_MILLIS)
   );
-}
-
-function getChallenge() {
-  const weeklyChallenge = document.getElementById("weekly-challenge");
-  weeklyChallenge.innerText = topChallenge;
 }
