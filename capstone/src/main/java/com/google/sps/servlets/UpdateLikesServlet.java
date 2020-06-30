@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import error.ErrorHandler;
 
 @WebServlet("/update-likes")
 public class UpdateLikesServlet extends HttpServlet {
@@ -53,6 +54,7 @@ public class UpdateLikesServlet extends HttpServlet {
     if(userService.isUserLoggedIn()) {
       return userService.getCurrentUser().getUserId();
     }
+    errorHandler.sendError(response, "User is not logged in.");
     return "";
   }
 
@@ -60,6 +62,7 @@ public class UpdateLikesServlet extends HttpServlet {
     try {
       return datastore.get(KeyFactory.createKey("Post", postId));
     } catch (EntityNotFoundException e) {
+      errorHandler.sendError(response, "Post does not exist.")
       return null;
     }
   }
