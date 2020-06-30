@@ -1,6 +1,6 @@
 const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
-const TRANSITION_MILLIS = 700;
+const TRANSITION_MILLIS = 600;
 let maxVotes;
 let topChallenge = "";
 
@@ -99,7 +99,6 @@ function markCheckbox(votedOptionsSet, checkbox) {
  * @param {object} option
  */
 function renderOptionElement(option, maxVotes) {
-  console.log("rendering");
   let numVotes = 0;
   if (option["votes"]) {
     numVotes = option["votes"].length;
