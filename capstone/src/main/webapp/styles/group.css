@@ -179,12 +179,18 @@ p{
 }
 
 /* heart styling */
-ion-icon.active{
+.liked {
   animation:like 0.5s 1;
   fill:red;
   stroke:none;
+  font-size: 30px;
+  margin-left: 90%;
+  align-content: left;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
-ion-icon{
+.unliked {
   fill:transparent;
   stroke:black;
   stroke-width:30;

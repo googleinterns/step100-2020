@@ -35,7 +35,6 @@ public class UpdateLikesServlet extends HttpServlet {
     if (likes == null) {
       likes = new ArrayList<>();
     }
-    System.out.println(likes);
     this.getUpdatedVotes(isLiked, userId, likes);
 
     // Update datastore

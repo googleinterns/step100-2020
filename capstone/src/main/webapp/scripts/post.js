@@ -23,14 +23,15 @@ function uploadImage() {
         }
     }
 }
-
+let postResponse;
 function loadPosts() {
   fetch('/group-post').then(response => response.json()).then((postsResp) => {
-    const posts = postsResp.posts;
+    postResponse = postsResp;
+    const posts = postResponse["posts"];
     const allPostsList = document.getElementById('posts-container');
     allPostsList.innerHTML = '';
     for (let i = 0; i < posts.length; i++) {
-      allPostsList.appendChild(createSinglePost(posts[i]));
+      allPostsList.appendChild(createSinglePost(posts[i], postResponse["likedPosts"]));
     }
   }).then(() => {
     let elements = document.getElementsByClassName('post-btn align-vertical comment-btn');
@@ -39,20 +40,25 @@ function loadPosts() {
         postComment(this.id, this.id + "comment-input")
       });
     }
-
     let likeBtns = document.getElementsByClassName('like-icon vertical-align');
     for (let i = 0; i < likeBtns.length; i++) {
       likeBtns[i].addEventListener("click", function() {
-        //this.classList.toggle("active");
-        likeToggled(this.id, true);
+        let postId = parseInt(this.id.substring(0, this.id.length - 4));
+        let userLikedPosts = postResponse["likedPosts"];
+        if(userLikedPosts.includes(postId)) {
+          likeToggled(this.id, false);
+        } else {
+          likeToggled(this.id, true);
+        }
+       
       });
     }
   });
 }
 
 function likeToggled(likeId, liked) {
-  const postId = likeId.substring(0, likeId.length - 4);
-  const request = new Request(`/update-likes?id=${postId}&liked=${liked}`, { method: "POST" });
+  let postId = likeId.substring(0, likeId.length - 4);
+  let request = new Request(`/update-likes?id=${postId}&liked=${liked}`, { method: "POST" });
   fetch(request).then(() => {
     loadPosts();
   }); 
@@ -61,19 +67,19 @@ function likeToggled(likeId, liked) {
 // Performs POST request to add comment to post 
 function postComment(buttonId, commentBoxId) {
     const commentVal = document.getElementById(commentBoxId).value;
-    const request = new Request(`/post-comment?id=${buttonId}&comment-text=${commentVal}`, { method: "POST" });
+    let request = new Request(`/post-comment?id=${buttonId}&comment-text=${commentVal}`, { method: "POST" });
     fetch(request).then(() => {
       loadPosts();
     });
 }
 
-function createSinglePost(post) {
+function createSinglePost(post, likedPosts) {
   const postDiv = document.createElement('div');
   postDiv.className = "post-div";
   postDiv.appendChild(createProfileImg(post));
   postDiv.append(createAuthor(post));
   postDiv.append(createPostText(post));
-  postDiv.append(createLikesContainer(post));
+  postDiv.append(createLikesContainer(post, likedPosts));
   postDiv.append(createCommentsContainer(post));
   postDiv.append(createCommentBox(post));
   return postDiv;
@@ -102,18 +108,29 @@ function createPostText(post) {
   return postContent;
 }
 
-function createLikesContainer(post) {
+function createLikesContainer(post, likedPosts) {
   const likesDiv = document.createElement('div');
   likesDiv.className = "likes-div";
 
   const likesLabel = document.createElement('p');
   likesLabel.className = "likes-label vertical-align";
   likesLabel.id = post.postId + "likes-label";
-  likesLabel.innerText = "0 likes";
+  const numLikes = post["likes"].length;
+  const likesString = numLikes > 1 
+    ? `${numLikes} likes` 
+    : `${numLikes} like`;
+  const labelString = numLikes == 0 
+    ? "" 
+    : likesString;
+  likesLabel.innerText = `${labelString}`;
   likesDiv.appendChild(likesLabel);
 
   const likeIcon = document.createElement('ion-icon');
-  likeIcon.className = "like-icon vertical-align";
+  if(likedPosts.includes(post.postId)) {
+    likeIcon.className = "like-icon vertical-align liked";
+  } else {
+    likeIcon.className = "like-icon vertical-align unliked";
+  }
   likeIcon.name = "heart";
   likeIcon.id = post.postId + "like";
   likesDiv.appendChild(likeIcon);
