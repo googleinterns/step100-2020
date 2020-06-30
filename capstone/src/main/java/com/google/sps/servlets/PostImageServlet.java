@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/post-image-handler")
+@WebServlet("/post-image-blobstore")
 public class PostImageServlet extends HttpServlet {
   
   @Override
