@@ -42,9 +42,8 @@ public class CreateNewUserServlet extends HttpServlet {
     
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
-      Entity userEntity = createUserEntity(userService, first, last, phone, interests);
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      datastore.put(userEntity);
+      datastore.put(createUserEntity(userService, first, last, phone, interests));
     }
   }
 
