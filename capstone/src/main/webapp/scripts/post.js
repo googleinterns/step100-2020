@@ -34,13 +34,22 @@ function loadPosts() {
       allPostsList.appendChild(createSinglePost(posts[i], postResponse["likedPosts"]));
     }
   }).then(() => {
-    let elements = document.getElementsByClassName('post-btn align-vertical comment-btn');
+    addCommentInputListener();
+    addLikeButtonListener();
+  });
+}
+
+function addCommentInputListener() {
+  let elements = document.getElementsByClassName('post-btn align-vertical comment-btn');
     for (let i = 0; i < elements.length; i++) {
       elements[i].addEventListener("click", function() {
         postComment(this.id, this.id + "comment-input")
       });
     }
-    let likeBtns = document.getElementsByClassName('like-icon vertical-align');
+}
+
+function addLikeButtonListener() {
+  let likeBtns = document.getElementsByClassName('like-icon vertical-align');
     for (let i = 0; i < likeBtns.length; i++) {
       likeBtns[i].addEventListener("click", function() {
         let postId = parseInt(this.id.substring(0, this.id.length - 4));
@@ -50,10 +59,8 @@ function loadPosts() {
         } else {
           likeToggled(this.id, true);
         }
-       
       });
     }
-  });
 }
 
 function likeToggled(likeId, liked) {
