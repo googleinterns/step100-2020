@@ -1,19 +1,9 @@
 function init() {
   loadPosts();
   getPollOptions();
-  uploadImage();
-  //fetchBlobstoreUrlAndShowForm();
+  fetchBlobstoreUrlAndShowForm();
 }
 
-function uploadImage() {
-  document.getElementById('camera-btn').addEventListener('click', openDialog);
-    function openDialog() {
-      document.getElementById('fileid').click();
-      document.getElementById('fileid').addEventListener('change', function() {
-        fetchBlobstoreUrlAndShowForm();
-      });
-    }
-}
 let postResponse;
 function loadPosts() {
   fetch('/group-post').then(response => response.json()).then((postsResp) => {
