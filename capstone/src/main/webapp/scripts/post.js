@@ -8,19 +8,10 @@ function init() {
 function uploadImage() {
   document.getElementById('camera-btn').addEventListener('click', openDialog);
     function openDialog() {
-        document.getElementById('fileid').click();
-        document.getElementById('fileid').addEventListener('change', fetchBlobstoreUrlAndShowForm);
-
-        function fetchBlobstoreUrlAndShowForm() {
-          fetch('/post-image-handler')
-          .then((response) => {
-            return response.text();
-          })
-          .then((imageUploadUrl) => {
-            const messageForm = document.getElementById('post-form');
-            messageForm.action = imageUploadUrl;
-          });
-        }
+      document.getElementById('fileid').click();
+      document.getElementById('fileid').addEventListener('change', function() {
+        fetchBlobstoreUrlAndShowForm();
+      });
     }
 }
 let postResponse;
@@ -119,6 +110,7 @@ function createLikesContainer(post, likedPosts) {
   const likesDiv = document.createElement('div');
   likesDiv.className = "likes-div";
 
+  // Set number of likes label
   const likesLabel = document.createElement('p');
   likesLabel.className = "likes-label vertical-align";
   likesLabel.id = post.postId + "likes-label";
@@ -132,6 +124,7 @@ function createLikesContainer(post, likedPosts) {
   likesLabel.innerText = `${labelString}`;
   likesDiv.appendChild(likesLabel);
 
+  // Set like icon state (filled or only outline)
   const likeIcon = document.createElement('ion-icon');
   if(likedPosts.includes(post.postId)) {
     likeIcon.className = "like-icon vertical-align liked";
@@ -141,7 +134,6 @@ function createLikesContainer(post, likedPosts) {
   likeIcon.name = "heart";
   likeIcon.id = post.postId + "like";
   likesDiv.appendChild(likeIcon);
-
   return likesDiv;
 }
 
