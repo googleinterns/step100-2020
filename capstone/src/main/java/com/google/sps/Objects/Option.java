@@ -1,6 +1,9 @@
 package com.google.sps.Objects;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.google.appengine.api.datastore.Entity;
 
 /**
  * Represents each option of the poll. Has text field and keeps track of users
@@ -51,6 +54,26 @@ public final class Option {
    * @return list of user ids
    */
   public List<String> getVotes() {
-    return votes;
+    return this.votes;
+  }
+
+  public long getId() {
+    return this.id;
+  }
+
+  public static Option fromEntity(Entity entity) {
+    long id = entity.getKey().getId();
+    String text = (String) entity.getProperty("text");
+    List<String> votes = (ArrayList<String>) entity.getProperty("votes");
+    return new Option(id, text, votes);
+  }
+
+  public Entity toEntity() {
+    Entity optionEntity = new Entity("Option");
+    long timestamp = System.currentTimeMillis();
+    optionEntity.setProperty("text", text);
+    optionEntity.setProperty("votes", this.votes);
+    optionEntity.setProperty("timestamp", timestamp);
+    return optionEntity;
   }
 }

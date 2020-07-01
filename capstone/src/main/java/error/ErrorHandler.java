@@ -13,7 +13,8 @@ public class ErrorHandler {
    * @param errorString error message
    * @throws IOException exception thrown when cannot write to file
    */
-  public void sendError(HttpServletResponse response, String errorString) throws IOException {
+  public static void sendError(HttpServletResponse response, String errorString)
+      throws IOException {
     response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorString);
     response.getWriter().print("<html><head><title>Oops an error happened!</title></head>");
     response.getWriter().print("<body>Something bad happened uh-oh!</body>");

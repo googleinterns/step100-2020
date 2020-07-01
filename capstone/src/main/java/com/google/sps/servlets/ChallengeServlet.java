@@ -29,11 +29,6 @@ public class ChallengeServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     // Get most recent challenge in database
     Entity entity = results.asIterable().iterator().next();
-//    String challengeName = (String) entity.getProperty("name");
-//    long dueDate = (long) entity.getProperty("dueDate");
-//    ArrayList<String> usersCompleted = (ArrayList<String>) entity.getProperty("usersCompleted");
-//    // setting badge as null for now
-//    Challenge challenge = new Challenge(challengeName, dueDate, null, usersCompleted);
     Challenge challenge = Challenge.fromEntity(entity);
     String json = new Gson().toJson(challenge);
     response.setContentType("application/json");
@@ -47,10 +42,6 @@ public class ChallengeServlet extends HttpServlet {
     long dueDateMillis = Timestamp.valueOf(dueDate).getTime();
     Challenge challenge = new Challenge(challengeName, dueDateMillis, null,
         new ArrayList<String>());
-//    Entity challengeEntity = new Entity("Challenge");
-//    challengeEntity.setProperty("name", challengeName);
-//    challengeEntity.setProperty("dueDate", dueDateMillis);
-//    challengeEntity.setProperty("usersCompleted", new ArrayList<String>());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(challenge.toEntity());
   }
