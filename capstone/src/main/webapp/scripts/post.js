@@ -64,6 +64,6 @@ function fetchBlobstoreUrlAndShowForm() {
   	return response.text();
   }).then((imageUploadUrl) => {
     const messageForm = document.getElementById('comments-form');
-    //messageForm.action = imageUploadUrl;
+    messageForm.action = imageUploadUrl;
   });
 }
