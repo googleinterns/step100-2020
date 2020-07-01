@@ -44,7 +44,7 @@ function checkWeek() {
   let now = new Date();
   //Hard coding due date for now
   let millisTillDueDate =
-    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 21, 8, 0, 0) -
+    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 13, 04, 0, 0) -
     now;
   if (millisTillDueDate >= 0) {
     setTimeout(updatePoll, millisTillDueDate);

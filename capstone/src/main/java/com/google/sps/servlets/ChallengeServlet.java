@@ -29,11 +29,12 @@ public class ChallengeServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     // Get most recent challenge in database
     Entity entity = results.asIterable().iterator().next();
-    String challengeName = (String) entity.getProperty("name");
-    long dueDate = (long) entity.getProperty("dueDate");
-    ArrayList<String> usersCompleted = (ArrayList<String>) entity.getProperty("usersCompleted");
-    // setting badge as null for now
-    Challenge challenge = new Challenge(challengeName, dueDate, null, usersCompleted);
+//    String challengeName = (String) entity.getProperty("name");
+//    long dueDate = (long) entity.getProperty("dueDate");
+//    ArrayList<String> usersCompleted = (ArrayList<String>) entity.getProperty("usersCompleted");
+//    // setting badge as null for now
+//    Challenge challenge = new Challenge(challengeName, dueDate, null, usersCompleted);
+    Challenge challenge = Challenge.fromEntity(entity);
     String json = new Gson().toJson(challenge);
     response.setContentType("application/json");
     response.getWriter().println(json);
@@ -44,12 +45,14 @@ public class ChallengeServlet extends HttpServlet {
     String challengeName = request.getParameter("name");
     LocalDateTime dueDate = this.getDueDate(LocalDateTime.now());
     long dueDateMillis = Timestamp.valueOf(dueDate).getTime();
-    Entity challengeEntity = new Entity("Challenge");
-    challengeEntity.setProperty("name", challengeName);
-    challengeEntity.setProperty("dueDate", dueDateMillis);
-    challengeEntity.setProperty("usersCompleted", new ArrayList<String>());
+    Challenge challenge = new Challenge(challengeName, dueDateMillis, null,
+        new ArrayList<String>());
+//    Entity challengeEntity = new Entity("Challenge");
+//    challengeEntity.setProperty("name", challengeName);
+//    challengeEntity.setProperty("dueDate", dueDateMillis);
+//    challengeEntity.setProperty("usersCompleted", new ArrayList<String>());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(challengeEntity);
+    datastore.put(challenge.toEntity());
   }
 
   /**

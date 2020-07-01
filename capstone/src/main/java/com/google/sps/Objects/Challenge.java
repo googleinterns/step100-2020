@@ -2,23 +2,25 @@ package com.google.sps.Objects;
 
 import java.util.ArrayList;
 
+import com.google.appengine.api.datastore.Entity;
+
 public final class Challenge {
 
   private final String challengeName;
-  private final long timestamp;
+  private final long dueDate;
   private final Badge badge;
   private final ArrayList<String> usersCompleted;
 
-  public Challenge(String challengeName, long timestamp, Badge badge,
+  public Challenge(String challengeName, long dueDate, Badge badge,
       ArrayList<String> usersCompleted) {
-    this.timestamp = timestamp;
+    this.dueDate = dueDate;
     this.challengeName = challengeName;
     this.badge = badge;
     this.usersCompleted = usersCompleted;
   }
 
-  public long getTimestamp() {
-    return timestamp;
+  public long getDueDate() {
+    return dueDate;
   }
 
   public String getChallengeName() {
@@ -33,7 +35,24 @@ public final class Challenge {
     return usersCompleted;
   }
 
-  public void addUserCompleted(String user) {
-    this.usersCompleted.add(user);
+  public void addUserCompleted(String userId) {
+    this.usersCompleted.add(userId);
+  }
+
+  public static Challenge fromEntity(Entity entity) {
+    String challengeName = (String) entity.getProperty("name");
+    long dueDate = (long) entity.getProperty("dueDate");
+    ArrayList<String> usersCompleted = (ArrayList<String>) entity.getProperty("usersCompleted");
+    // setting badge as null for now
+    return new Challenge(challengeName, dueDate, null, usersCompleted);
+  }
+
+  public Entity toEntity() {
+    Entity challengeEntity = new Entity("Challenge");
+    challengeEntity.setProperty("name", this.challengeName);
+    challengeEntity.setProperty("dueDate", this.dueDate);
+    challengeEntity.setProperty("usersCompleted", this.usersCompleted);
+    // not setting badge for now
+    return challengeEntity;
   }
 }

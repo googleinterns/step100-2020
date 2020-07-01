@@ -27,27 +27,24 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 @WebServlet("delete-top-option")
 public class DeletePollOptionServlet extends HttpServlet {
 
-  // Keeps track of max number of votes an option has
-  private int maxVotes = 0;
-  // Keeps track of the option with the max number of votes
-  private long maxVotesId = 0;
-
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
-    ;
     PreparedQuery results = datastore.prepare(query);
-    this.setMaxVotesAndId(results);
-    this.deleteEntity(results, datastore);
+    long maxVotedId = this.setMaxVotesAndId(results);
+    this.deleteEntity(maxVotedId, results, datastore);
   }
 
   /**
    * Sets the variables maxVotes and maxVotesId by iterating through the entities.
    *
    * @param results queried results
+   * @return maxVotesId the id of option with maximum number of votes
    */
-  private void setMaxVotesAndId(PreparedQuery results) {
+  private long setMaxVotesAndId(PreparedQuery results) {
+    long maxVotedId = 0;
+    int maxVotes = 0;
     for (Entity entity : results.asIterable()) {
       long id = entity.getKey().getId();
       List<String> votes = (ArrayList<String>) entity.getProperty("votes");
@@ -57,11 +54,12 @@ public class DeletePollOptionServlet extends HttpServlet {
       } else {
         numVotes = 0;
       }
-      if (numVotes > this.maxVotes) {
-        this.maxVotes = numVotes;
-        this.maxVotesId = id;
+      if (numVotes > maxVotes) {
+        maxVotes = numVotes;
+        maxVotedId = id;
       }
     }
+    return maxVotedId;
   }
 
   /**
@@ -70,9 +68,9 @@ public class DeletePollOptionServlet extends HttpServlet {
    * @param results   queried results
    * @param datastore database storing information
    */
-  private void deleteEntity(PreparedQuery results, DatastoreService datastore) {
+  private void deleteEntity(long maxVotedId, PreparedQuery results, DatastoreService datastore) {
     for (Entity optionEntity : results.asIterable()) {
-      if (optionEntity.getKey().getId() == this.maxVotesId) {
+      if (optionEntity.getKey().getId() == maxVotedId) {
         datastore.delete(optionEntity.getKey());
         break;
       }
