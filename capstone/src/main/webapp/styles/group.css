@@ -135,7 +135,7 @@ p{
 .post-div {
   background: #fcfcfc;
   margin-top: 30px;
-  padding: 20px 30px 20px 30px;
+  padding-top: 20px;
   position: relative;
   border-radius: 10px;
 }
@@ -147,6 +147,7 @@ p{
   background-color:#F7CE82;
   align-content: left;
   position: flex;
+  margin-left: 20px;
 }
 
 .post-author {
@@ -158,7 +159,6 @@ p{
   font-size: 24px;
   line-height: 28px;
   position: flex;
-
 }
 
 .post-content {
@@ -168,13 +168,13 @@ p{
   font-weight: normal;
   font-size: 24px;
   line-height: 28px;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin: 20px 20px 20px 20px;
 }
 
 .likes-div {
   width: 100%;
   margin-top: 30px;
+  margin-bottom: 20px;
   position: relative;
 }
 
@@ -213,7 +213,7 @@ p{
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  padding-inline-start: 40px;
+  padding-inline-start: 50px;
 }
 
 .comment-input {
@@ -241,7 +241,7 @@ p{
   bottom: 0;
   left: 0;
   height: 50px;
-  position: absolute;
+  position: relative;
 }
 
 .small-icon {
@@ -250,7 +250,7 @@ p{
 
 .comments-content {
   margin-top: 50px;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 
 .comment-content {
