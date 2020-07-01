@@ -11,6 +11,10 @@ body {
   background-color: #F4F6F2;
 }
 
+p{
+  margin:0;
+}
+
 /* Post Comment */
 .group-content {
   position: relative;
@@ -19,11 +23,45 @@ body {
   width: 40%;
 }
 
+.group-header {
+  display: block;
+  position: absolute;
+  border-radius: 10px;
+  margin-top: 30px;
+  width: 100%;
+  height: 200px;
+  background:  #c5d6cb;
+}
+
+.group-name-banner {
+  background: #73c586;
+  display: flex;
+  position: absolute;
+  align-content: center;
+  height: 50px;
+  margin-top: 160px;
+  border-radius: 10px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+#group-name {
+  color: #F4F6F2;
+  text-align: center;
+  position: absolute;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  width: 100%;
+}
+
 .create-post {
   display: block;
   background: #fcfcfc;
   border-radius: 10px;
-  margin-top: 40px;
+  margin-top: 250px;
   position: absolute;
   height: 120px;
   width: 100%;
@@ -53,21 +91,42 @@ body {
   font-style: normal;
   font-weight: normal;
   font-size: 15px;
-  line-height: 28px;
-  padding-left: 8px;
+  text-indent: 1em;
   outline: none;
+  border: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.camera-btn {
+  background: none;
+  border: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;  
+  right: 0px;
+  margin-right: 80px;
 }
 
 .post-btn {
-  margin-left: 30px;
-  height: 30px;
-  width: 60px;
-  border-radius: 20%;
-  background: #c5d6cb;
+  background: none;
+  border: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0px;
+  margin-right: 15px;
+  outline: none;
+}
+
+.medium-icon {
+  height: 40px;
 }
 
 .post-feed {
-  margin-top: 150px;
+  margin-top: 380px;
   position: absolute;
   display: block;
   width: 100%;
@@ -75,17 +134,20 @@ body {
 
 .post-div {
   background: #fcfcfc;
-  margin-top: 20px;
-  padding: 20px 30px 20px 30px;
+  margin-top: 30px;
+  padding-top: 20px;
   position: relative;
+  border-radius: 10px;
 }
 
 .post-img {
   height: 60px;
   width: 60px;
   border-radius: 50%;
-  background-color: #F7CE82;
+  background-color:#F7CE82;
   align-content: left;
+  position: flex;
+  margin-left: 20px;
 }
 
 .post-author {
@@ -96,6 +158,7 @@ body {
   font-weight: bold;
   font-size: 24px;
   line-height: 28px;
+  position: flex;
 }
 
 .post-content {
@@ -105,6 +168,123 @@ body {
   font-weight: normal;
   font-size: 24px;
   line-height: 28px;
+  margin: 20px 20px 20px 20px;
+}
+
+.likes-div {
+  width: 100%;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* heart styling */
+.liked {
+  animation:like 0.5s 1;
+  fill:red;
+  stroke:none;
+  font-size: 30px;
+  margin-left: 90%;
+  align-content: left;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.unliked {
+  fill:transparent;
+  stroke:black;
+  stroke-width:30;
+  transition:all 0.5s;
+  font-size: 30px;
+  margin-left: 90%;
+  align-content: left;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.likes-label {
+  align-content: left;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  color: #8A8686;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding-inline-start: 50px;
+}
+
+.comment-input {
+  background-color: #EEEEEE;
+  border-radius: 10px;
+  height: 50px;
+  width: 100%;
+  color: #8A8686;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  outline: none;
+  border: none;
+  position: absolute;
+  text-indent: 1em;
+  bottom: 0;
+  left: 0;
+  padding-right: 50px;
+  box-sizing: border-box;
+}
+
+.comment-box-div {
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  height: 50px;
+  position: relative;
+}
+
+.small-icon {
+  height: 20px;
+}
+
+.comments-content {
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+
+.comment-content {
+  list-style-type: none;
+  width: 100%;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.comment-user {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  background-color: #F5CEDA;;
+  align-content: left;
+}
+
+.comment-text-div {
+  margin-left: 20px;
+  background-color: #EEEEEE;
+  border-radius: 10px;
+  width: 85%;
+  position: relative;
+  height: auto;
+}
+
+.comment-text {
+  text-align: left;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 28px;
+  padding: 8px 12px;
 }
 
 #comment-input {
@@ -129,16 +309,13 @@ body {
   vertical-align: middle;
 }
 
-.fa-paper-plane {
-  height: 30px;
-}
-
 .poll-container {
   position: absolute;
   background: #fcfcfc;
   border-radius: 10px;
-  width: 834px;
+  width: 100%;
   padding-bottom: 40px;
+  margin-top: 200px;
 }
 
 .inner-poll-container {

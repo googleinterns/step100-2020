@@ -13,6 +13,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script src="scripts/post.js"></script>
     <script src="scripts/poll.js"></script>
+    <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
     <title>Group</title>
   </head>
 
@@ -20,29 +21,38 @@
     
     <div class="group-content">
 
+      <div class="group-header">
+        <div class="group-name-banner">
+          <span id="group-name" class="align-vertical">The 3 Musketeers + Others</span>
+        </div>
+      </div>
+
       <div class="create-post">
-        <form id="post-form" method="POST" action="/group-post">
+        <form id="post-form" method="POST" enctype="multipart/form-data">
           <span class="user-img align-vertical"></span>
-          <input type="text" id="post-input" class="align-vertical" name="post-input" value="Post a status">
-          <i class="fa fa-camera" aria-hidden="true"></i>
-           <button type="submit"><i class="fa fa-paper-plane align-vertical"></i><button>
+
+          <input type="text" id="post-input" class="align-vertical" name="post-input" placeholder="Post a status">
+
+          <input id='fileid' type='file' name='image' hidden/>
+
+          <button class="post-btn align-vertical" type="submit"><img class="medium-icon" src="images/send_plane.png" alt/></button>
         </form>
       </div>
 
       <div class="post-feed">
         <div id="posts-container"></div>
       </div>
-     
+
       <div class="poll-container">
         <div class="inner-poll-container">
-          <div class="section-text">
-            Poll
-          </div>
-          <div id="options-container"></div>
+            <div class="section-text">
+                Poll
+            </div>
+            <div id="options-container"></div>
+            </div>
+          <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
         </div>
-        <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
       </div>
-
       <template id="option-template">
         <div class="option-container">
           <p></p>
@@ -60,8 +70,10 @@
       </template>
 
     </div>
+
   </body>
 </html>
+
 
 
   
