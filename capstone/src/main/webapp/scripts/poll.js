@@ -42,40 +42,32 @@ function getPollOptions() {
 function checkWeek() {
   getChallenge();
   let now = new Date();
-  let firstDay = new Date();
-  console.log("this week " + firstDay);
-  let nextWeek = new Date(firstDay.getTime() + 7 * 24 * 60 * 60 * 1000);
-  //get the due date from the database. if the due date already passed, then update to be new challenge
-  console.log("next week " + nextWeek);
-  let millisTillNextWeek =
-    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 19, 27, 0, 0) -
+  //Hard coding due date for now
+  let millisTillDueDate =
+    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 21, 8, 0, 0) -
     now;
-  console.log(millisTillNextWeek);
-  if (millisTillNextWeek < 0) {
-    millisTillNextWeek += 60000;
-    console.log("reset to " + millisTillNextWeek);
-  }
-  if (millisTillNextWeek >= 0) {
-    setTimeout(updatePoll, millisTillNextWeek);
+  if (millisTillDueDate >= 0) {
+    setTimeout(updatePoll, millisTillDueDate);
   }
 }
 
 function getChallenge() {
-  console.log("in get challenge");
-  const weeklyChallenge = document.getElementById("weekly-challenge");
-  weeklyChallenge.innerText = topChallenge;
+  fetch("challenge")
+    .then(response => response.json())
+    .then(challengeData => {
+      const weeklyChallenge = document.getElementById("weekly-challenge");
+      weeklyChallenge.innerText = challengeData["challengeName"];
+    });
 }
 
 function updatePoll() {
-  console.log("in update poll");
-  fetch("delete-top-option", { method: "POST" }).then(postChallenge);
+  fetch("delete-top-option", { method: "POST" }).then(addChallengeToDb);
 }
 
-function postChallenge() {
-  console.log("in post challenge");
-  const weeklyChallenge = document.getElementById("weekly-challenge");
-  weeklyChallenge.innerText = topChallenge;
-  fetch(`challenge?name=${topChallenge}`, { method: "POST" });
+function addChallengeToDb() {
+  fetch(`challenge?name=${topChallenge}`, { method: "POST" }).then(
+    getChallenge
+  );
 }
 
 /**
