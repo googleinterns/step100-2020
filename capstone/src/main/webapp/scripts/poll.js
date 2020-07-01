@@ -2,7 +2,7 @@ const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
 const TRANSITION_MILLIS = 600;
 let maxVotes;
-let topChallenge = "";
+let topChallenge = null;
 const NO_CHALLENGES =
   "No current challenges. Submit a suggestion in the poll and mark checkbox for challenge to be posted. The challenge will be updated weekly based on top voted poll option.";
 
@@ -30,7 +30,6 @@ function getPollOptions() {
       const optionsContainer = document.getElementById("options-container");
       optionsContainer.innerHTML = "";
       if (pollData["options"].length == 0) {
-        console.log("no options left");
         return;
       }
       let maxVotes = getMaxVotes(pollData);
@@ -41,11 +40,9 @@ function getPollOptions() {
       return pollData["votedOptions"];
     })
     .then(votedOptions => {
-      console.log("handling voted options");
       if (votedOptions) {
         handleCheck(votedOptions);
       } else {
-        console.log("no voted options");
         return;
       }
     })
@@ -57,7 +54,6 @@ function getPollOptions() {
  * updated.
  */
 function getChallenge() {
-  console.log("in get challenge");
   //Milliseconds until challenge due date.
   let dueDateMillis = 0;
   fetch("challenge")
@@ -68,18 +64,21 @@ function getChallenge() {
       if (challengeData) {
         weeklyChallenge.innerText = challengeData["challengeName"];
         dueDateMillis = challengeData["dueDate"];
-        console.log("setting due date " + dueDateMillis);
         const dueDate = new Date(dueDateMillis).toString();
         dueDateContainer.innerText = `Due: ${dueDate}`;
       } else {
-        weeklyChallenge.innerText = NO_CHALLENGES;
-        weeklyChallenge.style.fontStyle = "italic";
-        weeklyChallenge.style.color = "#acb4c2";
-        dueDateContainer.innerText = "";
+        noChallengeText();
         updatePoll();
       }
     })
     .then(() => checkWeek(dueDateMillis));
+}
+
+function noChallengeText() {
+  const weeklyChallenge = document.getElementById("weekly-challenge");
+  const dueDateContainer = document.getElementById("due-date");
+  weeklyChallenge.innerText = NO_CHALLENGES;
+  dueDateContainer.innerText = "";
 }
 
 /**
@@ -87,13 +86,8 @@ function getChallenge() {
  * @param {long} dueDateMillis
  */
 function checkWeek(dueDateMillis) {
-  console.log("in check week");
   let now = new Date();
   let millisTillDueDate = new Date(dueDateMillis) - now;
-  // let millisTillDueDate =
-  //   new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 46, 0, 0) -
-  //   now;
-  console.log("millis till due date " + millisTillDueDate);
   if (millisTillDueDate < 0) {
     updatePoll();
   }
@@ -103,7 +97,6 @@ function checkWeek(dueDateMillis) {
  * Deletes the top poll option, adding that option as a new challenge to the database.
  */
 function updatePoll() {
-  console.log("in update poll");
   fetch("delete-top-option", { method: "POST" }).then(addChallengeToDb);
 }
 
@@ -111,8 +104,9 @@ function updatePoll() {
  * Adds challenge to database.
  */
 function addChallengeToDb() {
-  console.log("add challenge to db");
-  fetch(`challenge?name=${topChallenge}`, { method: "POST" });
+  topChallenge
+    ? fetch(`challenge?name=${topChallenge}`, { method: "POST" })
+    : noChallengeText();
 }
 
 /**
