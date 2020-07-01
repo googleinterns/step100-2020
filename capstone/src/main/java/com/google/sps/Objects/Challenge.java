@@ -52,6 +52,7 @@ public final class Challenge {
     challengeEntity.setProperty("name", this.challengeName);
     challengeEntity.setProperty("dueDate", this.dueDate);
     challengeEntity.setProperty("usersCompleted", this.usersCompleted);
+    challengeEntity.setProperty("timestamp", System.currentTimeMillis());
     // not setting badge for now
     return challengeEntity;
   }

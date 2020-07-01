@@ -16,6 +16,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.repackaged.com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 import com.google.sps.Objects.Challenge;
 
@@ -25,12 +26,18 @@ public class ChallengeServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("Challenge").addSort("dueDate", SortDirection.DESCENDING);
+    Query query = new Query("Challenge").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
-    // Get most recent challenge in database
-    Entity entity = results.asIterable().iterator().next();
-    Challenge challenge = Challenge.fromEntity(entity);
-    String json = new Gson().toJson(challenge);
+    String json = "";
+    // Check if there are challenges in database
+    if (Iterables.size(results.asIterable()) > 0) {
+      // Get most recent challenge in database
+      Entity entity = results.asIterable().iterator().next();
+      Challenge challenge = Challenge.fromEntity(entity);
+      json = new Gson().toJson(challenge);
+    } else {
+      json = new Gson().toJson("");
+    }
     response.setContentType("application/json");
     response.getWriter().println(json);
   }
@@ -47,7 +54,7 @@ public class ChallengeServlet extends HttpServlet {
   }
 
   /**
-   * Sets due date 7 days from when challenge is posted and at midnight.
+   * Sets due date to midnight, 7 days from when challenge is posted.
    *
    * @param d current date time
    * @return date time in a week from current date time

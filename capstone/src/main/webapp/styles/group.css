@@ -8,7 +8,7 @@
 
 body {
   font-family: "Roboto", sans-serif;
-  background-color: #F4F6F2;
+  background-color: #f4f6f2;
 }
 
 /* Post Comment */
@@ -34,7 +34,7 @@ body {
   width: 60px;
   position: absolute;
   border-radius: 50%;
-  background-color: #F7CE82;
+  background-color: #f7ce82;
   align-content: left;
   top: 50%;
   transform: translateY(-50%);
@@ -42,13 +42,13 @@ body {
 }
 
 #post-input {
-  background-color: #EEEEEE;
+  background-color: #eeeeee;
   border-radius: 10px;
   align-content: left;
   margin-left: 100px;
   height: 40px;
   width: 70%;
-  color: #8A8686;
+  color: #8a8686;
   font-family: "Roboto";
   font-style: normal;
   font-weight: normal;
@@ -84,7 +84,7 @@ body {
   height: 60px;
   width: 60px;
   border-radius: 50%;
-  background-color: #F7CE82;
+  background-color: #f7ce82;
   align-content: left;
 }
 
@@ -108,13 +108,13 @@ body {
 }
 
 #comment-input {
-  background-color: #EEEEEE;
+  background-color: #eeeeee;
   border-radius: 10px;
   align-content: left;
   margin-left: 100px;
   height: 40px;
   width: 70%;
-  color: #8A8686;
+  color: #8a8686;
   font-family: "Roboto";
   font-style: normal;
   font-weight: normal;
@@ -133,6 +133,7 @@ body {
   height: 30px;
 }
 
+/* Challenge */
 .challenge-container {
   background: var(--near-white);
   border-radius: 10px;
@@ -141,6 +142,12 @@ body {
   margin-bottom: 40px;
 }
 
+#due-date {
+  color: #acb4c2;
+  font-size: 13px;
+}
+
+/* Poll */
 .poll-container {
   background: var(--near-white);
   border-radius: 10px;
@@ -249,4 +256,3 @@ input[type="checkbox"]:checked + label:before {
   height: 15px;
   border-left: 4px solid var(--green);
 }
-
