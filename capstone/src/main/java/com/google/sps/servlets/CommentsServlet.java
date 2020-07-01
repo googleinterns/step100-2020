@@ -53,12 +53,12 @@ public class CommentsServlet extends HttpServlet {
     return commentEntity;
   }
 
-  private Entity getPostFromId(HttpServletResponse response, long postId,
-      DatastoreService datastore) throws IOException {
-    try {
-      return datastore.get(KeyFactory.createKey("Post", postId));
-    } catch (EntityNotFoundException e) {
-      return null;
-    }
+  private Entity getPostFromId(
+    HttpServletResponse response, long postId, DatastoreService datastore)  throws IOException {
+      try {
+        return datastore.get(KeyFactory.createKey("Post", postId));
+      } catch (EntityNotFoundException e) {
+        return null;
+      }
   }
 }

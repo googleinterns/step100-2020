@@ -56,7 +56,7 @@ public class GroupPostDataServlet extends HttpServlet {
     List<Post> posts = new ArrayList<>();
     List<Long> likedPosts = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      posts.add(getPostEntity(entity));
+      posts.add(postEntity(entity));
       ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
       if (likes != null && likes.contains(userId)) {
         likedPosts.add(entity.getKey().getId());
@@ -69,35 +69,19 @@ public class GroupPostDataServlet extends HttpServlet {
     response.getWriter().println(new Gson().toJson(postsRes));
   }
 
-  private Post getPostEntity(Entity entity) {
-    long postId = entity.getKey().getId();
-    long timestamp = (long) entity.getProperty("timestamp");
-    String authorId = (String) entity.getProperty("authorId");
-    String postText = (String) entity.getProperty("postText");
-    String challengeName = (String) entity.getProperty("challengeName");
-    String img = (String) entity.getProperty("img");
-    HashSet<String> likes = (entity.getProperty("likes") == null) 
-      ? new HashSet<>() 
-      : new HashSet<String>((ArrayList<String>) entity.getProperty("likes"));   
-    ArrayList<Comment> comments = new ArrayList<>();
-  
+  public Post postEntity(Entity entity) {
+    Post userPost = Post.getPostEntity(entity);
     // Create list of comment objects from list of comment entities 
     if (entity.getProperty("comments") != null) {
-      createCommentObjectList(comments, entity);
+      createCommentObjectList(userPost.getComments(), entity);
     }
-
-    Post userPost = new Post(postId, authorId, postText, comments, challengeName, timestamp, img, likes);
     return userPost;
   }
 
   private void createCommentObjectList(ArrayList<Comment> comments, Entity entity) {
     ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
     for (EmbeddedEntity comment: commentEntitys) {
-      comments.add(
-        new Comment((long) comment.getProperty("timestamp"), 
-          (String) comment.getProperty("commentText"), 
-          (String) comment.getProperty("userId"))
-      );
+      comments.add(Comment.getCommentEntity(comment));
     }
   }
 
@@ -135,7 +119,7 @@ public class GroupPostDataServlet extends HttpServlet {
   // Create list of comment entities from list of comment objects
   private ArrayList<EmbeddedEntity> createCommentEntities(ArrayList<Comment> comments) {
     ArrayList<EmbeddedEntity> allComments = new ArrayList<>();
-    for(Comment comment: comments) {
+    for (Comment comment: comments) {
       EmbeddedEntity commentEntity = new EmbeddedEntity();
       commentEntity.setProperty("timestamp", comment.getTimestamp());
       commentEntity.setProperty("commentText", comment.getCommentText());

@@ -2,6 +2,7 @@ package com.google.sps.Objects;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import com.google.appengine.api.datastore.Entity;
 
 public final class Post {
 
@@ -32,6 +33,20 @@ public final class Post {
     this.challengeName = challengeName;
     this.img = img;
     this.likes = likes;
+  }
+
+  public static Post getPostEntity(Entity entity) {
+    long postId = entity.getKey().getId();
+    long timestamp = (long) entity.getProperty("timestamp");
+    String authorId = (String) entity.getProperty("authorId");
+    String postText = (String) entity.getProperty("postText");
+    String challengeName = (String) entity.getProperty("challengeName");
+    String img = (String) entity.getProperty("img");
+    HashSet<String> likes = (entity.getProperty("likes") == null) 
+      ? new HashSet<>() 
+      : new HashSet<String>((ArrayList<String>) entity.getProperty("likes"));   
+    ArrayList<Comment> comments = new ArrayList<>();
+    return new Post(postId, authorId, postText, comments, challengeName, timestamp, img, likes);
   }
 
   public long getTimestamp() {
