@@ -14,6 +14,7 @@ function uploadImage() {
       });
     }
 }
+
 let postResponse;
 function loadPosts() {
   fetch('/group-post').then(response => response.json()).then((postsResp) => {
@@ -77,6 +78,10 @@ function createSinglePost(post, likedPosts) {
   postDiv.appendChild(createProfileImg(post));
   postDiv.append(createAuthor(post));
   postDiv.append(createPostText(post));
+  console.log(post.img);
+  if (post.img != null && post.img != "") {
+    postDiv.append(createPostImage(post));
+  }
   postDiv.append(createLikesContainer(post, likedPosts));
   postDiv.append(createCommentsContainer(post));
   postDiv.append(createCommentBox(post));
@@ -106,6 +111,18 @@ function createPostText(post) {
   return postContent;
 }
 
+// Create HTML element for post img
+function createPostImage(post) {
+  const imageDiv = document.createElement('div');
+  imageDiv.className = "img-div";
+  let imageContent = document.createElement('img');
+  imageContent.className = "uploadedImage";
+  imageContent.src = "serve?blob-key=" + post.img;
+  imageDiv.appendChild(imageContent);
+  return imageDiv;
+}
+
+// Create HTML elements for like icon and string
 function createLikesContainer(post, likedPosts) {
   const likesDiv = document.createElement('div');
   likesDiv.className = "likes-div";
@@ -193,10 +210,10 @@ function createCommentBox(post) {
 
 // Gets URL for uploaded image
 function fetchBlobstoreUrlAndShowForm() {
-  fetch('/post-image-handler').then((response) => {
+  fetch('/post-image-blobstore').then((response) => {
   	return response.text();
   }).then((imageUploadUrl) => {
-    const messageForm = document.getElementById('post-form')
+    const messageForm = document.getElementById('post-form');
     messageForm.action = imageUploadUrl;
   });
 }
