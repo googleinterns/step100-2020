@@ -28,13 +28,12 @@
       </div>
 
       <div class="create-post">
-        <form id="post-form" method="POST" action="group-post">
+        <form id="post-form" method="POST" enctype="multipart/form-data">
           <span class="user-img align-vertical"></span>
 
           <input type="text" id="post-input" class="align-vertical" name="post-input" placeholder="Post a status">
 
           <input id='fileid' type='file' name='image' hidden/>
-          <button id="camera-btn" class="camera-btn align-vertical"><img class="medium-icon" src="images/camera.png" alt/></button>
 
           <button class="post-btn align-vertical" type="submit"><img class="medium-icon" src="images/send_plane.png" alt/></button>
         </form>
