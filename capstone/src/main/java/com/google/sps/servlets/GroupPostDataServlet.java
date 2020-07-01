@@ -58,7 +58,7 @@ public class GroupPostDataServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
       posts.add(getPostEntity(entity));
       ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
-      if(likes != null && likes.contains(userId)) {
+      if (likes != null && likes.contains(userId)) {
         likedPosts.add(entity.getKey().getId());
       }
     }
@@ -92,7 +92,7 @@ public class GroupPostDataServlet extends HttpServlet {
 
   private void createCommentObjectList(ArrayList<Comment> comments, Entity entity) {
     ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
-    for(EmbeddedEntity comment: commentEntitys) {
+    for (EmbeddedEntity comment: commentEntitys) {
       comments.add(
         new Comment((long) comment.getProperty("timestamp"), 
           (String) comment.getProperty("commentText"), 
