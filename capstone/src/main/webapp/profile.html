@@ -16,9 +16,13 @@
         <div class="wrapper">
           <div id="profile-pic"></div>
           <h2 id="name-container"></h2>
-          <div id="badge-container"></div>
+          <div id="badge-container">
+            <h4>Badges</h4>
+          </div>
           <div id="buttons-container"></div>
-          <img src="images/edit.svg"></img>
+          <button id="edit-btn" onclick="editProfile()">
+            <img id="edit" src="images/edit.svg"></img>
+          </button>
         </div>
       </div>
       <div id="main" class="main">
@@ -28,7 +32,9 @@
           <h1 id="phone">Phone Number</h1>
           <p id="phone-container"></p>
           <h1 id="interests">Interests</h1>
+          <div id="interests-container"></div>
           <h1 id="groups">Groups</h1>
+          <div id="groups-container"></div>
           <h1 id="ongoing-challenges">Ongoing Challenges</h1>
           <h1 id="past-challenges">Past Challenges</h1>
         </div>
@@ -36,10 +42,12 @@
     </div>
 
     <template id="group-template">
-      <div class="group-container">
-        <div id="group-name" class="group-name"></div>
-        <div id="num-votes" class="votes-label"></div>
-      </div>
+      <a id="group-page-link">
+        <div class="group-container">
+          <div id="header-img" class="header-img"></div>
+          <div id="group-name" class="group-name"></div>
+        </div>
+      </a>
     </template>
 
     <template id="challenge-template">
