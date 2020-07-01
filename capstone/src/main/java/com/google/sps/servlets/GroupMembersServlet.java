@@ -19,7 +19,51 @@ import error.ErrorHandler;
 
 @WebServlet("/group-members")
 
-public class UpdateLikesServlet extends HttpServlet {
+public class GroupMembersServlet extends HttpServlet {
+
+  private ErrorHandler errorHandler = new ErrorHandler();
 
   @Override
+  // Adds a new member to a group 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
+    String userId = this.getUserId(response);
+    Long groupId = Long.parseLong(request.getParameter("groupId"));
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Entity group = this.getGroupFromId(response, groupId, datastore);
+    ArrayList<String> members = 
+      (ArrayList<String>) group.getProperty("members");
+    if (members == null) {
+      members = new ArrayList<>();
+    }
+
+    this.addMember(members, userId);
+    group.setProperty("members", members);
+    datastore.put(group);
+  }
+
+  private void addMember(ArrayList<String> members, String userId) {
+    if (!members.contains(userId)) {
+      members.add(userId);
+    }
+  }
+
+  private String getUserId(HttpServletResponse response) throws IOException {
+  UserService userService = UserServiceFactory.getUserService();
+    if (userService.isUserLoggedIn()) {
+      return userService.getCurrentUser().getUserId();
+    }
+    errorHandler.sendError(response, "User is not logged in.");
+    return "";
+  }
+
+  private Entity getGroupFromId(HttpServletResponse response, long groupId, DatastoreService datastore) throws IOException {
+    try {
+      return datastore.get(KeyFactory.createKey("Group", groupId));
+    } catch (EntityNotFoundException e) {
+      errorHandler.sendError(response, "Group does not exist.");
+      return null;
+    }
+  }
+}

@@ -11,7 +11,7 @@ public final class Group {
   private final String groupName;
   private final String headerImg;
 
-  public Group(ArrayList<String> membersIds, ArrayList<Challenge> challenges, ArrayList<Post> posts, 
+  public Group(ArrayList<String> memberIds, ArrayList<Challenge> challenges, ArrayList<Post> posts, 
       Poll poll, String groupName, String headerImg) {
     this.memberIds = memberIds;
     this.challenges = challenges;
