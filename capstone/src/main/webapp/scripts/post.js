@@ -34,9 +34,7 @@ function addLikeButtonListener() {
   let likeBtns = document.getElementsByClassName('like-icon vertical-align');
     for (let i = 0; i < likeBtns.length; i++) {
       likeBtns[i].addEventListener("click", function() {
-        /* likeId = postId + "like"
-        use substring to just get the postId. */
-        let postId = parseInt(this.id.substring(0, this.id.length - 4));
+        let postId = parseInt(getPostIdFromsLikesId(this.id));
         let userLikedPosts = postResponse["likedPosts"];
         if(userLikedPosts.includes(postId)) {
           likeToggled(this.id, false);
@@ -48,13 +46,17 @@ function addLikeButtonListener() {
 }
 
 function likeToggled(likeId, liked) {
-  /* likeId = postId + "like"
-  use substring to just get the postId. */
-  let postId = likeId.substring(0, likeId.length - 4);
+  let postId = getPostIdFromsLikesId(likeId);
   let request = new Request(`/update-likes?id=${postId}&liked=${liked}`, { method: "POST" });
   fetch(request).then(() => {
     loadPosts();
   }); 
+}
+
+/* likeId = postId + "like"
+  use substring to just get the postId. */
+function getPostIdFromsLikesId(likeId) {
+  return likeId.substring(0, likeId.length - 4);
 }
 
 // Performs POST request to add comment to post 
