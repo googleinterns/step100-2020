@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.repackaged.com.google.common.collect.Iterables;
 
 /**
  * This servlet is called weekly to delete the top challenge suggestion so that
@@ -45,7 +46,16 @@ public class DeletePollOptionServlet extends HttpServlet {
   private long setMaxVotesAndId(PreparedQuery results) {
     long maxVotedId = 0;
     int maxVotes = 0;
-    for (Entity entity : results.asIterable()) {
+    Iterable<Entity> resultsIterable = results.asIterable();
+    // Set maxVotedId to be first one in iterable of Entities
+    if (Iterables.size(resultsIterable) > 0) {
+      maxVotedId = results.asIterable().iterator().next().getKey().getId();
+    }
+    /*
+     * Update maxVotes and maxVotedId by iterating through Entities, checking for
+     * max votes
+     */
+    for (Entity entity : resultsIterable) {
       long id = entity.getKey().getId();
       List<String> votes = (ArrayList<String>) entity.getProperty("votes");
       int numVotes;

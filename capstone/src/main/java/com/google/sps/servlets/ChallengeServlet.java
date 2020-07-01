@@ -60,6 +60,7 @@ public class ChallengeServlet extends HttpServlet {
    * @return date time in a week from current date time
    */
   private LocalDateTime getDueDate(LocalDateTime d) {
-    return d.plusDays(7).withHour(23).withMinute(59).withSecond(59).withNano(0);
+//    d.plusDays(7).withHour(23).withMinute(59).withSecond(59).withNano(0);
+    return d.plusDays(0).withHour(16).withMinute(55).withSecond(0).withNano(0);
   }
 }

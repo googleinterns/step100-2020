@@ -29,6 +29,10 @@ function getPollOptions() {
     .then(pollData => {
       const optionsContainer = document.getElementById("options-container");
       optionsContainer.innerHTML = "";
+      if (pollData["options"].length == 0) {
+        console.log("no options left");
+        return;
+      }
       let maxVotes = getMaxVotes(pollData);
       topChallenge = pollData["options"][0]["text"];
       pollData["options"].forEach(option => {
@@ -37,7 +41,13 @@ function getPollOptions() {
       return pollData["votedOptions"];
     })
     .then(votedOptions => {
-      handleCheck(votedOptions);
+      console.log("handling voted options");
+      if (votedOptions) {
+        handleCheck(votedOptions);
+      } else {
+        console.log("no voted options");
+        return;
+      }
     })
     .then(getChallenge);
 }
@@ -81,7 +91,7 @@ function checkWeek(dueDateMillis) {
   let now = new Date();
   let millisTillDueDate = new Date(dueDateMillis) - now;
   // let millisTillDueDate =
-  //   new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 31, 0, 0) -
+  //   new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 46, 0, 0) -
   //   now;
   console.log("millis till due date " + millisTillDueDate);
   if (millisTillDueDate < 0) {
@@ -101,6 +111,7 @@ function updatePoll() {
  * Adds challenge to database.
  */
 function addChallengeToDb() {
+  console.log("add challenge to db");
   fetch(`challenge?name=${topChallenge}`, { method: "POST" });
 }
 
