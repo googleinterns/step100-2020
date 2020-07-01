@@ -1,3 +1,4 @@
+/* Styling the content area */
 .content {
   display: flex;
   font-family: Roboto;
@@ -34,6 +35,25 @@
 .main h1 {
   font-size: 24px;
   font-weight: bold;
+}
+
+.sidebar .wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar #profile-pic {
+  background-color: var(--orange);
+  border-radius: 50%;
+  height: 150px;
+  width: 150px;
+}
+
+.sidebar #badge-container {
+  background-color: var(--badges-background);
+  height: 170px;
+  width: 200px;
 }
 
 @media screen and (max-width: 650px) {
