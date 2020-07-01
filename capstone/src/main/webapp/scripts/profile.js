@@ -45,20 +45,62 @@ function displayUserInfo(user) {
   phoneContainer.innerHTML = user.phoneNumber;
 
   displayInterests(user.interests);
-  displayGroups(user.groups);
-  displayChallenges(user.groups);
-  displayBadges(user.badges);
   displayProfilePicture(user.profilePic);
+
+  getGroupData(user.groups);
+  
+  displayBadges(user.badges); // maybe change this to getBadgeData?
+                              // or just add to Badge and User class
 }
 
 /** Display user's interests. */
 function displayInterests(interests) {
-  // for each interest
+  const interestContainer = document.getElementById('interests-container');
+  for (interest of interests) {
+    const interestElement = document.createElement('span');
+    interestElement.id = 'interest';
+    interestElement.innerText = interest;
+    interestContainer.appendChild(interestElement);
+  }
+}
+
+/** Fetch user's group membership data. */
+function getGroupData() {
+  fetch('/user-groups')
+  .then(response => response.json())
+  .then((groups) => {
+    displayGroups(groups);
+    displayChallenges(groups);
+  });
 }
 
 /** Display groups current user is a part of. */
 function displayGroups(groups) {
-  // for each group, use the group template
+  const groupsContainer = document.getElementById("groups-container");
+  const groupElement = document.getElementById("group-template");
+
+  // Hard coded group for now, will remove once we support users joining different groups
+  let groupElementNode = document.importNode(groupElement.content, true);
+  let groupLink = groupElementNode.getElementById('group-page-link');
+  groupLink.href = "group.html";
+  let groupName = groupElementNode.getElementById('group-name');
+  groupName.innerText = "Group Name";
+  groupsContainer.appendChild(groupElementNode);
+
+  for (group of groups) {
+    let groupElementNode = document.importNode(groupElement.content, true);
+
+    let groupContainer = groupElementNode.querySelector('.group-container');
+    // set group-container div's id to be the groupId
+
+    let groupName = groupElementNode.getElementById('group-name');
+    groupName.innerText = group.groupName;
+
+    let groupImage = groupElementNode.getElementById('header-img');
+    // set image header based off of group.headerImg url
+
+    groupsContainer.appendChild(groupElementNode);
+  }
 }
 
 /** Display the user's ongoing and past challenges  */
@@ -73,5 +115,10 @@ function displayBadges(badges) {
 
 /** Display the user's profile picture */
 function displayProfilePicture(picUrl) {
+
+}
+
+/** Open a modal form for users to edit their profile information */
+function editProfile() {
 
 }

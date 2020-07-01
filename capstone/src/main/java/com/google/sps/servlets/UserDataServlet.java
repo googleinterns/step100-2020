@@ -46,8 +46,6 @@ import error.ErrorHandler;
 @WebServlet("/user")
 public class UserDataServlet extends HttpServlet {
 
-  private ErrorHandler errorHandler = new ErrorHandler();
-
   /**
    * Gets User data from the Datastore and returns it.
    */
@@ -61,70 +59,16 @@ public class UserDataServlet extends HttpServlet {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       Key entityKey = KeyFactory.createKey("User", userId);
       try {
-        currentUser = currentUser.fromEntity(datastore.get(entityKey));
+        currentUser = User.fromEntity(datastore.get(entityKey));
       } catch (EntityNotFoundException e) {
-        errorHandler.sendError(response, "User not found.");
+        ErrorHandler.sendError(response, "User not found.");
       }
     } else {
-      errorHandler.sendError(response, "User not logged in.");
+      ErrorHandler.sendError(response, "User not logged in.");
     }
 
     // Convert to json
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(currentUser));
-  }
-
-  /**
-   * Creates and returns a User object given a user Entity.
-   */
-  public User getUserObject(Entity entity) {
-    String userId = (String) entity.getProperty("userId");
-    String firstName = (String) entity.getProperty("firstName");
-    String lastName = (String) entity.getProperty("lastName");
-    String email = (String) entity.getProperty("email");
-    String phoneNumber = (String) entity.getProperty("phoneNumber");
-    String profilePic = ""; // todo: add profilePic url to datastore/figure out Blobstore
-    ArrayList<String> interests = (ArrayList<String>) entity.getProperty("interests");
-
-    LinkedHashSet<String> badgeIds = (entity.getProperty("badges") == null)
-        ? new LinkedHashSet<>()
-        : new LinkedHashSet<String>((ArrayList<String>) entity.getProperty("badges"));
-    LinkedHashSet<String> groupIds = (entity.getProperty("groups") == null)
-        ? new LinkedHashSet<>()
-        : new LinkedHashSet<String>((ArrayList<String>) entity.getProperty("groups"));
-    LinkedHashSet<Badge> badges = getBadges(badgeIds);
-    LinkedHashSet<Group> groups = getGroups(groupIds);
-
-    User user = new User(userId, firstName, lastName, email, phoneNumber, profilePic, 
-                         badges, groups, interests);
-    return user;
-  }
-
- /**
-  * Creates and returns a list of Groups given a list of groupIds (Strings).
-  */
-  public LinkedHashSet<Group> getGroups(LinkedHashSet<String> groupIdList) {
-    return null;
-  }
-
- /**
-  * Creates and returns a Group object given a group Entity.
-  */
-  public Group getGroupObject(Entity entity) {
-    return null;
-  }
-
- /**
-  * Creates and returns a list of Badges given a list of badgeIds (Strings).
-  */
-  public LinkedHashSet<Badge> getBadges(LinkedHashSet<String> badgeIdList) {
-    return null;
-  }
-
- /**
-  * Creates and returns a Badge object given a badge Entity.
-  */
-  public Badge getBadgeObject(Entity entity) {
-    return null;
   }
 }

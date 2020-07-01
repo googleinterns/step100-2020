@@ -15,6 +15,7 @@
 package com.google.sps.servlets;
 
 import com.google.sps.Objects.Badge;
+import com.google.sps.Objects.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -29,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 
 @WebServlet("/createNewUser")
 public class CreateNewUserServlet extends HttpServlet {
@@ -43,26 +45,18 @@ public class CreateNewUserServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      datastore.put(createUserEntity(userService, first, last, phone, interests));
+      String userId = userService.getCurrentUser().getUserId();
+      User user = new User(/* userId */ userId,
+                          /* firstName */ first,
+                          /* lastName */ last, 
+                          /* email */ userService.getCurrentUser().getEmail(),
+                          /* phoneNumber */ phone, 
+                          /* profilePic */ "", 
+                          /* badges */ new LinkedHashSet<Badge>(), 
+                          /* groups */ new LinkedHashSet<Long>(), 
+                          /* interests */ interests);
+      datastore.put(user.toEntity());
     }
-  }
-
-  /**
-   * Creates a new User Entity and adds it to the Datastore.
-   */
-  private Entity createUserEntity(UserService userService, String first, String last, 
-                                  String phone, ArrayList<String> interests) {
-    String userId = userService.getCurrentUser().getUserId();
-    Entity userEntity = new Entity("User", userId);
-    userEntity.setProperty("userId", userId);
-    userEntity.setProperty("firstName", first);
-    userEntity.setProperty("lastName", last);
-    userEntity.setProperty("email", userService.getCurrentUser().getEmail());
-    userEntity.setProperty("phoneNumber", phone);
-    userEntity.setProperty("badges", new ArrayList<Badge>());
-    userEntity.setProperty("groups", new ArrayList<String>());
-    userEntity.setProperty("interests", interests);
-    return userEntity;
   }
 
   /**
