@@ -64,11 +64,11 @@ function likeToggled(likeId, liked) {
 
 // Performs POST request to add comment to post 
 function postComment(buttonId, commentBoxId) {
-    const commentVal = document.getElementById(commentBoxId).value;
-    let request = new Request(`/post-comment?id=${buttonId}&comment-text=${commentVal}`, { method: "POST" });
-    fetch(request).then(() => {
-      loadPosts();
-    });
+  const commentVal = document.getElementById(commentBoxId).value;
+  let request = new Request(`/post-comment?id=${buttonId}&comment-text=${commentVal}`, { method: "POST" });
+  fetch(request).then(() => {
+    loadPosts();
+  });
 }
 
 function createSinglePost(post, likedPosts) {

@@ -43,8 +43,8 @@ public class UpdateLikesServlet extends HttpServlet {
   }
 
   private void getUpdatedVotes(boolean isLiked, String userId, ArrayList<String> likes) {
-    if(isLiked) {
-      if(!likes.contains(userId)) likes.add(userId);
+    if (isLiked) {
+      if (!likes.contains(userId)) likes.add(userId);
     } else {
       likes.remove(userId);
     }
@@ -52,7 +52,7 @@ public class UpdateLikesServlet extends HttpServlet {
 
   private String getUserId(HttpServletResponse response) throws IOException {
   UserService userService = UserServiceFactory.getUserService();
-    if(userService.isUserLoggedIn()) {
+    if (userService.isUserLoggedIn()) {
       return userService.getCurrentUser().getUserId();
     }
     errorHandler.sendError(response, "User is not logged in.");

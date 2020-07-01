@@ -34,7 +34,7 @@ public class CommentsServlet extends HttpServlet {
     ArrayList<EmbeddedEntity> allComments = (ArrayList<EmbeddedEntity>) postEntity.getProperty("comments");
 
     // Create comment entity and add to comment arraylist for post
-    if(allComments == null) {
+    if (allComments == null) {
       ArrayList<EmbeddedEntity> comments = new ArrayList<>();
       comments.add(createCommentEntity(commentText, "user"));
       postEntity.setProperty("comments", comments);
