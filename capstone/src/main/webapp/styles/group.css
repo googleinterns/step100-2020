@@ -122,6 +122,10 @@ p{
   outline: none;
 }
 
+#fileid {
+  display: none;
+}
+
 .medium-icon {
   height: 40px;
 }
