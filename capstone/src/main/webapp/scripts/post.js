@@ -24,7 +24,7 @@ function addCommentInputListener() {
   let elements = document.getElementsByClassName('post-btn align-vertical comment-btn');
     for (let i = 0; i < elements.length; i++) {
       elements[i].addEventListener("click", function() {
-        postComment(this.id, this.id + "comment-input")
+        postComment(this.id, this.id + "comment-input");
       });
     }
 }
@@ -33,6 +33,8 @@ function addLikeButtonListener() {
   let likeBtns = document.getElementsByClassName('like-icon vertical-align');
     for (let i = 0; i < likeBtns.length; i++) {
       likeBtns[i].addEventListener("click", function() {
+        /* likeId = postId + "like"
+        use substring to just get the postId. */
         let postId = parseInt(this.id.substring(0, this.id.length - 4));
         let userLikedPosts = postResponse["likedPosts"];
         if(userLikedPosts.includes(postId)) {
@@ -45,6 +47,8 @@ function addLikeButtonListener() {
 }
 
 function likeToggled(likeId, liked) {
+  /* likeId = postId + "like"
+  use substring to just get the postId. */
   let postId = likeId.substring(0, likeId.length - 4);
   let request = new Request(`/update-likes?id=${postId}&liked=${liked}`, { method: "POST" });
   fetch(request).then(() => {
@@ -105,18 +109,14 @@ function createLikesContainer(post, likedPosts) {
   likesLabel.className = "likes-label vertical-align";
   likesLabel.id = post.postId + "likes-label";
   const numLikes = post["likes"].length;
-  const likesString = numLikes > 1 
-    ? `${numLikes} likes` 
-    : `${numLikes} like`;
-  const labelString = numLikes == 0 
-    ? "" 
-    : likesString;
+  const likesString = numLikes > 1 ? `${numLikes} likes` : `${numLikes} like`;
+  const labelString = numLikes == 0 ? "" : likesString;
   likesLabel.innerText = `${labelString}`;
   likesDiv.appendChild(likesLabel);
 
   // Set like icon state (filled or only outline)
   const likeIcon = document.createElement('ion-icon');
-  if(likedPosts.includes(post.postId)) {
+  if (likedPosts.includes(post.postId)) {
     likeIcon.className = "like-icon vertical-align liked";
   } else {
     likeIcon.className = "like-icon vertical-align unliked";
@@ -132,7 +132,7 @@ function createCommentsContainer(post) {
   const commentsContainer = document.createElement('div');
   commentsContainer.className = "comments-content";
   const allComments = document.createElement('ul');
-  for(comment of post.comments) {
+  for (comment of post.comments) {
     allComments.appendChild(createSingleComment(comment));
   }
   commentsContainer.appendChild(allComments);
