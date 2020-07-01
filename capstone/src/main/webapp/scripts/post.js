@@ -68,7 +68,6 @@ function createSinglePost(post, likedPosts) {
   postDiv.appendChild(createProfileImg(post));
   postDiv.append(createAuthor(post));
   postDiv.append(createPostText(post));
-  console.log(post.img);
   if (post.img != null && post.img != "") {
     postDiv.append(createPostImage(post));
   }
