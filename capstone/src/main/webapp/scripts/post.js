@@ -1,8 +1,8 @@
 function init() {
   loadPosts();
   getPollOptions();
-  uploadImage();
-  //fetchBlobstoreUrlAndShowForm();
+  //uploadImage();
+  fetchBlobstoreUrlAndShowForm();
 }
 
 function uploadImage() {
