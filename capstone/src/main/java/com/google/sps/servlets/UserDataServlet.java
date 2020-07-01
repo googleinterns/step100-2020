@@ -38,12 +38,15 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import com.google.gson.Gson;
+import error.ErrorHandler;
 
 /**
  * Servlet to handle returning User data from the Datastore.
  */
 @WebServlet("/user")
 public class UserDataServlet extends HttpServlet {
+
+  private ErrorHandler errorHandler = new ErrorHandler();
 
   /**
    * Gets User data from the Datastore and returns it.
@@ -58,12 +61,12 @@ public class UserDataServlet extends HttpServlet {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       Key entityKey = KeyFactory.createKey("User", userId);
       try {
-        currentUser = getUserObject(datastore.get(entityKey));
-      }   catch (EntityNotFoundException e) {
-        // display error, this shouldn't happen
+        currentUser = currentUser.fromEntity(datastore.get(entityKey));
+      } catch (EntityNotFoundException e) {
+        errorHandler.sendError(response, "User not found.");
       }
     } else {
-      // display error - this shouldn't happen
+      errorHandler.sendError(response, "User not logged in.");
     }
 
     // Convert to json
