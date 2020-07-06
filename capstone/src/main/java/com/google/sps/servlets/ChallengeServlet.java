@@ -16,7 +16,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.gson.Gson;
+import com.google.appengine.repackaged.com.google.common.collect.Iterables;
 import com.google.sps.Objects.Challenge;
 
 @WebServlet("challenge")
@@ -25,14 +25,16 @@ public class ChallengeServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("Challenge").addSort("dueDate", SortDirection.DESCENDING);
+    Query query = new Query("Challenge").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
-    // Get most recent challenge in database
-    Entity entity = results.asIterable().iterator().next();
-    Challenge challenge = Challenge.fromEntity(entity);
-    String json = new Gson().toJson(challenge);
-    response.setContentType("application/json");
-    response.getWriter().println(json);
+    Challenge challenge = null;
+    // Check if there are challenges in database
+    if (Iterables.size(results.asIterable()) > 0) {
+      // Get most recent challenge in database
+      Entity entity = results.asIterable().iterator().next();
+      challenge = Challenge.fromEntity(entity);
+    }
+    ServletHelper.write(response, challenge, "application/json");
   }
 
   @Override
@@ -40,14 +42,18 @@ public class ChallengeServlet extends HttpServlet {
     String challengeName = request.getParameter("name");
     LocalDateTime dueDate = this.getDueDate(LocalDateTime.now());
     long dueDateMillis = Timestamp.valueOf(dueDate).getTime();
-    Challenge challenge = new Challenge(challengeName, dueDateMillis, null,
-        new ArrayList<String>());
+    Challenge challenge =
+        new Challenge(
+            challengeName,
+            dueDateMillis, /* milliseconds until due date */
+            null, /* badge */
+            new ArrayList<String>() /* users completed */);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(challenge.toEntity());
   }
 
   /**
-   * Sets due date 7 days from when challenge is posted and at midnight.
+   * Sets due date to midnight, 7 days from when challenge is posted.
    *
    * @param d current date time
    * @return date time in a week from current date time

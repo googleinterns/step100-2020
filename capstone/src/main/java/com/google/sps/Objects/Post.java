@@ -2,9 +2,11 @@ package com.google.sps.Objects;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import com.google.appengine.api.datastore.Entity;
 
 public final class Post {
 
+  private final long postId;
   private final String authorId;
   private final String postText;
   private final ArrayList<Comment> comments;
@@ -12,8 +14,18 @@ public final class Post {
   private final long timestamp;
   private final String img;
   private final HashSet<String> likes;
-
-  public Post(String authorId, String postText, ArrayList<Comment> comments, String challengeName, long timestamp, String img, HashSet<String> likes){
+  
+  public Post(
+    long postId, 
+    String authorId, 
+    String postText, 
+    ArrayList<Comment> comments, 
+    String challengeName, 
+    long timestamp, 
+    String img, 
+    HashSet<String> likes
+  ) {
+    this.postId = postId;
     this.timestamp = timestamp;
     this.postText = postText;
     this.authorId = authorId;
@@ -21,6 +33,20 @@ public final class Post {
     this.challengeName = challengeName;
     this.img = img;
     this.likes = likes;
+  }
+
+  public static Post getPostEntity(Entity entity) {
+    long postId = entity.getKey().getId();
+    long timestamp = (long) entity.getProperty("timestamp");
+    String authorId = (String) entity.getProperty("authorId");
+    String postText = (String) entity.getProperty("postText");
+    String challengeName = (String) entity.getProperty("challengeName");
+    String img = (String) entity.getProperty("img");
+    HashSet<String> likes = (entity.getProperty("likes") == null) 
+      ? new HashSet<>() 
+      : new HashSet<String>((ArrayList<String>) entity.getProperty("likes"));   
+    ArrayList<Comment> comments = new ArrayList<>();
+    return new Post(postId, authorId, postText, comments, challengeName, timestamp, img, likes);
   }
 
   public long getTimestamp() {

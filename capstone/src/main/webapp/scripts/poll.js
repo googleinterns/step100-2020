@@ -1,11 +1,13 @@
-const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
+const BAR_WIDTH = "690";
 const TRANSITION_MILLIS = 600;
 let maxVotes;
-let topChallenge = "";
+let topChallenge = null;
+const NO_CHALLENGES =
+  "No current challenges. Submit a suggestion in the poll and mark checkbox for challenge to be posted. The challenge will be updated weekly based on top voted poll option.";
 
 /**
- * Add new option to poll.
+ * Adds new option to poll.
  */
 function addPollOption() {
   const text = document.getElementById("input-box").value;
@@ -17,8 +19,9 @@ function addPollOption() {
 }
 
 /**
- * Get poll data, which includes each poll option and the * list of options
- * that the current logged in user has voted for, from server and load to DOM.
+ * Gets poll data, which includes each poll option and the list of options
+ * that the current logged in user has voted for, from server and load to DOM. Then get the
+ * weekly challenge.
  */
 function getPollOptions() {
   fetch("/poll")
@@ -26,6 +29,9 @@ function getPollOptions() {
     .then(pollData => {
       const optionsContainer = document.getElementById("options-container");
       optionsContainer.innerHTML = "";
+      if (pollData["options"].length == 0) {
+        return;
+      }
       let maxVotes = getMaxVotes(pollData);
       topChallenge = pollData["options"][0]["text"];
       pollData["options"].forEach(option => {
@@ -34,40 +40,76 @@ function getPollOptions() {
       return pollData["votedOptions"];
     })
     .then(votedOptions => {
-      handleCheck(votedOptions);
+      if (votedOptions) {
+        handleCheck(votedOptions);
+      } else {
+        return;
+      }
     })
-    .then(checkWeek);
+    .then(getChallenge);
 }
 
-function checkWeek() {
-  getChallenge();
-  let now = new Date();
-  //Hard coding due date for now
-  let millisTillDueDate =
-    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 13, 04, 0, 0) -
-    now;
-  if (millisTillDueDate >= 0) {
-    setTimeout(updatePoll, millisTillDueDate);
-  }
-}
-
+/**
+ * Gets the current challenge from server and post to DOM. Check if the challenge needs to be
+ * updated.
+ */
 function getChallenge() {
+  //Milliseconds until challenge due date.
+  let dueDateMillis = 0;
   fetch("challenge")
     .then(response => response.json())
     .then(challengeData => {
       const weeklyChallenge = document.getElementById("weekly-challenge");
-      weeklyChallenge.innerText = challengeData["challengeName"];
-    });
+      const dueDateContainer = document.getElementById("due-date");
+      if (challengeData) {
+        weeklyChallenge.innerText = challengeData["challengeName"];
+        dueDateMillis = challengeData["dueDate"];
+        const dueDate = new Date(dueDateMillis).toString();
+        dueDateContainer.innerText = `Due: ${dueDate}`;
+      } else {
+        noChallengeText();
+        updatePoll();
+      }
+    })
+    .then(() => checkWeek(dueDateMillis));
 }
 
+function noChallengeText() {
+  const weeklyChallenge = document.getElementById("weekly-challenge");
+  const dueDateContainer = document.getElementById("due-date");
+  weeklyChallenge.innerText = NO_CHALLENGES;
+  dueDateContainer.innerText = "";
+}
+
+/**
+ * Checks if the challenge needs to be updated.
+ * @param {long} dueDateMillis
+ */
+function checkWeek(dueDateMillis) {
+  let now = new Date();
+  // let millisTillDueDate =
+  //   new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 02, 0, 0) -
+  //   now;
+  let millisTillDueDate = new Date(dueDateMillis) - now;
+  if (millisTillDueDate < 0) {
+    updatePoll();
+  }
+}
+
+/**
+ * Deletes the top poll option, adding that option as a new challenge to the database.
+ */
 function updatePoll() {
   fetch("delete-top-option", { method: "POST" }).then(addChallengeToDb);
 }
 
+/**
+ * Adds challenge to database.
+ */
 function addChallengeToDb() {
-  fetch(`challenge?name=${topChallenge}`, { method: "POST" }).then(
-    getChallenge
-  );
+  topChallenge
+    ? fetch(`challenge?name=${topChallenge}`, { method: "POST" })
+    : noChallengeText();
 }
 
 /**
