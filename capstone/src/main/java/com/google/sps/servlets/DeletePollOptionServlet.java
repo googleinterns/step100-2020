@@ -13,18 +13,18 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.repackaged.com.google.common.collect.Iterables;
 
 /**
- * This servlet is called weekly to delete the top challenge suggestion so that
- * the new weekly challenge can be updated to be the next top voted suggestion
- * following the one that has just been deleted.
+ * This servlet is called weekly to delete the top challenge suggestion so that the new weekly
+ * challenge can be updated to be the next top voted suggestion following the one that has just been
+ * deleted.
  *
  * @author lucyqu
- *
  */
 @WebServlet("delete-top-option")
 public class DeletePollOptionServlet extends HttpServlet {
@@ -35,7 +35,7 @@ public class DeletePollOptionServlet extends HttpServlet {
     Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
     long maxVotedId = this.getMaxVotedId(results);
-    this.deleteEntity(maxVotedId, results, datastore);
+    this.deleteEntity(maxVotedId, results, datastore, response);
   }
 
   /**
@@ -71,16 +71,15 @@ public class DeletePollOptionServlet extends HttpServlet {
   /**
    * Deletes the option entity with the maximum number of votes.
    *
-   * @param results   queried results
+   * @param results queried results
    * @param datastore database storing information
    */
-  private void deleteEntity(long maxVotedId, PreparedQuery results, DatastoreService datastore) {
-    for (Entity optionEntity : results.asIterable()) {
-      Key optionEntityKey = optionEntity.getKey();
-      if (optionEntityKey.getId() == maxVotedId) {
-        datastore.delete(optionEntityKey);
-        break;
-      }
-    }
+  private void deleteEntity(
+      long maxVotedId,
+      PreparedQuery results,
+      DatastoreService datastore,
+      HttpServletResponse response) {
+    Key optionKey = KeyFactory.createKey("Option", maxVotedId);
+    datastore.delete(optionKey);
   }
 }
