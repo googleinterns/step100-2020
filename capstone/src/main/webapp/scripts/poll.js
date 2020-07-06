@@ -1,5 +1,5 @@
-const BAR_WIDTH = "690";
 const BAR_HEIGHT = "55";
+const BAR_WIDTH = "690";
 const TRANSITION_MILLIS = 600;
 let maxVotes;
 let topChallenge = null;
@@ -46,7 +46,7 @@ function getPollOptions() {
         return;
       }
     })
-    .then(getChallenge());
+    .then(getChallenge);
 }
 
 /**
@@ -87,6 +87,9 @@ function noChallengeText() {
  */
 function checkWeek(dueDateMillis) {
   let now = new Date();
+  // let millisTillDueDate =
+  //   new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 02, 0, 0) -
+  //   now;
   let millisTillDueDate = new Date(dueDateMillis) - now;
   if (millisTillDueDate < 0) {
     updatePoll();
@@ -97,7 +100,7 @@ function checkWeek(dueDateMillis) {
  * Deletes the top poll option, adding that option as a new challenge to the database.
  */
 function updatePoll() {
-  fetch("delete-top-option", { method: "POST" }).then(addChallengeToDb());
+  fetch("delete-top-option", { method: "POST" }).then(addChallengeToDb);
 }
 
 /**

@@ -27,17 +27,14 @@ public class ChallengeServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("Challenge").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
-    String json = "";
+    Challenge challenge = null;
     // Check if there are challenges in database
     if (Iterables.size(results.asIterable()) > 0) {
       // Get most recent challenge in database
       Entity entity = results.asIterable().iterator().next();
-      Challenge challenge = Challenge.fromEntity(entity);
-      ServletHelper.write(response, challenge, "application/json");
-
-    } else {
-      ServletHelper.write(response, null, "application/json");
+      challenge = Challenge.fromEntity(entity);
     }
+    ServletHelper.write(response, challenge, "application/json");
   }
 
   @Override
