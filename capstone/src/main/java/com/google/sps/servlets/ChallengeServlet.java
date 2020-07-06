@@ -46,7 +46,11 @@ public class ChallengeServlet extends HttpServlet {
     LocalDateTime dueDate = this.getDueDate(LocalDateTime.now());
     long dueDateMillis = Timestamp.valueOf(dueDate).getTime();
     Challenge challenge =
-        new Challenge(challengeName, dueDateMillis, null, new ArrayList<String>());
+        new Challenge(
+            challengeName,
+            dueDateMillis, /* milliseconds until due date */
+            null, /* badge */
+            new ArrayList<String>() /* users completed */);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(challenge.toEntity());
   }
