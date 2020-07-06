@@ -17,7 +17,28 @@ function showMemberProfile(){
 
 function createMemberModal(memResponse) {
   const modalDiv = document.createElement('div');
-
-
+  modalDiv.className = "modal-div";
+  modalDiv.append(createMemberProfileImg());
+  modalDiv.append(createMemberName(memResponse));
+  modalDiv.append(createMemberBadges());
   return modalDiv;
+}
+
+function createMemberProfileImg(){
+  const memberProfileImgDiv = document.createElement('div');
+  memberProfileImgDiv.className = "member-img";
+  return memberProfileImgDiv;
+}
+
+function createMemberName(memResponse){
+  const memberName = document.createElement('h3');
+  memberName.className = "member-name";
+  memberName.innerText = memResponse.name;
+  return memberName;
+}
+
+function createMemberBadges() {
+  const memberBadges = document.createElement('div');
+  memberBadges.className = "member-badges";
+  return memberBadges;
 }

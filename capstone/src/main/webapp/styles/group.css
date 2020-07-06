@@ -61,10 +61,10 @@ p{
   display: block;
   background: #fcfcfc;
   border-radius: 10px;
-  margin-top: 250px;
-  position: absolute;
+  position: relative;
   height: 120px;
   width: 100%;
+  top: 280px;
 }
 
 .user-img {
@@ -131,8 +131,8 @@ p{
 }
 
 .post-feed {
-  margin-top: 380px;
-  position: absolute;
+  margin-top: 160px;
+  position: relative;
   display: block;
   width: 100%;
 }
@@ -330,12 +330,13 @@ p{
 }
 
 .poll-container {
-  position: absolute;
+  position: relative;
   background: #fcfcfc;
   border-radius: 10px;
   width: 100%;
   padding-bottom: 40px;
   margin-top: 200px;
+  top: 120px;
 }
 
 .inner-poll-container {
