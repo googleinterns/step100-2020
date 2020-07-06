@@ -34,7 +34,7 @@ function addLikeButtonListener() {
   let likeBtns = document.getElementsByClassName('like-icon vertical-align');
     for (let i = 0; i < likeBtns.length; i++) {
       likeBtns[i].addEventListener("click", function() {
-        let postId = parseInt(getPostIdFromsLikesId(this.id));
+        const postId = parseInt(getPostIdFromsLikesId(this.id));
         let userLikedPosts = postResponse["likedPosts"];
         if(userLikedPosts.includes(postId)) {
           likeToggled(this.id, false);
@@ -46,7 +46,7 @@ function addLikeButtonListener() {
 }
 
 function likeToggled(likeId, liked) {
-  let postId = getPostIdFromsLikesId(likeId);
+  const postId = getPostIdFromsLikesId(likeId);
   let request = new Request(`/update-likes?id=${postId}&liked=${liked}`, { method: "POST" });
   fetch(request).then(() => {
     loadPosts();
