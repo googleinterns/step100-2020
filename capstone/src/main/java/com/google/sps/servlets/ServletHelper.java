@@ -28,6 +28,8 @@ public class ServletHelper {
     String json = "";
     if (servletResponse != null) {
       json = new Gson().toJson(servletResponse);
+    } else {
+      json = new Gson().toJson("");
     }
     response.setContentType(type);
     try {
