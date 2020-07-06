@@ -47,47 +47,71 @@ import error.ErrorHandler;
 @WebServlet("/user-groups")
 public class UserGroupsServlet extends HttpServlet {
 
+  private UserService userService = UserServiceFactory.getUserService();
+  private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
   /**
    * Gets User's Group data from the Datastore and returns it.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
     Entity currentUser = null;
     ArrayList<UserGroupResponse> groups = new ArrayList<>();
 
     if (userService.isUserLoggedIn()) {
-      String userId = userService.getCurrentUser().getUserId();
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      Key entityKey = KeyFactory.createKey("User", userId);
-      try {
-        currentUser = datastore.get(entityKey);
-      } catch (EntityNotFoundException e) {
-        ErrorHandler.sendError(response, "User not found.");
-        return;
-      }
+      currentUser = getUserEntity(response);
 
       LinkedHashSet<Long> groupIds = (currentUser.getProperty("groups") == null)
         ? new LinkedHashSet<>()
         : new LinkedHashSet<Long>((ArrayList<Long>) currentUser.getProperty("groups"));
       
-      for (long groupId : groupIds) {
-        Entity groupEntity = null;
-        try {
-          groupEntity = datastore.get(KeyFactory.createKey("Group", groupId));
-        } catch (EntityNotFoundException e) {
-          ErrorHandler.sendError(response, "Group does not exist.");
-        }
-        UserGroupResponse groupResponse = UserGroupResponse.fromEntity(groupEntity);
-        groups.add(groupResponse);
-      }
+      groups = getGroupsFromIds(groupIds, response);
     } else {
       ErrorHandler.sendError(response, "User not logged in.");
+      return;
+    }
+
+    // If either of these values are null, an error occured. Do not continue.
+    if (currentUser == null || groups == null) {
       return;
     }
 
     // Convert to json
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(groups));
+  }
+
+  /*
+   * Returns the User Entity corresponding to the current user.
+   */
+  public Entity getUserEntity(HttpServletResponse response) throws IOException {
+    String userId = userService.getCurrentUser().getUserId();
+    Key entityKey = KeyFactory.createKey("User", userId);
+    try {
+      return datastore.get(entityKey);
+    } catch (EntityNotFoundException e) {
+      ErrorHandler.sendError(response, "User not found.");
+      return null;
+    }
+  }
+
+  /*
+   * Returns the list of users groups given a list of group ids.
+   */
+  public ArrayList<UserGroupResponse> getGroupsFromIds(LinkedHashSet<Long> groupIds, 
+      HttpServletResponse response) throws IOException {
+    ArrayList<UserGroupResponse> groups = new ArrayList<>();
+    for (long groupId : groupIds) {
+      Entity groupEntity = null;
+      try {
+        groupEntity = datastore.get(KeyFactory.createKey("Group", groupId));
+      } catch (EntityNotFoundException e) {
+        ErrorHandler.sendError(response, "Group does not exist.");
+        return null;
+      }
+      UserGroupResponse groupResponse = UserGroupResponse.fromEntity(groupEntity);
+      groups.add(groupResponse);
+    }
+    return groups;
   }
 }

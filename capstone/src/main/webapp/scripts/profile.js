@@ -91,13 +91,13 @@ function displayGroups(groups) {
     let groupElementNode = document.importNode(groupElement.content, true);
 
     let groupContainer = groupElementNode.querySelector('.group-container');
-    // set group-container div's id to be the groupId
+    // TODO: Set group-container div's id to be the groupId.
 
     let groupName = groupElementNode.getElementById('group-name');
     groupName.innerText = group.groupName;
 
     let groupImage = groupElementNode.getElementById('header-img');
-    // set image header based off of group.headerImg url
+    // TODO: Set image header based off of group.headerImg url.
 
     groupsContainer.appendChild(groupElementNode);
   }

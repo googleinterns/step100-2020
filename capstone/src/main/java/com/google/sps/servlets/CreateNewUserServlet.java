@@ -46,15 +46,15 @@ public class CreateNewUserServlet extends HttpServlet {
     if (userService.isUserLoggedIn()) {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       String userId = userService.getCurrentUser().getUserId();
-      User user = new User(/* userId */ userId,
-                          /* firstName */ first,
-                          /* lastName */ last, 
-                          /* email */ userService.getCurrentUser().getEmail(),
-                          /* phoneNumber */ phone, 
-                          /* profilePic */ "", 
-                          /* badges */ new LinkedHashSet<Badge>(), 
-                          /* groups */ new LinkedHashSet<Long>(), 
-                          /* interests */ interests);
+      User user = new User(userId,
+                          first,
+                          last, 
+                          /* email= */ userService.getCurrentUser().getEmail(),
+                          phone, 
+                          /* profilePic= */ "", 
+                          /* badges= */ new LinkedHashSet<Badge>(), 
+                          /* groups= */ new LinkedHashSet<Long>(), 
+                          interests);
       datastore.put(user.toEntity());
     }
   }
