@@ -1,7 +1,9 @@
 package com.google.sps.Objects.response;
 
-import java.util.List;
+import java.util.ArrayList;
 import com.google.sps.Objects.Badge;
+import java.util.LinkedHashSet;
+import com.google.appengine.api.datastore.Entity;
 
 /**
  * Contains information for the response sent by GroupMembersServlet.
@@ -21,7 +23,7 @@ public final class MemberResponse {
    * @param badges List of badge objects 
    * @param userId user id 
    */
-  public PostResponse(String profilePic, String name, LinkedHashSet<Badge> badges, String userId) {
+  public MemberResponse(String profilePic, String name, LinkedHashSet<Badge> badges, String userId) {
     this.profilePic = profilePic;
     this.badges = badges;
     this.name = name;
@@ -40,9 +42,9 @@ public final class MemberResponse {
     String profilePic = (String) entity.getProperty("profilePic");
     String name = (String) entity.getProperty("name");
     String userId = (String) entity.getProperty("userId");
-    HashSet<Badge> badges = (entity.getProperty("badges") == null) 
-      ? new HashSet<>() 
-      : new HashSet<Badge>((ArrayList<Badge>) entity.getProperty("badges"));   
+    LinkedHashSet<Badge> badges = (entity.getProperty("badges") == null) 
+      ? new LinkedHashSet<>() 
+      : new LinkedHashSet<Badge>((ArrayList<Badge>) entity.getProperty("badges"));   
     return new MemberResponse(profilePic, name, badges, userId);
   }
 

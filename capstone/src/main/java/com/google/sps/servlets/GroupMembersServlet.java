@@ -16,7 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import error.ErrorHandler;
-import com.google.sps.Objects.MemberResponse;
+import com.google.gson.Gson;
+import com.google.sps.Objects.response.MemberResponse;
 
 @WebServlet("/group-member")
 
@@ -68,12 +69,21 @@ public class GroupMembersServlet extends HttpServlet {
     }
   }
 
+  private Entity getUserFromId(HttpServletResponse response, String userId, DatastoreService datastore) throws IOException {
+    try {
+      return datastore.get(KeyFactory.createKey("Users", userId));
+    } catch (EntityNotFoundException e) {
+      errorHandler.sendError(response, "User does not exist.");
+      return null;
+    }
+  }
+
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     String userId = request.getParameter("userId");
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity member = datastore.get(KeyFactory.createKey("Users", userId));
+    Entity member = this.getUserFromId(response, userId, datastore);
     MemberResponse memResponse = MemberResponse.fromEntity(member);
 
     // Convert to json
