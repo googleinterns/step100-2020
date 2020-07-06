@@ -338,8 +338,18 @@ p {
 }
 
 #due-date {
-  color: #acb4c2;
+  color: #8a8686;
   font-size: 13px;
+}
+
+.mark-completed {
+  float: right;
+  margin-right: 40px;
+}
+
+.mark-completed-text {
+  position: relative;
+  bottom: 25px;
 }
 
 /* Poll */
