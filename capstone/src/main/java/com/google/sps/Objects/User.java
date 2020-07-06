@@ -28,6 +28,12 @@ public final class User {
     this.interests = interests;
   }
 
+  public static User getUserEntity(Entity entity) {
+    String userId = (String) entity.getProperty("userId");
+    String name = (String) entity.getProperty("");
+    return new User(timestamp, commentText, userId);
+  }
+
   public String getUserId() {
     return userId;
   }

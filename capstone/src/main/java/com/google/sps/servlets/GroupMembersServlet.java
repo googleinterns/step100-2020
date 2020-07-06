@@ -16,8 +16,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import error.ErrorHandler;
+import com.google.sps.Objects.MemberResponse;
 
-@WebServlet("/group-members")
+@WebServlet("/group-member")
 
 public class GroupMembersServlet extends HttpServlet {
 
@@ -65,5 +66,18 @@ public class GroupMembersServlet extends HttpServlet {
       errorHandler.sendError(response, "Group does not exist.");
       return null;
     }
+  }
+
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    String userId = request.getParameter("userId");
+    
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Entity member = datastore.get(KeyFactory.createKey("Users", userId));
+    MemberResponse memResponse = MemberResponse.fromEntity(member);
+
+    // Convert to json
+    response.setContentType("application/json;");
+    response.getWriter().println(new Gson().toJson(memResponse));  
   }
 }

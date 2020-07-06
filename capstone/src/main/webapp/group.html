@@ -10,9 +10,11 @@
       type="text/css"
     />
     <link rel="stylesheet" href="styles/group.css"></link>
+    <link rel="stylesheet" href="styles/members.css"></link>
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script src="scripts/post.js"></script>
     <script src="scripts/poll.js"></script>
+    <script src="scripts/members.js"></script>
     <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
     <title>Group</title>
   </head>
@@ -44,6 +46,13 @@
 
       <div class="post-feed">
         <div id="posts-container"></div>
+      </div>
+
+      <div id="memberProfile" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span class="close">&times;</span>
+        </div>
       </div>
 
       <div class="poll-container">
