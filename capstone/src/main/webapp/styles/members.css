@@ -2,7 +2,7 @@
   background-color: #fefefe;
   border-radius: 10%;
   color:  #C4C4C4;
-  height: 250px;
+  height: 280px;
   padding: 15px;
   width: 200px;
   float: right;
@@ -19,7 +19,22 @@
 .scrollbox {
   margin-top: 15px;
   overflow: auto;
-  max-height: 200px;
+  max-height: 230px;
+}
+
+.member-grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-column-gap: 5px;
+  grid-row-gap: 5px;
+}
+
+.member-grid-item {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
 }
 
 .plus-icon {
