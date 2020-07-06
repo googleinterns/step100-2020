@@ -10,16 +10,15 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 
-@WebServlet("/post-image-blobstore")
-public class BlobstoreServlet extends HttpServlet {
+@WebServlet("/post-image")
+public class PostImageServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    String uploadUrl = blobstoreService.createUploadUrl("/data");
+    String uploadUrl = blobstoreService.createUploadUrl("/group-post");
 
     response.setContentType("text/html");
     response.getWriter().println(uploadUrl);
   }
-
 }
