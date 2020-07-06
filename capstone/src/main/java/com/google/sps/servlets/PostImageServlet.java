@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 
-@WebServlet("/post-image")
+@WebServlet("/post-image-blobstore")
 public class PostImageServlet extends HttpServlet {
 
   @Override

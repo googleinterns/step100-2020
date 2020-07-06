@@ -11,14 +11,13 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 
-@WebServlet("blobstore-serve")
+@WebServlet("serve")
 public class BlobstoreKeyServlet extends HttpServlet {
   private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse res)
-    throws IOException {
-      BlobKey blobKey = new BlobKey(req.getParameter("blob-key"));
-      blobstoreService.serve(blobKey, res);
-    }
+  public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    BlobKey blobKey = new BlobKey(req.getParameter("blob-key"));
+    blobstoreService.serve(blobKey, res);
+  }
 }
