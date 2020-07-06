@@ -46,7 +46,7 @@ function getPollOptions() {
         return;
       }
     })
-    .then(getChallenge);
+    .then(getChallenge());
 }
 
 /**
@@ -97,7 +97,7 @@ function checkWeek(dueDateMillis) {
  * Deletes the top poll option, adding that option as a new challenge to the database.
  */
 function updatePoll() {
-  fetch("delete-top-option", { method: "POST" }).then(addChallengeToDb);
+  fetch("delete-top-option", { method: "POST" }).then(addChallengeToDb());
 }
 
 /**

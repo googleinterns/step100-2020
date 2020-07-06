@@ -35,7 +35,11 @@ public class DeletePollOptionServlet extends HttpServlet {
     Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
     long maxVotedId = this.getMaxVotedId(results);
-    this.deleteEntity(maxVotedId, results, datastore, response);
+    if (maxVotedId != 0) {
+      this.deleteEntity(maxVotedId, results, datastore, response);
+    } else {
+      return;
+    }
   }
 
   /**
