@@ -5,6 +5,7 @@ function init() {
 }
 
 let postResponse;
+
 function loadPosts() {
   fetch('/group-post').then(response => response.json()).then((postsResp) => {
     postResponse = postsResp;
@@ -33,9 +34,7 @@ function addLikeButtonListener() {
   let likeBtns = document.getElementsByClassName('like-icon vertical-align');
     for (let i = 0; i < likeBtns.length; i++) {
       likeBtns[i].addEventListener("click", function() {
-        /* likeId = postId + "like"
-        use substring to just get the postId. */
-        let postId = parseInt(this.id.substring(0, this.id.length - 4));
+        const postId = parseInt(getPostIdFromsLikesId(this.id));
         let userLikedPosts = postResponse["likedPosts"];
         if(userLikedPosts.includes(postId)) {
           likeToggled(this.id, false);
@@ -47,13 +46,17 @@ function addLikeButtonListener() {
 }
 
 function likeToggled(likeId, liked) {
-  /* likeId = postId + "like"
-  use substring to just get the postId. */
-  let postId = likeId.substring(0, likeId.length - 4);
+  const postId = getPostIdFromsLikesId(likeId);
   let request = new Request(`/update-likes?id=${postId}&liked=${liked}`, { method: "POST" });
   fetch(request).then(() => {
     loadPosts();
   }); 
+}
+
+/* likeId = postId + "like"
+  use substring to just get the postId. */
+function getPostIdFromsLikesId(likeId) {
+  return likeId.substring(0, likeId.length - 4);
 }
 
 // Performs POST request to add comment to post 
@@ -71,6 +74,9 @@ function createSinglePost(post, likedPosts) {
   postDiv.appendChild(createProfileImg(post));
   postDiv.append(createAuthor(post));
   postDiv.append(createPostText(post));
+  if (post.img != null && post.img != "") {
+    postDiv.append(createPostImage(post));
+  }
   postDiv.append(createLikesContainer(post, likedPosts));
   postDiv.append(createCommentsContainer(post));
   postDiv.append(createCommentBox(post));
@@ -100,6 +106,18 @@ function createPostText(post) {
   return postContent;
 }
 
+// Create HTML element for post img
+function createPostImage(post) {
+  const imageDiv = document.createElement('div');
+  imageDiv.className = "img-div";
+  let imageContent = document.createElement('img');
+  imageContent.className = "uploadedImage";
+  imageContent.src = "serve?blob-key=" + post.img;
+  imageDiv.appendChild(imageContent);
+  return imageDiv;
+}
+
+// Create HTML elements for like icon and string
 function createLikesContainer(post, likedPosts) {
   const likesDiv = document.createElement('div');
   likesDiv.className = "likes-div";
@@ -183,7 +201,7 @@ function createCommentBox(post) {
 
 // Gets URL for uploaded image
 function fetchBlobstoreUrlAndShowForm() {
-  fetch('/post-image-handler').then((response) => {
+  fetch('/post-image-blobstore').then((response) => {
   	return response.text();
   }).then((imageUploadUrl) => {
     const messageForm = document.getElementById('post-form');
