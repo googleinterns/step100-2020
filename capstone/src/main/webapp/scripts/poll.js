@@ -87,9 +87,6 @@ function noChallengeText() {
  */
 function checkWeek(dueDateMillis) {
   let now = new Date();
-  // let millisTillDueDate =
-  //   new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 02, 0, 0) -
-  //   now;
   let millisTillDueDate = new Date(dueDateMillis) - now;
   if (millisTillDueDate < 0) {
     updatePoll();
