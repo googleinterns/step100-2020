@@ -17,7 +17,6 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.repackaged.com.google.common.collect.Iterables;
-import com.google.gson.Gson;
 import com.google.sps.Objects.Challenge;
 
 @WebServlet("challenge")
@@ -34,12 +33,11 @@ public class ChallengeServlet extends HttpServlet {
       // Get most recent challenge in database
       Entity entity = results.asIterable().iterator().next();
       Challenge challenge = Challenge.fromEntity(entity);
-      json = new Gson().toJson(challenge);
+      ServletHelper.write(response, challenge, "application/json");
+
     } else {
-      json = new Gson().toJson("");
+      ServletHelper.write(response, null, "application/json");
     }
-    response.setContentType("application/json");
-    response.getWriter().println(json);
   }
 
   @Override

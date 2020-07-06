@@ -5,12 +5,11 @@ import java.util.List;
 import com.google.sps.Objects.Option;
 
 /**
- * Used as a wrapper class to contain information needed to convert to JSON to
- * pass to frontend. Includes a list of poll options, a list of ids for
- * checkboxes that the current user has voted for, and the id of the user.
+ * Used as a wrapper class to contain information needed to convert to JSON to pass to frontend.
+ * Includes a list of poll options, a list of ids for checkboxes that the current user has voted
+ * for, and the id of the user.
  *
  * @author lucyqu
- *
  */
 public final class PollResponse {
 
@@ -21,9 +20,9 @@ public final class PollResponse {
   /**
    * Constructor to set instance variables.
    *
-   * @param options      List of Option objects
+   * @param options List of Option objects
    * @param votedOptions Ids for the checkboxes that user has marked as checked
-   * @param userId       user id
+   * @param userId user id
    */
   public PollResponse(List<Option> options, List<Long> votedOptions, String userId) {
     this.options = options;
@@ -42,7 +41,7 @@ public final class PollResponse {
 
   /**
    * Gets the list of ids for checkboxes that user has marked as checked.
-   * 
+   *
    * @return List of ids
    */
   public List<Long> getVotedOptions() {

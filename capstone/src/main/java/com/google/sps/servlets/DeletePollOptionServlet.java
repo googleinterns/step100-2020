@@ -12,12 +12,15 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.repackaged.com.google.common.collect.Iterables;
+
+import error.ErrorHandler;
 
 /**
  * This servlet is called weekly to delete the top challenge suggestion so that the new weekly
@@ -36,7 +39,12 @@ public class DeletePollOptionServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     long maxVotedId = this.getMaxVotedId(results);
     if (maxVotedId != 0) {
-      this.deleteEntity(maxVotedId, results, datastore, response);
+      try {
+        this.deleteEntity(maxVotedId, results, datastore, response);
+      } catch (EntityNotFoundException e) {
+        ErrorHandler.sendError(response, "Entity not found.");
+        return;
+      }
     } else {
       return;
     }
@@ -82,7 +90,8 @@ public class DeletePollOptionServlet extends HttpServlet {
       long maxVotedId,
       PreparedQuery results,
       DatastoreService datastore,
-      HttpServletResponse response) {
+      HttpServletResponse response)
+      throws EntityNotFoundException {
     Key optionKey = KeyFactory.createKey("Option", maxVotedId);
     datastore.delete(optionKey);
   }

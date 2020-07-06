@@ -18,7 +18,6 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.gson.Gson;
 import com.google.sps.Objects.Option;
 import com.google.sps.Objects.comparator.OptionsComparator;
 import com.google.sps.Objects.response.PollResponse;
@@ -59,9 +58,7 @@ public class PollServlet extends HttpServlet {
     // Sort list of options based on number of votes
     Collections.sort(options, new OptionsComparator());
     PollResponse pollResponse = new PollResponse(options, votedOptions, userId);
-    String json = new Gson().toJson(pollResponse);
-    response.setContentType("application/json");
-    response.getWriter().println(json);
+    ServletHelper.write(response, pollResponse, "application/json");
   }
 
   @Override
