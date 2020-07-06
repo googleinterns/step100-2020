@@ -111,7 +111,9 @@ public class UpdateVotesServlet extends HttpServlet {
      * Casting it to a HashSet will still have O(n) time complexity, so ArrayLists
      * seem to be the best option in this scenario.
      */
-    List<String> votes = (ArrayList<String>) optionEntity.getProperty("votes");
+    List<String> votes = (optionEntity.getProperty("votes") == null)
+        ? new ArrayList<>()
+        : (ArrayList<String>) optionEntity.getProperty("votes");
     Set<String> votesSet;
     if (votes == null) {
       votesSet = new HashSet<String>();
