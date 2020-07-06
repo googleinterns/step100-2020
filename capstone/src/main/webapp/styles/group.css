@@ -15,7 +15,7 @@ body {
 }
 
 p {
-  margin: 0;
+  margin-top: 10px;
 }
 
 .group-container {
@@ -128,7 +128,7 @@ p {
 }
 
 .medium-icon {
-  height: 40px;
+  height: 30px;
 }
 
 .post-feed {
