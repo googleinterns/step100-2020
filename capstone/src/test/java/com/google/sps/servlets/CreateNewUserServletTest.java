@@ -9,6 +9,7 @@ import com.google.sps.Objects.Badge;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -115,8 +116,20 @@ public class CreateNewUserServletTest {
     // call User.fromEntity(user) and check if they're equal
   }
 
-  @Test
+  @Test(expected = EntityNotFoundException.class)
   public void doPost_userNotLoggedIn() throws Exception {
-    // 
+    helper.setEnvIsLoggedIn(false);
+
+    when(mockRequest.getParameter("first")).thenReturn(USER_1.getFirstName());
+    when(mockRequest.getParameter("last")).thenReturn(USER_1.getLastName());
+    when(mockRequest.getParameter("phone")).thenReturn(USER_1.getPhoneNumber());
+    when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
+
+    createNewUserServlet.doPost(mockRequest, mockResponse);
+
+    Key userKey = KeyFactory.createKey("User", USER_ID);
+    datastore.get(userKey); 
+
+    helper.setEnvIsLoggedIn(true);
   }
 }
