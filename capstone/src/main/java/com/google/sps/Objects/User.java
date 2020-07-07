@@ -143,4 +143,11 @@ public final class User {
     userEntity.setProperty("interests", interests);
     return userEntity;
   }
+
+  /**
+   * Helper method for {@code fromEntity()}. Returns a list of badges given a list of badge ids.
+   */
+  private LinkedHashSet<Badge> getBadgeList(LinkedHashSet<String> badgeIds) { 
+    
+  }
 }
