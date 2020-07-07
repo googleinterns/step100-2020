@@ -220,13 +220,13 @@ function renderOptionElement(option, maxVotes) {
  * @param {String} checked
  */
 function handleCheckboxCount(id, checked) {
-  fetch(`update-votes?id=${id}&checked=${checked}&type=Option`, {
+  fetch(`mark-checkbox?id=${id}&checked=${checked}&type=Option`, {
     method: "POST"
   }).then(setTimeout(getPollOptions, TRANSITION_MILLIS));
 }
 
 function markChallenge(id, checked) {
-  fetch(`update-votes?id=${id}&checked=${checked}&type=Challenge`, {
+  fetch(`mark-checkbox?id=${id}&checked=${checked}&type=Challenge`, {
     method: "POST"
   });
 }

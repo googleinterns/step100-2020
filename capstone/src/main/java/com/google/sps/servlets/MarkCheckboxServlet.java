@@ -21,8 +21,8 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 import error.ErrorHandler;
 
-@WebServlet("/update-votes")
-public class UpdateVotesServlet extends HttpServlet {
+@WebServlet("/mark-checkbox")
+public class MarkCheckboxServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
