@@ -24,8 +24,6 @@ import error.ErrorHandler;
 @WebServlet("/update-votes")
 public class UpdateVotesServlet extends HttpServlet {
 
-  private ErrorHandler errorHandler = new ErrorHandler();
-
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get id of changed checkbox
@@ -54,7 +52,7 @@ public class UpdateVotesServlet extends HttpServlet {
     if (userService.isUserLoggedIn()) {
       return userService.getCurrentUser().getUserId();
     } else {
-      errorHandler.sendError(response, "User is not logged in.");
+      ErrorHandler.sendError(response, "User is not logged in.");
     }
     return "";
   }
@@ -71,7 +69,7 @@ public class UpdateVotesServlet extends HttpServlet {
     try {
       return Long.parseLong(optionIdString);
     } catch (NumberFormatException e) {
-      errorHandler.sendError(response, "Cannot parse to long.");
+      ErrorHandler.sendError(response, "Cannot parse to long.");
       return 0;
     }
   }
@@ -90,7 +88,7 @@ public class UpdateVotesServlet extends HttpServlet {
     try {
       return datastore.get(KeyFactory.createKey("Option", optionId));
     } catch (EntityNotFoundException e) {
-      errorHandler.sendError(response, "Cannot get entity from datastore");
+      ErrorHandler.sendError(response, "Cannot get entity from datastore");
       return null;
     }
   }
@@ -113,11 +111,10 @@ public class UpdateVotesServlet extends HttpServlet {
      * Casting it to a HashSet will still have O(n) time complexity, so ArrayLists
      * seem to be the best option in this scenario.
      */
-    List<String> votes = (ArrayList<String>) optionEntity.getProperty("votes");
+    List<String> votes = (optionEntity.getProperty("votes") == null)
+        ? new ArrayList<>()
+        : (ArrayList<String>) optionEntity.getProperty("votes");
     Set<String> votesSet;
-    /*
-     * If current option does not have any votes, initialize ArrayList.
-     */
     if (votes == null) {
       votesSet = new HashSet<String>();
     } else {
