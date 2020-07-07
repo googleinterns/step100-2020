@@ -11,8 +11,8 @@ public final class Challenge {
   private final Badge badge;
   private final ArrayList<String> usersCompleted;
 
-  public Challenge(String challengeName, long dueDate, Badge badge,
-      ArrayList<String> usersCompleted) {
+  public Challenge(
+      String challengeName, long dueDate, Badge badge, ArrayList<String> usersCompleted) {
     this.dueDate = dueDate;
     this.challengeName = challengeName;
     this.badge = badge;
@@ -31,7 +31,7 @@ public final class Challenge {
     return badge;
   }
 
-  public ArrayList<String> usersCompleted() {
+  public ArrayList<String> getUsersCompleted() {
     return usersCompleted;
   }
 
