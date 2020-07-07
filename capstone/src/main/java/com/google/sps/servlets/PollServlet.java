@@ -18,7 +18,6 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.gson.Gson;
 import com.google.sps.Objects.Option;
 import com.google.sps.Objects.comparator.OptionsComparator;
 import com.google.sps.Objects.response.PollResponse;
@@ -28,8 +27,6 @@ import error.ErrorHandler;
 @WebServlet("/poll")
 public class PollServlet extends HttpServlet {
 
-  private ErrorHandler errorHandler = new ErrorHandler();
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String userId = "";
@@ -37,7 +34,7 @@ public class PollServlet extends HttpServlet {
     if (userService.isUserLoggedIn()) {
       userId = userService.getCurrentUser().getUserId();
     } else {
-      errorHandler.sendError(response, "User is not logged in.");
+      ErrorHandler.sendError(response, "User is not logged in.");
     }
     Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -49,10 +46,9 @@ public class PollServlet extends HttpServlet {
      */
     List<Long> votedOptions = new ArrayList<Long>();
     for (Entity entity : results.asIterable()) {
-      long id = entity.getKey().getId();
-      String text = (String) entity.getProperty("text");
-      List<String> votes = (ArrayList<String>) entity.getProperty("votes");
-      Option option = new Option(id, text, votes);
+      Option option = Option.fromEntity(entity);
+      List<String> votes = option.getVotes();
+      long id = option.getId();
       options.add(option);
       // If current user voted for option, add to list of voted options
       if (votes != null && votes.contains(userId)) {
@@ -62,20 +58,14 @@ public class PollServlet extends HttpServlet {
     // Sort list of options based on number of votes
     Collections.sort(options, new OptionsComparator());
     PollResponse pollResponse = new PollResponse(options, votedOptions, userId);
-    String json = new Gson().toJson(pollResponse);
-    response.setContentType("application/json");
-    response.getWriter().println(json);
+    ServletHelper.write(response, pollResponse, "application/json");
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String text = request.getParameter("text");
-    Entity optionEntity = new Entity("Option");
-    long timestamp = System.currentTimeMillis();
-    optionEntity.setProperty("text", text);
-    optionEntity.setProperty("votes", new ArrayList<String>());
-    optionEntity.setProperty("timestamp", timestamp);
+    Option option = new Option(0, text, new ArrayList<String>());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(optionEntity);
+    datastore.put(option.toEntity());
   }
 }

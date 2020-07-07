@@ -36,7 +36,7 @@ function addLikeButtonListener() {
   let likeBtns = document.getElementsByClassName('like-icon vertical-align');
     for (let i = 0; i < likeBtns.length; i++) {
       likeBtns[i].addEventListener("click", function() {
-        let postId = parseInt(getPostIdFromsLikesId(this.id));
+        const postId = parseInt(getPostIdFromsLikesId(this.id));
         let userLikedPosts = postResponse["likedPosts"];
         if(userLikedPosts.includes(postId)) {
           likeToggled(this.id, false);
@@ -48,7 +48,7 @@ function addLikeButtonListener() {
 }
 
 function likeToggled(likeId, liked) {
-  let postId = getPostIdFromsLikesId(likeId);
+  const postId = getPostIdFromsLikesId(likeId);
   let request = new Request(`/update-likes?id=${postId}&liked=${liked}`, { method: "POST" });
   fetch(request).then(() => {
     loadPosts();
@@ -203,7 +203,8 @@ function createCommentBox(post) {
 
 // Gets URL for uploaded image
 function fetchBlobstoreUrlAndShowForm() {
-  fetch('/post-image-blobstore').then((response) => {
+  console.log("in fetch blobstore");
+  fetch('/post-image').then((response) => {
   	return response.text();
   }).then((imageUploadUrl) => {
     const messageForm = document.getElementById('post-form');
