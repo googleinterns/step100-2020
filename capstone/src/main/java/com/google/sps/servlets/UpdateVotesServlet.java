@@ -26,13 +26,14 @@ public class UpdateVotesServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String optionIdString = request.getParameter("id");
-    boolean isOptionChecked = Boolean.parseBoolean(request.getParameter("checked"));
-    long optionId = this.parseToLong(response, optionIdString);
+    String idString = request.getParameter("id");
+    boolean isChecked = Boolean.parseBoolean(request.getParameter("checked"));
+    String type = request.getParameter("type");
+    long id = this.parseToLong(response, idString);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String userId = this.getUserId(response);
-    Entity optionEntity = this.getEntityFromId(response, optionId, datastore);
-    Set<String> votesSet = this.getUpdatedVotes(optionEntity, isOptionChecked, userId);
+    Entity optionEntity = this.getEntityFromId(response, id, datastore, type);
+    Set<String> votesSet = this.getUpdatedVotes(optionEntity, isChecked, userId);
 
     // Update datastore
     optionEntity.setProperty("votes", votesSet);
@@ -60,13 +61,13 @@ public class UpdateVotesServlet extends HttpServlet {
    * Parses string to long.
    *
    * @param response HttpServletResponse
-   * @param optionIdString id of the current option in the form of a String
+   * @param idString id of the current checkbox in the form of a String
    * @return long representing the id of current option
    * @throws IOException
    */
-  private long parseToLong(HttpServletResponse response, String optionIdString) throws IOException {
+  private long parseToLong(HttpServletResponse response, String idString) throws IOException {
     try {
-      return Long.parseLong(optionIdString);
+      return Long.parseLong(idString);
     } catch (NumberFormatException e) {
       ErrorHandler.sendError(response, "Cannot parse to long.");
       return 0;
@@ -83,9 +84,10 @@ public class UpdateVotesServlet extends HttpServlet {
    * @throws IOException error thrown from sendError method
    */
   private Entity getEntityFromId(
-      HttpServletResponse response, long optionId, DatastoreService datastore) throws IOException {
+      HttpServletResponse response, long id, DatastoreService datastore, String type)
+      throws IOException {
     try {
-      return datastore.get(KeyFactory.createKey("Option", optionId));
+      return datastore.get(KeyFactory.createKey(type, id));
     } catch (EntityNotFoundException e) {
       ErrorHandler.sendError(response, "Cannot get entity from datastore");
       return null;
@@ -103,7 +105,7 @@ public class UpdateVotesServlet extends HttpServlet {
    * @param userId id of user
    * @return set representing users who have voted for current option
    */
-  private Set<String> getUpdatedVotes(Entity optionEntity, boolean isOptionChecked, String userId) {
+  private Set<String> getUpdatedVotes(Entity optionEntity, boolean isChecked, String userId) {
     /*
      * Using ArrayList here because datastore will only return type ArrayList.
      * Casting it to a HashSet will still have O(n) time complexity, so ArrayLists
@@ -123,9 +125,9 @@ public class UpdateVotesServlet extends HttpServlet {
      * If checkbox is unchecked and list of votes contains user, remove user id from
      * list of votes for current option
      */
-    if (!isOptionChecked && votesSet.contains(userId)) {
+    if (!isChecked && votesSet.contains(userId)) {
       votesSet.remove(userId);
-    } else if (isOptionChecked && !votesSet.contains(userId)) {
+    } else if (isChecked && !votesSet.contains(userId)) {
       /*
        * If checkbox is checked and list of votes does not contain user, add user id
        * to list
