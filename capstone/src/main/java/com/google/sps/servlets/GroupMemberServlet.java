@@ -21,7 +21,7 @@ import com.google.sps.Objects.response.MemberResponse;
 
 @WebServlet("/group-member")
 
-public class GroupMembersServlet extends HttpServlet {
+public class GroupMemberServlet extends HttpServlet {
 
   private ErrorHandler errorHandler = new ErrorHandler();
 
@@ -85,7 +85,6 @@ public class GroupMembersServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     String userId = request.getParameter("userId");
-    System.out.println("in go get");
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity member = this.getUserFromId(response, userId, datastore);

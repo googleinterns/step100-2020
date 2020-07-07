@@ -37,7 +37,7 @@ public class CreateNewUserServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String first = request.getParameter("first");
+     String first = request.getParameter("first");
     String last = request.getParameter("last");
     String phone = request.getParameter("phone");
     ArrayList<String> interests = getInterests(request);

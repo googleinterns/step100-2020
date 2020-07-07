@@ -4,6 +4,7 @@ function init() {
   fetchBlobstoreUrlAndShowForm();
   addMemberProfileListener();
   addModalListeners();
+  createTestUsers();
 }
 
 let postResponse;
@@ -203,7 +204,6 @@ function createCommentBox(post) {
 
 // Gets URL for uploaded image
 function fetchBlobstoreUrlAndShowForm() {
-  console.log("in fetch blobstore");
   fetch('/post-image').then((response) => {
   	return response.text();
   }).then((imageUploadUrl) => {
