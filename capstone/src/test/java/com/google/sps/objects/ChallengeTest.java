@@ -1,6 +1,8 @@
 package com.google.sps.objects;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -33,8 +37,14 @@ public class ChallengeTest {
   @Before
   public void setUp() {
     helper.setUp();
-    badge = new Badge("Run 3 miles", null, 234567);
-    challenge = new Challenge("Run 3 miles", 123456, badge, new ArrayList<String>());
+    badge = new Badge(/* challenge name */ "Run 3 miles", /* icon */ null, /* timestamp */ 234567);
+    challenge =
+        new Challenge(
+            "Run 3 miles", /* challenge name */
+            123456, /* due date */
+            badge, /* badge */
+            new ArrayList<String>(), /* completed users */
+            100 /* challenge id */);
   }
 
   @After
@@ -65,18 +75,49 @@ public class ChallengeTest {
 
   @Test
   public void addUserCompletedTest() {
-    challenge.addUserCompleted("1");
-    challenge.addUserCompleted("2");
+    challenge.addCompletedUser("1");
+    challenge.addCompletedUser("2");
     List<String> completedUsers = challenge.getUsersCompleted();
+
     assert completedUsers.size() == 2;
     assertEquals(completedUsers.get(0), "1");
     assertEquals(completedUsers.get(1), "2");
   }
 
   @Test
+  public void getIsCompletedTest() {
+    assertFalse(challenge.getIsCompleted("1"));
+    challenge.addCompletedUser("1");
+    assertTrue(challenge.getIsCompleted("1"));
+    challenge.addCompletedUser("2");
+    challenge.addCompletedUser("3");
+    assertFalse(challenge.getIsCompleted("4"));
+  }
+
+  @Test
   public void fromEntityTest() {
     Entity entity = new Entity("Challenge");
-    //    entity.setProperty("usersCompleted", value);
-    entity.setProperty("dueDate", 123456);
+    String challengeName = "Run half a marathon";
+    entity.setProperty("name", challengeName);
+    entity.setProperty("votes", new ArrayList<String>());
+    long dueDate = 123456;
+    entity.setProperty("dueDate", dueDate);
+    Challenge returnedChallenge = Challenge.fromEntity(entity);
+
+    assertEquals(returnedChallenge.getChallengeName(), challengeName);
+    assert returnedChallenge.getUsersCompleted().size() == 0;
+    assert returnedChallenge.getDueDate() == dueDate;
+  }
+
+  @Test
+  public void toEntityTest() {
+    Entity entity = challenge.toEntity();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(entity);
+    List<String> votes = (ArrayList<String>) entity.getProperty("votes");
+
+    assertEquals(entity.getProperty("name"), "Run 3 miles");
+    assert votes.size() == 0;
+    assert (long) entity.getProperty("dueDate") == 123456;
   }
 }

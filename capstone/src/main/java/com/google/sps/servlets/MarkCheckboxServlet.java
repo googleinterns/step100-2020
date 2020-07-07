@@ -21,23 +21,24 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 import error.ErrorHandler;
 
-@WebServlet("/update-votes")
-public class UpdateVotesServlet extends HttpServlet {
+@WebServlet("/mark-checkbox")
+public class MarkCheckboxServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get id of changed checkbox
-    String optionIdString = request.getParameter("id");
-    boolean isOptionChecked = Boolean.parseBoolean(request.getParameter("checked"));
-    long optionId = this.parseToLong(response, optionIdString);
+    String idString = request.getParameter("id");
+    boolean isChecked = Boolean.parseBoolean(request.getParameter("checked"));
+    // type representing whether checkbox is for Option or for Challenge
+    String type = request.getParameter("type");
+    long id = this.parseToLong(response, idString);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String userId = this.getUserId(response);
-    Entity optionEntity = this.getEntityFromId(response, optionId, datastore);
-    Set<String> votesSet = this.getUpdatedVotes(optionEntity, isOptionChecked, userId);
+    Entity entity = this.getEntityFromId(response, id, datastore, type);
+    Set<String> votesSet = this.getUpdatedVotes(entity, isChecked, userId);
 
     // Update datastore
-    optionEntity.setProperty("votes", votesSet);
-    datastore.put(optionEntity);
+    entity.setProperty("votes", votesSet);
+    datastore.put(entity);
   }
 
   /**
@@ -60,14 +61,14 @@ public class UpdateVotesServlet extends HttpServlet {
   /**
    * Parses string to long.
    *
-   * @param response       HttpServletResponse
-   * @param optionIdString id of the current option in the form of a String
-   * @return long representing the id of current option
+   * @param response HttpServletResponse
+   * @param idString id of the current checkbox in the form of a String
+   * @return long representing the id of current checkbox
    * @throws IOException
    */
-  private long parseToLong(HttpServletResponse response, String optionIdString) throws IOException {
+  private long parseToLong(HttpServletResponse response, String idString) throws IOException {
     try {
-      return Long.parseLong(optionIdString);
+      return Long.parseLong(idString);
     } catch (NumberFormatException e) {
       ErrorHandler.sendError(response, "Cannot parse to long.");
       return 0;
@@ -75,18 +76,19 @@ public class UpdateVotesServlet extends HttpServlet {
   }
 
   /**
-   * Retrieves the option entity from the database based on id.
+   * Retrieves the entity from the database based on id.
    *
-   * @param response  HttpServletResponse
-   * @param optionId  id of current option
+   * @param response HttpServletResponse
+   * @param id of current checkbox
    * @param datastore datastore holding all data
-   * @return Option entity
+   * @return Entity
    * @throws IOException error thrown from sendError method
    */
-  private Entity getEntityFromId(HttpServletResponse response, long optionId,
-      DatastoreService datastore) throws IOException {
+  private Entity getEntityFromId(
+      HttpServletResponse response, long id, DatastoreService datastore, String type)
+      throws IOException {
     try {
-      return datastore.get(KeyFactory.createKey("Option", optionId));
+      return datastore.get(KeyFactory.createKey(type, id));
     } catch (EntityNotFoundException e) {
       ErrorHandler.sendError(response, "Cannot get entity from datastore");
       return null;
@@ -94,26 +96,26 @@ public class UpdateVotesServlet extends HttpServlet {
   }
 
   /**
-   * Updates the votes for a particular poll option. Gets an ArrayList from the
-   * database representing the list of people who have voted for a particular
-   * option, which is passed in as optionEntity. Converts this ArrayList to a Set
-   * and then checks whether the checkbox is checked and whether the set already
-   * contains the current user id and then updates the set accordingly.
+   * Updates the people who have checked a particular checkbox. Gets an ArrayList from the database
+   * representing the list of people who have checked a certain checkbox, which is passed in as an
+   * Entity. Converts this ArrayList to a Set and then checks whether the checkbox is checked and
+   * whether the set already contains the current user id and then updates the set accordingly.
    *
-   * @param optionEntity    option entity from database
-   * @param isOptionChecked boolean whether checkbox is checked for current option
-   * @param userId          id of user
-   * @return set representing users who have voted for current option
+   * @param entity entity from database
+   * @param isChecked boolean whether checkbox is checked
+   * @param userId id of user
+   * @return set representing users who have checked current checkbox
    */
-  private Set<String> getUpdatedVotes(Entity optionEntity, boolean isOptionChecked, String userId) {
+  private Set<String> getUpdatedVotes(Entity entity, boolean isChecked, String userId) {
     /*
      * Using ArrayList here because datastore will only return type ArrayList.
      * Casting it to a HashSet will still have O(n) time complexity, so ArrayLists
      * seem to be the best option in this scenario.
      */
-    List<String> votes = (optionEntity.getProperty("votes") == null)
-        ? new ArrayList<>()
-        : (ArrayList<String>) optionEntity.getProperty("votes");
+    List<String> votes =
+        (entity.getProperty("votes") == null)
+            ? new ArrayList<>()
+            : (ArrayList<String>) entity.getProperty("votes");
     Set<String> votesSet;
     if (votes == null) {
       votesSet = new HashSet<String>();
@@ -122,11 +124,11 @@ public class UpdateVotesServlet extends HttpServlet {
     }
     /*
      * If checkbox is unchecked and list of votes contains user, remove user id from
-     * list of votes for current option
+     * list of people who have checked current checkbox.
      */
-    if (!isOptionChecked && votesSet.contains(userId)) {
+    if (!isChecked && votesSet.contains(userId)) {
       votesSet.remove(userId);
-    } else if (isOptionChecked && !votesSet.contains(userId)) {
+    } else if (isChecked && !votesSet.contains(userId)) {
       /*
        * If checkbox is checked and list of votes does not contain user, add user id
        * to list

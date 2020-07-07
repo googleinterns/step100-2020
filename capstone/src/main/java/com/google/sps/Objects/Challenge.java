@@ -10,13 +10,15 @@ public final class Challenge {
   private final long dueDate;
   private final Badge badge;
   private final ArrayList<String> usersCompleted;
+  private final long id;
 
   public Challenge(
-      String challengeName, long dueDate, Badge badge, ArrayList<String> usersCompleted) {
+      String challengeName, long dueDate, Badge badge, ArrayList<String> usersCompleted, long id) {
     this.dueDate = dueDate;
     this.challengeName = challengeName;
     this.badge = badge;
     this.usersCompleted = usersCompleted;
+    this.id = id;
   }
 
   public long getDueDate() {
@@ -35,23 +37,33 @@ public final class Challenge {
     return usersCompleted;
   }
 
-  public void addUserCompleted(String userId) {
+  public void addCompletedUser(String userId) {
     this.usersCompleted.add(userId);
+  }
+
+  public boolean getIsCompleted(String userId) {
+    if (this.usersCompleted == null) {
+      return false;
+    } else if (this.usersCompleted.contains(userId)) {
+      return true;
+    }
+    return false;
   }
 
   public static Challenge fromEntity(Entity entity) {
     String challengeName = (String) entity.getProperty("name");
     long dueDate = (long) entity.getProperty("dueDate");
-    ArrayList<String> usersCompleted = (ArrayList<String>) entity.getProperty("usersCompleted");
+    long id = entity.getKey().getId();
+    ArrayList<String> usersCompleted = (ArrayList<String>) entity.getProperty("votes");
     // setting badge as null for now
-    return new Challenge(challengeName, dueDate, null, usersCompleted);
+    return new Challenge(challengeName, dueDate, null, usersCompleted, id);
   }
 
   public Entity toEntity() {
     Entity challengeEntity = new Entity("Challenge");
     challengeEntity.setProperty("name", this.challengeName);
     challengeEntity.setProperty("dueDate", this.dueDate);
-    challengeEntity.setProperty("usersCompleted", this.usersCompleted);
+    challengeEntity.setProperty("votes", this.usersCompleted);
     challengeEntity.setProperty("timestamp", System.currentTimeMillis());
     // not setting badge for now
     return challengeEntity;

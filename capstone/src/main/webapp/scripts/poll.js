@@ -61,9 +61,15 @@ function getChallenge() {
     .then(challengeData => {
       const weeklyChallenge = document.getElementById("weekly-challenge");
       const dueDateContainer = document.getElementById("due-date");
+      const challengeCheckbox = document.getElementById("challenge-checkbox");
+      const challengeLabel = document.getElementById("challenge-label");
+      const id = challengeData["challenge"]["id"];
+      challengeCheckbox.id = id;
+      challengeLabel.setAttribute("for", id);
+      challengeCheckbox.checked = challengeData["isCompleted"];
       if (challengeData) {
-        weeklyChallenge.innerText = challengeData["challengeName"];
-        dueDateMillis = challengeData["dueDate"];
+        weeklyChallenge.innerText = challengeData["challenge"]["challengeName"];
+        dueDateMillis = challengeData["challenge"]["dueDate"];
         const dueDate = new Date(dueDateMillis).toString();
         dueDateContainer.innerText = `Due: ${dueDate}`;
       } else {
@@ -74,6 +80,9 @@ function getChallenge() {
     .then(() => checkWeek(dueDateMillis));
 }
 
+/**
+ * Displays text when there are no challenges.
+ */
 function noChallengeText() {
   const weeklyChallenge = document.getElementById("weekly-challenge");
   const dueDateContainer = document.getElementById("due-date");
@@ -213,7 +222,19 @@ function renderOptionElement(option, maxVotes) {
  * @param {String} checked
  */
 function handleCheckboxCount(id, checked) {
-  fetch(`update-votes?id=${id}&checked=${checked}`, { method: "POST" }).then(
-    setTimeout(getPollOptions, TRANSITION_MILLIS)
-  );
+  fetch(`mark-checkbox?id=${id}&checked=${checked}&type=Option`, {
+    method: "POST"
+  }).then(setTimeout(getPollOptions, TRANSITION_MILLIS));
+}
+
+/**
+ * Handles challenge checkbox change.
+ * @param {String} id
+ * @param {String} checked
+ */
+function markChallenge(id, checked) {
+  console.log("in mark challenge");
+  fetch(`mark-checkbox?id=${id}&checked=${checked}&type=Challenge`, {
+    method: "POST"
+  });
 }

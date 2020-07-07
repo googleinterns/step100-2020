@@ -51,6 +51,7 @@ public class OptionTest {
   public void addVoteGetVotesTest() {
     option.addVote("1");
     option.addVote("2");
+
     assert option.getVotes().size() == 2;
     assertEquals(option.getVotes().get(0), "1");
     assertEquals(option.getVotes().get(1), "2");
@@ -66,8 +67,10 @@ public class OptionTest {
     Entity entity = option.toEntity();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(entity);
-    assertEquals(entity.getProperty("text"), "Swim");
+
     ArrayList<String> votes = (ArrayList<String>) entity.getProperty("votes");
+
+    assertEquals(entity.getProperty("text"), "Swim");
     assert votes.size() == 0;
   }
 
@@ -85,8 +88,9 @@ public class OptionTest {
     datastore.put(entity);
 
     Option returnedOption = Option.fromEntity(entity);
-    assertEquals(returnedOption.getText(), "Run");
     List<String> returnedVotes = (ArrayList<String>) entity.getProperty("votes");
+
+    assertEquals(returnedOption.getText(), "Run");
     assert returnedVotes.size() == 3;
     assertEquals(returnedVotes.get(0), "1");
     assertEquals(returnedVotes.get(1), "2");
