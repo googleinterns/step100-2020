@@ -44,10 +44,9 @@ public final class Challenge {
   public boolean getIsCompleted(String userId) {
     if (this.usersCompleted == null) {
       return false;
-    } else if (this.usersCompleted.contains(userId)) {
-      return true;
+    } else {
+      return this.usersCompleted.contains(userId);
     }
-    return false;
   }
 
   public static Challenge fromEntity(Entity entity) {
