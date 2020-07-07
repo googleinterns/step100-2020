@@ -28,16 +28,17 @@ public class MarkCheckboxServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String idString = request.getParameter("id");
     boolean isChecked = Boolean.parseBoolean(request.getParameter("checked"));
+    // type representing whether checkbox is for Option or for Challenge
     String type = request.getParameter("type");
     long id = this.parseToLong(response, idString);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String userId = this.getUserId(response);
-    Entity optionEntity = this.getEntityFromId(response, id, datastore, type);
-    Set<String> votesSet = this.getUpdatedVotes(optionEntity, isChecked, userId);
+    Entity entity = this.getEntityFromId(response, id, datastore, type);
+    Set<String> votesSet = this.getUpdatedVotes(entity, isChecked, userId);
 
     // Update datastore
-    optionEntity.setProperty("votes", votesSet);
-    datastore.put(optionEntity);
+    entity.setProperty("votes", votesSet);
+    datastore.put(entity);
   }
 
   /**
@@ -62,7 +63,7 @@ public class MarkCheckboxServlet extends HttpServlet {
    *
    * @param response HttpServletResponse
    * @param idString id of the current checkbox in the form of a String
-   * @return long representing the id of current option
+   * @return long representing the id of current checkbox
    * @throws IOException
    */
   private long parseToLong(HttpServletResponse response, String idString) throws IOException {
@@ -75,12 +76,12 @@ public class MarkCheckboxServlet extends HttpServlet {
   }
 
   /**
-   * Retrieves the option entity from the database based on id.
+   * Retrieves the entity from the database based on id.
    *
    * @param response HttpServletResponse
-   * @param optionId id of current option
+   * @param id of current checkbox
    * @param datastore datastore holding all data
-   * @return Option entity
+   * @return Entity
    * @throws IOException error thrown from sendError method
    */
   private Entity getEntityFromId(
@@ -95,26 +96,26 @@ public class MarkCheckboxServlet extends HttpServlet {
   }
 
   /**
-   * Updates the votes for a particular poll option. Gets an ArrayList from the database
-   * representing the list of people who have voted for a particular option, which is passed in as
-   * optionEntity. Converts this ArrayList to a Set and then checks whether the checkbox is checked
-   * and whether the set already contains the current user id and then updates the set accordingly.
+   * Updates the people who have checked a particular checkbox. Gets an ArrayList from the database
+   * representing the list of people who have checked a certain checkbox, which is passed in as an
+   * Entity. Converts this ArrayList to a Set and then checks whether the checkbox is checked and
+   * whether the set already contains the current user id and then updates the set accordingly.
    *
-   * @param optionEntity option entity from database
-   * @param isOptionChecked boolean whether checkbox is checked for current option
+   * @param entity entity from database
+   * @param isChecked boolean whether checkbox is checked
    * @param userId id of user
-   * @return set representing users who have voted for current option
+   * @return set representing users who have checked current checkbox
    */
-  private Set<String> getUpdatedVotes(Entity optionEntity, boolean isChecked, String userId) {
+  private Set<String> getUpdatedVotes(Entity entity, boolean isChecked, String userId) {
     /*
      * Using ArrayList here because datastore will only return type ArrayList.
      * Casting it to a HashSet will still have O(n) time complexity, so ArrayLists
      * seem to be the best option in this scenario.
      */
     List<String> votes =
-        (optionEntity.getProperty("votes") == null)
+        (entity.getProperty("votes") == null)
             ? new ArrayList<>()
-            : (ArrayList<String>) optionEntity.getProperty("votes");
+            : (ArrayList<String>) entity.getProperty("votes");
     Set<String> votesSet;
     if (votes == null) {
       votesSet = new HashSet<String>();
@@ -123,7 +124,7 @@ public class MarkCheckboxServlet extends HttpServlet {
     }
     /*
      * If checkbox is unchecked and list of votes contains user, remove user id from
-     * list of votes for current option
+     * list of people who have checked current checkbox.
      */
     if (!isChecked && votesSet.contains(userId)) {
       votesSet.remove(userId);
