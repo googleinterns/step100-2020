@@ -67,7 +67,6 @@ function getChallenge() {
       challengeCheckbox.id = id;
       challengeLabel.setAttribute("for", id);
       challengeCheckbox.checked = challengeData["isCompleted"];
-      console.log(challengeCheckbox.checked);
       if (challengeData) {
         weeklyChallenge.innerText = challengeData["challenge"]["challengeName"];
         dueDateMillis = challengeData["challenge"]["dueDate"];
@@ -81,6 +80,9 @@ function getChallenge() {
     .then(() => checkWeek(dueDateMillis));
 }
 
+/**
+ * Displays text when there are no challenges.
+ */
 function noChallengeText() {
   const weeklyChallenge = document.getElementById("weekly-challenge");
   const dueDateContainer = document.getElementById("due-date");
@@ -225,7 +227,13 @@ function handleCheckboxCount(id, checked) {
   }).then(setTimeout(getPollOptions, TRANSITION_MILLIS));
 }
 
+/**
+ * Handles challenge checkbox change.
+ * @param {String} id
+ * @param {String} checked
+ */
 function markChallenge(id, checked) {
+  console.log("in mark challenge");
   fetch(`mark-checkbox?id=${id}&checked=${checked}&type=Challenge`, {
     method: "POST"
   });
