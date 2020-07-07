@@ -17,65 +17,84 @@
     <title>Group</title>
   </head>
 
-  <body onload="init()">
-    
-    <div class="group-content">
-
+  <body>
+    <div class="group-container">
       <div class="group-header">
         <div class="group-name-banner">
           <span id="group-name" class="align-vertical">The 3 Musketeers + Others</span>
         </div>
       </div>
-
+        
       <div class="create-post">
         <form id="post-form" method="POST" enctype="multipart/form-data">
           <span class="user-img align-vertical"></span>
-
+        
           <input type="text" id="post-input" class="align-vertical" name="post-input" placeholder="Post a status">
-
-          <label for="fileid"> 
-            <img class="camera-btn align-vertical medium-icon" src="images/camera.png" alt/>
+        
+          <label for="fileid">
+            <img class="camera-btn align-vertical medium-icon" src="images/camera.png" alt />
           </label>
-          <input id='fileid' type='file' name='image'/>
-
-          <button class="post-btn align-vertical" type="image" form="post-form"><img class="medium-icon" src="images/send_plane.png" alt/></button>
+          <input id='fileid' type='file' name='image' />
+        
+          <button class="post-btn align-vertical" type="image" form="post-form"><img class="medium-icon" src="images/send_plane.png" alt /></button>
         </form>
       </div>
-
-      <div class="post-feed">
-        <div id="posts-container"></div>
+        
+      <div class="challenge-container">
+        <h2>
+          Challenge of the Week
+        </h2>
+        <p id="weekly-challenge"></p>
+        <p id="due-date"></p>        
+        <div class="mark-completed">
+          <span class="mark-completed-text">Mark Completed:</span>
+          <span class="check-container">
+            <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+            <label for="vehicle1"></label>
+          </span>
+        </div>
       </div>
-
+          
       <div class="poll-container">
         <div class="inner-poll-container">
-            <div class="section-text">
-                Poll
-            </div>
-            <div id="options-container"></div>
-            </div>
-          <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
-        </div>
+          <h2>
+            Poll
+          </h2>
+        <div id="options-container"></div>
       </div>
-      <template id="option-template">
-        <div class="option-container">
-          <p></p>
-          <svg width="690" height="55">
-            <rect height="55" width="690" class="poll-rect"/>
-            <rect height="55" id="inner-bar" class="poll-inner-rect"/>
-          </svg>
       
-          <span class="check-container">
-            <input type="checkbox">
-            <label></label>
-          </span>
-          <div id="num-votes" class="votes-label"></div>
-        </div>
-      </template>
-
+      <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
+          
     </div>
+        
+      <div class="post-feed">
+          <div id="posts-container"></div>
+      </div>
+    </div>
+    
+    <template id="option-template">
+      <div class="option-container">
+        <p></p>
+        <svg width="690" height="55">
+          <rect height="55" width="690" class="poll-rect" />
+          <rect height="55" id="inner-bar" class="poll-inner-rect" />
+        </svg>
 
+        <span class="check-container">
+          <input type="checkbox" onchange="handleCheckboxCount(this.id, this.checked)">
+          <label></label>
+        </span>
+        <div id="num-votes" class="votes-label"></div>
+      </div>
+    </template>
+    
+    <script>
+      window.onload = getPollOptions();
+    </script>
   </body>
 </html>
+  
+
 
 
 
