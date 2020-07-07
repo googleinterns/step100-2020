@@ -16,8 +16,13 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.repackaged.com.google.common.collect.Iterables;
 import com.google.sps.Objects.Challenge;
+import com.google.sps.Objects.response.ChallengeResponse;
+
+import error.ErrorHandler;
 
 @WebServlet("challenge")
 public class ChallengeServlet extends HttpServlet {
@@ -27,14 +32,27 @@ public class ChallengeServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("Challenge").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
+    UserService userService = UserServiceFactory.getUserService();
+    String userId = "";
+    if (userService.isUserLoggedIn()) {
+      userId = userService.getCurrentUser().getUserId();
+    } else {
+      ErrorHandler.sendError(response, "User is not logged in.");
+    }
+
     Challenge challenge = null;
+    ChallengeResponse challengeResponse = null;
     // Check if there are challenges in database
     if (Iterables.size(results.asIterable()) > 0) {
       // Get most recent challenge in database
       Entity entity = results.asIterable().iterator().next();
       challenge = Challenge.fromEntity(entity);
+      System.out.println("users completed " + challenge.getUsersCompleted());
+      // Gets whether current user has completed challenge
+      boolean isCompleted = challenge.getIsCompleted(userId);
+      challengeResponse = new ChallengeResponse(challenge, isCompleted);
     }
-    ServletHelper.write(response, challenge, "application/json");
+    ServletHelper.write(response, challengeResponse, "application/json");
   }
 
   @Override
@@ -47,7 +65,8 @@ public class ChallengeServlet extends HttpServlet {
             challengeName,
             dueDateMillis, /* milliseconds until due date */
             null, /* badge */
-            new ArrayList<String>() /* users completed */);
+            new ArrayList<String>() /* users completed */,
+            0 /* id */);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(challenge.toEntity());
   }

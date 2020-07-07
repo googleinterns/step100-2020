@@ -21,22 +21,21 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 import error.ErrorHandler;
 
-@WebServlet("/update-votes")
-public class UpdateVotesServlet extends HttpServlet {
-
+@WebServlet("/mark-challenge")
+public class MarkChallengeServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String optionIdString = request.getParameter("id");
+    String challengeIdString = request.getParameter("id");
     boolean isOptionChecked = Boolean.parseBoolean(request.getParameter("checked"));
-    long optionId = this.parseToLong(response, optionIdString);
+    long challengeId = Long.parseLong(challengeIdString);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String userId = this.getUserId(response);
-    Entity optionEntity = this.getEntityFromId(response, optionId, datastore);
-    Set<String> votesSet = this.getUpdatedVotes(optionEntity, isOptionChecked, userId);
-
+    Entity challengeEntity = this.getEntityFromId(response, challengeId, datastore);
+    Set<String> votesSet = this.getUpdatedVotes(challengeEntity, isOptionChecked, userId);
     // Update datastore
-    optionEntity.setProperty("votes", votesSet);
-    datastore.put(optionEntity);
+    challengeEntity.setProperty("votes", votesSet);
+    System.out.println("in mark challenge----------" + votesSet.toString());
+    datastore.put(challengeEntity);
   }
 
   /**
@@ -57,23 +56,6 @@ public class UpdateVotesServlet extends HttpServlet {
   }
 
   /**
-   * Parses string to long.
-   *
-   * @param response HttpServletResponse
-   * @param optionIdString id of the current option in the form of a String
-   * @return long representing the id of current option
-   * @throws IOException
-   */
-  private long parseToLong(HttpServletResponse response, String optionIdString) throws IOException {
-    try {
-      return Long.parseLong(optionIdString);
-    } catch (NumberFormatException e) {
-      ErrorHandler.sendError(response, "Cannot parse to long.");
-      return 0;
-    }
-  }
-
-  /**
    * Retrieves the option entity from the database based on id.
    *
    * @param response HttpServletResponse
@@ -83,9 +65,10 @@ public class UpdateVotesServlet extends HttpServlet {
    * @throws IOException error thrown from sendError method
    */
   private Entity getEntityFromId(
-      HttpServletResponse response, long optionId, DatastoreService datastore) throws IOException {
+      HttpServletResponse response, long challengeId, DatastoreService datastore)
+      throws IOException {
     try {
-      return datastore.get(KeyFactory.createKey("Option", optionId));
+      return datastore.get(KeyFactory.createKey("Challenge", challengeId));
     } catch (EntityNotFoundException e) {
       ErrorHandler.sendError(response, "Cannot get entity from datastore");
       return null;
@@ -103,16 +86,17 @@ public class UpdateVotesServlet extends HttpServlet {
    * @param userId id of user
    * @return set representing users who have voted for current option
    */
-  private Set<String> getUpdatedVotes(Entity optionEntity, boolean isOptionChecked, String userId) {
+  private Set<String> getUpdatedVotes(
+      Entity challengeEntity, boolean isOptionChecked, String userId) {
     /*
      * Using ArrayList here because datastore will only return type ArrayList.
      * Casting it to a HashSet will still have O(n) time complexity, so ArrayLists
      * seem to be the best option in this scenario.
      */
     List<String> votes =
-        (optionEntity.getProperty("votes") == null)
+        (challengeEntity.getProperty("votes") == null)
             ? new ArrayList<>()
-            : (ArrayList<String>) optionEntity.getProperty("votes");
+            : (ArrayList<String>) challengeEntity.getProperty("votes");
     Set<String> votesSet;
     if (votes == null) {
       votesSet = new HashSet<String>();
