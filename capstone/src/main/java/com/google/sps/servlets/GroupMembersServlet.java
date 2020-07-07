@@ -70,9 +70,13 @@ public class GroupMembersServlet extends HttpServlet {
   }
 
   private Entity getUserFromId(HttpServletResponse response, String userId, DatastoreService datastore) throws IOException {
+    System.out.println("get user");
+
     try {
-      return datastore.get(KeyFactory.createKey("Users", userId));
+      System.out.println(datastore.get(KeyFactory.createKey("User", userId)));
+      return datastore.get(KeyFactory.createKey("User", userId));
     } catch (EntityNotFoundException e) {
+      System.out.println("user not found");
       errorHandler.sendError(response, "User does not exist.");
       return null;
     }
@@ -81,6 +85,7 @@ public class GroupMembersServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     String userId = request.getParameter("userId");
+    System.out.println("in go get");
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity member = this.getUserFromId(response, userId, datastore);
@@ -88,6 +93,7 @@ public class GroupMembersServlet extends HttpServlet {
 
     // Convert to json
     response.setContentType("application/json;");
+    System.out.println(memResponse);
     response.getWriter().println(new Gson().toJson(memResponse));  
   }
 }

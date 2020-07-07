@@ -1,25 +1,47 @@
-// When a member clicks anywhere outside modal, close it 
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
+function loadMembers() {
+
 }
 
-let modal = document.getElementById("myModal");
+function addModalListeners() {
+  const modal = document.getElementById("memberProfile");
+  const spanClose = document.getElementsByClassName("close")[0];
+  spanClose.addEventListener("click", function () {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  });
+  const modalContent = document.getElementsByClassName("modal-content")[0];
+  modalContent.innerHTML += '';
+  modalContent.appendChild(createMemberModal());
+  window.addEventListener("click", function () {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  });
+}
 
-function showMemberProfile(){
-  fetch('/group-member').then(response => response.json()).then((memResponse) => {
-    createMemberModal(memResponse);
+function addMemberProfileListener() {
+  let elements = document.getElementsByClassName('member-grid-item');
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].addEventListener("click", function() {
+        showMemberProfile(this.id);
+      });
+    }
+}
+
+function showMemberProfile(userId){
+  fetch(`/group-member?id=${userId}`).then(response => response.json()).then((memResponse) => {
+    modal.append(createMemberModal(memResponse));
   }).then(() => {
     modal.style.display = "block";
   });
 }
 
-function createMemberModal(memResponse) {
+function createMemberModal() {
   const modalDiv = document.createElement('div');
   modalDiv.className = "modal-div";
   modalDiv.append(createMemberProfileImg());
-  modalDiv.append(createMemberName(memResponse));
+  modalDiv.append(createMemberName());
   modalDiv.append(createMemberBadges());
   return modalDiv;
 }
@@ -30,10 +52,10 @@ function createMemberProfileImg(){
   return memberProfileImgDiv;
 }
 
-function createMemberName(memResponse){
+function createMemberName(){
   const memberName = document.createElement('h3');
   memberName.className = "member-name";
-  memberName.innerText = memResponse.name;
+  memberName.innerText = "Jane Doe";
   return memberName;
 }
 

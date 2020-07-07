@@ -2,6 +2,8 @@ function init() {
   loadPosts();
   getPollOptions();
   fetchBlobstoreUrlAndShowForm();
+  addMemberProfileListener();
+  addModalListeners();
 }
 
 let postResponse;

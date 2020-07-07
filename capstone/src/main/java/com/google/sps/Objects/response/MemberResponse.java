@@ -11,7 +11,8 @@ import com.google.appengine.api.datastore.Entity;
 public final class MemberResponse {
 
   private final String profilePic;
-  private final String name;
+  private final String firstName;
+  private final String lastName;
   private final LinkedHashSet<Badge> badges;
   private final String userId;
 
@@ -19,14 +20,16 @@ public final class MemberResponse {
    * Constructs a MemberResponse object.
    *
    * @param profilePic String url of profile image 
-   * @param name String of user full name  
+   * @param firstName String of user first name 
+   * @param lastName String of user last name
    * @param badges List of badge objects 
    * @param userId user id 
    */
-  public MemberResponse(String profilePic, String name, LinkedHashSet<Badge> badges, String userId) {
+  public MemberResponse(String profilePic, String firstName, String lastName, LinkedHashSet<Badge> badges, String userId) {
     this.profilePic = profilePic;
     this.badges = badges;
-    this.name = name;
+    this.firstName = firstName;
+    this.lastName = lastName;
     this.userId = userId;
   }
   
@@ -34,26 +37,36 @@ public final class MemberResponse {
    * Constructs a MemberResponse object from an entity
    *
    * @param profilePic String url of profile image 
-   * @param name String of user full name  
+   * @param firstName String of user first name 
+   * @param lastName String of user last name  
    * @param badges List of badge objects 
    * @param userId user id 
    */
   public static MemberResponse fromEntity(Entity entity) {
     String profilePic = (String) entity.getProperty("profilePic");
-    String name = (String) entity.getProperty("name");
+    String firstName = (String) entity.getProperty("firstName");
+    String lastName = (String) entity.getProperty("lastName");
     String userId = (String) entity.getProperty("userId");
     LinkedHashSet<Badge> badges = (entity.getProperty("badges") == null) 
       ? new LinkedHashSet<>() 
       : new LinkedHashSet<Badge>((ArrayList<Badge>) entity.getProperty("badges"));   
-    return new MemberResponse(profilePic, name, badges, userId);
+    return new MemberResponse(profilePic, firstName, lastName, badges, userId);
   }
 
   /**
    *
-   * @return String of user full name 
+   * @return String of user first name 
    */
-  public String getName() {
-    return this.name;
+  public String getFirstName() {
+    return this.firstName;
+  }
+
+  /**
+   *
+   * @return String of user first name 
+   */
+  public String getLastName() {
+    return this.lastName;
   }
 
   /**
