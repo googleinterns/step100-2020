@@ -29,22 +29,4 @@ public final class PollResponse {
     this.votedOptions = votedOptions;
     this.userId = userId;
   }
-
-  /**
-   * Gets list of Option objects.
-   *
-   * @return List of Option objects
-   */
-  public List<Option> getOptions() {
-    return this.options;
-  }
-
-  /**
-   * Gets the list of ids for checkboxes that user has marked as checked.
-   *
-   * @return List of ids
-   */
-  public List<Long> getVotedOptions() {
-    return this.votedOptions;
-  }
 }
