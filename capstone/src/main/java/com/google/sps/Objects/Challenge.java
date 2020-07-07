@@ -54,8 +54,7 @@ public final class Challenge {
     String challengeName = (String) entity.getProperty("name");
     long dueDate = (long) entity.getProperty("dueDate");
     long id = entity.getKey().getId();
-    ArrayList<String> usersCompleted = (ArrayList<String>) entity.getProperty("usersCompleted");
-    System.out.println("in challenge class, from entity " + usersCompleted);
+    ArrayList<String> usersCompleted = (ArrayList<String>) entity.getProperty("votes");
     // setting badge as null for now
     return new Challenge(challengeName, dueDate, null, usersCompleted, id);
   }
@@ -64,7 +63,7 @@ public final class Challenge {
     Entity challengeEntity = new Entity("Challenge");
     challengeEntity.setProperty("name", this.challengeName);
     challengeEntity.setProperty("dueDate", this.dueDate);
-    challengeEntity.setProperty("usersCompleted", this.usersCompleted);
+    challengeEntity.setProperty("votes", this.usersCompleted);
     challengeEntity.setProperty("timestamp", System.currentTimeMillis());
     // not setting badge for now
     return challengeEntity;

@@ -34,7 +34,6 @@ public class MarkChallengeServlet extends HttpServlet {
     Set<String> votesSet = this.getUpdatedVotes(challengeEntity, isOptionChecked, userId);
     // Update datastore
     challengeEntity.setProperty("votes", votesSet);
-    System.out.println("in mark challenge----------" + votesSet.toString());
     datastore.put(challengeEntity);
   }
 

@@ -47,7 +47,6 @@ public class ChallengeServlet extends HttpServlet {
       // Get most recent challenge in database
       Entity entity = results.asIterable().iterator().next();
       challenge = Challenge.fromEntity(entity);
-      System.out.println("users completed " + challenge.getUsersCompleted());
       // Gets whether current user has completed challenge
       boolean isCompleted = challenge.getIsCompleted(userId);
       challengeResponse = new ChallengeResponse(challenge, isCompleted);
