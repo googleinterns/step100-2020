@@ -74,7 +74,7 @@ public class ChallengeTest {
   }
 
   @Test
-  public void addUserCompletedTest() {
+  public void addCompletedUserTest() {
     challenge.addCompletedUser("1");
     challenge.addCompletedUser("2");
     List<String> completedUsers = challenge.getUsersCompleted();
