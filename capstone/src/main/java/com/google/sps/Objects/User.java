@@ -98,6 +98,26 @@ public final class User {
     this.groups.add(newGroupId);
   }
 
+  /* 
+   * Overrides the equals() method to effectively compare two User objects. 
+   */
+  @Override
+  public boolean equals(Object other) {
+    if (other == null) return false;
+    if (other == this) return true;
+    if (!(other instanceof User)) return false;
+    User user = (User) other;
+    return userId.equals(user.userId) &&
+        firstName.equals(user.firstName) &&
+        lastName.equals(user.lastName) &&
+        email.equals(user.email) &&
+        phoneNumber.equals(user.phoneNumber) &&
+        profilePic.equals(user.profilePic) &&
+        interests.containsAll(user.interests) && user.interests.containsAll(interests) &&
+        groups.containsAll(user.groups) && user.groups.containsAll(groups) &&
+        badges.containsAll(user.badges) && user.badges.containsAll(badges);
+  }
+
   /**
    * Creates and returns a User object given a user Entity.
    */

@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import com.google.sps.Objects.User;
@@ -98,22 +99,10 @@ public class CreateNewUserServletTest {
     when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
 
     createNewUserServlet.doPost(mockRequest, mockResponse);
-
     Key userKey = KeyFactory.createKey("User", USER_ID);
     Entity user = datastore.get(userKey);
-    assertThat(user.getProperty("userId")).isEqualTo(USER_ID);
-    assertThat(user.getProperty("firstName")).isEqualTo(USER_1.getFirstName());
-    assertThat(user.getProperty("lastName")).isEqualTo(USER_1.getLastName());
-    assertThat(user.getProperty("phoneNumber")).isEqualTo(USER_1.getPhoneNumber());
-    assertThat(user.getProperty("email")).isEqualTo(USER_EMAIL);
-    assertThat(user.getProperty("interests")).isEqualTo(INTERESTS_LIST);
-    assertThat(user.getProperty("badges")).isEqualTo(null);
-    assertThat(user.getProperty("groups")).isEqualTo(null);
-
-    //  TODO: can override User object's equal method to check if two 
-    // User objects are equal and use that to assert whether a new user was 
-    // correctly added/retrieved.
-    // call User.fromEntity(user) and check if they're equal
+    
+    assertTrue(USER_1.equals(User.fromEntity(user)));
   }
 
   @Test(expected = EntityNotFoundException.class)
