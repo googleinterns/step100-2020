@@ -10,15 +10,17 @@ public final class Group {
   private final Poll poll;
   private final String groupName;
   private final String headerImg;
+  private final long groupId;
 
   public Group(ArrayList<User> members, ArrayList<Challenge> challenges, ArrayList<Post> posts, 
-      Poll poll, String groupName, String headerImg) {
+      Poll poll, String groupName, String headerImg, long groupId) {
     this.members = members;
     this.challenges = challenges;
     this.posts = posts;
     this.poll = poll;
     this.groupName = groupName;
     this.headerImg = headerImg;
+    this.groupId = groupId;
   }
 
   public ArrayList<User> getMembers() {
@@ -43,6 +45,10 @@ public final class Group {
 
   public String getHeaderImg() {
     return headerImg;
+  }
+
+  public long getGroupId() {
+    return groupId;
   }
 
   public void addChallenge(Challenge newChallenge) {

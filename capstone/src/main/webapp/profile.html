@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>AppName</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/profile.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <script src="scripts/script.js"></script>
+    <script src="scripts/profile.js"></script>
+  </head>
+  <body>
+    <div class="content" id="content">
+      <div id="sidebar" class="sidebar">
+        <div class="wrapper">
+          <div id="profile-pic"></div>
+          <h2 id="name-container"></h2>
+          <div id="badge-container">
+            <h4>Badges</h4>
+          </div>
+          <div id="buttons-container"></div>
+          <button id="edit-btn" onclick="editProfile()">
+            <img id="edit" src="images/edit.svg"></img>
+          </button>
+        </div>
+      </div>
+      <div id="main" class="main">
+        <div class="main-content">
+          <h1 id="email">Email</h1>
+          <p id="email-container"></p>
+          <h1 id="phone">Phone Number</h1>
+          <p id="phone-container"></p>
+          <h1 id="interests">Interests</h1>
+          <div id="interests-container"></div>
+          <h1 id="groups">Groups</h1>
+          <div id="groups-container"></div>
+          <h1 id="ongoing-challenges">Ongoing Challenges</h1>
+          <h1 id="past-challenges">Past Challenges</h1>
+        </div>
+      </div>
+    </div>
+
+    <template id="group-template">
+      <a id="group-page-link">
+        <div class="group-container">
+          <div id="header-img" class="header-img"></div>
+          <div id="group-name" class="group-name"></div>
+        </div>
+      </a>
+    </template>
+
+    <template id="challenge-template">
+      <div class="challenge-container">
+        <div id="group-name" class="group-name"></div>
+        <div id="challenge-content">
+          <p id="challenge-name" class="challenge-name"></p>
+          <p id="due date"></p>
+        </div>
+      </div>
+    </template>
+
+  </body>
+</html>
