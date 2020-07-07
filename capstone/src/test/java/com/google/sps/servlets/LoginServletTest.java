@@ -63,8 +63,6 @@ public class LoginServletTest {
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
-    populateDatabase(datastore);
-
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
@@ -85,7 +83,7 @@ public class LoginServletTest {
   }
 
   @Test
-  public void doGet_userIsLoggedOut() throws Exception) {
+  public void doGet_userIsLoggedOut() throws Exception {
     helper.setEnvIsLoggedIn(false);
 
     loginServlet.doGet(mockRequest, mockResponse);

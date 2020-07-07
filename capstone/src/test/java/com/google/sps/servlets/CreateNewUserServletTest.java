@@ -4,6 +4,8 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
 
+import com.google.sps.Objects.User;
+import com.google.sps.Objects.Badge;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -13,6 +15,7 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +27,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Arrays;
+import java.util.ArrayList;
 
 /**
  * Unit tests for {@link CreateNewUserServlet}.
@@ -42,12 +49,21 @@ public class CreateNewUserServletTest {
                 .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
             new LocalUserServiceTestConfig())
           .setEnvEmail(USER_EMAIL)
-          .setEnvIsLoggedIn(true);
+          .setEnvIsLoggedIn(true)
           .setEnvAuthDomain("gmail.com")
           .setEnvAttributes(
               new HashMap(
                   ImmutableMap.of(
                       "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+
+  private static ArrayList<String> INTERESTS_LIST = new ArrayList<String>( 
+      Arrays.asList("Testing", "Dancing"));
+  private static final User USER_1 = new User(USER_ID, "Test", "McTest", USER_EMAIL, 
+                          /* phoneNumber= */ "123-456-7890", 
+                          /* profilePic= */ "", 
+                          /* badges= */ new LinkedHashSet<Badge>(), 
+                          /* groups= */ new LinkedHashSet<Long>(), 
+                          /* interests= */ INTERESTS_LIST);
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -60,8 +76,6 @@ public class CreateNewUserServletTest {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
-
-    populateDatabase(datastore);
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
@@ -77,9 +91,9 @@ public class CreateNewUserServletTest {
 
   @Test
   public void doPost_addNewUser() throws Exception {
-    when(mockRequest.getParameter("first")).thenReturn("Test");
-    when(mockRequest.getParameter("last")).thenReturn("McTest");
-    when(mockRequest.getParameter("phone")).thenReturn("123-456-7890");
+    when(mockRequest.getParameter("first")).thenReturn(USER_1.getFirstName());
+    when(mockRequest.getParameter("last")).thenReturn(USER_1.getLastName());
+    when(mockRequest.getParameter("phone")).thenReturn(USER_1.getPhoneNumber());
     when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
 
     createNewUserServlet.doPost(mockRequest, mockResponse);
@@ -87,13 +101,13 @@ public class CreateNewUserServletTest {
     Key userKey = KeyFactory.createKey("User", USER_ID);
     Entity user = datastore.get(userKey);
     assertThat(user.getProperty("userId")).isEqualTo(USER_ID);
-    assertThat(user.getProperty("firstName")).isEqualTo(first);
-    assertThat(user.getProperty("lastName")).isEqualTo(last);
-    assertThat(user.getProperty("phoneNumber")).isEqualTo(phone);
+    assertThat(user.getProperty("firstName")).isEqualTo(USER_1.getFirstName());
+    assertThat(user.getProperty("lastName")).isEqualTo(USER_1.getLastName());
+    assertThat(user.getProperty("phoneNumber")).isEqualTo(USER_1.getPhoneNumber());
     assertThat(user.getProperty("email")).isEqualTo(USER_EMAIL);
-    assertThat(user.getProperty("interests")).isEqualTo(/*list*/);
-    assertThat(user.getProperty("badges")).isEqualTo(/*empty list*/);
-    assertThat(user.getProperty("groups")).isEqualTo(/*empty list*/);
+    assertThat(user.getProperty("interests")).isEqualTo(INTERESTS_LIST);
+    assertThat(user.getProperty("badges")).isEqualTo(null);
+    assertThat(user.getProperty("groups")).isEqualTo(null);
 
     //  TODO: can override User object's equal method to check if two 
     // User objects are equal and use that to assert whether a new user was 
