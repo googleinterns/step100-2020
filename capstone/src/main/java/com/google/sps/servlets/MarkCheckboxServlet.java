@@ -34,6 +34,9 @@ public class MarkCheckboxServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     String userId = this.getUserId(response);
     Entity entity = this.getEntityFromId(response, id, datastore, type);
+    if (entity == null){
+      entity = new Entity(type);
+    }
     Set<String> votesSet = this.getUpdatedVotes(entity, isChecked, userId);
 
     // Update datastore
