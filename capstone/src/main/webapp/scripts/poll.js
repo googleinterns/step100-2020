@@ -75,15 +75,15 @@ function getChallenge() {
         dueDateMillis = challengeData["challenge"]["dueDate"];
         const dueDate = new Date(dueDateMillis).toString();
         dueDateContainer.innerText = `Due: ${dueDate}`;
+        checkWeek(dueDateMillis);
       } else {
         noChallengeText();
         updatePoll();
       }
-    })
-    .then(() => checkWeek(dueDateMillis));
+    });
 }
 
-function setChallengeCheckboxVisibility(visibility){
+function setChallengeCheckboxVisibility(visibility) {
   const challengeCheckbox = document.getElementsByClassName(
     "challenge-checkbox"
   )[0];
