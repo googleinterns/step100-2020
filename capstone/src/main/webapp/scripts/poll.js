@@ -233,7 +233,6 @@ function handleCheckboxCount(id, checked) {
  * @param {String} checked
  */
 function markChallenge(id, checked) {
-  console.log(checked);
   fetch(`mark-checkbox?id=${id}&checked=${checked}&type=Challenge`, {
     method: "POST"
   });
