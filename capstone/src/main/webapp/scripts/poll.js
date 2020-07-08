@@ -65,7 +65,11 @@ function getChallenge() {
         "challenge-checkbox"
       )[0];
       const challengeLabel = document.getElementById("challenge-label");
+      const markCompletedText = document.getElementById("mark-completed-text");
       if (challengeData) {
+        challengeCheckbox.style.visibility = "visible";
+        challengeLabel.style.visibility = "visible";
+        markCompletedText.style.visibility = "visible";
         const id = challengeData["challenge"]["id"];
         challengeCheckbox.id = id;
         challengeLabel.setAttribute("for", id);
