@@ -65,11 +65,11 @@ function getChallenge() {
         "challenge-checkbox"
       )[0];
       const challengeLabel = document.getElementById("challenge-label");
-      const id = challengeData["challenge"]["id"];
-      challengeCheckbox.id = id;
-      challengeLabel.setAttribute("for", id);
-      challengeCheckbox.checked = challengeData["isCompleted"];
       if (challengeData) {
+        const id = challengeData["challenge"]["id"];
+        challengeCheckbox.id = id;
+        challengeLabel.setAttribute("for", id);
+        challengeCheckbox.checked = challengeData["isCompleted"];
         weeklyChallenge.innerText = challengeData["challenge"]["challengeName"];
         dueDateMillis = challengeData["challenge"]["dueDate"];
         const dueDate = new Date(dueDateMillis).toString();
@@ -83,11 +83,20 @@ function getChallenge() {
 }
 
 /**
- * Displays text when there are no challenges.
+ * Displays text when there are no challenges and hides checkbox.
  */
 function noChallengeText() {
   const weeklyChallenge = document.getElementById("weekly-challenge");
   const dueDateContainer = document.getElementById("due-date");
+  const challengeCheckbox = document.getElementsByClassName(
+    "challenge-checkbox"
+  )[0];
+  const challengeLabel = document.getElementById("challenge-label");
+  const markCompletedText = document.getElementById("mark-completed-text");
+
+  challengeCheckbox.style.visibility = "hidden";
+  challengeLabel.style.visibility = "hidden";
+  markCompletedText.style.visibility = "hidden";
   weeklyChallenge.innerText = NO_CHALLENGES;
   dueDateContainer.innerText = "";
 }
