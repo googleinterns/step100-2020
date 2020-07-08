@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,46 +15,31 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 
 import error.ErrorHandler;
 
 @WebServlet("/mark-checkbox")
-public class MarkCheckboxServlet extends HttpServlet {
+public class MarkCheckboxServlet extends AuthenticatedServlet {
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     String idString = request.getParameter("id");
     boolean isChecked = Boolean.parseBoolean(request.getParameter("checked"));
     // type representing whether checkbox is for Option or for Challenge
     String type = request.getParameter("type");
     long id = this.parseToLong(response, idString);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    String userId = this.getUserId(response);
+    //    String userId = this.getUserId(response);
     Entity entity = this.getEntityFromId(response, id, datastore, type);
+    if (entity == null) {
+      entity = new Entity(type);
+    }
     Set<String> votesSet = this.getUpdatedVotes(entity, isChecked, userId);
 
     // Update datastore
     entity.setProperty("votes", votesSet);
     datastore.put(entity);
-  }
-
-  /**
-   * Gets the id of the currently logged in user.
-   *
-   * @param response HttpServletResponse
-   * @return String user id
-   * @throws IOException exception thrown from send error method.
-   */
-  private String getUserId(HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      return userService.getCurrentUser().getUserId();
-    } else {
-      ErrorHandler.sendError(response, "User is not logged in.");
-    }
-    return "";
   }
 
   /**
@@ -137,4 +121,8 @@ public class MarkCheckboxServlet extends HttpServlet {
     }
     return votesSet;
   }
+
+  @Override
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {}
 }

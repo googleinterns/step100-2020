@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,30 +15,19 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.repackaged.com.google.common.collect.Iterables;
 import com.google.sps.Objects.Challenge;
 import com.google.sps.Objects.response.ChallengeResponse;
 
-import error.ErrorHandler;
-
 @WebServlet("challenge")
-public class ChallengeServlet extends HttpServlet {
+public class ChallengeServlet extends AuthenticatedServlet {
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("Challenge").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
-    UserService userService = UserServiceFactory.getUserService();
-    String userId = "";
-    if (userService.isUserLoggedIn()) {
-      userId = userService.getCurrentUser().getUserId();
-    } else {
-      ErrorHandler.sendError(response, "User is not logged in.");
-    }
-
     Challenge challenge = null;
     ChallengeResponse challengeResponse = null;
     // Check if there are challenges in database
@@ -48,14 +36,15 @@ public class ChallengeServlet extends HttpServlet {
       Entity entity = results.asIterable().iterator().next();
       challenge = Challenge.fromEntity(entity);
       // Gets whether current user has completed challenge
-      boolean isCompleted = challenge.getIsCompleted(userId);
-      challengeResponse = new ChallengeResponse(challenge, isCompleted);
+      boolean hasUserCompleted = challenge.getHasUserCompleted(userId);
+      challengeResponse = new ChallengeResponse(challenge, hasUserCompleted);
     }
     ServletHelper.write(response, challengeResponse, "application/json");
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     String challengeName = request.getParameter("name");
     LocalDateTime dueDate = this.getDueDate(LocalDateTime.now());
     long dueDateMillis = Timestamp.valueOf(dueDate).getTime();

@@ -347,7 +347,7 @@ p {
   margin-right: 40px;
 }
 
-.mark-completed-text {
+#mark-completed-text {
   position: relative;
   bottom: 25px;
 }
