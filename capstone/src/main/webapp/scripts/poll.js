@@ -65,11 +65,8 @@ function getChallenge() {
         "challenge-checkbox"
       )[0];
       const challengeLabel = document.getElementById("challenge-label");
-      const markCompletedText = document.getElementById("mark-completed-text");
       if (challengeData) {
-        challengeCheckbox.style.visibility = "visible";
-        challengeLabel.style.visibility = "visible";
-        markCompletedText.style.visibility = "visible";
+        setChallengeCheckboxVisibility("visible");
         const id = challengeData["challenge"]["id"];
         challengeCheckbox.id = id;
         challengeLabel.setAttribute("for", id);
@@ -86,21 +83,25 @@ function getChallenge() {
     .then(() => checkWeek(dueDateMillis));
 }
 
-/**
- * Displays text when there are no challenges and hides checkbox.
- */
-function noChallengeText() {
-  const weeklyChallenge = document.getElementById("weekly-challenge");
-  const dueDateContainer = document.getElementById("due-date");
+function setChallengeCheckboxVisibility(visibility){
   const challengeCheckbox = document.getElementsByClassName(
     "challenge-checkbox"
   )[0];
   const challengeLabel = document.getElementById("challenge-label");
   const markCompletedText = document.getElementById("mark-completed-text");
 
-  challengeCheckbox.style.visibility = "hidden";
-  challengeLabel.style.visibility = "hidden";
-  markCompletedText.style.visibility = "hidden";
+  challengeCheckbox.style.visibility = visibility;
+  challengeLabel.style.visibility = visibility;
+  markCompletedText.style.visibility = visibility;
+}
+
+/**
+ * Displays text when there are no challenges and hides checkbox.
+ */
+function noChallengeText() {
+  const weeklyChallenge = document.getElementById("weekly-challenge");
+  const dueDateContainer = document.getElementById("due-date");
+  setChallengeCheckboxVisibility("hidden");
   weeklyChallenge.innerText = NO_CHALLENGES;
   dueDateContainer.innerText = "";
 }
