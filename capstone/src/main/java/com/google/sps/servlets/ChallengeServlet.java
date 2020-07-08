@@ -46,12 +46,11 @@ public class ChallengeServlet extends AuthenticatedServlet {
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     String challengeName = request.getParameter("name");
-    LocalDateTime dueDate = this.getDueDate(LocalDateTime.now());
-    long dueDateMillis = Timestamp.valueOf(dueDate).getTime();
+    long dueDate = this.getDueDate();
     Challenge challenge =
         new Challenge(
             challengeName,
-            dueDateMillis, /* milliseconds until due date */
+            dueDate, /* due date in milliseconds */
             null, /* badge */
             new ArrayList<String>() /* users completed */,
             0 /* id */);
@@ -62,10 +61,11 @@ public class ChallengeServlet extends AuthenticatedServlet {
   /**
    * Sets due date to midnight, 7 days from when challenge is posted.
    *
-   * @param d current date time
-   * @return date time in a week from current date time
+   * @return due date in milliseconds
    */
-  private LocalDateTime getDueDate(LocalDateTime d) {
-    return d.plusDays(7).withHour(23).withMinute(59).withSecond(59).withNano(0);
+  private long getDueDate() {
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime dueDate = now.plusDays(7).withHour(23).withMinute(59).withSecond(59).withNano(0);
+    return Timestamp.valueOf(dueDate).getTime();
   }
 }

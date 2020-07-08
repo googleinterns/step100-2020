@@ -91,8 +91,7 @@ public class ChallengeServletTest {
   /**
    * Sets due date to midnight, 7 days from when challenge is posted.
    *
-   * @param d current date time
-   * @return date time in a week from current date time
+   * @return due date in milliseconds
    */
   private long getDueDate() {
     LocalDateTime now = LocalDateTime.now();
@@ -133,7 +132,7 @@ public class ChallengeServletTest {
   }
 
   @Test
-  public void doPost() throws IOException, EntityNotFoundException {
+  public void doPost_userLoggedIn() throws IOException, EntityNotFoundException {
     when(mockRequest.getParameter("name")).thenReturn(NEW_CHALLENGE);
 
     challengeServlet.doPost(mockRequest, mockResponse);
@@ -155,5 +154,15 @@ public class ChallengeServletTest {
     assertEquals(challenge.getChallengeName(), returnedChallenge.getChallengeName());
     assert challenge.getUsersCompleted().size() == returnedChallenge.getUsersCompleted().size();
     assert challenge.getDueDate() == returnedChallenge.getDueDate();
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void doPost_userNotLoggedIn() throws IOException, EntityNotFoundException {
+    helper.setEnvIsLoggedIn(false);
+    when(mockRequest.getParameter("name")).thenReturn(CHALLENGE_NAME);
+
+    challengeServlet.doPost(mockRequest, mockResponse);
+    Key key = KeyFactory.createKey("Challenge", CHALLENGE_ID);
+    Entity challengeEntity = datastore.get(key);
   }
 }
