@@ -83,6 +83,9 @@ function getChallenge() {
     });
 }
 
+/**
+ * Sets the visibility of the challenge checkbox.
+ */
 function setChallengeCheckboxVisibility(visibility) {
   const challengeCheckbox = document.getElementsByClassName(
     "challenge-checkbox"
@@ -126,7 +129,7 @@ function updatePoll() {
 }
 
 /**
- * Adds challenge to database.
+ * Adds challenge to database. If there are no poll options, display no challenge text.
  */
 function addChallengeToDb() {
   topChallenge
