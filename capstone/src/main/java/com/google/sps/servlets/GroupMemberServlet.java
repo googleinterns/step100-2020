@@ -32,15 +32,19 @@ public class GroupMemberServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity group = this.getGroupFromId(response, groupId, datastore);
-    ArrayList<String> members = 
-      (ArrayList<String>) group.getProperty("members");
-    if (members == null) {
-      members = new ArrayList<>();
-    }
+    if (group != null) {
+      ArrayList<String> members = 
+        (ArrayList<String>) group.getProperty("members");
+      if (members == null) {
+        members = new ArrayList<>();
+      }
 
-    this.addMember(members, userId);
-    group.setProperty("members", members);
-    datastore.put(group);
+      this.addMember(members, userId);
+      group.setProperty("members", members);
+      datastore.put(group);
+    } else {
+      return;
+    }
   }
 
   private void addMember(ArrayList<String> members, String userId) {
@@ -59,7 +63,7 @@ public class GroupMemberServlet extends HttpServlet {
   }
 
   private Entity getGroupFromId(
-    HttpServletResponse response, long groupId, DatastoreService datastore) throws IOException {
+    HttpServletResponse response, long groupId, DatastoreService datastore) {
     try {
       return datastore.get(KeyFactory.createKey("Group", groupId));
     } catch (EntityNotFoundException e) {
