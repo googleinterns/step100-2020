@@ -1,7 +1,7 @@
 #members-container {
-  background-color: #fefefe;
+  background-color: var(--near-white);
   border-radius: 10%;
-  color:  #C4C4C4;
+  color: var(--badges-gray);
   height: 280px;
   padding: 15px;
   width: 200px;
@@ -61,7 +61,7 @@
 
 /* Modal Content */
 .modal-content {
-  background-color: #fefefe;
+  background-color: var(--near-white);
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
@@ -78,14 +78,14 @@
 
 .close:hover,
 .close:focus {
-  color: #000;
+  color: var(--black);
   text-decoration: none;
   cursor: pointer;
 }
 
 .member-img-blank {
   border-radius: 50%;
-  background-color: #F7CE82;
+  background-color: var(--orange);
   align-content: center;
   margin: 0 auto;
 }
@@ -114,7 +114,7 @@
   font-style: normal;
   font-weight: normal;
   font-size: 20px;
-  color: #000;
+  color: var(--black);
 }
 
 .member-badges {

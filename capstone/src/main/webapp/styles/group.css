@@ -10,7 +10,7 @@
 
 body {
   font-family: "Roboto", sans-serif;
-  background-color: #f4f6f2;
+  background-color: var(--background);
   top: 0;
 }
 
@@ -18,12 +18,12 @@ p {
   margin-top: 10px;
 }
 
+/* Group Header*/
 .group-container {
   width: var(--container-width);
   margin: 0 auto;
 }
 
-/* Post Comment */
 .group-content {
   position: relative;
   margin-left: auto;
@@ -35,12 +35,12 @@ p {
   border-radius: 10px;
   width: 100%;
   height: 200px;
-  background: #c5d6cb;
+  background: var(--yellow-green);
   margin-bottom: var(--gap);
 }
 
 .group-name-banner {
-  background: #73c586;
+  background: var(--dark-green);
   display: flex;
   align-content: center;
   height: 50px;
@@ -51,7 +51,7 @@ p {
 }
 
 #group-name {
-  color: #f4f6f2;
+  color: var(--background);
   text-align: center;
   font-family: "Roboto";
   font-style: normal;
@@ -60,6 +60,7 @@ p {
   width: 100%;
 }
 
+/* Post */
 .create-post {
   display: block;
   background: #fcfcfc;
@@ -74,7 +75,7 @@ p {
   height: 60px;
   width: 60px;
   border-radius: 50%;
-  background-color: #f7ce82;
+  background-color: var(--orange);
   align-content: left;
   top: 50%;
   transform: translateY(-50%);
@@ -83,7 +84,7 @@ p {
 }
 
 #post-input {
-  background-color: #EEEEEE;
+  background-color: var(--placeholder-gray);
   border-radius: 10px;
   align-content: left;
   margin-left: 100px;
@@ -151,7 +152,7 @@ p {
   height: 60px;
   width: 60px;
   border-radius: 50%;
-  background-color: #f7ce82;
+  background-color: var(--orange);
   align-content: left;
   position: flex;
   margin-left: 20px;
@@ -231,7 +232,7 @@ p {
   font-style: normal;
   font-weight: normal;
   font-size: 15px;
-  color: #8A8686;
+  color: var(--text-gray);
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -245,7 +246,7 @@ p {
   border-radius: 10px;
   height: 50px;
   width: 100%;
-  color: #8a8686;
+  color: var(--text-gray);
   font-family: "Roboto";
   font-style: normal;
   font-weight: normal;
@@ -288,13 +289,13 @@ p {
   height: 60px;
   width: 60px;
   border-radius: 50%;
-  background-color: #F5CEDA;;
+  background-color: var(--light-pink);
   align-content: left;
 }
 
 .comment-text-div {
   margin-left: 20px;
-  background-color: #EEEEEE;
+  background-color: var(--placeholder-gray);
   border-radius: 10px;
   width: 85%;
   position: relative;
@@ -314,13 +315,13 @@ p {
 }
 
 #comment-input {
-  background-color: #EEEEEE;
+  background-color: var(--placeholder-gray);
   border-radius: 10px;
   align-content: left;
   margin-left: 100px;
   height: 40px;
   width: 70%;
-  color: #8A8686;
+  color: var(--text-gray);
   font-family: "Roboto";
   font-style: normal;
   font-weight: normal;
@@ -345,7 +346,7 @@ p {
 }
 
 #due-date {
-  color: #8a8686;
+  color: var(--text-gray);
   font-size: 13px;
 }
 
@@ -415,7 +416,7 @@ p {
   float: right;
   right: 27px;
   font-size: 24px;
-  color: #8a8686;
+  color: var(--text-gray);
 }
 
 input[type="checkbox"] {

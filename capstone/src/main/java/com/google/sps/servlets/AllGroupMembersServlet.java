@@ -14,7 +14,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;;
+import java.util.List;
 import com.google.gson.Gson;
 import com.google.sps.Objects.response.BasicMemberResponse;
 
