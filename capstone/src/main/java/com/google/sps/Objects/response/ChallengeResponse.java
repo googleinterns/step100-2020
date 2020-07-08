@@ -5,11 +5,11 @@ import com.google.sps.Objects.Challenge;
 public class ChallengeResponse {
 
   private Challenge challenge;
-  private boolean isCompleted;
+  private boolean userHasCompleted;
 
-  public ChallengeResponse(Challenge challenge, boolean isCompleted) {
+  public ChallengeResponse(Challenge challenge, boolean userHasCompleted) {
     this.setChallenge(challenge);
-    this.isCompleted = isCompleted;
+    this.userHasCompleted = userHasCompleted;
   }
 
   public Challenge getChallenge() {

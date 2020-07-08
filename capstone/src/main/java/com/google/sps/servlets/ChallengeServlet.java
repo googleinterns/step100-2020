@@ -48,8 +48,8 @@ public class ChallengeServlet extends HttpServlet {
       Entity entity = results.asIterable().iterator().next();
       challenge = Challenge.fromEntity(entity);
       // Gets whether current user has completed challenge
-      boolean isCompleted = challenge.getIsCompleted(userId);
-      challengeResponse = new ChallengeResponse(challenge, isCompleted);
+      boolean userHasCompleted = challenge.getHasUserCompleted(userId);
+      challengeResponse = new ChallengeResponse(challenge, userHasCompleted);
     }
     ServletHelper.write(response, challengeResponse, "application/json");
   }

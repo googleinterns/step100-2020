@@ -41,7 +41,7 @@ public final class Challenge {
     this.usersCompleted.add(userId);
   }
 
-  public boolean getIsCompleted(String userId) {
+  public boolean getHasUserCompleted(String userId) {
     if (this.usersCompleted == null) {
       return false;
     } else {
