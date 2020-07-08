@@ -1,91 +1,91 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="styles/group.css">
-    </link>
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <script src="scripts/post.js"></script>
-    <script src="scripts/poll.js"></script>
-    <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
-    <title>Group</title>
-  </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="styles/group.css">
+  </link>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <script src="scripts/post.js"></script>
+  <script src="scripts/poll.js"></script>
+  <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
+  <title>Group</title>
+</head>
 
-  <body>
-    <div class="group-container">
-      <div class="group-header">
-        <div class="group-name-banner">
-          <span id="group-name" class="align-vertical">The 3 Musketeers + Others</span>
-        </div>
-      </div>
-
-      <div class="create-post">
-        <form id="post-form" method="POST" enctype="multipart/form-data">
-          <span class="user-img align-vertical"></span>
-
-          <input type="text" id="post-input" class="align-vertical" name="post-input" placeholder="Post a status">
-
-          <label for="fileid">
-              <img class="camera-btn align-vertical medium-icon" src="images/camera.png" alt />
-            </label>
-          <input id='fileid' type='file' name='image' />
-
-          <button class="post-btn align-vertical" type="image" form="post-form"><img class="medium-icon" src="images/send_plane.png" alt /></button>
-        </form>
-      </div>
-
-      <div class="challenge-container">
-        <h2>
-          Challenge of the Week
-        </h2>
-        <p id="weekly-challenge"></p>
-        <p id="due-date"></p>
-        <div class="mark-completed">
-          <span id="mark-completed-text">Mark Completed:</span>
-          <span class="check-container">
-              <input type="checkbox" class="challenge-checkbox" onchange="markChallenge(this.id, this.checked)">
-              <label id="challenge-label"></label>
-            </span>
-        </div>
-      </div>
-
-      <div class="poll-container">
-        <div class="inner-poll-container">
-          <h2>
-            Poll
-          </h2>
-          <div id="options-container"></div>
-        </div>
-
-        <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
-      </div>
-
-      <div class="post-feed">
-        <div id="posts-container"></div>
+<body>
+  <div class="group-container">
+    <div class="group-header">
+      <div class="group-name-banner">
+        <span id="group-name" class="align-vertical">The 3 Musketeers + Others</span>
       </div>
     </div>
 
-    <template id="option-template">
-      <div class="option-container">
-        <p></p>
-        <svg width="690" height="55">
-          <rect height="55" width="690" class="poll-rect" />
-          <rect height="55" id="inner-bar" class="poll-inner-rect" />
-        </svg>
+    <div class="create-post">
+      <form id="post-form" method="POST" enctype="multipart/form-data">
+        <span class="user-img align-vertical"></span>
+
+        <input type="text" id="post-input" class="align-vertical" name="post-input" placeholder="Post a status">
+
+        <label for="fileid">
+            <img class="camera-btn align-vertical medium-icon" src="images/camera.png" alt />
+          </label>
+        <input id='fileid' type='file' name='image' />
+
+        <button class="post-btn align-vertical" type="image" form="post-form"><img class="medium-icon" src="images/send_plane.png" alt /></button>
+      </form>
+    </div>
+
+    <div class="challenge-container">
+      <h2>
+        Challenge of the Week
+      </h2>
+      <p id="weekly-challenge"></p>
+      <p id="due-date"></p>
+      <div class="mark-completed">
+        <span id="mark-completed-text">Mark Completed:</span>
         <span class="check-container">
-          <input type="checkbox" onchange="handleCheckboxCount(this.id, this.checked)">
-          <label></label>
-        </span>
-        <div id="num-votes" class="votes-label"></div>
+            <input type="checkbox" class="challenge-checkbox" onchange="markChallenge(this.id, this.checked)">
+            <label id="challenge-label"></label>
+          </span>
       </div>
-    </template>
+    </div>
 
-    <script>
-      window.onload = getPollOptions();
-    </script>
-  </body>
+    <div class="poll-container">
+      <div class="inner-poll-container">
+        <h2>
+          Poll
+        </h2>
+        <div id="options-container"></div>
+      </div>
 
-  </html>
+      <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
+    </div>
+
+    <div class="post-feed">
+      <div id="posts-container"></div>
+    </div>
+  </div>
+
+  <template id="option-template">
+    <div class="option-container">
+      <p></p>
+      <svg width="690" height="55">
+        <rect height="55" width="690" class="poll-rect" />
+        <rect height="55" id="inner-bar" class="poll-inner-rect" />
+      </svg>
+      <span class="check-container">
+        <input type="checkbox" onchange="handleCheckboxCount(this.id, this.checked)">
+        <label></label>
+      </span>
+      <div id="num-votes" class="votes-label"></div>
+    </div>
+  </template>
+
+  <script>
+    window.onload = getPollOptions();
+  </script>
+</body>
+
+</html>
