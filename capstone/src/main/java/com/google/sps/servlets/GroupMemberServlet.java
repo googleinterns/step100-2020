@@ -58,7 +58,8 @@ public class GroupMemberServlet extends HttpServlet {
     return "";
   }
 
-  private Entity getGroupFromId(HttpServletResponse response, long groupId, DatastoreService datastore) throws IOException {
+  private Entity getGroupFromId(
+    HttpServletResponse response, long groupId, DatastoreService datastore) throws IOException {
     try {
       return datastore.get(KeyFactory.createKey("Group", groupId));
     } catch (EntityNotFoundException e) {
@@ -67,7 +68,8 @@ public class GroupMemberServlet extends HttpServlet {
     }
   }
 
-  private Entity getUserFromId(HttpServletResponse response, String userId, DatastoreService datastore) throws IOException {
+  private Entity getUserFromId(
+    HttpServletResponse response, String userId, DatastoreService datastore) throws IOException {
     try {
       return datastore.get(KeyFactory.createKey("User", userId));
     } catch (EntityNotFoundException e) {
@@ -83,7 +85,8 @@ public class GroupMemberServlet extends HttpServlet {
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity member = this.getUserFromId(response, userId, datastore);
-    MemberResponse memResponse = MemberResponse.fromEntity(member);
+    MemberResponse memResponse = MemberResponse.fromEntity(
+      member, /* includeBadges= */ true);
 
     // Convert to json
     response.setContentType("application/json;");

@@ -42,14 +42,19 @@ public final class MemberResponse {
    * @param badges List of badge objects 
    * @param userId user id 
    */
-  public static MemberResponse fromEntity(Entity entity) {
+  public static MemberResponse fromEntity(Entity entity, boolean includeBadges) {
     String profilePic = (String) entity.getProperty("profilePic");
     String firstName = (String) entity.getProperty("firstName");
     String lastName = (String) entity.getProperty("lastName");
     String userId = (String) entity.getProperty("userId");
-    LinkedHashSet<Badge> badges = (entity.getProperty("badges") == null) 
-      ? new LinkedHashSet<>() 
-      : new LinkedHashSet<Badge>((ArrayList<Badge>) entity.getProperty("badges"));   
+    LinkedHashSet<Badge> badges;
+    if (includeBadges) {
+      badges = (entity.getProperty("badges") == null) 
+        ? new LinkedHashSet<>() 
+        : new LinkedHashSet<Badge>((ArrayList<Badge>) entity.getProperty("badges"));
+    } else {
+      badges = null;
+    }
     return new MemberResponse(profilePic, firstName, lastName, badges, userId);
   }
 

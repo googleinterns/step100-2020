@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
-import com.google.sps.Objects.response.BasicMemberResponse;
+import com.google.sps.Objects.response.MemberResponse;
 
 @WebServlet("/all-group-members")
 
@@ -28,9 +28,10 @@ public class AllGroupMembersServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    List<BasicMemberResponse> basicMemberProfiles = new ArrayList<>();
+    List<MemberResponse> basicMemberProfiles = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      BasicMemberResponse member = BasicMemberResponse.fromEntity(entity);
+      MemberResponse member = MemberResponse.fromEntity(
+        entity, /* includeBadges= */ false);
       basicMemberProfiles.add(member);
     }
 
