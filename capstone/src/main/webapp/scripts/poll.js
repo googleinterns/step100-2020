@@ -70,7 +70,7 @@ function getChallenge() {
         const id = challengeData["challenge"]["id"];
         challengeCheckbox.id = id;
         challengeLabel.setAttribute("for", id);
-        challengeCheckbox.checked = challengeData["isCompleted"];
+        challengeCheckbox.checked = challengeData["userHasCompleted"];
         weeklyChallenge.innerText = challengeData["challenge"]["challengeName"];
         dueDateMillis = challengeData["challenge"]["dueDate"];
         const dueDate = new Date(dueDateMillis).toString();

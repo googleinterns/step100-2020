@@ -11,7 +11,7 @@ import com.google.sps.Objects.Challenge;
 public class ChallengeResponse {
 
   private Challenge challenge;
-  private boolean isCompleted;
+  private boolean userHasCompleted;
 
   /**
    * Constructor to set the instance variables.
@@ -19,8 +19,8 @@ public class ChallengeResponse {
    * @param challenge Challenge object
    * @param isCompleted boolean indicating whether user has completed challenge
    */
-  public ChallengeResponse(Challenge challenge, boolean isCompleted) {
+  public ChallengeResponse(Challenge challenge, boolean userHasCompleted) {
     this.challenge = challenge;
-    this.isCompleted = isCompleted;
+    this.userHasCompleted = userHasCompleted;
   }
 }
