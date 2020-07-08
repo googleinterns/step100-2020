@@ -86,12 +86,12 @@ public class ChallengeTest {
 
   @Test
   public void getIsCompletedTest() {
-    assertFalse(challenge.getIsCompleted("1"));
+    assertFalse(challenge.getHasUserCompleted("1"));
     challenge.addCompletedUser("1");
-    assertTrue(challenge.getIsCompleted("1"));
+    assertTrue(challenge.getHasUserCompleted("1"));
     challenge.addCompletedUser("2");
     challenge.addCompletedUser("3");
-    assertFalse(challenge.getIsCompleted("4"));
+    assertFalse(challenge.getHasUserCompleted("4"));
   }
 
   @Test

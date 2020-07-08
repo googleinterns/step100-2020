@@ -10,14 +10,6 @@ import com.google.sps.Objects.Challenge;
  */
 public class ChallengeResponse {
 
-<<<<<<< HEAD
-  private final Challenge challenge;
-  private final boolean isCompleted;
-
-  public ChallengeResponse(Challenge challenge, boolean isCompleted) {
-    this.challenge = challenge;
-    this.isCompleted = isCompleted;
-=======
   private Challenge challenge;
   private boolean userHasCompleted;
 
@@ -30,6 +22,5 @@ public class ChallengeResponse {
   public ChallengeResponse(Challenge challenge, boolean userHasCompleted) {
     this.challenge = challenge;
     this.userHasCompleted = userHasCompleted;
->>>>>>> ffe3fdc09ef24c0ae4adf994055edcda95bf80ff
   }
 }

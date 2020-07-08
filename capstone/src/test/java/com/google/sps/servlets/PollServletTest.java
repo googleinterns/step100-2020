@@ -76,11 +76,11 @@ public class PollServletTest {
     datastore = DatastoreServiceFactory.getDatastoreService();
 
     // Add test data
-    ImmutableList.Builder<Entity> people = ImmutableList.builder();
+    ImmutableList.Builder<Entity> option = ImmutableList.builder();
     for (String text : OPTION_TEXT) {
-      people.add(createOption(text));
+      option.add(createOption(text));
     }
-    datastore.put(people.build());
+    datastore.put(option.build());
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
@@ -101,6 +101,8 @@ public class PollServletTest {
   @After
   public void tearDown() {
     helper.tearDown();
+    responseWriter = null;
+    datastore = null;
     pollServlet = null;
   }
 

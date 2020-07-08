@@ -51,22 +51,11 @@ public class PollServlet extends AuthenticatedServlet {
   }
 
   @Override
-<<<<<<< HEAD
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      String text = request.getParameter("text");
-      Option option = new Option(0, text, new ArrayList<String>());
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      datastore.put(option.toEntity());
-    }
-=======
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     String text = request.getParameter("text");
     Option option = new Option(0, text, new ArrayList<String>());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(option.toEntity());
->>>>>>> ffe3fdc09ef24c0ae4adf994055edcda95bf80ff
   }
 }
