@@ -93,25 +93,24 @@ public class CheckNewUserServletTest {
 
   @After
   public void tearDown() {
+    helper.setEnvIsLoggedIn(true);
     helper.tearDown();
   }
 
   @Test
-  public void doPost_newUserVisiting() throws Exception {
+  public void doGet_newUserVisiting() throws Exception {
     checkNewUserServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
     assertThat(response).contains(/* isUserNew= */ "true");
   }
 
   @Test
-  public void doPost_existingUserVisiting() throws Exception {
+  public void doGet_existingUserVisiting() throws Exception {
     addUserToDatastore(datastore, CURRENT_USER);
 
     checkNewUserServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
     assertThat(response).contains(/* isUserNew= */ "false");
-
-    removeUserFromDatastore(datastore, CURRENT_USER);
   }
 
   @Test
@@ -120,9 +119,7 @@ public class CheckNewUserServletTest {
 
     checkNewUserServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
-    assertThat(response).contains(/* isUserNew= */ "false");
-
-    helper.setEnvIsLoggedIn(true);
+    assertThat(response).contains("error");
   }
 
   private void addUserToDatastore(DatastoreService datastore, User user) {

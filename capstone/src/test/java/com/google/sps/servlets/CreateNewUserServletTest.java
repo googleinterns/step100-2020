@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.sps.Objects.User;
 import com.google.sps.Objects.Badge;
+import com.google.gson.Gson;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -58,7 +59,7 @@ public class CreateNewUserServletTest {
                   ImmutableMap.of(
                       "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
-  private static ArrayList<String> INTERESTS_LIST = new ArrayList<String>( 
+  private static final ArrayList<String> INTERESTS_LIST = new ArrayList<String>( 
       Arrays.asList("Testing", "Dancing"));
   private static final User USER_1 = new User(USER_ID, "Test", "McTest", USER_EMAIL, 
                           /* phoneNumber= */ "123-456-7890", 
@@ -88,6 +89,7 @@ public class CreateNewUserServletTest {
 
   @After
   public void tearDown() {
+    helper.setEnvIsLoggedIn(true);
     helper.tearDown();
   }
 
@@ -101,8 +103,12 @@ public class CreateNewUserServletTest {
     createNewUserServlet.doPost(mockRequest, mockResponse);
     Key userKey = KeyFactory.createKey("User", USER_ID);
     Entity user = datastore.get(userKey);
+
+    String jsonDs = new Gson().toJson(User.fromEntity(user));
+    String jsonCurrent = new Gson().toJson(USER_1);
     
-    assertTrue(USER_1.equals(User.fromEntity(user)));
+    assertTrue(jsonDs.equals(jsonCurrent));
+    //assertTrue(USER_1.equals(User.fromEntity(user)));
   }
 
   @Test(expected = EntityNotFoundException.class)
@@ -117,8 +123,6 @@ public class CreateNewUserServletTest {
     createNewUserServlet.doPost(mockRequest, mockResponse);
 
     Key userKey = KeyFactory.createKey("User", USER_ID);
-    datastore.get(userKey); 
-
-    helper.setEnvIsLoggedIn(true);
+    datastore.get(userKey); // should trigger an EntityNotFoundException
   }
 }

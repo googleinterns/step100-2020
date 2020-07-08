@@ -72,6 +72,7 @@ public class LoginServletTest {
 
   @After
   public void tearDown() {
+    helper.setEnvIsLoggedIn(true);
     helper.tearDown();
   }
 
@@ -91,7 +92,5 @@ public class LoginServletTest {
 
     assertThat(response).contains("false");
     assertFalse(response.contains(USER_EMAIL));
-
-    helper.setEnvIsLoggedIn(true);
   }
 }
