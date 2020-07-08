@@ -27,17 +27,35 @@
       </div>
       <div id="main" class="main">
         <div class="main-content">
-          <h1 id="email">Email</h1>
+          <h1>Email</h1>
           <p id="email-container"></p>
-          <h1 id="phone">Phone Number</h1>
+          <h1>Phone Number</h1>
           <p id="phone-container"></p>
-          <h1 id="interests">Interests</h1>
+          <h1>Interests</h1>
           <div id="interests-container"></div>
           <h1 id="groups">Groups</h1>
           <div id="groups-container"></div>
           <h1 id="ongoing-challenges">Ongoing Challenges</h1>
           <h1 id="past-challenges">Past Challenges</h1>
         </div>
+      </div>
+    </div>
+
+    <div class="edit-modal" id="edit-modal">
+      <div class="edit-modal-content">
+        <span class="close">&times;</span>
+        <div id="modal-profile-pic"></div>
+        <h2 id="modal-name-container"></h2>
+        <form id="edit-profile">
+          <label for="email">Email</label>
+          <input type="text" class="input-field" name="email" id="email">
+          <label for="phone">Phone Number</label>
+          <input type="text" class="input-field" name="phone" id="phone">
+         <label for="interests">Interests</label>
+          <input type="text" class="input-field" placeholder="Add an interest" 
+              name="interests" id="interests">
+          <button class="save-btn" onclick="saveEdit()">SAVE</button>
+        </form>
       </div>
     </div>
 

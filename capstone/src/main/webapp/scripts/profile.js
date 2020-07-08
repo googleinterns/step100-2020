@@ -30,6 +30,7 @@ function getUserData() {
   .then(response => response.json())
   .then((user) => {
     displayUserInfo(user);
+    populateEditForm(user);
   });
 }
 
@@ -120,5 +121,11 @@ function displayProfilePicture(picUrl) {
 
 /** Open a modal form for users to edit their profile information */
 function editProfile() {
+  let modal = document.getElementById('edit-modal');
+  modal.classList.toggle('show-modal');
+}
 
+/** Populate form with user values */
+function populateEditForm(user) {
+  //document.getElementById('edit-profile').value
 }
