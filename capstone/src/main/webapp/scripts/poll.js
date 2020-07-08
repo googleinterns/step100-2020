@@ -61,7 +61,9 @@ function getChallenge() {
     .then(challengeData => {
       const weeklyChallenge = document.getElementById("weekly-challenge");
       const dueDateContainer = document.getElementById("due-date");
-      const challengeCheckbox = document.getElementById("challenge-checkbox");
+      const challengeCheckbox = document.getElementsByClassName(
+        "challenge-checkbox"
+      )[0];
       const challengeLabel = document.getElementById("challenge-label");
       const id = challengeData["challenge"]["id"];
       challengeCheckbox.id = id;
