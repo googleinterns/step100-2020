@@ -13,7 +13,7 @@ import com.google.sps.Objects.Option;
 import com.google.sps.Objects.Poll;
 
 /**
- * This class tests the methods in the Poll class.
+ * Unit tests for {@link Poll}.
  *
  * @author lucyqu
  */

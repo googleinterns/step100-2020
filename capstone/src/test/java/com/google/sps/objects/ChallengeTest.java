@@ -20,7 +20,7 @@ import com.google.sps.Objects.Badge;
 import com.google.sps.Objects.Challenge;
 
 /**
- * This class tests the method in the Challenge class.
+ * Unit tests for {@link Challenge}.
  *
  * @author lucyqu
  */

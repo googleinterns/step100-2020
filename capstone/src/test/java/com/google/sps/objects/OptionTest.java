@@ -17,7 +17,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.sps.Objects.Option;
 
 /**
- * This class tests the methods in the Option class.
+ * Unit tests for {@link Option}.
  *
  * @author lucyqu
  */

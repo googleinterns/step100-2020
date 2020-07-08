@@ -63,9 +63,12 @@ public class PollServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String text = request.getParameter("text");
-    Option option = new Option(0, text, new ArrayList<String>());
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(option.toEntity());
+    UserService userService = UserServiceFactory.getUserService();
+    if (userService.isUserLoggedIn()) {
+      String text = request.getParameter("text");
+      Option option = new Option(0, text, new ArrayList<String>());
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.put(option.toEntity());
+    }
   }
 }
