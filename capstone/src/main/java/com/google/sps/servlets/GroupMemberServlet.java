@@ -15,15 +15,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import error.ErrorHandler;
 import com.google.gson.Gson;
 import com.google.sps.Objects.response.MemberResponse;
+import error.ErrorHandler;
 
 @WebServlet("/group-member")
 
 public class GroupMemberServlet extends HttpServlet {
-
-  private ErrorHandler errorHandler = new ErrorHandler();
 
   @Override
   // Adds a new member to a group 
@@ -56,7 +54,7 @@ public class GroupMemberServlet extends HttpServlet {
     if (userService.isUserLoggedIn()) {
       return userService.getCurrentUser().getUserId();
     }
-    errorHandler.sendError(response, "User is not logged in.");
+    ErrorHandler.sendError(response, "User is not logged in.");
     return "";
   }
 
@@ -64,27 +62,24 @@ public class GroupMemberServlet extends HttpServlet {
     try {
       return datastore.get(KeyFactory.createKey("Group", groupId));
     } catch (EntityNotFoundException e) {
-      errorHandler.sendError(response, "Group does not exist.");
+      ErrorHandler.sendError(response, "Group does not exist.");
       return null;
     }
   }
 
   private Entity getUserFromId(HttpServletResponse response, String userId, DatastoreService datastore) throws IOException {
-    System.out.println("get user");
-
     try {
-      System.out.println(datastore.get(KeyFactory.createKey("User", userId)));
       return datastore.get(KeyFactory.createKey("User", userId));
     } catch (EntityNotFoundException e) {
-      System.out.println("user not found");
-      errorHandler.sendError(response, "User does not exist.");
+      ErrorHandler.sendError(response, "User does not exist.");
       return null;
     }
   }
 
+  // Gets a MemberResponse object from userId
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    String userId = request.getParameter("userId");
+    String userId = request.getParameter("id");
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity member = this.getUserFromId(response, userId, datastore);
@@ -92,7 +87,6 @@ public class GroupMemberServlet extends HttpServlet {
 
     // Convert to json
     response.setContentType("application/json;");
-    System.out.println(memResponse);
     response.getWriter().println(new Gson().toJson(memResponse));  
   }
 }

@@ -30,8 +30,6 @@
 }
 
 .member-grid-item {
-  background-color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.8);
   padding: 20px;
   font-size: 30px;
   text-align: center;
@@ -90,24 +88,24 @@
   background-color: #F7CE82;
   align-content: center;
   margin: 0 auto;
-  margin-top: 30px;
 }
 
 .small-member-img {
   height: 20px;
   width: 20px;
+  margin-bottom: 10px;
 }
 
 .large-member-img {
   height: 100px;
   width: 100px;
+  margin-top: 30px;
 }
 
 .member-img-div .member-img {
   border-radius: 50%;
   align-content: center;
   margin: 0 auto;
-  margin-top: 30px;
 }
 
 .member-name {

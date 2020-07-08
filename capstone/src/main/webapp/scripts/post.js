@@ -2,9 +2,7 @@ function init() {
   loadPosts();
   getPollOptions();
   fetchBlobstoreUrlAndShowForm();
-  addMemberProfileListener();
-  addModalListeners();
-  createTestUsers();
+  loadMembers();
 }
 
 let postResponse;

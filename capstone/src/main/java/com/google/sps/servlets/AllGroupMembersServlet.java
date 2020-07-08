@@ -10,14 +10,13 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import error.ErrorHandler;
+import java.util.List;;
 import com.google.gson.Gson;
-import com.google.sps.Objects.response.MemberResponse;
+import com.google.sps.Objects.response.BasicMemberResponse;
 
 @WebServlet("/all-group-members")
 
@@ -25,13 +24,18 @@ public class AllGroupMembersServlet extends HttpServlet {
 
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+    Query query = new Query("User");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity member = this.getUserFromId(response, userId, datastore);
-    MemberResponse memResponse = MemberResponse.fromEntity(member);
+    PreparedQuery results = datastore.prepare(query);
+
+    List<BasicMemberResponse> basicMemberProfiles = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+      BasicMemberResponse member = BasicMemberResponse.fromEntity(entity);
+      basicMemberProfiles.add(member);
+    }
 
     // Convert to json
     response.setContentType("application/json;");
-    System.out.println(memResponse);
-    response.getWriter().println(new Gson().toJson(memResponse));  
+    response.getWriter().println(new Gson().toJson(basicMemberProfiles)); 
   }
 }
