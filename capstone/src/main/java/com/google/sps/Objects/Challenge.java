@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 import com.google.appengine.api.datastore.Entity;
 
+/**
+ * Represents the current challenge in a group.
+ *
+ * @author lucyqu
+ */
 public final class Challenge {
 
   private final String challengeName;
@@ -12,6 +17,15 @@ public final class Challenge {
   private final ArrayList<String> usersCompleted;
   private final long id;
 
+  /**
+   * Constructor to set the instance variables.
+   *
+   * @param challengeName name of challenge
+   * @param dueDate due date of challenge
+   * @param badge badge for challenge
+   * @param usersCompleted user ids of users who have completed challenge
+   * @param id id of challenge
+   */
   public Challenge(
       String challengeName, long dueDate, Badge badge, ArrayList<String> usersCompleted, long id) {
     this.dueDate = dueDate;
@@ -21,26 +35,57 @@ public final class Challenge {
     this.id = id;
   }
 
+  /**
+   * Gets the due date of the challenge.
+   *
+   * @return long
+   */
   public long getDueDate() {
     return dueDate;
   }
 
+  /**
+   * Gets the name of the challenge
+   *
+   * @return string
+   */
   public String getChallengeName() {
     return challengeName;
   }
 
+  /**
+   * Gets the badge object for this challenge.
+   *
+   * @return Badge
+   */
   public Badge getBadge() {
     return badge;
   }
 
+  /**
+   * Gets the user ids of users who have completed the challenge.
+   *
+   * @return List of user ids
+   */
   public ArrayList<String> getUsersCompleted() {
     return usersCompleted;
   }
 
+  /**
+   * Adds user to ArrayList of users who have completed the challenge/
+   *
+   * @param userId id of user.
+   */
   public void addCompletedUser(String userId) {
     this.usersCompleted.add(userId);
   }
 
+  /**
+   * Returns whether userId is contained in ArrayList of users who have completed the challenge.
+   *
+   * @param userId id of user
+   * @return boolean
+   */
   public boolean getHasUserCompleted(String userId) {
     if (this.usersCompleted == null) {
       return false;
@@ -49,6 +94,12 @@ public final class Challenge {
     }
   }
 
+  /**
+   * Converts Entity to Challenge.
+   *
+   * @param entity Entity from database
+   * @return Challenge object
+   */
   public static Challenge fromEntity(Entity entity) {
     String challengeName = (String) entity.getProperty("name");
     long dueDate = (long) entity.getProperty("dueDate");
@@ -58,6 +109,11 @@ public final class Challenge {
     return new Challenge(challengeName, dueDate, null, usersCompleted, id);
   }
 
+  /**
+   * Converts Challenge object to Entity.
+   *
+   * @return Entity object
+   */
   public Entity toEntity() {
     Entity challengeEntity = new Entity("Challenge");
     challengeEntity.setProperty("name", this.challengeName);
