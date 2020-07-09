@@ -125,7 +125,34 @@ function editProfile() {
   modal.classList.toggle('show-modal');
 }
 
+/** Close modal form */
+function closeModal() {
+  let modal = document.getElementById('edit-modal');
+  modal.classList.toggle('show-modal');
+}
+
 /** Populate form with user values */
 function populateEditForm(user) {
-  //document.getElementById('edit-profile').value
+  document.getElementById('modal-name-container').innerText = user.name;
+  document.getElementById('email').value = user.email;
+  document.getElementById('phone').value = user.phoneNumber;
+  document.getElementById('interests').value = user.interests.join(', ');
+}
+
+/** Save updated profile information */
+function saveProfile() {
+  const editForm = document.getElementById('edit-profile');
+  if (editForm.reportValidity()) {
+    const email = document.getElementById('email').value;
+    const phoneNumber = document.getElementById('phone').value;
+    const interests = document.getElementById('interests').value;
+
+    const params = new URLSearchParams();
+    params.append('email', email);
+    params.append('phone', phoneNumber);
+    params.append('interests', interests);
+
+    // Send a POST request to the servlet which registers a new user.
+    fetch('/edit-profile', {method: 'POST', body: params});
+  }
 }

@@ -61,7 +61,7 @@
   margin: 15px auto;
 }
 
-.sidebar img {
+.sidebar #edit-btn img {
   height: 30px;
   width: 30px;
 }
@@ -158,39 +158,78 @@ a:link, a:visited, a:hover, a:active {
   transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
   visibility: hidden;
   width: 100%;
+  z-index: 2;
 }
 
 .edit-modal-content {
+  align-items: center;
   background-color: white;
   border-radius: 0.5rem;
-  color: #636060;
+  color: var(--black);
+  display: flex;
+  flex-direction: column;
+  font-family: Roboto;
+  justify-content: center;
   left: 50%;
   padding: 1rem 1.5rem;
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 24rem;
+  width: 28rem;
 }
+
 
 .edit-modal form {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   margin: 0;
-  width: 100%;
-}
-
-.register-modal input {
-  background-color: var(--background);
-  border-radius: 5px;
-  border: none;
-  margin: 0.25rem -0.25rem;
-  padding: 0.5rem 0.5rem;
   width: 95%;
 }
 
-.register-modal input:focus {
+.edit-modal .close {
+  color: var(--text-gray);
+  cursor: pointer;
+  font-weight: normal;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.edit-modal .form-row {
+  display: flex;
+  justify-content: flex-end;
+  padding: .5em;
+}
+
+.edit-modal #modal-name-container {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.edit-modal #modal-profile-pic {
+  background-color: var(--orange);
+  border-radius: 50%;
+  height: 150px;
+  margin: 1rem 0;
+  width: 150px;
+}
+
+.edit-modal label {  
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+  padding: .5em .75em .5em 0;
+}
+
+.edit-modal input {
+  background-color: var(--placeholder-gray);
+  border-radius: 3px;
+  border: none;
+  display: inline-block;
+  flex: 1;
+  margin: 0.25rem -0.25rem;
+  padding: 0.6rem 0.6rem;
+}
+
+.edit-modal input:focus {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   outline: none;
 }
@@ -198,15 +237,16 @@ a:link, a:visited, a:hover, a:active {
 .save-btn {
   background-color: var(--dark-green);
   border: none;
-  border-radius: 12px;
+  border-radius: 3px;
   color: var(--white);
-  display: inline-block;
+  cursor: pointer;
+  display: block;
   font-size: 16px;
-  margin: 40px auto 20px;
+  font-weight: bold;
+  margin: 20px auto 40px;
   padding: 5px 10px;
-  position: relative;
   text-align: center;
-  text-decoration: none;
+  width: 200px;
 }
 
 .show-modal {
@@ -215,3 +255,4 @@ a:link, a:visited, a:hover, a:active {
   transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
   visibility: visible;
 }
+

@@ -43,17 +43,23 @@
 
     <div class="edit-modal" id="edit-modal">
       <div class="edit-modal-content">
-        <span class="close">&times;</span>
+        <span class="close" onclick="closeModal()">&times;</span>
         <div id="modal-profile-pic"></div>
         <h2 id="modal-name-container"></h2>
         <form id="edit-profile">
-          <label for="email">Email</label>
-          <input type="text" class="input-field" name="email" id="email">
-          <label for="phone">Phone Number</label>
-          <input type="text" class="input-field" name="phone" id="phone">
-         <label for="interests">Interests</label>
-          <input type="text" class="input-field" placeholder="Add an interest" 
+          <li class="form-row">
+            <label for="email">Email</label>
+            <input type="text" class="input-field" name="email" id="email">
+          </li>
+          <li class="form-row">
+            <label for="phone">Phone Number</label>
+            <input type="text" class="input-field" name="phone" id="phone">
+          </li>          
+          <li class="form-row">
+            <label for="interests">Interests</label>
+            <input type="text" class="input-field" placeholder="Add an interest" 
               name="interests" id="interests">
+          </li>          
           <button class="save-btn" onclick="saveEdit()">SAVE</button>
         </form>
       </div>
