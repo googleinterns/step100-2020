@@ -25,6 +25,13 @@ import com.google.sps.Objects.Comment;
  *
  */
 public class PostTest {
+
+  private static final String AUTHOR_ID = "123123123";
+  private static final String POST_TEXT = "a great post";
+  private static final String CHALLENGE_NAME = "run 4 miles";
+  private static final String IMG = "";
+  private static final long TIMESTAMP = 123123123;
+
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           new LocalDatastoreServiceTestConfig()
@@ -38,12 +45,12 @@ public class PostTest {
     post = 
       new Post(
         4324344, /* postId */ 
-        "32493432", /* authorId */ 
-        "a great post", /* postText */
+        AUTHOR_ID, /* authorId */ 
+        POST_TEXT, /* postText */
         new ArrayList<Comment>(), /* comments */
-        "run 4 miles", /* challengeName */
-        123123123, /* timestamp */
-        "", /* img */
+        CHALLENGE_NAME, /* challengeName */
+        TIMESTAMP, /* timestamp */
+        IMG, /* img */
         new HashSet<String>() /* likes */);
   }
 

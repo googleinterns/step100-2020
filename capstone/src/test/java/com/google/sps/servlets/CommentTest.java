@@ -23,6 +23,11 @@ import com.google.sps.Objects.Comment;
  *
  */
 public class CommentTest {
+
+  private static final String USER_ID = "123123123";
+  private static final String COMMENT_TEXT = "a great comment";
+  private static final long TIMESTAMP = 4324344;
+
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           new LocalDatastoreServiceTestConfig()
@@ -35,9 +40,9 @@ public class CommentTest {
     helper.setUp();
     comment = 
       new Comment(
-        4324344, /* userId */ 
-        "a great comment", /* commentText */ 
-        "123123123" /* userId */ );
+        TIMESTAMP, /* timestamp */ 
+        COMMENT_TEXT, /* commentText */ 
+        USER_ID /* userId */ );
   }
 
   @After

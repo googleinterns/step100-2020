@@ -25,6 +25,12 @@ import com.google.sps.Objects.Badge;
  *
  */
 public class MemberResponseTest {
+
+  private static final String PROFILE_PIC = "";
+  private static final String FIRST_NAME = "Test";
+  private static final String LAST_NAME = "User";
+  private static final String USER_ID = "11111111";
+
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           new LocalDatastoreServiceTestConfig()
@@ -37,11 +43,11 @@ public class MemberResponseTest {
     helper.setUp();
     memberResponse = 
       new MemberResponse(
-        "", /* profilePic */ 
-        "Test", /* firstName */
-        "User", /* lastName */
+        PROFILE_PIC, /* profilePic */ 
+        FIRST_NAME, /* firstName */
+        LAST_NAME, /* lastName */
         new LinkedHashSet<Badge>(), /* badges */
-        "11111111" /*userId */);
+        USER_ID /*userId */);
   }
 
   @After
