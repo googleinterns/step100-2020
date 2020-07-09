@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +38,7 @@ public class MarkCheckboxTest {
   private static final String CHECKED = "true";
   private static final String TYPE = "Challenge";
   private static final String NEW_CHALLENGE = "Run";
+  private static final long DUE_DATE = 12345;
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -56,7 +58,6 @@ public class MarkCheckboxTest {
   private StringWriter responseWriter;
   private DatastoreService datastore;
   private MarkCheckboxServlet markCheckboxServlet;
-  private ChallengeServlet challengeServlet;
 
   @Before
   public void setUp() throws IOException {
@@ -69,7 +70,6 @@ public class MarkCheckboxTest {
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
     markCheckboxServlet = new MarkCheckboxServlet();
-    challengeServlet = new ChallengeServlet();
   }
 
   @After
@@ -78,21 +78,15 @@ public class MarkCheckboxTest {
     responseWriter = null;
     datastore = null;
     markCheckboxServlet = null;
-    challengeServlet = null;
   }
 
   @Test
   public void doPost_userLoggedIn_validChallenge() throws IOException, EntityNotFoundException {
-    when(mockRequest.getParameter("name")).thenReturn(NEW_CHALLENGE);
-
-    challengeServlet.doPost(mockRequest, mockResponse);
-
-    when(mockRequest.getParameter("id")).thenReturn(CHECKBOX_ID);
-    when(mockRequest.getParameter("checked")).thenReturn(CHECKED);
-    when(mockRequest.getParameter("type")).thenReturn(TYPE);
+    Entity challengeEntity = this.createChallenge(NEW_CHALLENGE);
+    datastore.put(challengeEntity);
+    this.mockSetUp();
 
     markCheckboxServlet.doPost(mockRequest, mockResponse);
-
     Key key = KeyFactory.createKey(TYPE, Long.parseLong(CHECKBOX_ID));
     Entity entity = datastore.get(key);
     Challenge challenge = Challenge.fromEntity(entity);
@@ -104,32 +98,46 @@ public class MarkCheckboxTest {
   @Test(expected = EntityNotFoundException.class)
   public void doPost_userNotLoggedIn() throws IOException, EntityNotFoundException {
     helper.setEnvIsLoggedIn(false);
-    when(mockRequest.getParameter("name")).thenReturn(NEW_CHALLENGE);
-
-    challengeServlet.doPost(mockRequest, mockResponse);
-
-    when(mockRequest.getParameter("id")).thenReturn(CHECKBOX_ID);
-    when(mockRequest.getParameter("checked")).thenReturn(CHECKED);
-    when(mockRequest.getParameter("type")).thenReturn(TYPE);
+    this.mockSetUp();
 
     markCheckboxServlet.doPost(mockRequest, mockResponse);
-
     Key key = KeyFactory.createKey(TYPE, Long.parseLong(CHECKBOX_ID));
+
     // trigger EntityNotfoundException
     Entity entity = datastore.get(key);
   }
 
   @Test
   public void doPost_noChallenges() throws IOException, EntityNotFoundException {
+    this.mockSetUp();
+
+    markCheckboxServlet.doPost(mockRequest, mockResponse);
+    Key key = KeyFactory.createKey(TYPE, Long.parseLong(CHECKBOX_ID));
+    Entity entity = datastore.get(key);
+
+    assertNull(entity.getProperty("name"));
+    assertNull(entity.getProperty("dueDate"));
+  }
+
+  /** Mocks what is returned from query parameter. */
+  private void mockSetUp() {
     when(mockRequest.getParameter("id")).thenReturn(CHECKBOX_ID);
     when(mockRequest.getParameter("checked")).thenReturn(CHECKED);
     when(mockRequest.getParameter("type")).thenReturn(TYPE);
+  }
 
-    markCheckboxServlet.doPost(mockRequest, mockResponse);
-
-    Key key = KeyFactory.createKey(TYPE, Long.parseLong(CHECKBOX_ID));
-    Entity entity = datastore.get(key);
-    assertNull(entity.getProperty("name"));
-    assertNull(entity.getProperty("dueDate"));
+  /**
+   * Creates challenge entity.
+   *
+   * @param text challenge name
+   * @return entity
+   */
+  private Entity createChallenge(String text) {
+    Entity challengeEntity = new Entity("Challenge");
+    challengeEntity.setProperty("name", text);
+    challengeEntity.setProperty("dueDate", DUE_DATE);
+    challengeEntity.setProperty("votes", new ArrayList<String>());
+    challengeEntity.setProperty("timestamp", System.currentTimeMillis());
+    return challengeEntity;
   }
 }

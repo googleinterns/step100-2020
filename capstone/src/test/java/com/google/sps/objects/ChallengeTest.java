@@ -80,6 +80,7 @@ public class ChallengeTest {
   public void addCompletedUserTest() {
     challenge.addCompletedUser("1");
     challenge.addCompletedUser("2");
+
     List<String> completedUsers = challenge.getUsersCompleted();
 
     assert completedUsers.size() == 2;
@@ -88,13 +89,19 @@ public class ChallengeTest {
   }
 
   @Test
-  public void getIsCompletedTest() {
+  public void getIsCompletedTest_doesNotHaveUser() {
     assertFalse(challenge.getHasUserCompleted("1"));
+  }
+
+  @Test
+  public void getIsCompletedTest_hasUser() {
     challenge.addCompletedUser("1");
-    assertTrue(challenge.getHasUserCompleted("1"));
     challenge.addCompletedUser("2");
     challenge.addCompletedUser("3");
-    assertFalse(challenge.getHasUserCompleted("4"));
+
+    assertTrue(challenge.getHasUserCompleted("1"));
+    assertTrue(challenge.getHasUserCompleted("2"));
+    assertTrue(challenge.getHasUserCompleted("3"));
   }
 
   @Test
@@ -104,6 +111,7 @@ public class ChallengeTest {
     entity.setProperty("name", challengeName);
     entity.setProperty("votes", new ArrayList<String>());
     entity.setProperty("dueDate", DUE_DATE);
+
     Challenge returnedChallenge = Challenge.fromEntity(entity);
 
     assertEquals(returnedChallenge.getChallengeName(), challengeName);
@@ -115,6 +123,7 @@ public class ChallengeTest {
   public void toEntityTest() {
     Entity entity = challenge.toEntity();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
     datastore.put(entity);
     List<String> votes = (ArrayList<String>) entity.getProperty("votes");
 

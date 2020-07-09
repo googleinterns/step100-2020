@@ -139,9 +139,9 @@ public class PollServletTest {
     long id = optionEntity.getKey().getId();
     Option option = new Option(id, NEW_OPTION, new ArrayList<String>());
     Option returnedOption = Option.fromEntity(optionEntity);
-
     String optionJson = new Gson().toJson(option);
     String returnedOptionJson = new Gson().toJson(returnedOption);
+
     assertEquals(optionJson, returnedOptionJson);
   }
 

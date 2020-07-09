@@ -50,19 +50,12 @@ public class OptionTest {
 
   @Test
   public void addVoteGetVotesTest() {
-    List<String> votesToAdd = new ArrayList<String>();
-    votesToAdd.add("1");
-    votesToAdd.add("2");
-
-    for (int i = 0; i < votesToAdd.size(); i++) {
-      option.addVote(votesToAdd.get(i));
-    }
+    option.addVote("1");
+    option.addVote("2");
 
     assert option.getVotes().size() == 2;
-    List<String> votes = option.getVotes();
-    for (int i = 0; i < votes.size(); i++) {
-      assertEquals(option.getVotes().get(i), votesToAdd.get(i));
-    }
+    assertEquals(option.getVotes().get(0), "1");
+    assertEquals(option.getVotes().get(1), "2");
   }
 
   @Test
@@ -74,8 +67,8 @@ public class OptionTest {
   public void toEntityTest() {
     Entity entity = option.toEntity();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(entity);
 
+    datastore.put(entity);
     ArrayList<String> votes = (ArrayList<String>) entity.getProperty("votes");
 
     assertEquals(entity.getProperty("text"), OPTION_NAME);
@@ -91,17 +84,16 @@ public class OptionTest {
     votes.add("2");
     votes.add("3");
     entity.setProperty("votes", votes);
-
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(entity);
 
+    datastore.put(entity);
     Option returnedOption = Option.fromEntity(entity);
     List<String> returnedVotes = (ArrayList<String>) entity.getProperty("votes");
 
     assertEquals(returnedOption.getText(), OPTION_NAME);
     assert returnedVotes.size() == 3;
-    for (int i = 0; i < returnedVotes.size(); i++) {
-      assertEquals(returnedVotes.get(i), votes.get(i));
-    }
+    assertEquals(returnedVotes.get(0), "1");
+    assertEquals(returnedVotes.get(1), "2");
+    assertEquals(returnedVotes.get(2), "3");
   }
 }

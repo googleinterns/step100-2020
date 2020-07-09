@@ -80,6 +80,12 @@ public class ChallengeServletTest {
     challengeServlet = new ChallengeServlet();
   }
 
+  /**
+   * Creates challenge entity.
+   *
+   * @param text challenge name
+   * @return entity
+   */
   private Entity createChallenge(String text) {
     Entity challengeEntity = new Entity("Challenge");
     challengeEntity.setProperty("name", text);
@@ -112,6 +118,7 @@ public class ChallengeServletTest {
   public void doGet_testChallengeName() throws IOException {
     challengeServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
+
     assertTrue(response.contains(CHALLENGE_NAME));
   }
 
@@ -119,6 +126,7 @@ public class ChallengeServletTest {
   public void doGet_testUserNotCompleted() throws IOException {
     challengeServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
+
     assertTrue(response.contains("false"));
   }
 
@@ -142,7 +150,6 @@ public class ChallengeServletTest {
     Entity entity = datastore.get(challengeKey);
     long id = entity.getKey().getId();
     long dueDate = this.getDueDate();
-
     Challenge challenge =
         new Challenge(
             NEW_CHALLENGE, /* challenge name*/
@@ -151,9 +158,9 @@ public class ChallengeServletTest {
             new ArrayList<String>(), /* users completed */
             id /* id of challenge */);
     Challenge returnedChallenge = Challenge.fromEntity(entity);
-
     String challengeJson = new Gson().toJson(challenge);
     String returnedChallengeJson = new Gson().toJson(returnedChallenge);
+
     assertEquals(challengeJson, returnedChallengeJson);
   }
 
