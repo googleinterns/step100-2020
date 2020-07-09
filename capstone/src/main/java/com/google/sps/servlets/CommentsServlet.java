@@ -18,6 +18,7 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.PrintWriter;
 import com.google.sps.Objects.Post;
+import com.google.sps.Objects.Comment;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 
 @WebServlet("/post-comment")
@@ -44,21 +45,13 @@ public class CommentsServlet extends HttpServlet {
     // Create comment entity and add to comment arraylist for post
     if (allComments == null) {
       ArrayList<EmbeddedEntity> comments = new ArrayList<>();
-      comments.add(createCommentEntity(commentText, userId));
+      comments.add(Comment.toEntity(commentText, userId));
       postEntity.setProperty("comments", comments);
     } else {
-      allComments.add(createCommentEntity(commentText, userId));
+      allComments.add(Comment.toEntity(commentText, userId));
       postEntity.setProperty("comments", allComments);
     }
     datastore.put(postEntity);
-  }
-
-  private EmbeddedEntity createCommentEntity(String commentText, String userId) {
-    EmbeddedEntity commentEntity = new EmbeddedEntity();
-    commentEntity.setProperty("timestamp", System.currentTimeMillis());
-    commentEntity.setProperty("commentText", commentText);
-    commentEntity.setProperty("userId", userId);
-    return commentEntity;
   }
 
   private Entity getPostFromId(

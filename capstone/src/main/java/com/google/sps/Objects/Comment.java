@@ -22,6 +22,14 @@ public final class Comment {
     return new Comment(timestamp, commentText, userId);
   }
 
+  public static EmbeddedEntity toEntity(String commentText, String userId) {
+    EmbeddedEntity commentEntity = new EmbeddedEntity();
+    commentEntity.setProperty("timestamp", System.currentTimeMillis());
+    commentEntity.setProperty("commentText", commentText);
+    commentEntity.setProperty("userId", userId);
+    return commentEntity;
+  }
+
   public long getTimestamp() {
     return timestamp;
   }

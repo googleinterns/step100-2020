@@ -3,6 +3,8 @@ package com.google.sps.objects;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +59,7 @@ public class CommentTest {
   @Test
   public void getCommentEntityTest() {
     EmbeddedEntity entity = new EmbeddedEntity();
-    String commentText = "a great post";
+    String commentText = "a great comment";
     String userId = "123123123";
     long timestamp = 4324344;
     entity.setProperty("userId", userId);
@@ -68,5 +70,20 @@ public class CommentTest {
     assertEquals(returnedComment.getCommentText(), commentText);
     assertEquals(returnedComment.getUser(), userId);
     assert returnedComment.getTimestamp() == timestamp;
+  }
+
+  @Test
+  public void toEntityTest() {
+    EmbeddedEntity entity = comment.toEntity(comment.getCommentText(), comment.getUser());
+    ArrayList<EmbeddedEntity> allComments = new ArrayList<>();
+    allComments.add(entity);
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("comments", allComments);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
+
+    ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) commentEntity.getProperty("comments");
+    assertEquals(commentEntitys.get(0).getProperty("commentText"), "a great comment");
+    assertEquals(commentEntitys.get(0).getProperty("userId"), "123123123");
   }
 }

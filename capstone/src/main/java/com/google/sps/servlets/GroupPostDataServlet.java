@@ -120,11 +120,9 @@ public class GroupPostDataServlet extends HttpServlet {
   private ArrayList<EmbeddedEntity> createCommentEntities(ArrayList<Comment> comments) {
     ArrayList<EmbeddedEntity> allComments = new ArrayList<>();
     for (Comment comment: comments) {
-      EmbeddedEntity commentEntity = new EmbeddedEntity();
-      commentEntity.setProperty("timestamp", comment.getTimestamp());
-      commentEntity.setProperty("commentText", comment.getCommentText());
-      commentEntity.setProperty("userId", comment.getUser());
-      allComments.add(commentEntity);
+      allComments.add(
+        Comment.toEntity(comment.getCommentText(), comment.getUser())
+      );
     } 
     return allComments;
   }
