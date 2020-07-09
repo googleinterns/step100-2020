@@ -141,7 +141,6 @@ public class ChallengeServletTest {
     Entity entity = datastore.get(challengeKey);
     long id = entity.getKey().getId();
     long dueDate = this.getDueDate();
-    //    long dueDateMillis = Timestamp.valueOf(dueDate).getTime();
     Challenge challenge =
         new Challenge(
             NEW_CHALLENGE, /* challenge name*/
@@ -163,6 +162,7 @@ public class ChallengeServletTest {
 
     challengeServlet.doPost(mockRequest, mockResponse);
     Key key = KeyFactory.createKey("Challenge", CHALLENGE_ID);
+    // trigger EntityNotfoundException
     Entity challengeEntity = datastore.get(key);
   }
 }

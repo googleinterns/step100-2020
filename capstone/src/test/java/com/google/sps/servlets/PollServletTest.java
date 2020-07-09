@@ -152,6 +152,7 @@ public class PollServletTest {
     pollServlet.doPost(mockRequest, mockResponse);
     // id of Option increments for each new Option that is added
     Key optionKey = KeyFactory.createKey("Option", OPTION_TEXT.size() + 1);
+    // trigger EntityNotfoundException
     Entity optionEntity = datastore.get(optionKey);
   }
 }

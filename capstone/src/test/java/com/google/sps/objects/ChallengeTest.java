@@ -33,18 +33,21 @@ public class ChallengeTest {
 
   private Challenge challenge;
   private Badge badge;
+  private final String CHALLENGE_NAME = "Run 3 miles";
+  private final long DUE_DATE = 12345;
+  private final long ID = 100;
 
   @Before
   public void setUp() {
     helper.setUp();
-    badge = new Badge(/* challenge name */ "Run 3 miles", /* icon */ null, /* timestamp */ 234567);
+    badge = new Badge(/* challenge name */ CHALLENGE_NAME, /* icon */ null, /* timestamp */ 234567);
     challenge =
         new Challenge(
-            "Run 3 miles", /* challenge name */
-            123456, /* due date */
+            CHALLENGE_NAME, /* challenge name */
+            DUE_DATE, /* due date */
             badge, /* badge */
             new ArrayList<String>(), /* completed users */
-            100 /* challenge id */);
+            ID /* challenge id */);
   }
 
   @After
@@ -55,12 +58,12 @@ public class ChallengeTest {
 
   @Test
   public void getDueDateTest() {
-    assert challenge.getDueDate() == 123456;
+    assert challenge.getDueDate() == DUE_DATE;
   }
 
   @Test
   public void getChallengeName() {
-    assertEquals(challenge.getChallengeName(), "Run 3 miles");
+    assertEquals(challenge.getChallengeName(), CHALLENGE_NAME);
   }
 
   @Test
@@ -97,16 +100,15 @@ public class ChallengeTest {
   @Test
   public void fromEntityTest() {
     Entity entity = new Entity("Challenge");
-    String challengeName = "Run half a marathon";
+    String challengeName = CHALLENGE_NAME;
     entity.setProperty("name", challengeName);
     entity.setProperty("votes", new ArrayList<String>());
-    long dueDate = 123456;
-    entity.setProperty("dueDate", dueDate);
+    entity.setProperty("dueDate", DUE_DATE);
     Challenge returnedChallenge = Challenge.fromEntity(entity);
 
     assertEquals(returnedChallenge.getChallengeName(), challengeName);
     assert returnedChallenge.getUsersCompleted().size() == 0;
-    assert returnedChallenge.getDueDate() == dueDate;
+    assert returnedChallenge.getDueDate() == DUE_DATE;
   }
 
   @Test
@@ -116,8 +118,8 @@ public class ChallengeTest {
     datastore.put(entity);
     List<String> votes = (ArrayList<String>) entity.getProperty("votes");
 
-    assertEquals(entity.getProperty("name"), "Run 3 miles");
+    assertEquals(entity.getProperty("name"), CHALLENGE_NAME);
     assert votes.size() == 0;
-    assert (long) entity.getProperty("dueDate") == 123456;
+    assert (long) entity.getProperty("dueDate") == DUE_DATE;
   }
 }

@@ -29,11 +29,12 @@ public class OptionTest {
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
 
   private Option option;
+  private final String OPTION_NAME = "Swim";
 
   @Before
   public void setUp() {
     helper.setUp();
-    option = new Option(100, "Swim", new ArrayList<String>());
+    option = new Option(100, OPTION_NAME, new ArrayList<String>());
   }
 
   @After
@@ -44,17 +45,24 @@ public class OptionTest {
 
   @Test
   public void getTextTest() {
-    assertEquals(option.getText(), "Swim");
+    assertEquals(option.getText(), OPTION_NAME);
   }
 
   @Test
   public void addVoteGetVotesTest() {
-    option.addVote("1");
-    option.addVote("2");
+    List<String> votesToAdd = new ArrayList<String>();
+    votesToAdd.add("1");
+    votesToAdd.add("2");
+
+    for (int i = 0; i < votesToAdd.size(); i++) {
+      option.addVote(votesToAdd.get(i));
+    }
 
     assert option.getVotes().size() == 2;
-    assertEquals(option.getVotes().get(0), "1");
-    assertEquals(option.getVotes().get(1), "2");
+    List<String> votes = option.getVotes();
+    for (int i = 0; i < votes.size(); i++) {
+      assertEquals(option.getVotes().get(i), votesToAdd.get(i));
+    }
   }
 
   @Test
@@ -70,14 +78,14 @@ public class OptionTest {
 
     ArrayList<String> votes = (ArrayList<String>) entity.getProperty("votes");
 
-    assertEquals(entity.getProperty("text"), "Swim");
+    assertEquals(entity.getProperty("text"), OPTION_NAME);
     assert votes.size() == 0;
   }
 
   @Test
   public void fromEntityTest() {
     Entity entity = new Entity("Option");
-    entity.setProperty("text", "Run");
+    entity.setProperty("text", OPTION_NAME);
     List<String> votes = new ArrayList<String>();
     votes.add("1");
     votes.add("2");
@@ -90,10 +98,10 @@ public class OptionTest {
     Option returnedOption = Option.fromEntity(entity);
     List<String> returnedVotes = (ArrayList<String>) entity.getProperty("votes");
 
-    assertEquals(returnedOption.getText(), "Run");
+    assertEquals(returnedOption.getText(), OPTION_NAME);
     assert returnedVotes.size() == 3;
-    assertEquals(returnedVotes.get(0), "1");
-    assertEquals(returnedVotes.get(1), "2");
-    assertEquals(returnedVotes.get(2), "3");
+    for (int i = 0; i < returnedVotes.size(); i++) {
+      assertEquals(returnedVotes.get(i), votes.get(i));
+    }
   }
 }

@@ -20,6 +20,8 @@ import com.google.sps.Objects.Poll;
 public class PollTest {
 
   private Poll poll;
+  private final String OPTION_NAME = "Swim";
+  private final long ID = 100;
 
   @Before
   public void setUp() {
@@ -38,8 +40,8 @@ public class PollTest {
 
   @Test
   public void addOptionTest() {
-    Option option = new Option(100, "Swim", new ArrayList<String>());
-    Option option2 = new Option(100, "Swim", new ArrayList<String>());
+    Option option = new Option(ID, OPTION_NAME, new ArrayList<String>());
+    Option option2 = new Option(ID, OPTION_NAME, new ArrayList<String>());
     poll.addOption(option);
     poll.addOption(option2);
 

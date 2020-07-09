@@ -115,6 +115,7 @@ public class MarkCheckboxTest {
     markCheckboxServlet.doPost(mockRequest, mockResponse);
 
     Key key = KeyFactory.createKey(TYPE, Long.parseLong(CHECKBOX_ID));
+    // trigger EntityNotfoundException
     Entity entity = datastore.get(key);
   }
 
