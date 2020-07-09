@@ -108,7 +108,6 @@ public class CreateNewUserServletTest {
     String jsonCurrent = new Gson().toJson(USER_1);
     
     assertTrue(jsonDs.equals(jsonCurrent));
-    //assertTrue(USER_1.equals(User.fromEntity(user)));
   }
 
   @Test(expected = EntityNotFoundException.class)
