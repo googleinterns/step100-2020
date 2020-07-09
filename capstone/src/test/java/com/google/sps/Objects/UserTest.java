@@ -34,7 +34,6 @@ public class UserTest {
   private static final String USER_EMAIL = "test@mctest.com";
   private static final String USER_ID = "testy-mc-test";
 
-  // https://cloud.google.com/appengine/docs/java/tools/localunittesting
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
             new LocalDatastoreServiceTestConfig()
@@ -50,7 +49,11 @@ public class UserTest {
 
   private static final ArrayList<String> INTERESTS_LIST = new ArrayList<String>( 
       Arrays.asList("Testing", "Dancing"));
-  private static final User USER_1 = new User(USER_ID, "Test", "McTest", USER_EMAIL, 
+  private static final User USER_1 = new User(
+                          USER_ID, 
+                          "Test", 
+                          "McTest", 
+                          USER_EMAIL, 
                           /* phoneNumber= */ "123-456-7890", 
                           /* profilePic= */ "", 
                           /* badges= */ new LinkedHashSet<Badge>(), 
