@@ -32,6 +32,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
 import com.google.sps.Objects.Challenge;
 
 public class ChallengeServletTest {
@@ -141,6 +142,7 @@ public class ChallengeServletTest {
     Entity entity = datastore.get(challengeKey);
     long id = entity.getKey().getId();
     long dueDate = this.getDueDate();
+
     Challenge challenge =
         new Challenge(
             NEW_CHALLENGE, /* challenge name*/
@@ -150,9 +152,9 @@ public class ChallengeServletTest {
             id /* id of challenge */);
     Challenge returnedChallenge = Challenge.fromEntity(entity);
 
-    assertEquals(challenge.getChallengeName(), returnedChallenge.getChallengeName());
-    assert challenge.getUsersCompleted().size() == returnedChallenge.getUsersCompleted().size();
-    assert challenge.getDueDate() == returnedChallenge.getDueDate();
+    String challengeJson = new Gson().toJson(challenge);
+    String returnedChallengeJson = new Gson().toJson(returnedChallenge);
+    assertEquals(challengeJson, returnedChallengeJson);
   }
 
   @Test(expected = EntityNotFoundException.class)

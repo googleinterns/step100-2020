@@ -34,6 +34,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
 import com.google.sps.Objects.Option;
 
 /**
@@ -139,9 +140,9 @@ public class PollServletTest {
     Option option = new Option(id, NEW_OPTION, new ArrayList<String>());
     Option returnedOption = Option.fromEntity(optionEntity);
 
-    assertEquals(option.getText(), returnedOption.getText());
-    assertEquals(option.getId(), returnedOption.getId());
-    assert option.getVotes().size() == returnedOption.getVotes().size();
+    String optionJson = new Gson().toJson(option);
+    String returnedOptionJson = new Gson().toJson(returnedOption);
+    assertEquals(optionJson, returnedOptionJson);
   }
 
   @Test(expected = EntityNotFoundException.class)
