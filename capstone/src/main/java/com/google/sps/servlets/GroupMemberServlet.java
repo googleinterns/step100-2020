@@ -63,7 +63,7 @@ public class GroupMemberServlet extends HttpServlet {
   }
 
   private Entity getGroupFromId(
-    HttpServletResponse response, long groupId, DatastoreService datastore) {
+    HttpServletResponse response, long groupId, DatastoreService datastore) throws IOException {
     try {
       return datastore.get(KeyFactory.createKey("Group", groupId));
     } catch (EntityNotFoundException e) {
