@@ -66,8 +66,8 @@ public class OptionTest {
   @Test
   public void toEntityTest() {
     Entity entity = option.toEntity();
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(entity);
     ArrayList<String> votes = (ArrayList<String>) entity.getProperty("votes");
 
@@ -85,8 +85,8 @@ public class OptionTest {
     votes.add("3");
     entity.setProperty("votes", votes);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
     datastore.put(entity);
+
     Option returnedOption = Option.fromEntity(entity);
     List<String> returnedVotes = (ArrayList<String>) entity.getProperty("votes");
 
