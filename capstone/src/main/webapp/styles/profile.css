@@ -55,10 +55,29 @@
   padding: 0 10px;
 }
 
+.sidebar #group-buttons button {
+  align-items: center;
+  background-color: var(--dark-green);
+  border: none;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  justify-content: center;
+  margin: 10px;
+  min-width: 130px;
+  outline: none;
+  padding: 10px;
+  text-align: center;
+}
+
 .sidebar #edit-btn {
   background: transparent;
   border: 0;
   margin: 15px auto;
+  outline:none
 }
 
 .sidebar #edit-btn img {
@@ -173,11 +192,10 @@ a:link, a:visited, a:hover, a:active {
   left: 50%;
   padding: 1rem 1.5rem;
   position: absolute;
-  top: 50%;
+  top: 40%;
   transform: translate(-50%, -50%);
-  width: 28rem;
+  width: 36rem;
 }
-
 
 .edit-modal form {
   margin: 0;
@@ -196,12 +214,13 @@ a:link, a:visited, a:hover, a:active {
 .edit-modal .form-row {
   display: flex;
   justify-content: flex-end;
-  padding: .5em;
+  padding: .5em .25em;
 }
 
 .edit-modal #modal-name-container {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
+  margin: 1em auto;
 }
 
 .edit-modal #modal-profile-pic {
@@ -217,6 +236,10 @@ a:link, a:visited, a:hover, a:active {
   font-size: 20px;
   font-weight: bold;
   padding: .5em .75em .5em 0;
+}
+
+.edit-modal #padded-label {  
+  padding: .5em .75em;
 }
 
 .edit-modal input {

@@ -19,7 +19,10 @@
           <div id="badge-container">
             <h4>Badges</h4>
           </div>
-          <div id="buttons-container"></div>
+          <div id="group-buttons">
+            <button id="join" onclick="joinGroup()">Join Group</button>
+            <button id="create" onclick="createGroup()">Create Group</button>
+          </div>
           <button id="edit-btn" onclick="editProfile()">
             <img id="edit" src="images/edit.svg"></img>
           </button>
@@ -48,6 +51,12 @@
         <h2 id="modal-name-container"></h2>
         <form id="edit-profile">
           <li class="form-row">
+            <label for="first">First</label>
+            <input type="text" class="input-field" name="first" id="first">
+            <label for="last" id="padded-label">Last</label>
+            <input type="text" class="input-field" name="last" id="last">
+          </li>
+          <li class="form-row">
             <label for="email">Email</label>
             <input type="text" class="input-field" name="email" id="email">
           </li>
@@ -60,7 +69,7 @@
             <input type="text" class="input-field" placeholder="Add an interest" 
               name="interests" id="interests">
           </li>          
-          <button class="save-btn" onclick="saveEdit()">SAVE</button>
+          <button class="save-btn" onclick="saveEdits()">SAVE</button>
         </form>
       </div>
     </div>
