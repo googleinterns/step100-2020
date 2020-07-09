@@ -14,6 +14,7 @@ import org.junit.Test;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.gson.Gson;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -87,12 +88,9 @@ public class MemberResponseTest {
     entity.setProperty("firstName", FIRST_NAME);
     entity.setProperty("lastName", LAST_NAME);
     entity.setProperty("userId", USER_ID);
-    MemberResponse returnedMemberResponse = MemberResponse.fromEntity(entity, false);
-
-    assertEquals(returnedMemberResponse.getFirstName(), FIRST_NAME);
-    assertEquals(returnedMemberResponse.getLastName(), LAST_NAME);
-    assertEquals(returnedMemberResponse.getStringURL(), PROFILE_PIC);
-    assertEquals(returnedMemberResponse.getUserId(), USER_ID);
+    MemberResponse returnedMemberResponse = MemberResponse.fromEntity(entity, false /*includeBadges*/);
+    
+    assertTrue(returnedMemberResponse.equals(memberResponse));
   } 
 }
 

@@ -49,6 +49,21 @@ public final class Post {
     return new Post(postId, authorId, postText, comments, challengeName, timestamp, img, likes);
   }
 
+  @Override 
+  public boolean equals(Object other) {
+    if (other == null) return false;
+    if (other == this) return true;
+    if (!(other instanceof Post)) return false;
+    Post post = (Post) other;
+    return timestamp == post.timestamp &&
+      authorId.equals(post.authorId) &&
+      postText.equals(post.postText) &&
+      challengeName.equals(post.challengeName) &&
+      img.equals(post.img) &&
+      likes.containsAll(post.likes) &&
+      comments.containsAll(post.comments);
+  }
+
   public long getTimestamp() {
     return timestamp;
   }

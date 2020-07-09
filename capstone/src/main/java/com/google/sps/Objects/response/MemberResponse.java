@@ -59,6 +59,30 @@ public final class MemberResponse {
   }
 
   /**
+   * Checks if two Member Response Objects are equal
+   *
+   * @param other Member Response object 
+   */
+  @Override
+  public boolean equals(Object other) {
+    if (other == null) return false;
+    if (other == this) return true;
+    if (!(other instanceof MemberResponse)) return false;
+    MemberResponse memResponse = (MemberResponse) other;
+    if (memResponse.badges != null && memResponse.badges.size() > 0) {
+      return profilePic.equals(memResponse.profilePic) &&
+        firstName.equals(memResponse.firstName) &&
+        lastName.equals(memResponse.lastName) &&
+        userId.equals(memResponse.userId) &&
+        badges.containsAll(memResponse.badges);
+    }
+    return profilePic.equals(memResponse.profilePic) &&
+      firstName.equals(memResponse.firstName) &&
+      lastName.equals(memResponse.lastName) &&
+      userId.equals(memResponse.userId);
+  }
+
+  /**
    *
    * @return String of user first name 
    */

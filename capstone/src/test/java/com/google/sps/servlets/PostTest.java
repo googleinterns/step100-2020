@@ -14,6 +14,7 @@ import org.junit.Test;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.gson.Gson;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -62,46 +63,22 @@ public class PostTest {
 
   @Test
   public void getPostTextTest() {
-    assertEquals(post.getPostText(), "a great post");
+    assertEquals(post.getPostText(), POST_TEXT);
   }
 
   @Test 
   public void getImgtTest() {
-    assertEquals(post.getImg(), "");
+    assertEquals(post.getImg(), IMG);
   }
 
   @Test
   public void getChallengeNameTest() {
-    assertEquals(post.getChallengeName(), "run 4 miles");
+    assertEquals(post.getChallengeName(), CHALLENGE_NAME);
   }
 
-  @Test
+  @Test 
   public void getCommentsTest() {
-    Comment testComment1 =  
-      new Comment(
-        4324344, /* userId */ 
-        "a great comment", /* commentText */ 
-        "123123123" /* userId */ );
-    Comment testComment2 = 
-      new Comment(
-        55555555, /* userId */ 
-        "another great comment", /* commentText */ 
-        "09090909" /* userId */ );
-    post.addComment(testComment1);
-    post.addComment(testComment2);
-
-    ArrayList<Comment> testComments = new ArrayList<Comment>();
-    testComments.add(testComment1);
-    testComments.add(testComment2);
-
-    assertEquals(
-      post.getComments().get(0).getCommentText(), 
-      testComments.get(0).getCommentText()
-    );
-    assertEquals(
-      post.getComments().get(1).getCommentText(), 
-      testComments.get(1).getCommentText()
-    );
+    assert post.getComments().size() == 0;
   }
 
   @Test
@@ -132,12 +109,8 @@ public class PostTest {
     post.addComment(testComment2);
 
     assert post.getComments().size() == 2;
-    assertEquals(
-      post.getComments().get(0).getCommentText(), "a great comment"
-    );
-    assertEquals(
-      post.getComments().get(1).getCommentText(), "another great comment"
-    );
+    assertTrue(post.getComments().get(0).equals(testComment1));
+    assertTrue(post.getComments().get(1).equals(testComment2));
   }
 
   @Test
@@ -168,5 +141,20 @@ public class PostTest {
     likes = post.getLikes();
 
     assert likes.size() == 0;
+  }
+
+  @Test
+  public void getPostEntityTest() {
+    Entity entity = new Entity("Post");
+    entity.setProperty("authorId", AUTHOR_ID);
+    entity.setProperty("timestamp", TIMESTAMP);
+    entity.setProperty("postText", POST_TEXT);
+    entity.setProperty("challengeName", CHALLENGE_NAME);
+    entity.setProperty("img", IMG);
+    entity.setProperty("likes", new ArrayList<String>());
+    entity.setProperty("comments", new ArrayList<Comment>());
+    Post returnedPost = Post.getPostEntity(entity);
+
+    assertTrue(returnedPost.equals(post));
   }
 }

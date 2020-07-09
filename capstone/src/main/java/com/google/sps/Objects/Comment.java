@@ -30,6 +30,16 @@ public final class Comment {
     return commentEntity;
   }
 
+  @Override
+  public boolean equals(Object other) {
+    if (other == null) return false;
+    if (other == this) return true;
+    if (!(other instanceof Comment)) return false;
+    Comment comment = (Comment) other;
+    return commentText.equals(comment.commentText) &&
+      userId.equals(comment.userId);
+  }
+
   public long getTimestamp() {
     return timestamp;
   }

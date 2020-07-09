@@ -13,6 +13,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EmbeddedEntity;
+import com.google.gson.Gson;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -53,28 +54,25 @@ public class CommentTest {
 
   @Test
   public void getCommentTextTest() {
-    assertEquals(comment.getCommentText(), "a great comment");
+    assertEquals(comment.getCommentText(), COMMENT_TEXT);
   }
 
   @Test
   public void getUserTest() {
-    assertEquals(comment.getUser(), "123123123");
+    assertEquals(comment.getUser(), USER_ID);
   }
 
   @Test
   public void getCommentEntityTest() {
     EmbeddedEntity entity = new EmbeddedEntity();
-    String commentText = "a great comment";
-    String userId = "123123123";
-    long timestamp = 4324344;
-    entity.setProperty("userId", userId);
-    entity.setProperty("commentText", commentText);
-    entity.setProperty("timestamp", timestamp);
+    entity.setProperty("userId", USER_ID);
+    entity.setProperty("commentText", COMMENT_TEXT);
+    entity.setProperty("timestamp", TIMESTAMP);
     Comment returnedComment = Comment.getCommentEntity(entity);
 
-    assertEquals(returnedComment.getCommentText(), commentText);
-    assertEquals(returnedComment.getUser(), userId);
-    assert returnedComment.getTimestamp() == timestamp;
+    String jsonRetrieved = new Gson().toJson(returnedComment);
+    String jsonOriginal = new Gson().toJson(comment);
+    assertTrue(jsonRetrieved.equals(jsonOriginal));
   }
 
   @Test
@@ -88,7 +86,7 @@ public class CommentTest {
     datastore.put(commentEntity);
 
     ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) commentEntity.getProperty("comments");
-    assertEquals(commentEntitys.get(0).getProperty("commentText"), "a great comment");
-    assertEquals(commentEntitys.get(0).getProperty("userId"), "123123123");
+    assertEquals(commentEntitys.get(0).getProperty("commentText"), COMMENT_TEXT);
+    assertEquals(commentEntitys.get(0).getProperty("userId"), USER_ID);
   }
 }
