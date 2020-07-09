@@ -30,7 +30,6 @@ public class MarkCheckboxServlet extends AuthenticatedServlet {
     String type = request.getParameter("type");
     long id = this.parseToLong(response, idString);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    //    String userId = this.getUserId(response);
     Entity entity = this.getEntityFromId(response, id, datastore, type);
     if (entity == null) {
       entity = new Entity(type);
