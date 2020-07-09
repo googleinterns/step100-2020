@@ -37,6 +37,7 @@ public class MemberResponseTest {
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
 
   private MemberResponse memberResponse;
+  private Badge badge;
 
   @Before
   public void setUp() {
@@ -58,23 +59,23 @@ public class MemberResponseTest {
 
   @Test
   public void getFirstNameTest() {
-    assertEquals(memberResponse.getFirstName(), "Test");
+    assertEquals(memberResponse.getFirstName(), FIRST_NAME);
   }
 
   @Test
   public void getLastNameTest() {
-    assertEquals(memberResponse.getLastName(), "User");
+    assertEquals(memberResponse.getLastName(), LAST_NAME);
   }
 
   @Test
   public void getStringURLTest() {
-    assertEquals(memberResponse.getStringURL(), "");
+    assertEquals(memberResponse.getStringURL(), PROFILE_PIC);
   }
 
   @Test
   public void getBadgesTest() {
     assert memberResponse.getBadges().size() == 0;
-    Badge badge = new Badge(/* challenge name */ "workout", /* icon */ null, /* timestamp */ 11111111);
+    badge = new Badge(/* challenge name */ "workout", /* icon */ null, /* timestamp */ 11111111);
     memberResponse.getBadges().add(badge);
     assert memberResponse.getBadges().size() == 1;
   }
@@ -82,20 +83,16 @@ public class MemberResponseTest {
   @Test
   public void fromEntityTest() {
     Entity entity = new Entity("MemberResponse");
-    String profilePic = "";
-    String firstName = "Test";
-    String lastName = "User";
-    String userId = "11111111";
-    entity.setProperty("profilePic", profilePic);
-    entity.setProperty("firstName", firstName);
-    entity.setProperty("lastName", lastName);
-    entity.setProperty("userId", userId);
+    entity.setProperty("profilePic", PROFILE_PIC);
+    entity.setProperty("firstName", FIRST_NAME);
+    entity.setProperty("lastName", LAST_NAME);
+    entity.setProperty("userId", USER_ID);
     MemberResponse returnedMemberResponse = MemberResponse.fromEntity(entity, false);
 
-    assertEquals(returnedMemberResponse.getFirstName(), firstName);
-    assertEquals(returnedMemberResponse.getLastName(), lastName);
-    assertEquals(returnedMemberResponse.getStringURL(), profilePic);
-    assertEquals(returnedMemberResponse.getUserId(), userId);
+    assertEquals(returnedMemberResponse.getFirstName(), FIRST_NAME);
+    assertEquals(returnedMemberResponse.getLastName(), LAST_NAME);
+    assertEquals(returnedMemberResponse.getStringURL(), PROFILE_PIC);
+    assertEquals(returnedMemberResponse.getUserId(), USER_ID);
   } 
 }
 
