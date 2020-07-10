@@ -10,12 +10,12 @@ public final class User {
   private String name;
   private String firstName;
   private String lastName;
-  private final String email;
+  private String email;
   private String phoneNumber;
   private String profilePic;
   private final LinkedHashSet<Badge> badges;
   private final LinkedHashSet<Long> groups;
-  private final ArrayList<String> interests;
+  private ArrayList<String> interests;
 
   public User(String userId, String firstName, String lastName, 
       String email, String phoneNumber, String profilePic,
@@ -84,6 +84,14 @@ public final class User {
 
   public void setPhoneNumber(String newPhoneNumber) {
     this.phoneNumber = newPhoneNumber;
+  }
+
+  public void setEmail(String newEmail) {
+    this.email = newEmail;
+  }
+
+  public void setInterests(ArrayList<String> interests) {
+    this.interests = interests;
   }
 
   public void addBadge(Badge newBadge) {
