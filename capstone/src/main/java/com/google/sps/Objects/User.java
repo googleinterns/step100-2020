@@ -10,12 +10,12 @@ public final class User {
   private String name;
   private String firstName;
   private String lastName;
-  private final String email;
+  private String email;
   private String phoneNumber;
   private String profilePic;
   private final LinkedHashSet<Badge> badges;
   private final LinkedHashSet<Long> groups;
-  private final ArrayList<String> interests;
+  private ArrayList<String> interests;
 
   public User(String userId, String firstName, String lastName, 
       String email, String phoneNumber, String profilePic,
@@ -86,6 +86,14 @@ public final class User {
     this.phoneNumber = newPhoneNumber;
   }
 
+  public void setEmail(String newEmail) {
+    this.email = newEmail;
+  }
+
+  public void setInterests(ArrayList<String> interests) {
+    this.interests = interests;
+  }
+
   public void addBadge(Badge newBadge) {
     this.badges.add(newBadge);
   }
@@ -96,6 +104,26 @@ public final class User {
 
   public void addGroup(long newGroupId) {
     this.groups.add(newGroupId);
+  }
+
+  /* 
+   * Overrides the equals() method to effectively compare two User objects. 
+   */
+  @Override
+  public boolean equals(Object other) {
+    if (other == null) return false;
+    if (other == this) return true;
+    if (!(other instanceof User)) return false;
+    User user = (User) other;
+    return userId.equals(user.userId) &&
+        firstName.equals(user.firstName) &&
+        lastName.equals(user.lastName) &&
+        email.equals(user.email) &&
+        phoneNumber.equals(user.phoneNumber) &&
+        profilePic.equals(user.profilePic) &&
+        interests.containsAll(user.interests) && user.interests.containsAll(interests) &&
+        groups.containsAll(user.groups) && user.groups.containsAll(groups) &&
+        badges.containsAll(user.badges) && user.badges.containsAll(badges);
   }
 
   /**

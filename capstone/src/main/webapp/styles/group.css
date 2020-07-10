@@ -1,16 +1,11 @@
 :root {
-  --green: #73c586;
-  --light-green: #c5d6cb;
-  --yellow-green: #e8eed1;
-  --light-blue: #d1e3eb;
-  --near-white: #fcfcfc;
   --container-width: 834px;
   --gap: 30px;
 }
 
 body {
   font-family: "Roboto", sans-serif;
-  background-color: #f4f6f2;
+  background-color: var(--background);
   top: 0;
 }
 
@@ -23,35 +18,33 @@ p {
   margin: 0 auto;
 }
 
-/* Post Comment */
 .group-content {
   position: relative;
   margin-left: auto;
   margin-right: auto;
-  width: 40%;
+  width: 50%;
 }
 
+/* Group Header*/
 .group-header {
   border-radius: 10px;
   width: 100%;
   height: 200px;
-  background: #c5d6cb;
+  background: var(--light-green);
   margin-bottom: var(--gap);
 }
 
 .group-name-banner {
-  background: #73c586;
+  background: var(--dark-green);
   display: flex;
-  align-content: center;
   height: 50px;
   border-radius: 10px;
-  width: 100%;
   justify-content: center;
   align-items: center;
 }
 
 #group-name {
-  color: #f4f6f2;
+  color: var(--background);
   text-align: center;
   font-family: "Roboto";
   font-style: normal;
@@ -60,35 +53,34 @@ p {
   width: 100%;
 }
 
+/* Post */
 .create-post {
   display: block;
-  background: #fcfcfc;
+  background: var(--near-white);
   border-radius: 10px;
   height: 120px;
   width: 100%;
   margin-bottom: var(--gap);
-}
-
-#post-form {
   position: relative;
-  top: 50%;
 }
 
 .user-img {
   height: 60px;
   width: 60px;
   border-radius: 50%;
-  background-color: #f7ce82;
+  background-color: var(--orange);
   align-content: left;
   top: 50%;
   transform: translateY(-50%);
   margin-left: 20px;
+  position: absolute;
 }
 
 #post-input {
-  background-color: #eeeeee;
+  background-color: var(--placeholder-gray);
   border-radius: 10px;
-  margin-left: 20px;
+  align-content: left;
+  margin-left: 100px;
   height: 40px;
   width: 70%;
   color: #8a8686;
@@ -99,23 +91,27 @@ p {
   text-indent: 1em;
   outline: none;
   border: none;
+  position: absolute;
+  top: 50%;
   transform: translateY(-50%);
 }
 
 .camera-btn {
   background: none;
   border: none;
+  position: absolute;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   right: 0px;
-  margin: 0 10px;
+  margin-right: 80px;
   outline: none;
 }
 
 .post-btn {
   background: none;
   border: none;
+  position: absolute;
   top: 50%;
   transform: translateY(-50%);
   right: 0px;
@@ -132,6 +128,7 @@ p {
 }
 
 .post-feed {
+  position: relative;
   display: block;
   width: 100%;
 }
@@ -148,7 +145,7 @@ p {
   height: 60px;
   width: 60px;
   border-radius: 50%;
-  background-color: #f7ce82;
+  background-color: var(--orange);
   align-content: left;
   position: flex;
   margin-left: 20px;
@@ -172,13 +169,13 @@ p {
   font-weight: normal;
   font-size: 24px;
   line-height: 28px;
-  margin: 20px 20px 20px 20px;
+  margin: 20px;
 }
 
 .img-div {
   width: 80%;
   margin-top: 30px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   position: relative;
 }
 
@@ -207,6 +204,7 @@ p {
   align-content: left;
   top: 50%;
   transform: translateY(-50%);
+  position: absolute;
 }
 .unliked {
   fill: transparent;
@@ -218,6 +216,7 @@ p {
   align-content: left;
   top: 50%;
   transform: translateY(-50%);
+  position: absolute;
 }
 
 .likes-label {
@@ -226,10 +225,13 @@ p {
   font-style: normal;
   font-weight: normal;
   font-size: 15px;
-  color: #8a8686;
+  color: var(--text-gray);
+  position: absolute;
   top: 50%;
   transform: translateY(-50%);
   padding-inline-start: 50px;
+  margin-block-end: 0;
+  margin-block-start: 0;
 }
 
 .comment-input {
@@ -237,7 +239,7 @@ p {
   border-radius: 10px;
   height: 50px;
   width: 100%;
-  color: #8a8686;
+  color: var(--text-gray);
   font-family: "Roboto";
   font-style: normal;
   font-weight: normal;
@@ -249,6 +251,7 @@ p {
   left: 0;
   padding-right: 50px;
   box-sizing: border-box;
+  position: absolute;
 }
 
 .comment-box-div {
@@ -279,66 +282,58 @@ p {
   height: 60px;
   width: 60px;
   border-radius: 50%;
-  background-color: #f5ceda;
+  background-color: var(--light-pink);
   align-content: left;
 }
 
 .comment-text-div {
   margin-left: 20px;
-  background-color: #eeeeee;
+  background-color: var(--placeholder-gray);
   border-radius: 10px;
   width: 85%;
   position: relative;
-  height: auto;
+  display: inline-block;
 }
 
 .comment-text {
   text-align: left;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: normal;
-  font-size: 24px;
+  font: normal normal "Roboto" 24px;
   line-height: 28px;
-  padding: 8px 12px;
+  padding: 10px 15px;
+  margin-block-end: 0;
+  margin-block-start: 0;
 }
 
 #comment-input {
-  background-color: #eeeeee;
+  background-color: var(--placeholder-gray);
   border-radius: 10px;
   align-content: left;
   margin-left: 100px;
   height: 40px;
   width: 70%;
-  color: #8a8686;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: normal;
-  font-size: 15px;
+  color: var(--text-gray);
+  font: normal normal "Roboto" 15px;
   line-height: 28px;
   padding-left: 8px;
   outline: none;
 }
-
 .align-vertical {
   display: inline-block;
   vertical-align: middle;
-}
-
-.fa-paper-plane {
-  height: 30px;
 }
 
 /* Challenge */
 .challenge-container {
   background: var(--near-white);
   border-radius: 10px;
-  width: 754px;
+  width: 100%;
   padding: 40px;
   margin-bottom: var(--gap);
+  box-sizing: border-box;
 }
 
 #due-date {
-  color: #8a8686;
+  color: var(--text-gray);
   font-size: 13px;
 }
 
@@ -361,7 +356,7 @@ p {
 }
 
 .inner-poll-container {
-  margin: 0px 40px 100px 40px;
+  margin: 0px 40px 80px 40px;
 }
 
 .section-text {
@@ -392,13 +387,13 @@ p {
 }
 
 #input-box {
-  width: 677px;
-  height: 55px;
-  border-radius: 25px;
+  width: 710px;
+  height: 40px;
+  border-radius: 10px;
   border: none;
   background-color: #eeeeee;
   padding-left: 20px;
-  font-size: 24px;
+  font-size: 15px;
   outline: none;
   margin: 0 40px;
 }
@@ -408,7 +403,7 @@ p {
   float: right;
   right: 27px;
   font-size: 24px;
-  color: #8a8686;
+  color: var(--text-gray);
 }
 
 input[type="checkbox"] {
@@ -447,7 +442,7 @@ input[type="checkbox"]:checked + label {
   width: 20px;
   border-top-color: transparent;
   border-right-color: transparent;
-  border-bottom-color: var(--green);
+  border-bottom-color: var(--dark-green);
   border-left-color: transparent;
   height: 20px;
 }
@@ -459,5 +454,5 @@ input[type="checkbox"]:checked + label:before {
   bottom: -3px;
   width: 100%;
   height: 15px;
-  border-left: 4px solid var(--green);
+  border-left: 4px solid var(--dark-green);
 }

@@ -30,6 +30,7 @@ function getUserData() {
   .then(response => response.json())
   .then((user) => {
     displayUserInfo(user);
+    populateEditForm(user);
   });
 }
 
@@ -120,5 +121,54 @@ function displayProfilePicture(picUrl) {
 
 /** Open a modal form for users to edit their profile information */
 function editProfile() {
+  let modal = document.getElementById('edit-modal');
+  modal.classList.toggle('show-modal');
+}
+
+/** Close modal form */
+function closeModal() {
+  let modal = document.getElementById('edit-modal');
+  modal.classList.toggle('show-modal');
+}
+
+/** Populate form with user values */
+function populateEditForm(user) {
+  document.getElementById('modal-name-container').innerText = user.name;
+  document.getElementById('first').value = user.firstName;
+  document.getElementById('last').value = user.lastName;
+  document.getElementById('email').value = user.email;
+  document.getElementById('phone').value = user.phoneNumber;
+  document.getElementById('interests').value = user.interests.join(', ');
+}
+
+/** Save updated profile information */
+function saveEdits() {
+  const editForm = document.getElementById('edit-profile');
+  if (editForm.reportValidity()) {
+    const firstName = document.getElementById('first').value;
+    const lastName = document.getElementById('last').value;
+    const email = document.getElementById('email').value;
+    const phoneNumber = document.getElementById('phone').value;
+    const interests = document.getElementById('interests').value;
+
+    const params = new URLSearchParams();
+    params.append('first', firstName);
+    params.append('last', lastName);
+    params.append('email', email);
+    params.append('phone', phoneNumber);
+    params.append('interests', interests);
+
+    // Send a POST request to the servlet which registers a new user.
+    fetch('/editProfile', {method: 'POST', body: params});
+  }
+}
+
+/** Code to handle User joining a group */
+function joinGroup() {
+
+}
+
+/** Code to handle User creating a group */
+function createGroup() {
 
 }
