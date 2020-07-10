@@ -17,6 +17,7 @@ import com.google.sps.Objects.Time;
 public class TimeTest {
 
   @Spy private Time mockedTime;
+  private static long EXPECTED_DATE = 1595044799000L;
 
   @Before
   public void setUp() throws IOException {
@@ -27,8 +28,7 @@ public class TimeTest {
   public void getDueDateTest() {
     LocalDateTime now = LocalDateTime.of(2020, Month.JULY, 10, 10, 30, 40);
     when(mockedTime.getNow()).thenReturn(now);
-    long actualDueDate = 1595044799000L;
 
-    assertEquals(actualDueDate, mockedTime.getDueDate());
+    assertEquals(EXPECTED_DATE, mockedTime.getDueDate());
   }
 }

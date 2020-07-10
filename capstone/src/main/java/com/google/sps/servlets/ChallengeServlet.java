@@ -45,8 +45,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     String challengeName = request.getParameter("name");
-    Time time = new Time();
-    long dueDate = Challenge.getDueDate(time);
+    long dueDate = Challenge.getDueDate(new Time());
     Challenge challenge =
         new Challenge(
             challengeName,

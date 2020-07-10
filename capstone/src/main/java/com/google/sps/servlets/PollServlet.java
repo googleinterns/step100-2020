@@ -17,7 +17,6 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.sps.Objects.Option;
 import com.google.sps.Objects.comparator.OptionsComparator;
-import com.google.sps.Objects.response.OptionsAndUserVotedOptions;
 import com.google.sps.Objects.response.PollResponse;
 
 @WebServlet("/poll")
@@ -29,13 +28,7 @@ public class PollServlet extends AuthenticatedServlet {
     Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-    OptionsAndUserVotedOptions optionsAndVotedOptions =
-        this.getOptionsAndVotedOptions(results, userId);
-    List<Option> options = optionsAndVotedOptions.getOptions();
-    List<Long> votedOptions = optionsAndVotedOptions.getVotedOptions();
-    // Sort list of options based on number of votes
-    Collections.sort(options, new OptionsComparator());
-    PollResponse pollResponse = new PollResponse(options, votedOptions, userId);
+    PollResponse pollResponse = this.buildPollResponse(results, userId);
     ServletHelper.write(response, pollResponse, "application/json");
   }
 
@@ -49,15 +42,15 @@ public class PollServlet extends AuthenticatedServlet {
   }
 
   /**
-   * Gets all options in the poll and options for which current user has voted for and returns both
-   * in the form of a OptionsAndUserVotedOptions object.
+   * Builds a PollResponse object by populating two ArrayLists, one that holds all options in a poll
+   * and the other containing the ids of options for which the user has voted.
    *
    * @param results query results
    * @param userId user id
-   * @return OptionsAndUserVotedOptions object
+   * @return PollResponse object
    */
-  private OptionsAndUserVotedOptions getOptionsAndVotedOptions(
-      PreparedQuery results, String userId) {
+  private PollResponse buildPollResponse(PreparedQuery results, String userId) {
+    // All options in a poll
     List<Option> options = new ArrayList<Option>();
     /*
      * List to keep track of options current user has voted for so that checkboxes
@@ -74,6 +67,8 @@ public class PollServlet extends AuthenticatedServlet {
         votedOptions.add(id);
       }
     }
-    return new OptionsAndUserVotedOptions(options, votedOptions);
+    // Sort list of options based on number of votes
+    Collections.sort(options, new OptionsComparator());
+    return new PollResponse(options, votedOptions, userId);
   }
 }
