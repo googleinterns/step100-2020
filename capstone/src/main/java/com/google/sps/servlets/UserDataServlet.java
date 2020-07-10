@@ -14,12 +14,17 @@
 
 package com.google.sps.servlets;
 
-import error.ErrorHandler;
+import com.google.sps.Objects.User;
+import com.google.sps.Objects.Group;
+import com.google.sps.Objects.Badge;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.EntityNotFoundException;
@@ -29,35 +34,41 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import com.google.gson.Gson;
+import error.ErrorHandler;
 
-@WebServlet("/checkNewUser")
-public class CheckNewUserServlet extends HttpServlet {
+/**
+ * Servlet to handle returning User data from the Datastore.
+ */
+@WebServlet("/user")
+public class UserDataServlet extends HttpServlet {
 
+  /**
+   * Gets User data from the Datastore and returns it.
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
-    boolean isUserNew = false;
+    User currentUser = null;
 
     if (userService.isUserLoggedIn()) {
       String userId = userService.getCurrentUser().getUserId();
-
-      // Check if user already exists in Datastore. If so, do nothing.
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       Key entityKey = KeyFactory.createKey("User", userId);
       try {
-        datastore.get(entityKey);
+        currentUser = User.fromEntity(datastore.get(entityKey));
       } catch (EntityNotFoundException e) {
-        // If the user doesn't exist in Datastore.
-        isUserNew = true;
+        ErrorHandler.sendError(response, "User not found.");
       }
     } else {
       ErrorHandler.sendError(response, "User not logged in.");
-      return;
     }
 
-    String json = String.format("{\"isUserNew\": %b}", isUserNew);
+    // Convert to json
     response.setContentType("application/json;");
-    response.getWriter().println(json);
+    response.getWriter().println(new Gson().toJson(currentUser));
   }
 }

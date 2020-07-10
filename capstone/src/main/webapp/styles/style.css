@@ -1,7 +1,4 @@
 :root {
-  /* Add custom properties/variables here. example: */
-  --fullwidth: 100%;
-
   /* Colors */
   --dark-green: #73C586;
   --light-green: #E8EED1;
@@ -12,9 +9,17 @@
   --black: #000000;
   --text-gray: #8A8686;
   --white: #FFFFFF;
+  --near-white: #FEFEFE;
   --placeholder-gray: #EEEEEE;
   --header-green: #C5D6C8;
   --badges-gray: #C4C4C4;
   --badges-background: #F5F5F7;
   --purple: #D1B3FB;
+}
+
+html, body {
+  height: 100vh;
+  margin: 0; 
+  min-height: 100vh;
+  padding: 0;
 }

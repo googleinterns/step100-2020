@@ -54,8 +54,8 @@ function afterUserSignsIn() {
     if (user.isUserNew) {
       openRegisterModal();
     } else {
-      // Redirect to group page once logged in.
-      window.location.href = 'group.html';
+      // Redirect to profile page once logged in.
+      window.location.href = 'profile.html';
     }
   });
 }
