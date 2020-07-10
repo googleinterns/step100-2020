@@ -32,27 +32,12 @@ public class EditProfileServlet extends HttpServlet {
     String email = request.getParameter("email");
     String phone = request.getParameter("phone");
     ArrayList<String> interests = getInterests(request);
-    
-    UserService userService = UserServiceFactory.getUserService();
-    String userId = userService.getCurrentUser().getUserId();
-    // not error checking because this class will extend AuthenticatedServlet 
-    // (will implement once Lucy's PR with the class is merged to master)
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Key entityKey = KeyFactory.createKey("User", userId);
-    Entity userEntity;
-    try {
-      userEntity = datastore.get(entityKey);
-    } catch (EntityNotFoundException e) {
-      ErrorHandler.sendError(response, "User not logged in.");
-      return;
-    }
     
-    User user = User.fromEntity(userEntity);
-    user.setFirstName(first);
-    user.setLastName(last);
-    user.setEmail(email);
-    user.setPhoneNumber(phone);
-    user.setInterests(interests);
+    Entity userEntity = getExistingUser(response, datastore);
+    
+    User user = getUpdatedUser(userEntity, first, last, email, phone, interests);
 
     datastore.put(user.toEntity());
   }
@@ -72,5 +57,39 @@ public class EditProfileServlet extends HttpServlet {
     interestsList.addAll(Arrays.asList(interestsArray));
 
     return interestsList;
+  }
+
+  /** 
+   * Retrieves existing user entity from datastore.
+   */
+  private Entity getExistingUser(HttpServletResponse response, DatastoreService datastore) 
+      throws IOException {
+    UserService userService = UserServiceFactory.getUserService();
+    String userId = userService.getCurrentUser().getUserId();
+    // not error checking because this class will extend AuthenticatedServlet 
+    // (will implement once Lucy's PR with the class is merged to master)
+    Key entityKey = KeyFactory.createKey("User", userId);
+    Entity userEntity;
+    try {
+      userEntity = datastore.get(entityKey);
+    } catch (EntityNotFoundException e) {
+      ErrorHandler.sendError(response, "User not found.");
+      userEntity = null;
+    }
+    return userEntity;
+  }
+
+  /**
+   * Creates updated user object to return.
+   */
+  private User getUpdatedUser(Entity entity, String first, String last, String email, String phone, 
+      ArrayList<String> interests) {
+    User user = User.fromEntity(entity);
+    user.setFirstName(first);
+    user.setLastName(last);
+    user.setEmail(email);
+    user.setPhoneNumber(phone);
+    user.setInterests(interests);
+    return user;
   }
 }
