@@ -7,8 +7,6 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -146,21 +144,8 @@ public class ChallengeServletTest {
             new ArrayList<String>(), /* users completed */
             id /* id of challenge */);
     Challenge returnedChallenge = Challenge.fromEntity(entity);
-    //    String challengeJson = new Gson().toJson(challenge);
-    //    String returnedChallengeJson = new Gson().toJson(returnedChallenge);
 
     assertEquals(returnedChallenge.getChallengeName(), challenge.getChallengeName());
-  }
-
-  /**
-   * Sets due date to midnight, 7 days from when challenge is posted.
-   *
-   * @return due date in milliseconds
-   */
-  private long getDueDate() {
-    LocalDateTime now = LocalDateTime.now();
-    LocalDateTime dueDate = now.plusDays(7).withHour(23).withMinute(59).withSecond(59).withNano(0);
-    return Timestamp.valueOf(dueDate).getTime();
   }
 
   @Test(expected = EntityNotFoundException.class)
