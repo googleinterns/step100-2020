@@ -3,6 +3,7 @@ package com.google.sps.servlets;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import com.google.sps.Objects.User;
@@ -36,10 +37,10 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 /**
- * Unit tests for {@link CreateNewUserServlet}.
+ * Unit tests for {@link UserDataServlet}.
  */
  @RunWith(JUnit4.class)
-public class CreateNewUserServletTest {
+public class UserDataServletTest {
   private static final String USER_EMAIL = "test@mctest.com";
   private static final String USER_ID = "testy-mc-test";
 
@@ -72,19 +73,20 @@ public class CreateNewUserServletTest {
   @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private DatastoreService datastore;
-  private CreateNewUserServlet createNewUserServlet;
+  private UserDataServlet userDataServlet;
 
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
+    populateDatabase(datastore);
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
-    createNewUserServlet = new CreateNewUserServlet();
+    userDataServlet = new UserDataServlet();
   }
 
   @After
@@ -94,34 +96,42 @@ public class CreateNewUserServletTest {
   }
 
   @Test
-  public void doPost_addNewUser() throws Exception {
-    when(mockRequest.getParameter("first")).thenReturn(USER_1.getFirstName());
-    when(mockRequest.getParameter("last")).thenReturn(USER_1.getLastName());
-    when(mockRequest.getParameter("phone")).thenReturn(USER_1.getPhoneNumber());
-    when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
+  public void doGet_retrieveUserData() throws Exception {
+    userDataServlet.doGet(mockRequest, mockResponse);
+    String response = responseWriter.toString();
 
-    createNewUserServlet.doPost(mockRequest, mockResponse);
-    Key userKey = KeyFactory.createKey("User", USER_ID);
-    Entity user = datastore.get(userKey);
+    String expectedResponse = new Gson().toJson(USER_1);
 
-    String jsonDs = new Gson().toJson(User.fromEntity(user));
-    String jsonCurrent = new Gson().toJson(USER_1);
+    response = response.replaceAll("\\s", "");
+    expectedResponse = expectedResponse.replaceAll("\\s", "");
     
-    assertTrue(jsonDs.equals(jsonCurrent));
+    assertEquals(response, expectedResponse); // failed :/
   }
 
-  @Test(expected = EntityNotFoundException.class)
-  public void doPost_userNotLoggedIn() throws Exception {
+  @Test
+  public void doGet_userNotLoggedIn() throws Exception {
     helper.setEnvIsLoggedIn(false);
+    userDataServlet.doGet(mockRequest, mockResponse);
+    String response = responseWriter.toString();
+    assertThat(response).contains("error");
+  }
 
-    when(mockRequest.getParameter("first")).thenReturn(USER_1.getFirstName());
-    when(mockRequest.getParameter("last")).thenReturn(USER_1.getLastName());
-    when(mockRequest.getParameter("phone")).thenReturn(USER_1.getPhoneNumber());
-    when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
+  @Test
+  public void doGet_userNotFound() throws Exception {
+    removeUserFromDatastore(datastore, USER_1);
 
-    createNewUserServlet.doPost(mockRequest, mockResponse);
+    userDataServlet.doGet(mockRequest, mockResponse);
+    String response = responseWriter.toString();
+    assertThat(response).contains("error");
+  }
 
-    Key userKey = KeyFactory.createKey("User", USER_ID);
-    datastore.get(userKey); // should trigger an EntityNotFoundException
+  private void populateDatabase(DatastoreService datastore) {
+    // Add test data.
+    datastore.put(USER_1.toEntity());
+  }
+
+  private void removeUserFromDatastore(DatastoreService datastore, User user) {
+    Key entityKey = KeyFactory.createKey("User", user.getUserId());
+    datastore.delete(entityKey);
   }
 }
