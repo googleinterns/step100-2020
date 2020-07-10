@@ -10,15 +10,28 @@
       type="text/css"
     />
     <link rel="stylesheet" href="styles/group.css"></link>
+    <link rel="stylesheet" href="styles/members.css"></link>
+    <link rel="stylesheet" href="styles/style.css"></link>
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script src="scripts/post.js"></script>
     <script src="scripts/poll.js"></script>
+    <script src="scripts/members.js"></script>
     <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
     <title>Group</title>
   </head>
 
-  <body>
-    <div class="group-container">
+  <body onload="init()">
+
+    <div id="members-container">
+        <h4 class="align-vertical">Members</h4>
+        <button class="plus-icon align-vertical" type="image" ><img class="small-icon" src="images/plus_icon.png" alt/></button>
+        <div class="scrollbox">
+          <div class="member-grid-container"></div>
+        </div>
+    </div>
+    
+    <div class="group-content">
+
       <div class="group-header">
         <div class="group-name-banner">
           <span id="group-name" class="align-vertical">The 3 Musketeers + Others</span>
@@ -38,6 +51,13 @@
         
           <button class="post-btn align-vertical" type="image" form="post-form"><img class="medium-icon" src="images/send_plane.png" alt /></button>
         </form>
+      </div>
+
+      <div id="memberProfile" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span class="close">&times;</span>
+        </div>
       </div>
         
       <div class="challenge-container">
@@ -64,14 +84,14 @@
       </div>
       
       <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
-          
+      </div>
+
+      <div class="post-feed">
+        <div id="posts-container"></div>
+      </div>
+
     </div>
         
-      <div class="post-feed">
-          <div id="posts-container"></div>
-      </div>
-    </div>
-    
     <template id="option-template">
       <div class="option-container">
         <p></p>
@@ -87,10 +107,7 @@
         <div id="num-votes" class="votes-label"></div>
       </div>
     </template>
-    
-    <script>
-      window.onload = getPollOptions();
-    </script>
+
   </body>
 </html>
   

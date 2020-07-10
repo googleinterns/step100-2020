@@ -2,6 +2,7 @@ function init() {
   loadPosts();
   getPollOptions();
   fetchBlobstoreUrlAndShowForm();
+  loadMembers();
 }
 
 let postResponse;
@@ -15,7 +16,6 @@ function loadPosts() {
     for (let i = 0; i < posts.length; i++) {
       allPostsList.appendChild(createSinglePost(posts[i], postResponse["likedPosts"]));
     }
-  }).then(() => {
     addCommentInputListener();
     addLikeButtonListener();
   });
@@ -201,7 +201,7 @@ function createCommentBox(post) {
 
 // Gets URL for uploaded image
 function fetchBlobstoreUrlAndShowForm() {
-  fetch('/post-image-blobstore').then((response) => {
+  fetch('/post-image').then((response) => {
   	return response.text();
   }).then((imageUploadUrl) => {
     const messageForm = document.getElementById('post-form');
