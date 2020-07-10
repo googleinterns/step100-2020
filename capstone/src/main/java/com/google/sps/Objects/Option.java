@@ -6,11 +6,10 @@ import java.util.List;
 import com.google.appengine.api.datastore.Entity;
 
 /**
- * Represents each option of the poll. Has text field and keeps track of users
- * who voted for each option.
+ * Represents each option of the poll. Has text field and keeps track of users who voted for each
+ * option.
  *
  * @author lucyqu
- *
  */
 public final class Option {
 
@@ -57,10 +56,21 @@ public final class Option {
     return this.votes;
   }
 
+  /**
+   * Gets the id of the option.
+   *
+   * @return id
+   */
   public long getId() {
     return this.id;
   }
 
+  /**
+   * Coverts Entity to Option.
+   *
+   * @param entity entity from database.
+   * @return Option object
+   */
   public static Option fromEntity(Entity entity) {
     long id = entity.getKey().getId();
     String text = (String) entity.getProperty("text");
@@ -68,6 +78,11 @@ public final class Option {
     return new Option(id, text, votes);
   }
 
+  /**
+   * Converts Option object to Entity.
+   *
+   * @return Entity object
+   */
   public Entity toEntity() {
     Entity optionEntity = new Entity("Option");
     long timestamp = System.currentTimeMillis();

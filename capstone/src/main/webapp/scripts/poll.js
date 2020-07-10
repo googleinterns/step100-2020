@@ -1,6 +1,6 @@
 const BAR_HEIGHT = "55";
 const BAR_WIDTH = "690";
-const TRANSITION_MILLIS = 600;
+const TRANSITION_MILLIS = 500;
 let maxVotes;
 let topChallenge = null;
 const NO_CHALLENGES =
@@ -61,22 +61,50 @@ function getChallenge() {
     .then(challengeData => {
       const weeklyChallenge = document.getElementById("weekly-challenge");
       const dueDateContainer = document.getElementById("due-date");
+      const challengeCheckbox = document.getElementsByClassName(
+        "challenge-checkbox"
+      )[0];
+      const challengeLabel = document.getElementById("challenge-label");
       if (challengeData) {
-        weeklyChallenge.innerText = challengeData["challengeName"];
-        dueDateMillis = challengeData["dueDate"];
+        setChallengeCheckboxVisibility("visible");
+        const id = challengeData["challenge"]["id"];
+        challengeCheckbox.id = id;
+        challengeLabel.setAttribute("for", id);
+        challengeCheckbox.checked = challengeData["hasUserCompleted"];
+        weeklyChallenge.innerText = challengeData["challenge"]["challengeName"];
+        dueDateMillis = challengeData["challenge"]["dueDate"];
         const dueDate = new Date(dueDateMillis).toString();
         dueDateContainer.innerText = `Due: ${dueDate}`;
+        checkWeek(dueDateMillis);
       } else {
         noChallengeText();
         updatePoll();
       }
-    })
-    .then(() => checkWeek(dueDateMillis));
+    });
 }
 
+/**
+ * Sets the visibility of the challenge checkbox.
+ */
+function setChallengeCheckboxVisibility(visibility) {
+  const challengeCheckbox = document.getElementsByClassName(
+    "challenge-checkbox"
+  )[0];
+  const challengeLabel = document.getElementById("challenge-label");
+  const markCompletedText = document.getElementById("mark-completed-text");
+
+  challengeCheckbox.style.visibility = visibility;
+  challengeLabel.style.visibility = visibility;
+  markCompletedText.style.visibility = visibility;
+}
+
+/**
+ * Displays text when there are no challenges and hides checkbox.
+ */
 function noChallengeText() {
   const weeklyChallenge = document.getElementById("weekly-challenge");
   const dueDateContainer = document.getElementById("due-date");
+  setChallengeCheckboxVisibility("hidden");
   weeklyChallenge.innerText = NO_CHALLENGES;
   dueDateContainer.innerText = "";
 }
@@ -101,7 +129,7 @@ function updatePoll() {
 }
 
 /**
- * Adds challenge to database.
+ * Adds challenge to database. If there are no poll options, display no challenge text.
  */
 function addChallengeToDb() {
   topChallenge
@@ -213,7 +241,18 @@ function renderOptionElement(option, maxVotes) {
  * @param {String} checked
  */
 function handleCheckboxCount(id, checked) {
-  fetch(`update-votes?id=${id}&checked=${checked}`, { method: "POST" }).then(
-    setTimeout(getPollOptions, TRANSITION_MILLIS)
-  );
+  fetch(`mark-checkbox?id=${id}&checked=${checked}&type=Option`, {
+    method: "POST"
+  }).then(setTimeout(getPollOptions, TRANSITION_MILLIS));
+}
+
+/**
+ * Handles challenge checkbox change.
+ * @param {String} id
+ * @param {String} checked
+ */
+function markChallenge(id, checked) {
+  fetch(`mark-checkbox?id=${id}&checked=${checked}&type=Challenge`, {
+    method: "POST"
+  });
 }
