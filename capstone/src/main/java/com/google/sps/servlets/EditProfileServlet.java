@@ -33,13 +33,7 @@ public class EditProfileServlet extends HttpServlet {
     String phone = request.getParameter("phone");
     ArrayList<String> interests = getInterests(request);
 
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    
-    Entity userEntity = getExistingUser(response, datastore);
-    
-    User user = getUpdatedUser(userEntity, first, last, email, phone, interests);
-
-    datastore.put(user.toEntity());
+    updateProfile(first, last, email, phone, interests, response);
   }
 
   /**
@@ -57,6 +51,17 @@ public class EditProfileServlet extends HttpServlet {
     interestsList.addAll(Arrays.asList(interestsArray));
 
     return interestsList;
+  }
+
+  /** 
+   * Updates a user's profile information.
+   */
+  private void updateProfile(String first, String last, String email, String phone, 
+      ArrayList<String> interests, HttpServletResponse response) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Entity userEntity = getExistingUser(response, datastore);
+    User user = getUpdatedUser(userEntity, first, last, email, phone, interests);
+    datastore.put(user.toEntity());
   }
 
   /** 
