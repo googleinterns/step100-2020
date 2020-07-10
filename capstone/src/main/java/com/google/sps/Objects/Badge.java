@@ -13,7 +13,7 @@ public final class Badge {
   public Badge(long badgeId, String challengeName, String iconUrl, long timestamp) {
     this.badgeId = badgeId;
     this.challengeName = challengeName;
-    this.icon = icon;
+    this.iconUrl = iconUrl;
     this.timestamp = timestamp;
   }
 
@@ -22,7 +22,7 @@ public final class Badge {
   }
 
   public String getIcon() {
-    return this.icon;
+    return this.iconUrl;
   }
 
   public long getTimestamp() {

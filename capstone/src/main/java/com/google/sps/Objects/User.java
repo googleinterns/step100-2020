@@ -1,6 +1,11 @@
 package com.google.sps.Objects;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
@@ -115,12 +120,11 @@ public final class User {
         ? new LinkedHashSet<>()
         : new LinkedHashSet<Long>((ArrayList<Long>) entity.getProperty("groups"));
 
-    LinkedHashSet<String> badgeIds = (entity.getProperty("badges") == null)
+    LinkedHashSet<Long> badgeIds = (entity.getProperty("badges") == null)
         ? new LinkedHashSet<>()
-        : new LinkedHashSet<String>((ArrayList<String>) entity.getProperty("badges"));
+        : new LinkedHashSet<Long>((ArrayList<Long>) entity.getProperty("badges"));
 
-    // TODO: use badgeIds to create list of badge objects
-    LinkedHashSet<Badge> badges = new LinkedHashSet<>();
+    LinkedHashSet<Badge> badges = getBadgeList(badgeIds);
 
     User user = new User(userId, firstName, lastName, email, phoneNumber, profilePic, 
                          badges, groupIds, interests);
@@ -147,7 +151,19 @@ public final class User {
   /**
    * Helper method for {@code fromEntity()}. Returns a list of badges given a list of badge ids.
    */
-  private LinkedHashSet<Badge> getBadgeList(LinkedHashSet<String> badgeIds) { 
-    
+  private static LinkedHashSet<Badge> getBadgeList(LinkedHashSet<Long> badgeIds) { 
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    LinkedHashSet<Badge> badges = new LinkedHashSet<>();
+    for (long badgeId : badgeIds) {
+      Key badgeKey = KeyFactory.createKey("Badge", badgeId);
+      Badge badge = null;
+      try { 
+        badge = Badge.fromEntity(datastore.get(badgeKey));
+      } catch(EntityNotFoundException e) {
+        // what to do here?
+      }
+      badges.add(badge);
+    }
+    return badges;
   }
 }
