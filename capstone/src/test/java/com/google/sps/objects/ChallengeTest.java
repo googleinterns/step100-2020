@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.MockitoAnnotations;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -39,6 +40,7 @@ public class ChallengeTest {
 
   @Before
   public void setUp() {
+    MockitoAnnotations.initMocks(this);
     helper.setUp();
     badge = new Badge(/* challenge name */ CHALLENGE_NAME, /* icon */ null, /* timestamp */ 234567);
     challenge =
@@ -57,11 +59,6 @@ public class ChallengeTest {
   }
 
   @Test
-  public void getDueDateTest() {
-    assert challenge.getDueDate() == DUE_DATE;
-  }
-
-  @Test
   public void getChallengeName() {
     assertEquals(challenge.getChallengeName(), CHALLENGE_NAME);
   }
@@ -73,7 +70,7 @@ public class ChallengeTest {
 
   @Test
   public void getUsersCompletedTest() {
-    assert challenge.getUsersCompleted().size() == 0;
+    assertEquals(challenge.getUsersCompleted().size(), 0);
   }
 
   @Test
@@ -83,7 +80,7 @@ public class ChallengeTest {
 
     List<String> completedUsers = challenge.getUsersCompleted();
 
-    assert completedUsers.size() == 2;
+    assertEquals(completedUsers.size(), 2);
     assertEquals(completedUsers.get(0), "1");
     assertEquals(completedUsers.get(1), "2");
   }
@@ -115,8 +112,7 @@ public class ChallengeTest {
     Challenge returnedChallenge = Challenge.fromEntity(entity);
 
     assertEquals(returnedChallenge.getChallengeName(), challengeName);
-    assert returnedChallenge.getUsersCompleted().size() == 0;
-    assert returnedChallenge.getDueDate() == DUE_DATE;
+    assertEquals(returnedChallenge.getUsersCompleted().size(), 0);
   }
 
   @Test
@@ -128,7 +124,7 @@ public class ChallengeTest {
     List<String> votes = (ArrayList<String>) entity.getProperty("votes");
 
     assertEquals(entity.getProperty("name"), CHALLENGE_NAME);
-    assert votes.size() == 0;
-    assert (long) entity.getProperty("dueDate") == DUE_DATE;
+    assertEquals(votes.size(), 0);
+    assertEquals((long) entity.getProperty("dueDate"), DUE_DATE);
   }
 }

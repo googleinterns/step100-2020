@@ -53,14 +53,14 @@ public class OptionTest {
     option.addVote("1");
     option.addVote("2");
 
-    assert option.getVotes().size() == 2;
+    assertEquals(option.getVotes().size(), 2);
     assertEquals(option.getVotes().get(0), "1");
     assertEquals(option.getVotes().get(1), "2");
   }
 
   @Test
   public void getIdTest() {
-    assert option.getId() == 100;
+    assertEquals(option.getId(), 100);
   }
 
   @Test
@@ -72,7 +72,7 @@ public class OptionTest {
     ArrayList<String> votes = (ArrayList<String>) entity.getProperty("votes");
 
     assertEquals(entity.getProperty("text"), OPTION_NAME);
-    assert votes.size() == 0;
+    assertEquals(votes.size(), 0);
   }
 
   @Test
@@ -91,7 +91,7 @@ public class OptionTest {
     List<String> returnedVotes = (ArrayList<String>) entity.getProperty("votes");
 
     assertEquals(returnedOption.getText(), OPTION_NAME);
-    assert returnedVotes.size() == 3;
+    assertEquals(returnedVotes.size(), 3);
     assertEquals(returnedVotes.get(0), "1");
     assertEquals(returnedVotes.get(1), "2");
     assertEquals(returnedVotes.get(2), "3");

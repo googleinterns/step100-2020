@@ -1,8 +1,6 @@
 package com.google.sps.servlets;
 
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.servlet.annotation.WebServlet;
@@ -17,6 +15,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.repackaged.com.google.common.collect.Iterables;
 import com.google.sps.Objects.Challenge;
+import com.google.sps.Objects.Time;
 import com.google.sps.Objects.response.ChallengeResponse;
 
 @WebServlet("challenge")
@@ -46,7 +45,8 @@ public class ChallengeServlet extends AuthenticatedServlet {
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     String challengeName = request.getParameter("name");
-    long dueDate = this.getDueDate();
+    Time time = new Time();
+    long dueDate = Challenge.getDueDate(time);
     Challenge challenge =
         new Challenge(
             challengeName,
@@ -56,16 +56,5 @@ public class ChallengeServlet extends AuthenticatedServlet {
             0 /* id */);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(challenge.toEntity());
-  }
-
-  /**
-   * Sets due date to midnight, 7 days from when challenge is posted.
-   *
-   * @return due date in milliseconds
-   */
-  private long getDueDate() {
-    LocalDateTime now = LocalDateTime.now();
-    LocalDateTime dueDate = now.plusDays(7).withHour(23).withMinute(59).withSecond(59).withNano(0);
-    return Timestamp.valueOf(dueDate).getTime();
   }
 }

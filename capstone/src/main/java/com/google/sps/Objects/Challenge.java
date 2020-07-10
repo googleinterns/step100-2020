@@ -37,15 +37,6 @@ public final class Challenge {
   }
 
   /**
-   * Gets the due date of the challenge.
-   *
-   * @return long
-   */
-  public long getDueDate() {
-    return dueDate;
-  }
-
-  /**
    * Gets the name of the challenge
    *
    * @return string
@@ -126,5 +117,14 @@ public final class Challenge {
     challengeEntity.setProperty("timestamp", System.currentTimeMillis());
     // not setting badge for now
     return challengeEntity;
+  }
+
+  /**
+   * Sets due date to midnight, 7 days from when challenge is posted.
+   *
+   * @return due date in milliseconds
+   */
+  public static long getDueDate(Time time) {
+    return time.getDueDate();
   }
 }

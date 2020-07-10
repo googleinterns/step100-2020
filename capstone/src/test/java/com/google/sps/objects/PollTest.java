@@ -35,7 +35,7 @@ public class PollTest {
 
   @Test
   public void getOptionTest() {
-    assert poll.getOptions().size() == 0;
+    assertEquals(poll.getOptions().size(), 0);
   }
 
   @Test
@@ -47,7 +47,7 @@ public class PollTest {
 
     List<Option> options = poll.getOptions();
 
-    assert options.size() == 2;
+    assertEquals(options.size(), 2);
     assertEquals(options.get(0), option);
     assertEquals(options.get(1), option2);
   }

@@ -32,7 +32,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
 import com.google.sps.Objects.Challenge;
 
 public class ChallengeServletTest {
@@ -42,6 +41,7 @@ public class ChallengeServletTest {
   private static final String NEW_CHALLENGE = "Bike 20 miles";
   private static final String CHALLENGE_NAME = "Run";
   private static final long CHALLENGE_ID = 2;
+  private static final long DUE_DATE = 12345;
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -89,21 +89,10 @@ public class ChallengeServletTest {
   private Entity createChallenge(String text) {
     Entity challengeEntity = new Entity("Challenge");
     challengeEntity.setProperty("name", text);
-    challengeEntity.setProperty("dueDate", this.getDueDate());
+    challengeEntity.setProperty("dueDate", DUE_DATE);
     challengeEntity.setProperty("votes", new ArrayList<String>());
     challengeEntity.setProperty("timestamp", System.currentTimeMillis());
     return challengeEntity;
-  }
-
-  /**
-   * Sets due date to midnight, 7 days from when challenge is posted.
-   *
-   * @return due date in milliseconds
-   */
-  private long getDueDate() {
-    LocalDateTime now = LocalDateTime.now();
-    LocalDateTime dueDate = now.plusDays(7).withHour(23).withMinute(59).withSecond(59).withNano(0);
-    return Timestamp.valueOf(dueDate).getTime();
   }
 
   @After
@@ -149,19 +138,29 @@ public class ChallengeServletTest {
     Key challengeKey = KeyFactory.createKey("Challenge", CHALLENGE_ID);
     Entity entity = datastore.get(challengeKey);
     long id = entity.getKey().getId();
-    long dueDate = this.getDueDate();
     Challenge challenge =
         new Challenge(
             NEW_CHALLENGE, /* challenge name*/
-            dueDate, /* due date */
+            DUE_DATE, /* due date */
             null, /* badge */
             new ArrayList<String>(), /* users completed */
             id /* id of challenge */);
     Challenge returnedChallenge = Challenge.fromEntity(entity);
-    String challengeJson = new Gson().toJson(challenge);
-    String returnedChallengeJson = new Gson().toJson(returnedChallenge);
+    //    String challengeJson = new Gson().toJson(challenge);
+    //    String returnedChallengeJson = new Gson().toJson(returnedChallenge);
 
-    assertEquals(challengeJson, returnedChallengeJson);
+    assertEquals(returnedChallenge.getChallengeName(), challenge.getChallengeName());
+  }
+
+  /**
+   * Sets due date to midnight, 7 days from when challenge is posted.
+   *
+   * @return due date in milliseconds
+   */
+  private long getDueDate() {
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime dueDate = now.plusDays(7).withHour(23).withMinute(59).withSecond(59).withNano(0);
+    return Timestamp.valueOf(dueDate).getTime();
   }
 
   @Test(expected = EntityNotFoundException.class)
