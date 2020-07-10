@@ -1,9 +1,4 @@
 :root {
-  --green: #73c586;
-  --light-green: #c5d6cb;
-  --yellow-green: #e8eed1;
-  --light-blue: #d1e3eb;
-  --near-white: #fcfcfc;
   --container-width: 834px;
   --gap: 30px;
 }
@@ -35,7 +30,7 @@ p {
   border-radius: 10px;
   width: 100%;
   height: 200px;
-  background: var(--yellow-green);
+  background: var(--light-green);
   margin-bottom: var(--gap);
 }
 
@@ -61,7 +56,7 @@ p {
 /* Post */
 .create-post {
   display: block;
-  background: #fcfcfc;
+  background: var(--near-white);
   border-radius: 10px;
   height: 120px;
   width: 100%;
@@ -174,7 +169,7 @@ p {
   font-weight: normal;
   font-size: 24px;
   line-height: 28px;
-  margin: 20px 20px 20px 20px;
+  margin: 20px;
 }
 
 .img-div {
@@ -302,10 +297,7 @@ p {
 
 .comment-text {
   text-align: left;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: normal;
-  font-size: 24px;
+  font: normal normal "Roboto" 24px;
   line-height: 28px;
   padding: 10px 15px;
   margin-block-end: 0;
@@ -320,10 +312,7 @@ p {
   height: 40px;
   width: 70%;
   color: var(--text-gray);
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: normal;
-  font-size: 15px;
+  font: normal normal "Roboto" 15px;
   line-height: 28px;
   padding-left: 8px;
   outline: none;
@@ -350,7 +339,6 @@ p {
 
 .mark-completed {
   float: right;
-  /* position: relative; */
   margin-right: 40px;
 }
 
@@ -454,7 +442,7 @@ input[type="checkbox"]:checked + label {
   width: 20px;
   border-top-color: transparent;
   border-right-color: transparent;
-  border-bottom-color: var(--green);
+  border-bottom-color: var(--dark-green);
   border-left-color: transparent;
   height: 20px;
 }
@@ -466,5 +454,5 @@ input[type="checkbox"]:checked + label:before {
   bottom: -3px;
   width: 100%;
   height: 15px;
-  border-left: 4px solid var(--green);
+  border-left: 4px solid var(--dark-green);
 }
