@@ -65,6 +65,8 @@ public class CreateNewUserServlet extends HttpServlet {
   private ArrayList<String> getInterests(HttpServletRequest request) {
     // Get input from the form.
     String interests = request.getParameter("interests");
+    // Trim any whitespace immediately following a comma.
+    interests = interests.replaceAll("(\\s*,\\s*)(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", ",");
 
     // Convert the input to an array list.
     String[] interestsArray = interests.split(",");

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public final class Group {
 
-  private final ArrayList<User> members;
+  private final ArrayList<String> memberIds;
   private final ArrayList<Challenge> challenges;
   private final ArrayList<Post> posts;
   private final Poll poll;
@@ -12,9 +12,9 @@ public final class Group {
   private final String headerImg;
   private final long groupId;
 
-  public Group(ArrayList<User> members, ArrayList<Challenge> challenges, ArrayList<Post> posts, 
+  public Group(ArrayList<String> memberIds, ArrayList<Challenge> challenges, ArrayList<Post> posts, 
       Poll poll, String groupName, String headerImg, long groupId) {
-    this.members = members;
+    this.memberIds = memberIds;
     this.challenges = challenges;
     this.posts = posts;
     this.poll = poll;
@@ -23,8 +23,8 @@ public final class Group {
     this.groupId = groupId;
   }
 
-  public ArrayList<User> getMembers() {
-    return members;
+  public ArrayList<String> getMemberIds() {
+    return memberIds;
   }
 
   public ArrayList<Challenge> challenges() {
@@ -55,8 +55,8 @@ public final class Group {
     this.challenges.add(newChallenge);
   }
 
-  public void addMember(User newMember) {
-    this.members.add(newMember);
+  public void addMember(String memberId) {
+    this.memberIds.add(memberId);
   }
 
   public void addPost(Post newPost) {
