@@ -6,8 +6,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
+import com.google.sps.Objects.Group;
 import com.google.sps.Objects.User;
+import com.google.sps.Objects.Challenge;
 import com.google.sps.Objects.Badge;
+import com.google.sps.Objects.response.UserGroupResponse;
 import com.google.gson.Gson;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -37,12 +40,17 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 /**
- * Unit tests for {@link UserDataServlet}.
+ * Unit tests for {@link UserGroupsServlet}.
  */
  @RunWith(JUnit4.class)
-public class UserDataServletTest {
+public class UserGroupsServletTest {
   private static final String USER_EMAIL = "test@mctest.com";
   private static final String USER_ID = "testy-mc-test";
+
+  private static final long GROUP_1_ID = 1234;
+  private static final long GROUP_2_ID = 5678;
+  private static final String GROUP_NAME = "The 3 Musketeers";
+  private static final String HEADER_IMAGE = "";
 
   // Set no eventual consistency, that way queries return all results.
   // https://cloud.google.com/appengine/docs/java/tools/localunittesting
@@ -62,18 +70,20 @@ public class UserDataServletTest {
 
   private static final ArrayList<String> INTERESTS_LIST = new ArrayList<String>( 
       Arrays.asList("Testing", "Dancing"));
+  private static final LinkedHashSet<Long> GROUPS_LIST = new LinkedHashSet<Long>( 
+      Arrays.asList(GROUP_1_ID, GROUP_2_ID));
   private static final User USER_1 = new User(USER_ID, "Test", "McTest", USER_EMAIL, 
                           /* phoneNumber= */ "123-456-7890", 
                           /* profilePic= */ "", 
                           /* badges= */ new LinkedHashSet<Badge>(), 
-                          /* groups= */ new LinkedHashSet<Long>(), 
+                          /* groups= */ GROUPS_LIST, 
                           /* interests= */ INTERESTS_LIST);
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private DatastoreService datastore;
-  private UserDataServlet userDataServlet;
+  private UserGroupsServlet userGroupsServlet;
 
   @Before
   public void setUp() throws Exception {
@@ -86,7 +96,7 @@ public class UserDataServletTest {
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
-    userDataServlet = new UserDataServlet();
+    userGroupsServlet = new UserGroupsServlet();
   }
 
   @After
@@ -96,11 +106,12 @@ public class UserDataServletTest {
   }
 
   @Test
-  public void doGet_retrieveUserData() throws Exception {
-    userDataServlet.doGet(mockRequest, mockResponse);
+  public void doGet_retrieveGroups() throws Exception {
+    userGroupsServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
 
-    String expectedResponse = new Gson().toJson(USER_1);
+    ArrayList<UserGroupResponse> expectedGroups = createExpectedGroups();
+    String expectedResponse = new Gson().toJson(expectedGroups);
 
     // remove any whitespace from JSON
     response = response.replaceAll("\\s", "");
@@ -112,16 +123,7 @@ public class UserDataServletTest {
   @Test
   public void doGet_userNotLoggedIn() throws Exception {
     helper.setEnvIsLoggedIn(false);
-    userDataServlet.doGet(mockRequest, mockResponse);
-    String response = responseWriter.toString();
-    assertThat(response).contains("error");
-  }
-
-  @Test
-  public void doGet_userNotFound() throws Exception {
-    removeUserFromDatastore(datastore, USER_1);
-
-    userDataServlet.doGet(mockRequest, mockResponse);
+    userGroupsServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
     assertThat(response).contains("error");
   }
@@ -129,10 +131,36 @@ public class UserDataServletTest {
   private void populateDatabase(DatastoreService datastore) {
     // Add test data.
     datastore.put(USER_1.toEntity());
+    Entity group1 = createGroupEntity(GROUP_1_ID);
+    Entity group2 = createGroupEntity(GROUP_2_ID);
+    datastore.put(group1);
+    datastore.put(group2);    
   }
 
   private void removeUserFromDatastore(DatastoreService datastore, User user) {
     Key entityKey = KeyFactory.createKey("User", user.getUserId());
     datastore.delete(entityKey);
+  }
+
+  /* Create a Group entity that has all information needed for a UserGroupResponse */
+  private Entity createGroupEntity(long groupId) {
+    Entity groupEntity = new Entity("Group", groupId);
+    groupEntity.setProperty("groupId", groupId);
+    groupEntity.setProperty("groupName", GROUP_NAME);
+    groupEntity.setProperty("headerImg", HEADER_IMAGE);
+    groupEntity.setProperty("challenges", new ArrayList<Challenge>());
+    return groupEntity;
+  }
+
+  /* Create a list of the expected UserGroupResponses */
+  private ArrayList<UserGroupResponse> createExpectedGroups() {
+    ArrayList<UserGroupResponse> groups = new ArrayList<>();
+    UserGroupResponse response1 = new UserGroupResponse
+        (new ArrayList<Challenge>(), GROUP_NAME, HEADER_IMAGE, GROUP_1_ID);
+    UserGroupResponse response2 = new UserGroupResponse
+        (new ArrayList<Challenge>(), GROUP_NAME, HEADER_IMAGE, GROUP_2_ID);
+    groups.add(response1);
+    groups.add(response2);
+    return groups;
   }
 }
