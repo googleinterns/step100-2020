@@ -42,10 +42,8 @@ p {
 .group-name-banner {
   background: var(--dark-green);
   display: flex;
-  /* align-content: center; */
   height: 50px;
   border-radius: 10px;
-  /* width: 100%; */
   justify-content: center;
   align-items: center;
 }
@@ -370,7 +368,7 @@ p {
 }
 
 .inner-poll-container {
-  margin: 0px 40px 100px 40px;
+  margin: 0px 40px 80px 40px;
 }
 
 .section-text {
