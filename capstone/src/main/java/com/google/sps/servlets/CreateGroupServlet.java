@@ -7,6 +7,9 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EmbeddedEntity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
@@ -17,6 +20,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import error.ErrorHandler;
 
 @WebServlet("/createGroup")
 public class CreateGroupServlet extends AuthenticatedServlet {
@@ -42,7 +46,7 @@ public class CreateGroupServlet extends AuthenticatedServlet {
     groupEntity.setProperty("memberIds", members);
     groupEntity.setProperty("challenges", new ArrayList<Long>());
     groupEntity.setProperty("posts", new ArrayList<Long>());
-    groupEntity.setProperty("options", new ArrayList<EmbeddedEntity>);    
+    groupEntity.setProperty("options", new ArrayList<EmbeddedEntity>());    
     groupEntity.setProperty("groupName", groupName);
     groupEntity.setProperty("headerImg", "");
     return groupEntity;
@@ -52,7 +56,7 @@ public class CreateGroupServlet extends AuthenticatedServlet {
    * Add group to a user's list of groups.
    */
   private void addUserToGroup(String userId, long groupId, HttpServletResponse response, 
-      DatastoreService datastore) {
+      DatastoreService datastore) throws IOException {
     Entity userEntity = getExistingUser(userId, response, datastore);
     ArrayList<Long> groups = (ArrayList<Long>) userEntity.getProperty("groups");
     groups.add(groupId);

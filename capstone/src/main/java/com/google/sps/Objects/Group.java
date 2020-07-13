@@ -36,7 +36,7 @@ public final class Group {
     return posts;
   }
 
-  public ArrayList<Options> getOptions() {
+  public ArrayList<Option> getOptions() {
     return options;
   }
 
@@ -68,16 +68,7 @@ public final class Group {
    * Creates and returns a Group object given a Group entity.
    */
   public static Group fromEntity(Entity entity) {
-    long groupId = entity.getKey().getId();
-    long timestamp = (long) entity.getProperty("timestamp");
-    String authorId = (String) entity.getProperty("authorId");
-    String postText = (String) entity.getProperty("postText");
-    String challengeName = (String) entity.getProperty("challengeName");
-    String img = (String) entity.getProperty("img");
-    HashSet<String> likes = (entity.getProperty("likes") == null) 
-      ? new HashSet<>() 
-      : new HashSet<String>((ArrayList<String>) entity.getProperty("likes"));   
-    ArrayList<Comment> comments = new ArrayList<>();
-    return new Group(postId, authorId, postText, comments, challengeName, timestamp, img, likes);
+    // TO DO - complete
+    return null;
   }
 }
