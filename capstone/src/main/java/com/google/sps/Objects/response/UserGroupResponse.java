@@ -34,7 +34,9 @@ public final class UserGroupResponse {
     String groupName = (String) entity.getProperty("groupName");
     String headerImg = (String) entity.getProperty("headerImg");
     // TODO: fix below code, won't work with Challenges as EmbeddedEntities of Groups
-    ArrayList<Challenge> challenges = (ArrayList<Challenge>) entity.getProperty("challenges");
+    ArrayList<Challenge> challenges = (entity.getProperty("challenges") == null)
+        ? new ArrayList<>()
+        : (ArrayList<Challenge>) entity.getProperty("challenges");
     UserGroupResponse response = new UserGroupResponse(challenges, groupName, headerImg, groupId);
     return response;
   }
