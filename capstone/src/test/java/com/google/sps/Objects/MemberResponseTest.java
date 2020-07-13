@@ -34,8 +34,6 @@ public class MemberResponseTest {
   private static final String CHALLENGE_NAME = "workout";
   private static final String BADGE_TIMESTAMP = "2222222";
 
-
-
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
           new LocalDatastoreServiceTestConfig()
@@ -78,7 +76,7 @@ public class MemberResponseTest {
   }
 
   @Test
-  public void getBadgesTest() {
+  public void getBadgesTest_noBadge() {
     assertEquals(memberResponse.getBadges().size(), 0);
     badge = new Badge(
       /* challenge name */ CHALLENGE_NAME, 

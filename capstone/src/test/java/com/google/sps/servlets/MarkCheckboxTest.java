@@ -1,17 +1,13 @@
 package com.google.sps.servlets;
 
-import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,25 +28,19 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.sps.Objects.Post;
-import com.google.sps.Objects.Comment;
+import com.google.sps.Objects.Challenge;
 
-public class CommentsServletTest {
-
+public class MarkCheckboxTest {
   private static final String USER_EMAIL = "test@test.com";
   private static final String USER_ID = "test";
-  private static final String AUTHOR_ID = "123123123";
-  private static final String POST_TEXT = "a great post";
-  private static final String CHALLENGE_NAME = "run 4 miles";
-  private static final String IMG = "";
-  private static final long TIMESTAMP = 123123123;
-  private static final long POST_ID = 1;
-  private static final String COMMENT_TEXT = "this is a comment";
+  private static final String CHECKBOX_ID = "1";
+  private static final String CHECKED = "true";
+  private static final String TYPE = "Challenge";
+  private static final String NEW_CHALLENGE = "Run";
+  private static final long DUE_DATE = 12345;
 
-private final LocalServiceTestHelper helper =
+  private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
               new LocalDatastoreServiceTestConfig()
                   .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
@@ -63,27 +53,11 @@ private final LocalServiceTestHelper helper =
                   ImmutableMap.of(
                       "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
-  private final Post POST_1 = new Post(
-    POST_ID, /* postId */ 
-    AUTHOR_ID, /* authorId */ 
-    POST_TEXT, /* postText */
-    new ArrayList<Comment>(), /* comments */
-    CHALLENGE_NAME, /* challengeName */
-    TIMESTAMP, /* timestamp */
-    IMG, /* img */
-    new HashSet<String>() /* likes */);
-
-  private final Comment COMMENT_1 = new Comment (
-    System.currentTimeMillis(), /* timestamp */
-    COMMENT_TEXT, /* commentText */
-    USER_ID /* userId */
-  );
-
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private DatastoreService datastore;
-  private CommentsServlet commentServlet;
+  private MarkCheckboxServlet markCheckboxServlet;
 
   @Before
   public void setUp() throws IOException {
@@ -94,7 +68,8 @@ private final LocalServiceTestHelper helper =
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
-    commentServlet = new CommentsServlet();
+
+    markCheckboxServlet = new MarkCheckboxServlet();
   }
 
   @After
@@ -102,42 +77,67 @@ private final LocalServiceTestHelper helper =
     helper.tearDown();
     responseWriter = null;
     datastore = null;
-    commentServlet = null;
-  }
-
-  private void populateDatabase(DatastoreService datastore) {
-    // Add test data.
-    datastore.put(POST_1.createPostEntity());
+    markCheckboxServlet = null;
   }
 
   @Test
-  public void doPost_addComment() throws Exception {
-    populateDatabase(datastore);
-    when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
-    when(mockRequest.getParameter("comment-text")).thenReturn(COMMENT_TEXT);
+  public void doPost_userLoggedIn_validChallenge() throws IOException, EntityNotFoundException {
+    Entity challengeEntity = this.createChallenge(NEW_CHALLENGE);
+    datastore.put(challengeEntity);
+    this.mockSetUp();
 
-    commentServlet.doPost(mockRequest, mockResponse);
+    markCheckboxServlet.doPost(mockRequest, mockResponse);
+    Key key = KeyFactory.createKey(TYPE, Long.parseLong(CHECKBOX_ID));
+    Entity entity = datastore.get(key);
+    Challenge challenge = Challenge.fromEntity(entity);
 
-    Key postKey = KeyFactory.createKey("Post", POST_ID);
-    Entity post = datastore.get(postKey);
-
-    Post returnedPost = Post.getPostEntity(post);
-    assertTrue(returnedPost.getComments().get(0).equals(COMMENT_1));
+    assert challenge.getUsersCompleted().size() == 1;
+    assertEquals(challenge.getUsersCompleted().get(0), USER_ID);
   }
 
-  //@Test(expected = EntityNotFoundException.class)
+  @Test(expected = EntityNotFoundException.class)
   public void doPost_userNotLoggedIn() throws IOException, EntityNotFoundException {
-    //helper.setEnvIsLoggedIn(false);
-    populateDatabase(datastore);
-    when(mockRequest.getParameter("id")).thenReturn(Long.toString(5));
-    when(mockRequest.getParameter("comment-text")).thenReturn(COMMENT_TEXT);
-    
-    commentServlet.doPost(mockRequest, mockResponse);
-    Key key = KeyFactory.createKey("Post", POST_ID);
+    helper.setEnvIsLoggedIn(false);
+    this.mockSetUp();
+
+    markCheckboxServlet.doPost(mockRequest, mockResponse);
+    Key key = KeyFactory.createKey(TYPE, Long.parseLong(CHECKBOX_ID));
 
     // trigger EntityNotfoundException
     Entity entity = datastore.get(key);
   }
 
-}
+  @Test
+  public void doPost_noChallenges() throws IOException, EntityNotFoundException {
+    this.mockSetUp();
 
+    markCheckboxServlet.doPost(mockRequest, mockResponse);
+    Key key = KeyFactory.createKey(TYPE, Long.parseLong(CHECKBOX_ID));
+    Entity entity = datastore.get(key);
+
+    assertNull(entity.getProperty("name"));
+    assertNull(entity.getProperty("dueDate"));
+  }
+
+  /** Mocks what is returned from query parameter. */
+  private void mockSetUp() {
+    when(mockRequest.getParameter("id")).thenReturn(CHECKBOX_ID);
+    when(mockRequest.getParameter("checked")).thenReturn(CHECKED);
+    when(mockRequest.getParameter("type")).thenReturn(TYPE);
+  }
+
+  /**
+   * Creates challenge entity.
+   *
+   * @param text challenge name
+   * @return entity
+   */
+  private Entity createChallenge(String text) {
+    Entity challengeEntity = new Entity("Challenge");
+    challengeEntity.setProperty("name", text);
+    challengeEntity.setProperty("dueDate", DUE_DATE);
+    challengeEntity.setProperty("votes", new ArrayList<String>());
+    challengeEntity.setProperty("timestamp", System.currentTimeMillis());
+    return challengeEntity;
+  }
+}

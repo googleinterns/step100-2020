@@ -3,10 +3,15 @@ package com.google.sps.servlets;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+import static com.google.sps.utils.TestUtils.assertEqualsJson;
 
+import com.google.sps.Objects.Group;
 import com.google.sps.Objects.User;
+import com.google.sps.Objects.Challenge;
 import com.google.sps.Objects.Badge;
+import com.google.sps.Objects.response.UserGroupResponse;
 import com.google.gson.Gson;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -36,12 +41,17 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 /**
- * Unit tests for {@link CreateNewUserServlet}.
+ * Unit tests for {@link UserGroupsServlet}.
  */
  @RunWith(JUnit4.class)
-public class CreateNewUserServletTest {
+public class UserGroupsServletTest {
   private static final String USER_EMAIL = "test@mctest.com";
   private static final String USER_ID = "testy-mc-test";
+
+  private static final long GROUP_1_ID = 1234;
+  private static final long GROUP_2_ID = 5678;
+  private static final String GROUP_NAME = "The 3 Musketeers";
+  private static final String HEADER_IMAGE = "";
 
   // Set no eventual consistency, that way queries return all results.
   // https://cloud.google.com/appengine/docs/java/tools/localunittesting
@@ -61,30 +71,33 @@ public class CreateNewUserServletTest {
 
   private static final ArrayList<String> INTERESTS_LIST = new ArrayList<String>( 
       Arrays.asList("Testing", "Dancing"));
+  private static final LinkedHashSet<Long> GROUPS_LIST = new LinkedHashSet<Long>( 
+      Arrays.asList(GROUP_1_ID, GROUP_2_ID));
   private static final User USER_1 = new User(USER_ID, "Test", "McTest", USER_EMAIL, 
                           /* phoneNumber= */ "123-456-7890", 
                           /* profilePic= */ "", 
                           /* badges= */ new LinkedHashSet<Badge>(), 
-                          /* groups= */ new LinkedHashSet<Long>(), 
+                          /* groups= */ GROUPS_LIST, 
                           /* interests= */ INTERESTS_LIST);
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private DatastoreService datastore;
-  private CreateNewUserServlet createNewUserServlet;
+  private UserGroupsServlet userGroupsServlet;
 
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
+    populateDatabase(datastore);
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
-    createNewUserServlet = new CreateNewUserServlet();
+    userGroupsServlet = new UserGroupsServlet();
   }
 
   @After
@@ -94,38 +107,59 @@ public class CreateNewUserServletTest {
   }
 
   @Test
-  public void doPost_addNewUser() throws Exception {
-    when(mockRequest.getParameter("first")).thenReturn(USER_1.getFirstName());
-    when(mockRequest.getParameter("last")).thenReturn(USER_1.getLastName());
-    when(mockRequest.getParameter("phone")).thenReturn(USER_1.getPhoneNumber());
-    when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
+  public void doGet_retrieveGroups() throws Exception {
+    userGroupsServlet.doGet(mockRequest, mockResponse);
+    String response = responseWriter.toString();
 
-    createNewUserServlet.doPost(mockRequest, mockResponse);
-    Key userKey = KeyFactory.createKey("User", USER_ID);
-    Entity user = datastore.get(userKey);
+    ArrayList<UserGroupResponse> expectedGroups = createExpectedGroups();
+    String expectedResponse = new Gson().toJson(expectedGroups);
 
-    String jsonDs = new Gson().toJson(User.fromEntity(user));
-    String jsonCurrent = new Gson().toJson(USER_1);
-    
-    assertTrue(jsonDs.equals(jsonCurrent));
+    assertTrue(assertEqualsJson(response, expectedResponse));
   }
 
-  @Test(expected = EntityNotFoundException.class)
-  public void doPost_userNotLoggedIn() throws Exception {
+  @Test
+  public void doGet_userNotLoggedIn() throws Exception {
     helper.setEnvIsLoggedIn(false);
 
-    when(mockRequest.getParameter("first")).thenReturn(USER_1.getFirstName());
-    when(mockRequest.getParameter("last")).thenReturn(USER_1.getLastName());
-    when(mockRequest.getParameter("phone")).thenReturn(USER_1.getPhoneNumber());
-    when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
-
-    createNewUserServlet.doPost(mockRequest, mockResponse);
-
-    Key userKey = KeyFactory.createKey("User", USER_ID);
-    datastore.get(userKey); // should trigger an EntityNotFoundException
+    userGroupsServlet.doGet(mockRequest, mockResponse);
+    String response = responseWriter.toString();
+    
+    assertThat(response).contains("error");
   }
-<<<<<<< HEAD
+
+  private void populateDatabase(DatastoreService datastore) {
+    // Add test data.
+    datastore.put(USER_1.toEntity());
+    Entity group1 = createGroupEntity(GROUP_1_ID);
+    Entity group2 = createGroupEntity(GROUP_2_ID);
+    datastore.put(group1);
+    datastore.put(group2);    
+  }
+
+  private void removeUserFromDatastore(DatastoreService datastore, User user) {
+    Key entityKey = KeyFactory.createKey("User", user.getUserId());
+    datastore.delete(entityKey);
+  }
+
+  /* Create a Group entity that has all information needed for a UserGroupResponse */
+  private Entity createGroupEntity(long groupId) {
+    Entity groupEntity = new Entity("Group", groupId);
+    groupEntity.setProperty("groupId", groupId);
+    groupEntity.setProperty("groupName", GROUP_NAME);
+    groupEntity.setProperty("headerImg", HEADER_IMAGE);
+    groupEntity.setProperty("challenges", new ArrayList<Challenge>());
+    return groupEntity;
+  }
+
+  /* Create a list of the expected UserGroupResponses */
+  private ArrayList<UserGroupResponse> createExpectedGroups() {
+    ArrayList<UserGroupResponse> groups = new ArrayList<>();
+    UserGroupResponse response1 = new UserGroupResponse
+        (new ArrayList<Challenge>(), GROUP_NAME, HEADER_IMAGE, GROUP_1_ID);
+    UserGroupResponse response2 = new UserGroupResponse
+        (new ArrayList<Challenge>(), GROUP_NAME, HEADER_IMAGE, GROUP_2_ID);
+    groups.add(response1);
+    groups.add(response2);
+    return groups;
+  }
 }
-=======
-}
->>>>>>> 72f19d8adc28c96aa1d3ded1d7fb6ecd84d02030

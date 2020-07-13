@@ -3,6 +3,7 @@ package com.google.sps.servlets;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import com.google.sps.Objects.User;
@@ -11,7 +12,6 @@ import com.google.gson.Gson;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -32,47 +32,58 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
- * Unit tests for {@link CreateNewUserServlet}.
+ * Unit tests for {@link EditProfileServlet}.
  */
  @RunWith(JUnit4.class)
-public class CreateNewUserServletTest {
-  private static final String USER_EMAIL = "test@mctest.com";
-  private static final String USER_ID = "testy-mc-test";
+public class EditProfileServletTest {
+  private static final String CURRENT_USER_EMAIL = "test@mctest.com";
+  private static final String CURRENT_USER_ID = "testy-mc-test";
+  private static final String EDIT_EMAIL = "test2@mctest.com";
+  private static final String EDIT_FIRST = "Mister";
+  private static final String EDIT_LAST = "McTest";
+  private static final String EDIT_PHONE = "808-808-8080";
+  private static final ArrayList<String> INTERESTS_LIST = new ArrayList<String>( 
+      Arrays.asList("Testing", "Dancing"));
 
-  // Set no eventual consistency, that way queries return all results.
-  // https://cloud.google.com/appengine/docs/java/tools/localunittesting
-  // #Java_Writing_High_Replication_Datastore_tests
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
             new LocalDatastoreServiceTestConfig()
                 .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
             new LocalUserServiceTestConfig())
-          .setEnvEmail(USER_EMAIL)
+          .setEnvEmail(CURRENT_USER_EMAIL)
           .setEnvIsLoggedIn(true)
           .setEnvAuthDomain("gmail.com")
           .setEnvAttributes(
               new HashMap(
                   ImmutableMap.of(
-                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+                      "com.google.appengine.api.users.UserService.user_id_key", CURRENT_USER_ID)));
 
-  private static final ArrayList<String> INTERESTS_LIST = new ArrayList<String>( 
-      Arrays.asList("Testing", "Dancing"));
-  private static final User USER_1 = new User(USER_ID, "Test", "McTest", USER_EMAIL, 
+  private static final User CURRENT_USER = new User(CURRENT_USER_ID, "Test", "McTest", 
+                          CURRENT_USER_EMAIL, 
                           /* phoneNumber= */ "123-456-7890", 
                           /* profilePic= */ "", 
                           /* badges= */ new LinkedHashSet<Badge>(), 
                           /* groups= */ new LinkedHashSet<Long>(), 
                           /* interests= */ INTERESTS_LIST);
+  
+  private static final User EDIT_USER = new User(CURRENT_USER_ID, EDIT_FIRST, EDIT_LAST, 
+                          EDIT_EMAIL, 
+                          /* phoneNumber= */ EDIT_PHONE, 
+                          /* profilePic= */ "", 
+                          /* badges= */ new LinkedHashSet<Badge>(), 
+                          /* groups= */ new LinkedHashSet<Long>(), 
+                          /* interests= */ INTERESTS_LIST);                        
+
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private DatastoreService datastore;
-  private CreateNewUserServlet createNewUserServlet;
+  private EditProfileServlet editProfileServlet;
 
   @Before
   public void setUp() throws Exception {
@@ -80,11 +91,13 @@ public class CreateNewUserServletTest {
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
+    addUserToDatastore(datastore, CURRENT_USER);
+
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
-    createNewUserServlet = new CreateNewUserServlet();
+    editProfileServlet = new EditProfileServlet();
   }
 
   @After
@@ -94,38 +107,26 @@ public class CreateNewUserServletTest {
   }
 
   @Test
-  public void doPost_addNewUser() throws Exception {
-    when(mockRequest.getParameter("first")).thenReturn(USER_1.getFirstName());
-    when(mockRequest.getParameter("last")).thenReturn(USER_1.getLastName());
-    when(mockRequest.getParameter("phone")).thenReturn(USER_1.getPhoneNumber());
+  public void doPost_editProfile() throws Exception {
+    when(mockRequest.getParameter("first")).thenReturn(EDIT_FIRST);
+    when(mockRequest.getParameter("last")).thenReturn(EDIT_LAST);
+    when(mockRequest.getParameter("email")).thenReturn(EDIT_EMAIL);    
+    when(mockRequest.getParameter("phone")).thenReturn(EDIT_PHONE);
     when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
 
-    createNewUserServlet.doPost(mockRequest, mockResponse);
-    Key userKey = KeyFactory.createKey("User", USER_ID);
+    editProfileServlet.doPost(mockRequest, mockResponse);
+    Key userKey = KeyFactory.createKey("User", CURRENT_USER_ID);
     Entity user = datastore.get(userKey);
 
-    String jsonDs = new Gson().toJson(User.fromEntity(user));
-    String jsonCurrent = new Gson().toJson(USER_1);
+    String jsonOriginal = new Gson().toJson(CURRENT_USER);
+    String jsonStored = new Gson().toJson(User.fromEntity(user));
+    String jsonExpected = new Gson().toJson(EDIT_USER);
     
-    assertTrue(jsonDs.equals(jsonCurrent));
+    assertEquals(jsonStored, jsonExpected);
+    assertFalse(jsonStored.equals(jsonOriginal));
   }
 
-  @Test(expected = EntityNotFoundException.class)
-  public void doPost_userNotLoggedIn() throws Exception {
-    helper.setEnvIsLoggedIn(false);
-
-    when(mockRequest.getParameter("first")).thenReturn(USER_1.getFirstName());
-    when(mockRequest.getParameter("last")).thenReturn(USER_1.getLastName());
-    when(mockRequest.getParameter("phone")).thenReturn(USER_1.getPhoneNumber());
-    when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
-
-    createNewUserServlet.doPost(mockRequest, mockResponse);
-
-    Key userKey = KeyFactory.createKey("User", USER_ID);
-    datastore.get(userKey); // should trigger an EntityNotFoundException
+  private void addUserToDatastore(DatastoreService datastore, User user) {
+    datastore.put(user.toEntity());
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 72f19d8adc28c96aa1d3ded1d7fb6ecd84d02030

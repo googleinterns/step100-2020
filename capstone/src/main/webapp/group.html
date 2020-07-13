@@ -30,7 +30,7 @@
         </div>
     </div>
     
-    <div class="group-content">
+    <div class="group-container">
 
       <div class="group-header">
         <div class="group-name-banner">
@@ -65,13 +65,13 @@
           Challenge of the Week
         </h2>
         <p id="weekly-challenge"></p>
-        <p id="due-date"></p>        
+        <p id="due-date"></p>
         <div class="mark-completed">
-          <span class="mark-completed-text">Mark Completed:</span>
+          <span id="mark-completed-text">Mark Completed:</span>
           <span class="check-container">
-            <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-            <label for="vehicle1"></label>
-          </span>
+              <input type="checkbox" class="challenge-checkbox" onchange="markChallenge(this.id, this.checked)">
+              <label id="challenge-label"></label>
+            </span>
         </div>
       </div>
           
