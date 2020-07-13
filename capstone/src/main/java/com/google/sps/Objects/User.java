@@ -134,7 +134,7 @@ public final class User {
   /**
    * Creates and returns a User object given a user Entity.
    */
-  public static User fromEntity(Entity entity) {
+  public static User fromEntity(Entity entity) throws EntityNotFoundException {
     String userId = (String) entity.getProperty("userId");
     String firstName = (String) entity.getProperty("firstName");
     String lastName = (String) entity.getProperty("lastName");
@@ -179,17 +179,14 @@ public final class User {
   /**
    * Helper method for {@code fromEntity()}. Returns a list of badges given a list of badge ids.
    */
-  private static LinkedHashSet<Badge> getBadgeList(LinkedHashSet<Long> badgeIds) { 
+  private static LinkedHashSet<Badge> getBadgeList(LinkedHashSet<Long> badgeIds) 
+      throws EntityNotFoundException { 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     LinkedHashSet<Badge> badges = new LinkedHashSet<>();
     for (long badgeId : badgeIds) {
       Key badgeKey = KeyFactory.createKey("Badge", badgeId);
       Entity badgeEntity = null;
-      try { 
-        badgeEntity = datastore.get(badgeKey);
-      } catch(EntityNotFoundException e) {
-        // what to do here?
-      }
+      badgeEntity = datastore.get(badgeKey);
       badges.add(Badge.fromEntity(badgeEntity));
     }
     return badges;
