@@ -54,4 +54,24 @@ public class ServletHelper {
       return null;
     }
   }
+
+  /**
+   * Retrieves the entity from the database based on id.
+   *
+   * @param response HttpServletResponse
+   * @param id of current checkbox
+   * @param datastore datastore holding all data
+   * @return Entity
+   * @throws IOException error thrown from sendError method
+   */
+  public static Entity getEntityFromId(
+      HttpServletResponse response, long id, DatastoreService datastore, String type)
+      throws IOException {
+    try {
+      return datastore.get(KeyFactory.createKey(type, id));
+    } catch (EntityNotFoundException e) {
+      ErrorHandler.sendError(response, "Cannot get entity from datastore");
+      return null;
+    }
+  }
 }

@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,14 +26,44 @@ public class ChallengeServlet extends AuthenticatedServlet {
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    //    String groupId = request.getParameter("id");
+    String groupId = request.getParameter("id");
     //    Entity groupEntity = ServletHelper.getGroupEntity(groupId, datastore, response);
-    //    List<Long> challengeIds = (ArrayList<Long>) groupEntity.getProperty("challenge");
+    //    ChallengeResponse challengeResponse =
+    //        this.buildChallengeResponse2(groupEntity, userId, datastore, response);
 
     Query query = new Query("Challenge").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
     ChallengeResponse challengeResponse = this.buildChallengeResponse(results, userId);
     ServletHelper.write(response, challengeResponse, "application/json");
+  }
+
+  private ChallengeResponse buildChallengeResponse2(
+      Entity groupEntity, String userId, DatastoreService datastore, HttpServletResponse response)
+      throws IOException {
+    List<Long> challengeIds = (ArrayList<Long>) groupEntity.getProperty("challenge");
+    Challenge challenge = this.getMostRecentChallenge(challengeIds, datastore, response);
+    boolean hasUserCompleted = challenge.getHasUserCompleted(userId);
+    return new ChallengeResponse(challenge, hasUserCompleted);
+  }
+
+  private Challenge getMostRecentChallenge(
+      List<Long> challengeIds, DatastoreService datastore, HttpServletResponse response)
+      throws IOException {
+    Challenge newestChallenge = null;
+    Entity newestChallengeEntity = null;
+    Long newestTimestamp = 0L;
+
+    for (Long challengeId : challengeIds) {
+      // get newest challenge
+      Entity entity = ServletHelper.getEntityFromId(response, challengeId, datastore, "Challenge");
+      Long timestamp = (Long) entity.getProperty("timestamp");
+      if (timestamp > newestTimestamp) {
+        newestTimestamp = timestamp;
+        newestChallengeEntity = entity;
+      }
+    }
+    newestChallenge = Challenge.fromEntity(newestChallengeEntity);
+    return newestChallenge;
   }
 
   private ChallengeResponse buildChallengeResponse(PreparedQuery results, String userId) {
