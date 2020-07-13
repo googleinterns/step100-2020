@@ -45,14 +45,14 @@ public class PostTest {
     helper.setUp();
     post = 
       new Post(
-        4324344, /* postId */ 
-        AUTHOR_ID, /* authorId */ 
-        POST_TEXT, /* postText */
-        new ArrayList<Comment>(), /* comments */
-        CHALLENGE_NAME, /* challengeName */
-        TIMESTAMP, /* timestamp */
-        IMG, /* img */
-        new HashSet<String>() /* likes */);
+        /* postId */ 4324344,
+        /* authorId */ AUTHOR_ID,
+        /* postText */ POST_TEXT,
+        /* comments */ new ArrayList<Comment>(),
+        /* challengeName */ CHALLENGE_NAME, 
+        /* timestamp */ TIMESTAMP, 
+        /* img */ IMG,
+        /* likes */ new HashSet<String>());
   }
 
   @After
@@ -90,17 +90,16 @@ public class PostTest {
     testLikes.add("user 1");
     testLikes.add("user 2");
     
-    assertEquals(post.getLikes().get(0), testLikes.get(0));
-    assertEquals(post.getLikes().get(1), testLikes.get(1));
+    assertEquals(testLikes, post.getLikes());
   }
 
   @Test
   public void addCommentTest() {
     Comment testComment1 =  
       new Comment(
-        4324344, /* userId */ 
-        "a great comment", /* commentText */ 
-        "123123123" /* userId */ );
+        /* userId */ 4324344, 
+        /* commentText */ "a great comment",
+        /* userId */ "123123123");
     Comment testComment2 = 
       new Comment(
         55555555, /* userId */ 
@@ -110,8 +109,8 @@ public class PostTest {
     post.addComment(testComment2);
 
     assertEquals(post.getComments().size(), 2);
-    //assertTrue(post.getComments().get(0).equals(testComment1));
-    //assertTrue(post.getComments().get(1).equals(testComment2));
+    assertTrue(post.getComments().get(0).equals(testComment1));
+    assertTrue(post.getComments().get(1).equals(testComment2));
   }
 
   @Test
@@ -121,8 +120,8 @@ public class PostTest {
     HashSet<String> likes = post.getLikes();
 
     assertEquals(likes.size(), 2);
-    assert likes.contains("user 1");
-    assert likes.contains("user 2");
+    assertTrue(likes.contains("user 1"));
+    assertTrue(likes.contains("user 2"));
   }
 
   @Test
@@ -135,7 +134,7 @@ public class PostTest {
     post.removeLike("test user 1");
     likes = post.getLikes();
     assertEquals(likes.size(), 1);
-    assert likes.contains("test user 2");
+    assertTrue(likes.contains("test user 2"));
 
     post.removeLike("test user 2");
     likes = post.getLikes();
