@@ -126,8 +126,8 @@ function editProfile() {
 }
 
 /** Close modal form */
-function closeModal() {
-  let modal = document.getElementById('edit-modal');
+function closeModal(type) {
+  let modal = document.getElementById(type + '-modal');
   modal.classList.toggle('show-modal');
 }
 
@@ -158,17 +158,27 @@ function saveEdits() {
     params.append('phone', phoneNumber);
     params.append('interests', interests);
 
-    // Send a POST request to the servlet which registers a new user.
+    // Send a POST request to the servlet which edits the user profile.
     fetch('/editProfile', {method: 'POST', body: params});
   }
 }
 
-/** Code to handle User joining a group */
-function joinGroup() {
-
+/** Open a modal form to let users create a group */
+function openGroupModal() {
+  let modal = document.getElementById('group-modal');
+  modal.classList.toggle('show-modal');
 }
 
-/** Code to handle User creating a group */
+/** Save user's created group to database */
 function createGroup() {
+  const groupForm = document.getElementById('create-group');
+  if (groupForm.reportValidity()) {
+    const name = document.getElementById('group-name-input').value;
+    
+    const params = new URLSearchParams();
+    params.append('groupName', name);
 
+    // Send a POST request to the servlet which creates a new group.
+    fetch('/createGroup', {method: 'POST', body: params});
+  }
 }
