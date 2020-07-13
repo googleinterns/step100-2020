@@ -125,7 +125,18 @@ public class PostTest {
   }
 
   @Test
-  public void removeLikeTest() {
+  public void removeLikeOnceTest() {
+    post.addLike("test user 1");
+    HashSet<String> likes = post.getLikes();
+    assertEquals(likes.size(), 1);
+
+    post.removeLike("test user 1");
+    likes = post.getLikes();
+    assertEquals(likes.size(), 0);
+  }
+
+  @Test
+  public void removeLikeMultipleTest() {
     post.addLike("test user 1");
     post.addLike("test user 2");
     HashSet<String> likes = post.getLikes();
@@ -135,10 +146,6 @@ public class PostTest {
     likes = post.getLikes();
     assertEquals(likes.size(), 1);
     assertTrue(likes.contains("test user 2"));
-
-    post.removeLike("test user 2");
-    likes = post.getLikes();
-    assertEquals(likes.size(), 0);
   }
 
   @Test
