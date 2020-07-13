@@ -74,7 +74,10 @@ public final class Option {
   public static Option fromEntity(Entity entity) {
     long id = entity.getKey().getId();
     String text = (String) entity.getProperty("text");
-    List<String> votes = (ArrayList<String>) entity.getProperty("votes");
+    List<String> votes =
+        (entity.getProperty("votes") == null)
+            ? new ArrayList<String>()
+            : (ArrayList<String>) entity.getProperty("votes");
     return new Option(id, text, votes);
   }
 

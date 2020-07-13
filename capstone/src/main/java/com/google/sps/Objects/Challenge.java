@@ -1,6 +1,7 @@
 package com.google.sps.Objects;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.appengine.api.datastore.Entity;
 
@@ -14,7 +15,7 @@ public final class Challenge {
   private final String challengeName;
   private final long dueDate;
   private final Badge badge;
-  private final ArrayList<String> usersCompleted;
+  private final List<String> usersCompleted;
   private final long id;
 
   /**
@@ -27,21 +28,12 @@ public final class Challenge {
    * @param id id of challenge
    */
   public Challenge(
-      String challengeName, long dueDate, Badge badge, ArrayList<String> usersCompleted, long id) {
+      String challengeName, long dueDate, Badge badge, List<String> usersCompleted, long id) {
     this.dueDate = dueDate;
     this.challengeName = challengeName;
     this.badge = badge;
     this.usersCompleted = usersCompleted;
     this.id = id;
-  }
-
-  /**
-   * Gets the due date of the challenge.
-   *
-   * @return long
-   */
-  public long getDueDate() {
-    return dueDate;
   }
 
   /**
@@ -67,7 +59,7 @@ public final class Challenge {
    *
    * @return List of user ids
    */
-  public ArrayList<String> getUsersCompleted() {
+  public List<String> getUsersCompleted() {
     return usersCompleted;
   }
 
@@ -104,7 +96,10 @@ public final class Challenge {
     String challengeName = (String) entity.getProperty("name");
     long dueDate = (long) entity.getProperty("dueDate");
     long id = entity.getKey().getId();
-    ArrayList<String> usersCompleted = (ArrayList<String>) entity.getProperty("votes");
+    List<String> usersCompleted =
+        (entity.getProperty("votes") == null)
+            ? new ArrayList<String>()
+            : (ArrayList<String>) entity.getProperty("votes");
     // setting badge as null for now
     return new Challenge(challengeName, dueDate, null, usersCompleted, id);
   }
@@ -122,5 +117,14 @@ public final class Challenge {
     challengeEntity.setProperty("timestamp", System.currentTimeMillis());
     // not setting badge for now
     return challengeEntity;
+  }
+
+  /**
+   * Sets due date to midnight, 7 days from when challenge is posted.
+   *
+   * @return due date in milliseconds
+   */
+  public static long getDueDate(Time time) {
+    return time.getDueDate();
   }
 }

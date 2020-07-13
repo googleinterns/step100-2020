@@ -28,6 +28,29 @@ public class PollServlet extends AuthenticatedServlet {
     Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
+    PollResponse pollResponse = this.buildPollResponse(results, userId);
+    ServletHelper.write(response, pollResponse, "application/json");
+  }
+
+  @Override
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    String text = request.getParameter("text");
+    Option option = new Option(0, text, new ArrayList<String>());
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(option.toEntity());
+  }
+
+  /**
+   * Builds a PollResponse object by populating two ArrayLists, one that holds all options in a poll
+   * and the other containing the ids of options for which the user has voted.
+   *
+   * @param results query results
+   * @param userId user id
+   * @return PollResponse object
+   */
+  private PollResponse buildPollResponse(PreparedQuery results, String userId) {
+    // All options in a poll
     List<Option> options = new ArrayList<Option>();
     /*
      * List to keep track of options current user has voted for so that checkboxes
@@ -46,16 +69,6 @@ public class PollServlet extends AuthenticatedServlet {
     }
     // Sort list of options based on number of votes
     Collections.sort(options, new OptionsComparator());
-    PollResponse pollResponse = new PollResponse(options, votedOptions, userId);
-    ServletHelper.write(response, pollResponse, "application/json");
-  }
-
-  @Override
-  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
-    String text = request.getParameter("text");
-    Option option = new Option(0, text, new ArrayList<String>());
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(option.toEntity());
+    return new PollResponse(options, votedOptions, userId);
   }
 }
