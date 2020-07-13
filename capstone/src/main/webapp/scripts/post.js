@@ -16,7 +16,6 @@ function loadPosts() {
     for (let i = 0; i < posts.length; i++) {
       allPostsList.appendChild(createSinglePost(posts[i], postResponse["likedPosts"]));
     }
-  }).then(() => {
     addCommentInputListener();
     addLikeButtonListener();
   });

@@ -78,12 +78,12 @@ public class PostTest {
 
   @Test 
   public void getCommentsTest() {
-    assert post.getComments().size() == 0;
+    assertEquals(post.getComments().size(), 0);
   }
 
   @Test
   public void getLikesTest() {
-    assert post.getLikes().size() == 0;
+    assertEquals(post.getLikes().size(), 0);
     post.addLike("user 1");
     post.addLike("user 2");
     HashSet<String> testLikes = new HashSet<String>();
@@ -133,26 +133,17 @@ public class PostTest {
 
     post.removeLike("test user 1");
     likes = post.getLikes();
-
     assert likes.size() == 1;
     assert likes.contains("test user 2");
 
     post.removeLike("test user 2");
     likes = post.getLikes();
-
     assert likes.size() == 0;
   }
 
   @Test
-  public void getPostEntityTest() {
-    Entity entity = new Entity("Post");
-    entity.setProperty("authorId", AUTHOR_ID);
-    entity.setProperty("timestamp", TIMESTAMP);
-    entity.setProperty("postText", POST_TEXT);
-    entity.setProperty("challengeName", CHALLENGE_NAME);
-    entity.setProperty("img", IMG);
-    entity.setProperty("likes", new ArrayList<String>());
-    entity.setProperty("comments", new ArrayList<Comment>());
+  public void getAndCreatePostEntityTest() {
+    Entity entity = post.createPostEntity();
     Post returnedPost = Post.getPostEntity(entity);
 
     assertTrue(returnedPost.equals(post));

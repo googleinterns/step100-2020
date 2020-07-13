@@ -3,6 +3,7 @@ package com.google.sps.Objects;
 import java.util.ArrayList;
 import java.util.HashSet;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EmbeddedEntity;
 
 public final class Post {
 
@@ -46,7 +47,29 @@ public final class Post {
       ? new HashSet<>() 
       : new HashSet<String>((ArrayList<String>) entity.getProperty("likes"));   
     ArrayList<Comment> comments = new ArrayList<>();
+     if (entity.getProperty("comments") != null) {
+      createCommentObjectList(comments, entity);
+    }
     return new Post(postId, authorId, postText, comments, challengeName, timestamp, img, likes);
+  }
+
+  private static void createCommentObjectList(ArrayList<Comment> comments, Entity entity) {
+    ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
+    for (EmbeddedEntity comment: commentEntitys) {
+      comments.add(Comment.getCommentEntity(comment));
+    }
+  }
+
+  public Entity createPostEntity() {
+    Entity entity = new Entity("Post");
+    entity.setProperty("authorId", this.authorId);
+    entity.setProperty("timestamp", this.timestamp);
+    entity.setProperty("postText", this.postText);
+    entity.setProperty("challengeName", this.challengeName);
+    entity.setProperty("img", this.img);
+    entity.setProperty("likes", new ArrayList<>(this.likes));
+    entity.setProperty("comments", Comment.createCommentEntities(this.comments));
+    return entity;
   }
 
   @Override 

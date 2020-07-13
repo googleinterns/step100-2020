@@ -6,7 +6,6 @@ function loadMembers() {
     for (let i = 0; i < allMembers.length; i++) {
       memberGrid.appendChild(createMemberComponents(allMembers[i]));
     }
-  }).then(() => {
     addMemberProfileListener();
   });
 }
@@ -45,7 +44,6 @@ function showMemberProfile(userId){
     modalContent.innerHTML = "<span class='close'>&times;</span>";
     addModalListeners();
     modalContent.appendChild(createMemberModal(memResponse));
-  }).then(() => {
     const modal = document.getElementById("memberProfile");
     modal.style.display = "block";
   });

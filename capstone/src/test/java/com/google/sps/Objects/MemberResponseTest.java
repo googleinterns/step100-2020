@@ -31,6 +31,10 @@ public class MemberResponseTest {
   private static final String FIRST_NAME = "Test";
   private static final String LAST_NAME = "User";
   private static final String USER_ID = "11111111";
+  private static final String CHALLENGE_NAME = "workout";
+  private static final String BADGE_TIMESTAMP = "2222222";
+
+
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -75,10 +79,13 @@ public class MemberResponseTest {
 
   @Test
   public void getBadgesTest() {
-    assert memberResponse.getBadges().size() == 0;
-    badge = new Badge(/* challenge name */ "workout", /* icon */ null, /* timestamp */ 11111111);
+    assertEquals(memberResponse.getBadges().size(), 0);
+    badge = new Badge(
+      /* challenge name */ CHALLENGE_NAME, 
+      /* icon */ null, 
+      /* timestamp */ BADGE_TIMESTAMP);
     memberResponse.getBadges().add(badge);
-    assert memberResponse.getBadges().size() == 1;
+    assertEquals(memberResponse.getBadges().size(), 1);
   }
 
   @Test

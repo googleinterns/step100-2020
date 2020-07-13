@@ -20,10 +20,13 @@ import java.io.PrintWriter;
 import com.google.sps.Objects.Post;
 import com.google.sps.Objects.Comment;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import error.ErrorHandler;
 
 @WebServlet("/post-comment")
 
 public class CommentsServlet extends HttpServlet {
+  
+  private ErrorHandler errorHandler = new ErrorHandler();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -32,6 +35,8 @@ public class CommentsServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
       userId = userService.getCurrentUser().getUserId();
+    } else {
+      errorHandler.sendError(response, "User is not logged in.");
     }
    
     // Get post id and comment text
@@ -59,6 +64,7 @@ public class CommentsServlet extends HttpServlet {
       try {
         return datastore.get(KeyFactory.createKey("Post", postId));
       } catch (EntityNotFoundException e) {
+        errorHandler.sendError(response, "Post does not exist.");
         return null;
       }
   }

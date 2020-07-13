@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import error.ErrorHandler;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -50,6 +51,9 @@ public class CheckNewUserServlet extends HttpServlet {
         // If the user doesn't exist in Datastore.
         isUserNew = true;
       }
+    } else {
+      ErrorHandler.sendError(response, "User not logged in.");
+      return;
     }
 
     String json = String.format("{\"isUserNew\": %b}", isUserNew);

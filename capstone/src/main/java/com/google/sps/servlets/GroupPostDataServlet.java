@@ -43,11 +43,7 @@ public class GroupPostDataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    String userId = "";
-    UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      userId = userService.getCurrentUser().getUserId();
-    }
+    String userId = this.getUserId(response);
 
     Query query = new Query("Post").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -56,7 +52,7 @@ public class GroupPostDataServlet extends HttpServlet {
     List<Post> posts = new ArrayList<>();
     List<Long> likedPosts = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      posts.add(postEntity(entity));
+      posts.add(Post.getPostEntity(entity));
       ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
       if (likes != null && likes.contains(userId)) {
         likedPosts.add(entity.getKey().getId());
@@ -69,62 +65,22 @@ public class GroupPostDataServlet extends HttpServlet {
     response.getWriter().println(new Gson().toJson(postsRes));
   }
 
-  public Post postEntity(Entity entity) {
-    Post userPost = Post.getPostEntity(entity);
-    // Create list of comment objects from list of comment entities 
-    if (entity.getProperty("comments") != null) {
-      createCommentObjectList(userPost.getComments(), entity);
-    }
-    return userPost;
-  }
-
-  private void createCommentObjectList(ArrayList<Comment> comments, Entity entity) {
-    ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
-    for (EmbeddedEntity comment: commentEntitys) {
-      comments.add(Comment.getCommentEntity(comment));
-    }
-  }
-
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Receives submitted post 
-    long timestamp = System.currentTimeMillis();
     String authorName = "Jane Doe";
     String postText = request.getParameter("post-input");
     String challengeName = "Challenge Name";
     String img = getUploadedFileUrl(request, "image");
-    ArrayList<String> likes = new ArrayList<>();
+    HashSet<String> likes = new HashSet<>();
     ArrayList<Comment> comments = new ArrayList<>();
 
     // Creates entity with submitted data and add to database
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(createPostEntity(timestamp, authorName, postText, challengeName, img, likes, comments));
+    Post post = new Post(0, authorName, postText, comments, challengeName, System.currentTimeMillis(), img, likes);
+    datastore.put(post.createPostEntity());
 
     // Redirect back to the HTML page.
     response.sendRedirect("/group.html");
-  }
-
-  private Entity createPostEntity(long timestamp, String authorName, 
-    String postText, String challengeName, String img, ArrayList<String> likes, ArrayList<Comment> comments) {
-    Entity taskEntity = new Entity("Post");
-    taskEntity.setProperty("authorId", authorName);
-    taskEntity.setProperty("timestamp", timestamp);
-    taskEntity.setProperty("postText", postText);
-    taskEntity.setProperty("challengeName", challengeName);
-    taskEntity.setProperty("img", img);
-    taskEntity.setProperty("likes", likes);
-    taskEntity.setProperty("comments", createCommentEntities(comments));
-    return taskEntity;
-	}
-
-  // Create list of comment entities from list of comment objects
-  private ArrayList<EmbeddedEntity> createCommentEntities(ArrayList<Comment> comments) {
-    ArrayList<EmbeddedEntity> allComments = new ArrayList<>();
-    for (Comment comment: comments) {
-      allComments.add(
-        Comment.toEntity(comment.getCommentText(), comment.getUser())
-      );
-    } 
-    return allComments;
   }
 
    /** Returns a key that points to the uploaded file, or null if the user didn't upload a file. */
@@ -140,5 +96,14 @@ public class GroupPostDataServlet extends HttpServlet {
       blobKey = blobKeys.get(0).getKeyString();
     }
     return blobKey;
+  }
+
+  private String getUserId(HttpServletResponse response) throws IOException {
+  UserService userService = UserServiceFactory.getUserService();
+    if (userService.isUserLoggedIn()) {
+      return userService.getCurrentUser().getUserId();
+    }
+    ErrorHandler.sendError(response, "User is not logged in.");
+    return "";
   }
 }
