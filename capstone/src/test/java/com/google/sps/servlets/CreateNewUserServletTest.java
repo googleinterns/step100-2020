@@ -124,8 +124,5 @@ public class CreateNewUserServletTest {
     Key userKey = KeyFactory.createKey("User", USER_ID);
     datastore.get(userKey); // should trigger an EntityNotFoundException
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 72f19d8adc28c96aa1d3ded1d7fb6ecd84d02030
+
