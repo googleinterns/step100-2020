@@ -33,30 +33,28 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 
 @WebServlet("/createNewUser")
-public class CreateNewUserServlet extends HttpServlet {
+public class CreateNewUserServlet extends AuthenticatedServlet {
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) 
+    throws IOException {
     String first = request.getParameter("first");
     String last = request.getParameter("last");
     String phone = request.getParameter("phone");
     ArrayList<String> interests = getInterests(request);
     
     UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      String userId = userService.getCurrentUser().getUserId();
-      User user = new User(userId,
-                          first,
-                          last, 
-                          /* email= */ userService.getCurrentUser().getEmail(),
-                          phone, 
-                          /* profilePic= */ "", 
-                          /* badges= */ new LinkedHashSet<Badge>(), 
-                          /* groups= */ new LinkedHashSet<Long>(), 
-                          interests);
-      datastore.put(user.toEntity());
-    }
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    User user = new User(userId,
+                        first,
+                        last, 
+                        /* email= */ userService.getCurrentUser().getEmail(),
+                        phone, 
+                        /* profilePic= */ "", 
+                        /* badges= */ new LinkedHashSet<Badge>(), 
+                        /* groups= */ new LinkedHashSet<Long>(), 
+                        interests);
+    datastore.put(user.toEntity());
   }
 
   /**
@@ -75,4 +73,8 @@ public class CreateNewUserServlet extends HttpServlet {
 
     return interestsList;
   }
+
+  @Override
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {}
 }

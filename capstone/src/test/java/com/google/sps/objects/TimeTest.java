@@ -17,7 +17,7 @@ import com.google.sps.Objects.Time;
 public class TimeTest {
 
   @Spy private Time mockedTime;
-  private static long EXPECTED_DATE = 1595044799000L;
+  private static long EXPECTED_DATE = 1595030399000L;
 
   @Before
   public void setUp() throws IOException {
