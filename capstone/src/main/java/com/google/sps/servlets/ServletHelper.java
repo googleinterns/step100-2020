@@ -4,6 +4,10 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 
 import error.ErrorHandler;
@@ -37,6 +41,17 @@ public class ServletHelper {
     } catch (IOException e) {
       // TODO Auto-generated catch block
       ErrorHandler.sendError(response, "Cannot write to response");
+    }
+  }
+
+  public static Entity getGroupEntity(
+      String groupId, DatastoreService datastore, HttpServletResponse response) throws IOException {
+    try {
+      return datastore.get(KeyFactory.createKey("Group", groupId));
+    } catch (EntityNotFoundException e) {
+      // TODO Auto-generated catch block
+      ErrorHandler.sendError(response, "Cannot get entity from datastore");
+      return null;
     }
   }
 }

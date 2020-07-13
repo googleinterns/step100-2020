@@ -5,6 +5,12 @@ let maxVotes;
 let topChallenge = null;
 const NO_CHALLENGES =
   "No current challenges. Submit a suggestion in the poll and mark checkbox for challenge to be posted. The challenge will be updated weekly based on top voted poll option.";
+let groupId;
+
+function getGroupId() {
+  groupId = window.location.search.substring(1);
+  console.log(groupId);
+}
 
 /**
  * Adds new option to poll.
@@ -24,7 +30,8 @@ function addPollOption() {
  * weekly challenge.
  */
 function getPollOptions() {
-  fetch("/poll")
+  console.log("in get poll options " + groupId);
+  fetch(`poll?id=${groupId}`)
     .then(response => response.json())
     .then(pollData => {
       const optionsContainer = document.getElementById("options-container");
@@ -54,9 +61,10 @@ function getPollOptions() {
  * updated.
  */
 function getChallenge() {
+  console.log("in get challenge " + groupId);
   //Milliseconds until challenge due date.
   let dueDateMillis = 0;
-  fetch("challenge")
+  fetch(`challenge?id=${groupId}`)
     .then(response => response.json())
     .then(challengeData => {
       const weeklyChallenge = document.getElementById("weekly-challenge");

@@ -25,8 +25,17 @@ public class ChallengeServlet extends AuthenticatedServlet {
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    //    String groupId = request.getParameter("id");
+    //    Entity groupEntity = ServletHelper.getGroupEntity(groupId, datastore, response);
+    //    List<Long> challengeIds = (ArrayList<Long>) groupEntity.getProperty("challenge");
+
     Query query = new Query("Challenge").addSort("timestamp", SortDirection.DESCENDING);
     PreparedQuery results = datastore.prepare(query);
+    ChallengeResponse challengeResponse = this.buildChallengeResponse(results, userId);
+    ServletHelper.write(response, challengeResponse, "application/json");
+  }
+
+  private ChallengeResponse buildChallengeResponse(PreparedQuery results, String userId) {
     Challenge challenge = null;
     ChallengeResponse challengeResponse = null;
     // Check if there are challenges in database
@@ -38,7 +47,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
       boolean hasUserCompleted = challenge.getHasUserCompleted(userId);
       challengeResponse = new ChallengeResponse(challenge, hasUserCompleted);
     }
-    ServletHelper.write(response, challengeResponse, "application/json");
+    return challengeResponse;
   }
 
   @Override

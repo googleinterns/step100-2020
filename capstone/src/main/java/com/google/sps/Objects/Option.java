@@ -3,6 +3,7 @@ package com.google.sps.Objects;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
 
 /**
@@ -63,6 +64,16 @@ public final class Option {
    */
   public long getId() {
     return this.id;
+  }
+
+  public static Option getOptionEntity(EmbeddedEntity entity) {
+    long id = entity.getKey().getId();
+    String text = (String) entity.getProperty("text");
+    List<String> votes =
+        (entity.getProperty("votes") == null)
+            ? new ArrayList<String>()
+            : (ArrayList<String>) entity.getProperty("votes");
+    return new Option(id, text, votes);
   }
 
   /**
