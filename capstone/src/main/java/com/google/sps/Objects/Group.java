@@ -1,5 +1,6 @@
 package com.google.sps.Objects;
 
+import com.google.appengine.api.datastore.Entity;
 import java.util.ArrayList;
 
 public final class Group {
@@ -61,5 +62,20 @@ public final class Group {
 
   public void addPost(Post newPost) {
     this.posts.add(newPost);
+  }
+
+  /**
+   * Creates and returns a Group Entity from the current Group object.
+   */
+  public Entity toEntity() {
+    Entity groupEntity = new Entity("Group");
+    groupEntity.setProperty("memberIds", memberIds);
+    groupEntity.setProperty("challenges", challenges);
+    groupEntity.setProperty("posts", posts);
+    groupEntity.setProperty("poll", poll);
+    groupEntity.setProperty("groupName", groupName);
+    groupEntity.setProperty("headerImg", headerImg);
+    groupEntity.setProperty("groupId", entity.getKey().getId());
+    return groupEntity;
   }
 }
