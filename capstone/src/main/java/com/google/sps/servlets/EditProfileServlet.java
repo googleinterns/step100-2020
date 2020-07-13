@@ -23,17 +23,18 @@ import java.util.LinkedHashSet;
 import error.ErrorHandler;
 
 @WebServlet("/editProfile")
-public class EditProfileServlet extends HttpServlet {
+public class EditProfileServlet extends AuthenticatedServlet {
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) 
+      throws IOException {
     String first = request.getParameter("first");
     String last = request.getParameter("last");
     String email = request.getParameter("email");
     String phone = request.getParameter("phone");
     ArrayList<String> interests = getInterests(request);
 
-    updateProfile(first, last, email, phone, interests, response);
+    updateProfile(userId, first, last, email, phone, interests, response);
   }
 
   /**
@@ -56,10 +57,10 @@ public class EditProfileServlet extends HttpServlet {
   /** 
    * Updates a user's profile information.
    */
-  private void updateProfile(String first, String last, String email, String phone, 
+  private void updateProfile(String userId, String first, String last, String email, String phone, 
       ArrayList<String> interests, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity userEntity = getExistingUser(response, datastore);
+    Entity userEntity = getExistingUser(userId, response, datastore);
     User user = getUpdatedUser(userEntity, first, last, email, phone, interests);
     datastore.put(user.toEntity());
   }
@@ -67,12 +68,8 @@ public class EditProfileServlet extends HttpServlet {
   /** 
    * Retrieves existing user entity from datastore.
    */
-  private Entity getExistingUser(HttpServletResponse response, DatastoreService datastore) 
-      throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
-    String userId = userService.getCurrentUser().getUserId();
-    // not error checking because this class will extend AuthenticatedServlet 
-    // (will implement once Lucy's PR with the class is merged to master)
+  private Entity getExistingUser(String userId, HttpServletResponse response, 
+      DatastoreService datastore) throws IOException {
     Key entityKey = KeyFactory.createKey("User", userId);
     Entity userEntity;
     try {
@@ -97,4 +94,8 @@ public class EditProfileServlet extends HttpServlet {
     user.setInterests(interests);
     return user;
   }
+
+  @Override
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {}
 }
