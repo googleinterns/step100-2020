@@ -32,7 +32,7 @@ public class MemberResponseTest {
   private static final String LAST_NAME = "User";
   private static final String USER_ID = "11111111";
   private static final String CHALLENGE_NAME = "workout";
-  private static final String BADGE_TIMESTAMP = "2222222";
+  private static final long BADGE_TIMESTAMP = 2222222;
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
