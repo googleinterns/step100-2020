@@ -6,6 +6,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EmbeddedEntity;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
@@ -21,22 +22,57 @@ import java.util.LinkedHashSet;
 public class CreateGroupServlet extends AuthenticatedServlet {
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     String groupName = request.getParameter("groupName");
-    
     
     ArrayList<String> members = new ArrayList<String>();
     members.add(userId);
-    Group group = new Group(members,
-                        new ArrayList<Challenge>(),
-                        new ArrayList<Post>(), 
-                        new Poll(),
-                        groupName, 
-                        /* headerImg= */ "",
-                        /* groupId=??? */);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(group.toEntity());
+    
+    // Creates Group with submitted data and add to database
+    Entity groupEntity = createGroupEntity(groupName, members);
+    addUserToGroup(userId, groupEntity.getKey().getId(), response, datastore);   
+    datastore.put(groupEntity);
+  }
+
+  private Entity createGroupEntity(String groupName, ArrayList<String> members) {
+    Entity groupEntity = new Entity("Group");
+    groupEntity.setProperty("memberIds", members);
+    groupEntity.setProperty("challenges", new ArrayList<Long>());
+    groupEntity.setProperty("posts", new ArrayList<Long>());
+    groupEntity.setProperty("options", new ArrayList<EmbeddedEntity>);    
+    groupEntity.setProperty("groupName", groupName);
+    groupEntity.setProperty("headerImg", "");
+    return groupEntity;
+	}
+
+  /**
+   * Add group to a user's list of groups.
+   */
+  private void addUserToGroup(String userId, long groupId, HttpServletResponse response, 
+      DatastoreService datastore) {
+    Entity userEntity = getExistingUser(userId, response, datastore);
+    ArrayList<Long> groups = (ArrayList<Long>) userEntity.getProperty("groups");
+    groups.add(groupId);
+    userEntity.setProperty("groups", groups);
+  }
+
+  /** 
+   * Retrieves existing user entity from datastore.
+   */
+  private Entity getExistingUser(String userId, HttpServletResponse response, 
+      DatastoreService datastore) throws IOException {
+    Key entityKey = KeyFactory.createKey("User", userId);
+    Entity userEntity;
+    try {
+      userEntity = datastore.get(entityKey);
+    } catch (EntityNotFoundException e) {
+      ErrorHandler.sendError(response, "User not found.");
+      userEntity = null;
+    }
+    return userEntity;
   }
 
   @Override
