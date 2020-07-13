@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+import static com.google.sps.utils.TestUtils.assertEqualsJson;
 
 import com.google.sps.Objects.Group;
 import com.google.sps.Objects.User;
@@ -113,18 +114,16 @@ public class UserGroupsServletTest {
     ArrayList<UserGroupResponse> expectedGroups = createExpectedGroups();
     String expectedResponse = new Gson().toJson(expectedGroups);
 
-    // remove any whitespace from JSON
-    response = response.replaceAll("\\s", "");
-    expectedResponse = expectedResponse.replaceAll("\\s", "");
-    
-    assertEquals(response, expectedResponse);
+    assertTrue(assertEqualsJson(response, expectedResponse));
   }
 
   @Test
   public void doGet_userNotLoggedIn() throws Exception {
     helper.setEnvIsLoggedIn(false);
+
     userGroupsServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
+    
     assertThat(response).contains("error");
   }
 
