@@ -40,6 +40,8 @@ import com.google.sps.Objects.response.PostResponse;
 @WebServlet("/group-post")
 public class GroupPostDataServlet extends HttpServlet {
 
+  private ErrorHandler errorHandler = new ErrorHandler();
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 

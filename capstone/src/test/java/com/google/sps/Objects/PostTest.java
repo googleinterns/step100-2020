@@ -90,7 +90,8 @@ public class PostTest {
     testLikes.add("user 1");
     testLikes.add("user 2");
     
-    assert testLikes.containsAll(post.getLikes());
+    assertEquals(post.getLikes().get(0), testLikes.get(0));
+    assertEquals(post.getLikes().get(1), testLikes.get(1));
   }
 
   @Test
@@ -108,9 +109,9 @@ public class PostTest {
     post.addComment(testComment1);
     post.addComment(testComment2);
 
-    assert post.getComments().size() == 2;
-    assertTrue(post.getComments().get(0).equals(testComment1));
-    assertTrue(post.getComments().get(1).equals(testComment2));
+    assertEquals(post.getComments().size(), 2);
+    //assertTrue(post.getComments().get(0).equals(testComment1));
+    //assertTrue(post.getComments().get(1).equals(testComment2));
   }
 
   @Test
@@ -119,7 +120,7 @@ public class PostTest {
     post.addLike("user 2");
     HashSet<String> likes = post.getLikes();
 
-    assert likes.size() == 2;
+    assertEquals(likes.size(), 2);
     assert likes.contains("user 1");
     assert likes.contains("user 2");
   }
@@ -129,16 +130,16 @@ public class PostTest {
     post.addLike("test user 1");
     post.addLike("test user 2");
     HashSet<String> likes = post.getLikes();
-    assert likes.size() == 2;
+    assertEquals(likes.size(), 2);
 
     post.removeLike("test user 1");
     likes = post.getLikes();
-    assert likes.size() == 1;
+    assertEquals(likes.size(), 1);
     assert likes.contains("test user 2");
 
     post.removeLike("test user 2");
     likes = post.getLikes();
-    assert likes.size() == 0;
+    assertEquals(likes.size(), 0);
   }
 
   @Test
