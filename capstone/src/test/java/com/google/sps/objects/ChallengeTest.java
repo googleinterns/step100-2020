@@ -55,7 +55,6 @@ public class ChallengeTest {
   @After
   public void tearDown() {
     helper.tearDown();
-    challenge = null;
   }
 
   @Test

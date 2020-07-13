@@ -40,7 +40,6 @@ public class OptionTest {
   @After
   public void tearDown() {
     helper.tearDown();
-    option = null;
   }
 
   @Test
