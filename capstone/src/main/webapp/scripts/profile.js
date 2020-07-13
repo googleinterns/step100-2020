@@ -112,13 +112,17 @@ function displayChallenges(groups) {
 function displayBadges(badges) {
   const badgeContainer = document.getElementById('badge-grid');
   for (badge of badges) {
-    let badgeElement = Document.createElement('div');
-    badgeElement.setAttribute('id', badge.badgeId);
-    badgeElement.setAttribute('class', 'badge');
-    badgeElement.setAttribute('title', badge.challengeName);
-    // TODO: Set image based off of badge.iconUrl
-    badgeContainer.appendChild(badgeElement);
+    badgeContainer.appendChild(createBadgeElement(badge));
   }
+}
+
+/** Create a badge element to display */
+function createBadgeElement(badge) {
+  let badgeElement = document.createElement('div');
+  badgeElement.setAttribute('id', badge.badgeId);
+  badgeElement.setAttribute('class', 'badge');
+  badgeElement.setAttribute('title', badge.challengeName);
+  // TODO: Set image based off of badge.iconUrl
 }
 
 /** Display the user's profile picture */

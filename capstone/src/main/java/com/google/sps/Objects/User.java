@@ -184,13 +184,13 @@ public final class User {
     LinkedHashSet<Badge> badges = new LinkedHashSet<>();
     for (long badgeId : badgeIds) {
       Key badgeKey = KeyFactory.createKey("Badge", badgeId);
-      Badge badge = null;
+      Entity badgeEntity = null;
       try { 
-        badge = Badge.fromEntity(datastore.get(badgeKey));
+        badgeEntity = datastore.get(badgeKey);
       } catch(EntityNotFoundException e) {
         // what to do here?
       }
-      badges.add(badge);
+      badges.add(Badge.fromEntity(badgeEntity));
     }
     return badges;
   }

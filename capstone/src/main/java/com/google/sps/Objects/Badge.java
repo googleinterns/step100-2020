@@ -36,7 +36,6 @@ public final class Badge {
     String icon = (String) entity.getProperty("icon");
     long timestamp = (long) entity.getProperty("timestamp");
     
-    Badge badge = new Badge(badgeId, challengeName, icon, timestamp);
-    return badge;
+    return new Badge(badgeId, challengeName, icon, timestamp);
   }
 }
