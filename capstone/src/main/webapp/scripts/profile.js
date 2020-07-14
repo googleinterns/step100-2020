@@ -50,8 +50,7 @@ function displayUserInfo(user) {
 
   getGroupData(user.groups);
   
-  displayBadges(user.badges); // maybe change this to getBadgeData?
-                              // or just add to Badge and User class
+  displayBadges(user.badges);
 }
 
 /** Display user's interests. */
@@ -107,7 +106,19 @@ function displayChallenges(groups) {
 
 /** Display the user's earned badges  */
 function displayBadges(badges) {
+  const badgeContainer = document.getElementById('badge-grid');
+  for (badge of badges) {
+    badgeContainer.appendChild(createBadgeElement(badge));
+  }
+}
 
+/** Create a badge element to display */
+function createBadgeElement(badge) {
+  let badgeElement = document.createElement('div');
+  badgeElement.setAttribute('id', badge.badgeId);
+  badgeElement.setAttribute('class', 'badge');
+  badgeElement.setAttribute('title', badge.challengeName);
+  // TODO: Set image based off of badge.iconUrl
 }
 
 /** Display the user's profile picture */
