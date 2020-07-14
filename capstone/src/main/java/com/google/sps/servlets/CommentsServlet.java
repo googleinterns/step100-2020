@@ -37,6 +37,7 @@ public class CommentsServlet extends HttpServlet {
       userId = userService.getCurrentUser().getUserId();
     } else {
       errorHandler.sendError(response, "User is not logged in.");
+      return;
     }
    
     // Get post id and comment text
@@ -45,6 +46,7 @@ public class CommentsServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity postEntity = this.getPostFromId(response, postId, datastore);
+    if (postEntity == null) return;
     ArrayList<EmbeddedEntity> allComments = (ArrayList<EmbeddedEntity>) postEntity.getProperty("comments");
 
     // Create comment entity and add to comment arraylist for post
