@@ -186,7 +186,11 @@ public final class User {
     for (long badgeId : badgeIds) {
       Key badgeKey = KeyFactory.createKey("Badge", badgeId);
       Entity badgeEntity = null;
-      badgeEntity = datastore.get(badgeKey);
+      try {
+        badgeEntity = datastore.get(badgeKey);
+      } catch (EntityNotFoundException e) {
+        throw new EntityNotFoundException(badgeKey);
+      }
       badges.add(Badge.fromEntity(badgeEntity));
     }
     return badges;

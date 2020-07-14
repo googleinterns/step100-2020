@@ -93,7 +93,7 @@ public class EditProfileServlet extends HttpServlet {
     try {
       user = User.fromEntity(entity);
     } catch (EntityNotFoundException e) {
-      ErrorHandler.sendError(response, "User entity error.");
+      ErrorHandler.sendError(response, "Unable to get " + e.getKey().getKind());
       return null;
     }
     user.setFirstName(first);
