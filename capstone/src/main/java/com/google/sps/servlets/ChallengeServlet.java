@@ -12,6 +12,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.Objects.Challenge;
+import com.google.sps.Objects.Group;
 import com.google.sps.Objects.Time;
 import com.google.sps.Objects.response.ChallengeResponse;
 
@@ -22,7 +23,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
+    Entity groupEntity = Group.getGroupEntity(request, response, datastore);
     ChallengeResponse challengeResponse =
         this.buildChallengeResponse(groupEntity, userId, datastore, response);
     ServletHelper.write(response, challengeResponse, "application/json");
@@ -94,7 +95,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
       DatastoreService datastore,
       Entity challengeEntity)
       throws IOException {
-    Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
+    Entity groupEntity = Group.getGroupEntity(request, response, datastore);
     List<Long> challenges =
         (groupEntity.getProperty("challenges") == null)
             ? new ArrayList<Long>()

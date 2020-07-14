@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.sps.Objects.Group;
 
 import error.ErrorHandler;
 
@@ -49,7 +50,7 @@ public class DeletePollOptionServlet extends HttpServlet {
   private List<Long> getOptionsList(
       HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
       throws IOException {
-    Entity entity = ServletHelper.getGroupEntity(request, response, datastore);
+    Entity entity = Group.getGroupEntity(request, response, datastore);
     List<Long> options =
         (entity.getProperty("options") == null)
             ? new ArrayList<Long>()
@@ -95,7 +96,7 @@ public class DeletePollOptionServlet extends HttpServlet {
       HttpServletResponse response,
       DatastoreService datastore)
       throws IOException {
-    Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
+    Entity groupEntity = Group.getGroupEntity(request, response, datastore);
     List<Long> options =
         (groupEntity.getProperty("options") == null)
             ? new ArrayList<Long>()

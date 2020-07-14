@@ -47,6 +47,8 @@ public class PollServletTest {
 
   private static final String USER_EMAIL = "test@test.com";
   private static final String USER_ID = "test";
+  private static final String GROUP_NAME = "Runners Club";
+  private static final Entity GROUP_ENTITY = createGroup(USER_ID, GROUP_NAME);
   private static final String NEW_OPTION = "Do a 5k";
   private static final List<String> OPTION_TEXT =
       new ArrayList<String>(Arrays.asList("Run", "Jog", "Climb a tree", "Bungee jump"));
@@ -77,11 +79,7 @@ public class PollServletTest {
     datastore = DatastoreServiceFactory.getDatastoreService();
 
     // Add test data
-    ImmutableList.Builder<Entity> option = ImmutableList.builder();
-    for (String text : OPTION_TEXT) {
-      option.add(createOption(text));
-    }
-    datastore.put(option.build());
+    datastore.put(GROUP_ENTITY);
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
@@ -99,6 +97,35 @@ public class PollServletTest {
     return optionEntity;
   }
 
+  private static Entity createGroup(String userId, String groupName) {
+    ArrayList<String> members = new ArrayList<String>();
+    members.add(userId);
+    Entity groupEntity = new Entity("Group");
+    groupEntity.setProperty("memberIds", members);
+    groupEntity.setProperty("challenges", new ArrayList<Long>());
+    groupEntity.setProperty("posts", new ArrayList<Long>());
+    groupEntity.setProperty("options", new ArrayList<Long>());
+    groupEntity.setProperty("groupName", groupName);
+    groupEntity.setProperty("headerImg", "");
+    return groupEntity;
+  }
+
+  private void addOptionsToGroup() {
+    Entity groupEntity = GROUP_ENTITY;
+    List<Long> options =
+        (groupEntity.getProperty("options") == null)
+            ? new ArrayList<Long>()
+            : (List<Long>) groupEntity.getProperty("options");
+    ImmutableList.Builder<Entity> option = ImmutableList.builder();
+    for (String text : OPTION_TEXT) {
+      Entity optionEntity = createOption(text);
+      option.add(optionEntity);
+      options.add(optionEntity.getKey().getId());
+    }
+    datastore.put(option.build());
+    datastore.put(groupEntity);
+  }
+
   @After
   public void tearDown() {
     helper.tearDown();
@@ -109,6 +136,7 @@ public class PollServletTest {
 
   @Test
   public void doGet_userLoggedIn() throws IOException {
+    this.addOptionsToGroup();
     pollServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
 

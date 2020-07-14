@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.sps.Objects.Group;
 import com.google.sps.Objects.Option;
 import com.google.sps.Objects.comparator.OptionsComparator;
 import com.google.sps.Objects.response.PollResponse;
@@ -23,7 +24,7 @@ public class PollServlet extends AuthenticatedServlet {
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
+    Entity groupEntity = Group.getGroupEntity(request, response, datastore);
     PollResponse pollResponse = this.buildPollResponse(groupEntity, userId, response, datastore);
     ServletHelper.write(response, pollResponse, "application/json");
   }
@@ -45,7 +46,7 @@ public class PollServlet extends AuthenticatedServlet {
       DatastoreService datastore,
       Entity optionEntity)
       throws IOException {
-    Entity entity = ServletHelper.getGroupEntity(request, response, datastore);
+    Entity entity = Group.getGroupEntity(request, response, datastore);
     List<Long> options =
         (entity.getProperty("options") == null)
             ? new ArrayList<Long>()

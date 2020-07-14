@@ -2,7 +2,6 @@ package com.google.sps.servlets;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -43,15 +42,6 @@ public class ServletHelper {
       // TODO Auto-generated catch block
       ErrorHandler.sendError(response, "Cannot write to response");
     }
-  }
-
-  public static Entity getGroupEntity(
-      HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
-      throws IOException {
-    String groupIdString = request.getParameter("groupId");
-    long groupId = Long.parseLong(groupIdString);
-    Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
-    return groupEntity;
   }
 
   /**
