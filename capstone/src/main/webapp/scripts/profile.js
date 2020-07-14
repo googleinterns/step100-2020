@@ -83,11 +83,10 @@ function displayGroups(groups) {
     let groupElementNode = document.importNode(groupElement.content, true);
 
     let groupContainer = groupElementNode.querySelector('.group-container');
-    // TODO: Set group-container div's id to be the groupId.
-
-    // TODO: Set url based off of groupId.
+    groupContainer.setAttribute("id", group.groupId);
+    
     let groupLink = groupElementNode.getElementById('group-page-link');
-    groupLink.href = "group.html";
+    groupLink.href = "group.html?groupId=" + group.groupId;
 
     let groupName = groupElementNode.getElementById('group-name');
     groupName.innerText = group.groupName;
