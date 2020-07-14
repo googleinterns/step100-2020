@@ -19,7 +19,7 @@ function addPollOption() {
   const text = document.getElementById("input-box").value;
   if (text.trim() === "") return;
   document.getElementById("input-box").value = "";
-  fetch(`poll?text=${text}&id=${groupId}`, { method: "POST" }).then(
+  fetch(`poll?text=${text}&groupId=${groupId}`, { method: "POST" }).then(
     setTimeout(getPollOptions, 500)
   );
 }
@@ -30,7 +30,7 @@ function addPollOption() {
  * weekly challenge.
  */
 function getPollOptions() {
-  fetch(`poll?id=${groupId}`)
+  fetch(`poll?groupId=${groupId}`)
     .then(response => response.json())
     .then(pollData => {
       const optionsContainer = document.getElementById("options-container");
@@ -63,7 +63,7 @@ function getChallenge() {
   console.log("in get challenge " + groupId);
   //Milliseconds until challenge due date.
   let dueDateMillis = 0;
-  fetch(`challenge?id=${groupId}`)
+  fetch(`challenge?groupId=${groupId}`)
     .then(response => response.json())
     .then(challengeData => {
       const weeklyChallenge = document.getElementById("weekly-challenge");
@@ -132,15 +132,20 @@ function checkWeek(dueDateMillis) {
  * Deletes the top poll option, adding that option as a new challenge to the database.
  */
 function updatePoll() {
-  fetch("delete-top-option", { method: "POST" }).then(addChallengeToDb);
+  fetch(`delete-top-option?groupId=${groupId}`, { method: "POST" }).then(
+    addChallengeToDb
+  );
 }
 
 /**
  * Adds challenge to database. If there are no poll options, display no challenge text.
  */
 function addChallengeToDb() {
+  console.log(topChallenge);
   topChallenge
-    ? fetch(`challenge?name=${topChallenge}`, { method: "POST" })
+    ? fetch(`challenge?name=${topChallenge}&groupId=${groupId}`, {
+        method: "POST"
+      })
     : noChallengeText();
 }
 

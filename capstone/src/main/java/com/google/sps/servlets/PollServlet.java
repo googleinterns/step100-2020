@@ -24,7 +24,7 @@ public class PollServlet extends AuthenticatedServlet {
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
-    PollResponse pollResponse = this.buildPollResponse2(groupEntity, userId, response, datastore);
+    PollResponse pollResponse = this.buildPollResponse(groupEntity, userId, response, datastore);
 
     //    Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
     //    PreparedQuery results = datastore.prepare(query);
@@ -40,10 +40,10 @@ public class PollServlet extends AuthenticatedServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity optionEntity = option.toEntity();
     datastore.put(optionEntity);
-    this.updateGroupData(request, response, datastore, optionEntity);
+    this.updateOptionsList(request, response, datastore, optionEntity);
   }
 
-  private void updateGroupData(
+  private void updateOptionsList(
       HttpServletRequest request,
       HttpServletResponse response,
       DatastoreService datastore,
@@ -59,7 +59,7 @@ public class PollServlet extends AuthenticatedServlet {
     datastore.put(entity);
   }
 
-  private PollResponse buildPollResponse2(
+  private PollResponse buildPollResponse(
       Entity groupEntity, String userId, HttpServletResponse response, DatastoreService datastore)
       throws IOException {
     ArrayList<Long> optionIds =
@@ -71,6 +71,8 @@ public class PollServlet extends AuthenticatedServlet {
 
     for (Long optionId : optionIds) {
       Entity entity = ServletHelper.getEntityFromId(response, optionId, datastore, "Option");
+      System.out.println("option id " + optionId);
+      System.out.println("in poll servlet, option entity " + entity);
       Option option = Option.fromEntity(entity);
       List<String> votes = option.getVotes();
       long id = option.getId();

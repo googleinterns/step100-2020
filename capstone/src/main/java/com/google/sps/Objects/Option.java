@@ -88,6 +88,7 @@ public final class Option {
    * @return Option object
    */
   public static Option fromEntity(Entity entity) {
+    System.out.println("from Entity");
     long id = entity.getKey().getId();
     String text = (String) entity.getProperty("text");
     List<String> votes =

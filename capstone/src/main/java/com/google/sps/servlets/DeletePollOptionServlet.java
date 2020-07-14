@@ -41,6 +41,7 @@ public class DeletePollOptionServlet extends HttpServlet {
     if (maxVotedId != 0) {
       try {
         this.deleteEntity(maxVotedId, results, datastore, response);
+        this.updateGroupOptionsList(maxVotedId, request, response, datastore);
       } catch (EntityNotFoundException e) {
         ErrorHandler.sendError(response, "Entity not found.");
         return;
@@ -92,7 +93,25 @@ public class DeletePollOptionServlet extends HttpServlet {
       DatastoreService datastore,
       HttpServletResponse response)
       throws EntityNotFoundException {
+    System.out.println("deleting the entity -----------");
     Key optionKey = KeyFactory.createKey("Option", maxVotedId);
     datastore.delete(optionKey);
+  }
+
+  private void updateGroupOptionsList(
+      long optionId,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      DatastoreService datastore)
+      throws IOException {
+    System.out.println("update group options list");
+    Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
+    List<Long> options =
+        (groupEntity.getProperty("options") == null)
+            ? new ArrayList<Long>()
+            : (List<Long>) groupEntity.getProperty("options");
+    options.remove(optionId);
+    groupEntity.setProperty("options", options);
+    datastore.put(groupEntity);
   }
 }

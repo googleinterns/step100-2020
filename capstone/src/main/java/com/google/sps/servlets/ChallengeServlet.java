@@ -24,7 +24,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
     ChallengeResponse challengeResponse =
-        this.buildChallengeResponse2(groupEntity, userId, datastore, response);
+        this.buildChallengeResponse(groupEntity, userId, datastore, response);
 
     //    Query query = new Query("Challenge").addSort("timestamp", SortDirection.DESCENDING);
     //    PreparedQuery results = datastore.prepare(query);
@@ -32,7 +32,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
     ServletHelper.write(response, challengeResponse, "application/json");
   }
 
-  private ChallengeResponse buildChallengeResponse2(
+  private ChallengeResponse buildChallengeResponse(
       Entity groupEntity, String userId, DatastoreService datastore, HttpServletResponse response)
       throws IOException {
     List<Long> challengeIds =
@@ -85,6 +85,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
   @Override
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
+    System.out.println("adding new challenge");
     String challengeName = request.getParameter("name");
     long dueDate = Challenge.getDueDate(new Time());
     Challenge challenge =
@@ -95,6 +96,26 @@ public class ChallengeServlet extends AuthenticatedServlet {
             new ArrayList<String>() /* users completed */,
             0 /* id */);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(challenge.toEntity());
+    Entity challengeEntity = challenge.toEntity();
+    datastore.put(challengeEntity);
+    this.updateChallengesList(request, response, datastore, challengeEntity);
+  }
+
+  private void updateChallengesList(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      DatastoreService datastore,
+      Entity challengeEntity)
+      throws IOException {
+    Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
+    List<Long> challenges =
+        (groupEntity.getProperty("challenges") == null)
+            ? new ArrayList<Long>()
+            : (List<Long>) groupEntity.getProperty("challenges");
+    challenges.add(challengeEntity.getKey().getId());
+    System.out.println("challenges to string" + challenges.toString());
+    System.out.println(groupEntity);
+    groupEntity.setProperty("challenges", challenges);
+    datastore.put(groupEntity);
   }
 }
