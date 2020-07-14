@@ -3,7 +3,6 @@ package com.google.sps.Objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
 
 /**
@@ -66,21 +65,6 @@ public final class Option {
     return this.id;
   }
 
-  public static Option getOptionEntity(EmbeddedEntity entity) {
-    System.out.println("in getOptionEntity");
-    System.out.println(entity.getKey());
-    long id = entity.getKey().getId();
-    System.out.println("id " + id);
-    String text = (String) entity.getProperty("text");
-    System.out.println("text " + text);
-    List<String> votes =
-        (entity.getProperty("votes") == null)
-            ? new ArrayList<String>()
-            : (ArrayList<String>) entity.getProperty("votes");
-    System.out.println(votes + "------------");
-    return new Option(id, text, votes);
-  }
-
   /**
    * Coverts Entity to Option.
    *
@@ -88,7 +72,6 @@ public final class Option {
    * @return Option object
    */
   public static Option fromEntity(Entity entity) {
-    System.out.println("from Entity");
     long id = entity.getKey().getId();
     String text = (String) entity.getProperty("text");
     List<String> votes =
@@ -109,17 +92,6 @@ public final class Option {
     optionEntity.setProperty("text", text);
     optionEntity.setProperty("votes", this.votes);
     optionEntity.setProperty("timestamp", timestamp);
-    return optionEntity;
-  }
-
-  public EmbeddedEntity toEmbeddedEntity() {
-    System.out.println("in to embedded entity");
-    EmbeddedEntity optionEntity = new EmbeddedEntity();
-    long timestamp = System.currentTimeMillis();
-    optionEntity.setProperty("text", text);
-    optionEntity.setProperty("votes", this.votes);
-    optionEntity.setProperty("timestamp", timestamp);
-    System.out.println("before returning option entity" + optionEntity);
     return optionEntity;
   }
 }

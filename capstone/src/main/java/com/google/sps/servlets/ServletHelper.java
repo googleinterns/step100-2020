@@ -48,10 +48,8 @@ public class ServletHelper {
   public static Entity getGroupEntity(
       HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
       throws IOException {
-    System.out.println("ServletHelper getGroupEntity");
     String groupIdString = request.getParameter("groupId");
     long groupId = Long.parseLong(groupIdString);
-    System.out.println("in getGroupEntity" + groupId);
     Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     return groupEntity;
   }

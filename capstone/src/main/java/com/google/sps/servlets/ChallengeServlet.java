@@ -25,10 +25,6 @@ public class ChallengeServlet extends AuthenticatedServlet {
     Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
     ChallengeResponse challengeResponse =
         this.buildChallengeResponse(groupEntity, userId, datastore, response);
-
-    //    Query query = new Query("Challenge").addSort("timestamp", SortDirection.DESCENDING);
-    //    PreparedQuery results = datastore.prepare(query);
-    //    ChallengeResponse challengeResponse = this.buildChallengeResponse(results, userId);
     ServletHelper.write(response, challengeResponse, "application/json");
   }
 
@@ -63,29 +59,20 @@ public class ChallengeServlet extends AuthenticatedServlet {
         newestChallengeEntity = entity;
       }
     }
+    if (newestChallengeEntity == null) {
+      return null;
+    }
+    // If the newest challenge's due date already passed
+    if ((long) newestChallengeEntity.getProperty("dueDate") < System.currentTimeMillis()) {
+      return null;
+    }
     newestChallenge = Challenge.fromEntity(newestChallengeEntity);
     return newestChallenge;
   }
 
-  //  private ChallengeResponse buildChallengeResponse(PreparedQuery results, String userId) {
-  //    Challenge challenge = null;
-  //    ChallengeResponse challengeResponse = null;
-  //    // Check if there are challenges in database
-  //    if (Iterables.size(results.asIterable()) > 0) {
-  //      // Get most recent challenge in database
-  //      Entity entity = results.asIterable().iterator().next();
-  //      challenge = Challenge.fromEntity(entity);
-  //      // Gets whether current user has completed challenge
-  //      boolean hasUserCompleted = challenge.getHasUserCompleted(userId);
-  //      challengeResponse = new ChallengeResponse(challenge, hasUserCompleted);
-  //    }
-  //    return challengeResponse;
-  //  }
-
   @Override
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    System.out.println("adding new challenge");
     String challengeName = request.getParameter("name");
     long dueDate = Challenge.getDueDate(new Time());
     Challenge challenge =
@@ -113,8 +100,6 @@ public class ChallengeServlet extends AuthenticatedServlet {
             ? new ArrayList<Long>()
             : (List<Long>) groupEntity.getProperty("challenges");
     challenges.add(challengeEntity.getKey().getId());
-    System.out.println("challenges to string" + challenges.toString());
-    System.out.println(groupEntity);
     groupEntity.setProperty("challenges", challenges);
     datastore.put(groupEntity);
   }

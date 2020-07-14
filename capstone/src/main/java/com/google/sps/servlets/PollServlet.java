@@ -25,10 +25,6 @@ public class PollServlet extends AuthenticatedServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
     PollResponse pollResponse = this.buildPollResponse(groupEntity, userId, response, datastore);
-
-    //    Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
-    //    PreparedQuery results = datastore.prepare(query);
-    //    PollResponse pollResponse = this.buildPollResponse(results, userId);
     ServletHelper.write(response, pollResponse, "application/json");
   }
 
@@ -71,8 +67,6 @@ public class PollServlet extends AuthenticatedServlet {
 
     for (Long optionId : optionIds) {
       Entity entity = ServletHelper.getEntityFromId(response, optionId, datastore, "Option");
-      System.out.println("option id " + optionId);
-      System.out.println("in poll servlet, option entity " + entity);
       Option option = Option.fromEntity(entity);
       List<String> votes = option.getVotes();
       long id = option.getId();
@@ -86,36 +80,4 @@ public class PollServlet extends AuthenticatedServlet {
     Collections.sort(options, new OptionsComparator());
     return new PollResponse(options, votedOptions, userId);
   }
-
-  //  /**
-  //   * Builds a PollResponse object by populating two ArrayLists, one that holds all options in a
-  // poll
-  //   * and the other containing the ids of options for which the user has voted.
-  //   *
-  //   * @param results query results
-  //   * @param userId user id
-  //   * @return PollResponse object
-  //   */
-  //  private PollResponse buildPollResponse(PreparedQuery results, String userId) {
-  //    // All options in a poll
-  //    List<Option> options = new ArrayList<Option>();
-  //    /*
-  //     * List to keep track of options current user has voted for so that checkboxes
-  //     * can be marked as checked on frontend side
-  //     */
-  //    List<Long> votedOptions = new ArrayList<Long>();
-  //    for (Entity entity : results.asIterable()) {
-  //      Option option = Option.fromEntity(entity);
-  //      List<String> votes = option.getVotes();
-  //      long id = option.getId();
-  //      options.add(option);
-  //      // If current user voted for option, add to list of voted options
-  //      if (votes != null && votes.contains(userId)) {
-  //        votedOptions.add(id);
-  //      }
-  //    }
-  //    // Sort list of options based on number of votes
-  //    Collections.sort(options, new OptionsComparator());
-  //    return new PollResponse(options, votedOptions, userId);
-  //  }
 }
