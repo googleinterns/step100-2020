@@ -150,8 +150,8 @@ public class PostTest {
 
   @Test
   public void getAndCreatePostEntityTest() {
-    Entity entity = post.createPostEntity();
-    Post returnedPost = Post.getPostEntity(entity);
+    Entity entity = post.toEntity();
+    Post returnedPost = Post.fromEntity(entity);
 
     assertTrue(returnedPost.equals(post));
   }

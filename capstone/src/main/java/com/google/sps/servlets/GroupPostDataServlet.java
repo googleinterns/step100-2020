@@ -53,7 +53,7 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
     List<Post> posts = new ArrayList<>();
     List<Long> likedPosts = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      posts.add(Post.getPostEntity(entity));
+      posts.add(Post.fromEntity(entity));
       ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
       if (likes != null && likes.contains(userId)) {
         likedPosts.add(entity.getKey().getId());
@@ -78,7 +78,7 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
     // Creates entity with submitted data and add to database
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Post post = new Post(0, authorName, postText, comments, challengeName, System.currentTimeMillis(), img, likes);
-    datastore.put(post.createPostEntity());
+    datastore.put(post.toEntity());
 
     // Redirect back to the HTML page.
     response.sendRedirect("/group.html");
