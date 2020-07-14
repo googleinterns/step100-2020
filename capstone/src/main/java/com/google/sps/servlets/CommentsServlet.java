@@ -24,20 +24,12 @@ import error.ErrorHandler;
 
 @WebServlet("/post-comment")
 
-public class CommentsServlet extends HttpServlet {
+public class CommentsServlet extends AuthenticatedServlet  {
   
   private ErrorHandler errorHandler = new ErrorHandler();
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    String userId = "";
-    UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      userId = userService.getCurrentUser().getUserId();
-    } else {
-      errorHandler.sendError(response, "User is not logged in.");
-    }
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
    
     // Get post id and comment text
     Long postId = Long.parseLong(request.getParameter("id"));
@@ -68,4 +60,8 @@ public class CommentsServlet extends HttpServlet {
         return null;
       }
   }
+
+  @Override
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {}
 }

@@ -39,14 +39,12 @@ import com.google.sps.Objects.response.PostResponse;
 import error.ErrorHandler;
 
 @WebServlet("/group-post")
-public class GroupPostDataServlet extends HttpServlet {
+public class GroupPostDataServlet extends AuthenticatedServlet {
 
   private ErrorHandler errorHandler = new ErrorHandler();
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    String userId = this.getUserId(response);
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     Query query = new Query("Post").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -68,7 +66,7 @@ public class GroupPostDataServlet extends HttpServlet {
     response.getWriter().println(new Gson().toJson(postsRes));
   }
 
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Receives submitted post 
     String authorName = "Jane Doe";
     String postText = request.getParameter("post-input");
@@ -99,14 +97,5 @@ public class GroupPostDataServlet extends HttpServlet {
       blobKey = blobKeys.get(0).getKeyString();
     }
     return blobKey;
-  }
-
-  private String getUserId(HttpServletResponse response) throws IOException {
-  UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      return userService.getCurrentUser().getUserId();
-    }
-    ErrorHandler.sendError(response, "User is not logged in.");
-    return "";
   }
 }
