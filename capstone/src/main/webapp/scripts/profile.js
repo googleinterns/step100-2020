@@ -80,19 +80,15 @@ function displayGroups(groups) {
   const groupsContainer = document.getElementById("groups-container");
   const groupElement = document.getElementById("group-template");
 
-  // Hard coded group for now, will remove once we support users joining different groups
-  let groupElementNode = document.importNode(groupElement.content, true);
-  let groupLink = groupElementNode.getElementById('group-page-link');
-  groupLink.href = "group.html";
-  let groupName = groupElementNode.getElementById('group-name');
-  groupName.innerText = "Group Name";
-  groupsContainer.appendChild(groupElementNode);
-
   for (group of groups) {
     let groupElementNode = document.importNode(groupElement.content, true);
 
     let groupContainer = groupElementNode.querySelector('.group-container');
     // TODO: Set group-container div's id to be the groupId.
+
+    // TODO: Set url based off of groupId.
+    let groupLink = groupElementNode.getElementById('group-page-link');
+    groupLink.href = "group.html";
 
     let groupName = groupElementNode.getElementById('group-name');
     groupName.innerText = group.groupName;

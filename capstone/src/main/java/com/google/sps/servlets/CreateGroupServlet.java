@@ -37,8 +37,8 @@ public class CreateGroupServlet extends AuthenticatedServlet {
     
     // Creates Group with submitted data and add to database
     Entity groupEntity = createGroupEntity(groupName, members);
-    addUserToGroup(userId, groupEntity.getKey().getId(), response, datastore);   
     datastore.put(groupEntity);
+    addUserToGroup(userId, groupEntity.getKey().getId(), response, datastore);   
   }
 
   private Entity createGroupEntity(String groupName, ArrayList<String> members) {
@@ -58,9 +58,14 @@ public class CreateGroupServlet extends AuthenticatedServlet {
   private void addUserToGroup(String userId, long groupId, HttpServletResponse response, 
       DatastoreService datastore) throws IOException {
     Entity userEntity = getExistingUser(userId, response, datastore);
-    ArrayList<Long> groups = (ArrayList<Long>) userEntity.getProperty("groups");
+
+    ArrayList<Long> groups = (userEntity.getProperty("groups") == null)
+        ? new ArrayList<Long>()
+       : (ArrayList<Long>) userEntity.getProperty("groups");
     groups.add(groupId);
     userEntity.setProperty("groups", groups);
+
+    datastore.put(userEntity);
   }
 
   /** 
