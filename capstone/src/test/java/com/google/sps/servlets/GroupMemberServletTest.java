@@ -35,20 +35,17 @@ import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
-import com.google.sps.Objects.Post;
-import com.google.sps.Objects.Comment;
+import com.google.sps.Objects.User;
+import com.google.sps.Objects.Challenge;
 
-public class UpdateLikesServletTest {
+public class GroupMemberServletTest {
 
   private static final String USER_EMAIL = "test@test.com";
   private static final String USER_ID = "test";
-  private static final String AUTHOR_ID = "123123123";
-  private static final String POST_TEXT = "a great post";
-  private static final String CHALLENGE_NAME = "run 4 miles";
-  private static final String IMG = "";
-  private static final long TIMESTAMP = 123123123;
-  private static final long POST_ID = 1;
-
+  private static final long GROUP_1_ID = 1234;
+  private static final String GROUP_NAME = "The 3 Musketeers";
+  private static final String HEADER_IMAGE = "";
+ 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
               new LocalDatastoreServiceTestConfig()
@@ -62,21 +59,11 @@ public class UpdateLikesServletTest {
                   ImmutableMap.of(
                       "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
-  private final Post POST_1 = new Post(
-    POST_ID, /* postId */ 
-    AUTHOR_ID, /* authorId */ 
-    POST_TEXT, /* postText */
-    new ArrayList<Comment>(), /* comments */
-    CHALLENGE_NAME, /* challengeName */
-    TIMESTAMP, /* timestamp */
-    IMG, /* img */
-    new HashSet<String>() /* likes */);
-
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private DatastoreService datastore;
-  private UpdateLikesServlet updateLikesServlet;
+  private GroupMemberServlet groupMemberServlet;
 
   @Before
   public void setUp() throws IOException {
@@ -87,7 +74,7 @@ public class UpdateLikesServletTest {
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
-    updateLikesServlet = new UpdateLikesServlet();
+    groupMemberServlet = new GroupMemberServlet();
   }
 
   @After
@@ -95,16 +82,32 @@ public class UpdateLikesServletTest {
     helper.tearDown();
     responseWriter = null;
     datastore = null;
-    updateLikesServlet = null;
+    groupMemberServlet = null;
+  }
+
+   /* Create a Group entity */
+  private Entity createGroupEntity(long groupId) {
+    Entity groupEntity = new Entity("Group", groupId);
+    groupEntity.setProperty("groupId", groupId);
+    groupEntity.setProperty("groupName", GROUP_NAME);
+    groupEntity.setProperty("headerImg", HEADER_IMAGE);
+    groupEntity.setProperty("members", new ArrayList<String>());
+    groupEntity.setProperty("challenges", new ArrayList<Challenge>());
+    return groupEntity;
+  }
+
+  private void populateDatabase(DatastoreService datastore) {
+    // Add test data.
+    Entity group1 = createGroupEntity(GROUP_1_ID);
+    datastore.put(group1);
   }
 
   @Test
   public void doPost_userNotLoggedIn() throws IOException, EntityNotFoundException {
     helper.setEnvIsLoggedIn(false);
-    when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
-    when(mockRequest.getParameter("liked")).thenReturn("true");
+    when(mockRequest.getParameter("groupId")).thenReturn(Long.toString(GROUP_1_ID));
 
-    updateLikesServlet.doPost(mockRequest, mockResponse);
+    groupMemberServlet.doPost(mockRequest, mockResponse);
     String response = responseWriter.toString();
     assertTrue(response.contains("Oops an error happened!"));
   }
@@ -112,55 +115,21 @@ public class UpdateLikesServletTest {
   @Test
   public void doPost_invalidPost() throws IOException, EntityNotFoundException {
     populateDatabase(datastore);
-    when(mockRequest.getParameter("id")).thenReturn(Long.toString(5));
-    when(mockRequest.getParameter("liked")).thenReturn("true");
+    when(mockRequest.getParameter("groupId")).thenReturn("1122");
 
-    updateLikesServlet.doPost(mockRequest, mockResponse);
+    groupMemberServlet.doPost(mockRequest, mockResponse);
     String response = responseWriter.toString();
     assertThat(response).contains("error");
   }
 
-  private void populateDatabase(DatastoreService datastore) {
-    // Add test data.
-    datastore.put(POST_1.createPostEntity());
-  }
+  //TODO: implement group member tests 
+  @Test
+  public void doPost_addGroupMember() throws IOException, EntityNotFoundException {}
 
   @Test
-  public void doPost_addLike() throws Exception {
-    populateDatabase(datastore);
-    when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
-    when(mockRequest.getParameter("liked")).thenReturn("true");
-
-    updateLikesServlet.doPost(mockRequest, mockResponse);
-
-    Key postKey = KeyFactory.createKey("Post", POST_ID);
-    Entity post = datastore.get(postKey);
-
-    POST_1.getLikes().add(USER_ID);
-
-    String jsonOriginal = new Gson().toJson(POST_1);
-    String jsonStored = new Gson().toJson(Post.getPostEntity(post));
-    assertEquals(jsonOriginal, jsonStored);
-  }
+  public void doGet_invalidMember() throws IOException, EntityNotFoundException {}
 
   @Test
-  public void doPost_removeLike() throws Exception {
-    POST_1.getLikes().add(USER_ID);
-    POST_1.getLikes().add("test 2");
-    populateDatabase(datastore);
-
-    when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
-    when(mockRequest.getParameter("liked")).thenReturn("false");
-
-    updateLikesServlet.doPost(mockRequest, mockResponse);
-
-    Key postKey = KeyFactory.createKey("Post", POST_ID);
-    Entity post = datastore.get(postKey);
-
-    POST_1.getLikes().remove(USER_ID);
-
-    String jsonOriginal = new Gson().toJson(POST_1);
-    String jsonStored = new Gson().toJson(Post.getPostEntity(post));
-    assertEquals(jsonOriginal, jsonStored);
-  }
+  public void doGet_validMember() throws IOException, EntityNotFoundException {}
 }
+

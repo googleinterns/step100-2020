@@ -43,7 +43,6 @@ public class AllGroupMembersServletTest {
   private static final String USER_EMAIL = "test@test.com";
   private static final String USER_ID = "test";
 
-
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
               new LocalDatastoreServiceTestConfig()

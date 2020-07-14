@@ -47,7 +47,7 @@ public class GroupPostDataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     String userId = this.getUserId(response);
-
+    if (userId.equals("")) return;
     Query query = new Query("Post").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);

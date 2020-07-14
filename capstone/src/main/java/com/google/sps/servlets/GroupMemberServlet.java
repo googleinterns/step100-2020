@@ -29,10 +29,10 @@ public class GroupMemberServlet extends HttpServlet {
     
     String userId = this.getUserId(response);
     Long groupId = Long.parseLong(request.getParameter("groupId"));
-
+    
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity group = this.getGroupFromId(response, groupId, datastore);
-    if (group != null) {
+    if (group != null && !userId.equals("")) {
       ArrayList<String> members = 
         (ArrayList<String>) group.getProperty("members");
       if (members == null) {

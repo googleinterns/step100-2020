@@ -38,7 +38,7 @@ import com.google.gson.Gson;
 import com.google.sps.Objects.Post;
 import com.google.sps.Objects.Comment;
 
-public class UpdateLikesServletTest {
+public class GroupPostDataServletTest {
 
   private static final String USER_EMAIL = "test@test.com";
   private static final String USER_ID = "test";
@@ -49,7 +49,7 @@ public class UpdateLikesServletTest {
   private static final long TIMESTAMP = 123123123;
   private static final long POST_ID = 1;
 
-  private final LocalServiceTestHelper helper =
+ private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
               new LocalDatastoreServiceTestConfig()
                   .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
@@ -76,7 +76,7 @@ public class UpdateLikesServletTest {
   @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private DatastoreService datastore;
-  private UpdateLikesServlet updateLikesServlet;
+  private GroupPostDataServlet groupPostDataServlet;
 
   @Before
   public void setUp() throws IOException {
@@ -87,7 +87,7 @@ public class UpdateLikesServletTest {
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
-    updateLikesServlet = new UpdateLikesServlet();
+    groupPostDataServlet = new GroupPostDataServlet();
   }
 
   @After
@@ -95,29 +95,7 @@ public class UpdateLikesServletTest {
     helper.tearDown();
     responseWriter = null;
     datastore = null;
-    updateLikesServlet = null;
-  }
-
-  @Test
-  public void doPost_userNotLoggedIn() throws IOException, EntityNotFoundException {
-    helper.setEnvIsLoggedIn(false);
-    when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
-    when(mockRequest.getParameter("liked")).thenReturn("true");
-
-    updateLikesServlet.doPost(mockRequest, mockResponse);
-    String response = responseWriter.toString();
-    assertTrue(response.contains("Oops an error happened!"));
-  }
-
-  @Test
-  public void doPost_invalidPost() throws IOException, EntityNotFoundException {
-    populateDatabase(datastore);
-    when(mockRequest.getParameter("id")).thenReturn(Long.toString(5));
-    when(mockRequest.getParameter("liked")).thenReturn("true");
-
-    updateLikesServlet.doPost(mockRequest, mockResponse);
-    String response = responseWriter.toString();
-    assertThat(response).contains("error");
+    groupPostDataServlet = null;
   }
 
   private void populateDatabase(DatastoreService datastore) {
@@ -126,41 +104,21 @@ public class UpdateLikesServletTest {
   }
 
   @Test
-  public void doPost_addLike() throws Exception {
+  public void doGet_userLoggedIn() throws Exception {
     populateDatabase(datastore);
-    when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
-    when(mockRequest.getParameter("liked")).thenReturn("true");
+    groupPostDataServlet.doGet(mockRequest, mockResponse);
+    String response = responseWriter.toString();
 
-    updateLikesServlet.doPost(mockRequest, mockResponse);
-
-    Key postKey = KeyFactory.createKey("Post", POST_ID);
-    Entity post = datastore.get(postKey);
-
-    POST_1.getLikes().add(USER_ID);
-
-    String jsonOriginal = new Gson().toJson(POST_1);
-    String jsonStored = new Gson().toJson(Post.getPostEntity(post));
-    assertEquals(jsonOriginal, jsonStored);
+    assertTrue(response.contains(POST_1.getPostText()));
   }
 
   @Test
-  public void doPost_removeLike() throws Exception {
-    POST_1.getLikes().add(USER_ID);
-    POST_1.getLikes().add("test 2");
+  public void doGet_userNotLoggedIn() throws Exception {
+    helper.setEnvIsLoggedIn(false);
     populateDatabase(datastore);
-
-    when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
-    when(mockRequest.getParameter("liked")).thenReturn("false");
-
-    updateLikesServlet.doPost(mockRequest, mockResponse);
-
-    Key postKey = KeyFactory.createKey("Post", POST_ID);
-    Entity post = datastore.get(postKey);
-
-    POST_1.getLikes().remove(USER_ID);
-
-    String jsonOriginal = new Gson().toJson(POST_1);
-    String jsonStored = new Gson().toJson(Post.getPostEntity(post));
-    assertEquals(jsonOriginal, jsonStored);
+    groupPostDataServlet.doGet(mockRequest, mockResponse);
+    
+    String response = responseWriter.toString();
+    assertTrue(response.contains("Oops an error happened!"));
   }
 }
