@@ -63,12 +63,4 @@ public final class Group {
   public void addPost(Post newPost) {
     this.posts.add(newPost);
   }
-
-  /**
-   * Creates and returns a Group object given a Group entity.
-   */
-  public static Group fromEntity(Entity entity) {
-    // TO DO - complete
-    return null;
-  }
 }
