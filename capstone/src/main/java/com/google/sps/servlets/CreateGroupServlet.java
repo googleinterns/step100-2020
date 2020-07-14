@@ -6,7 +6,6 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.EntityNotFoundException;
@@ -46,11 +45,11 @@ public class CreateGroupServlet extends AuthenticatedServlet {
     groupEntity.setProperty("memberIds", members);
     groupEntity.setProperty("challenges", new ArrayList<Long>());
     groupEntity.setProperty("posts", new ArrayList<Long>());
-    groupEntity.setProperty("options", new ArrayList<EmbeddedEntity>());    
+    groupEntity.setProperty("options", new ArrayList<Long>());    
     groupEntity.setProperty("groupName", groupName);
     groupEntity.setProperty("headerImg", "");
     return groupEntity;
-	}
+  }
 
   /**
    * Add group to a user's list of groups.
