@@ -21,8 +21,7 @@
             <div id="badge-grid"></div>
           </div>
           <div id="group-buttons">
-            <button id="join" onclick="joinGroup()">Join Group</button>
-            <button id="create" onclick="createGroup()">Create Group</button>
+            <button id="create" onclick="openGroupModal()">Create Group</button>
           </div>
           <button id="edit-btn" title="Edit Profile" onclick="editProfile()">
             <img id="edit" src="images/edit.svg"></img>
@@ -47,7 +46,7 @@
 
     <div class="edit-modal" id="edit-modal">
       <div class="edit-modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
+        <span class="close" onclick="closeModal('edit')">&times;</span>
         <div id="modal-profile-pic"></div>
         <h2 id="modal-name-container"></h2>
         <form id="edit-profile">
@@ -71,6 +70,19 @@
               name="interests" id="interests">
           </li>          
           <button class="save-btn" onclick="saveEdits()">SAVE</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="group-modal" id="group-modal">
+      <div class="group-modal-content">
+        <span class="close" onclick="closeModal('group')">&times;</span>
+        <h2>Create Group</h2>
+        <div id="group-header-pic"></div>
+        <form id="create-group">
+          <label for="group-name-input">Group Name</label>
+          <input type="text" class="input-field" name="group-name-input" id="group-name-input">
+          <button class="create-group-btn" onclick="createGroup()">Create</button>
         </form>
       </div>
     </div>
