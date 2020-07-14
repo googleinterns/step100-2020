@@ -105,4 +105,13 @@ public final class Option {
     optionEntity.setProperty("timestamp", timestamp);
     return optionEntity;
   }
+
+  public EmbeddedEntity toEmbeddedEntity() {
+    EmbeddedEntity optionEntity = new EmbeddedEntity();
+    long timestamp = System.currentTimeMillis();
+    optionEntity.setProperty("text", text);
+    optionEntity.setProperty("votes", this.votes);
+    optionEntity.setProperty("timestamp", timestamp);
+    return optionEntity;
+  }
 }

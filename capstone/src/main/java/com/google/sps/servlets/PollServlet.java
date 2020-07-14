@@ -27,9 +27,7 @@ public class PollServlet extends AuthenticatedServlet {
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    //    String groupId = request.getParameter("id");
-    //    System.out.println(groupId);
-    //    Entity groupEntity = ServletHelper.getGroupEntity(groupId, datastore, response);
+    //    Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
     //    PollResponse pollResponse = this.buildPollResponse2(groupEntity, userId);
 
     Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
@@ -45,13 +43,28 @@ public class PollServlet extends AuthenticatedServlet {
     Option option = new Option(0, text, new ArrayList<String>());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(option.toEntity());
+    //    this.updateGroupData(request, response, datastore, option);
+  }
+
+  private void updateGroupData(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      DatastoreService datastore,
+      Option option)
+      throws IOException {
+    Entity entity = ServletHelper.getGroupEntity(request, response, datastore);
+    List<EmbeddedEntity> options = (List<EmbeddedEntity>) entity.getProperty("options");
+    options.add(option.toEmbeddedEntity());
+    entity.setProperty("options", options);
+    datastore.put(entity);
   }
 
   private PollResponse buildPollResponse2(Entity groupEntity, String userId) {
-    List<Long> votedOptions = new ArrayList<Long>();
     ArrayList<EmbeddedEntity> optionEntities =
         (ArrayList<EmbeddedEntity>) groupEntity.getProperty("options");
-    ArrayList<Option> options = new ArrayList<Option>();
+    List<Option> options = new ArrayList<Option>();
+    List<Long> votedOptions = new ArrayList<Long>();
+
     for (EmbeddedEntity entity : optionEntities) {
       Option option = Option.getOptionEntity(entity);
       List<String> votes = option.getVotes();

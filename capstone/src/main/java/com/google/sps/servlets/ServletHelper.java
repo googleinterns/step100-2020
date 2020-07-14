@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -45,21 +46,19 @@ public class ServletHelper {
   }
 
   public static Entity getGroupEntity(
-      String groupId, DatastoreService datastore, HttpServletResponse response) throws IOException {
-    try {
-      return datastore.get(KeyFactory.createKey("Group", groupId));
-    } catch (EntityNotFoundException e) {
-      // TODO Auto-generated catch block
-      ErrorHandler.sendError(response, "Cannot get entity from datastore");
-      return null;
-    }
+      HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
+      throws IOException {
+    String groupIdString = request.getParameter("id");
+    long groupId = Long.parseLong(groupIdString);
+    Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
+    return groupEntity;
   }
 
   /**
    * Retrieves the entity from the database based on id.
    *
    * @param response HttpServletResponse
-   * @param id of current checkbox
+   * @param id id of entity
    * @param datastore datastore holding all data
    * @return Entity
    * @throws IOException error thrown from sendError method
