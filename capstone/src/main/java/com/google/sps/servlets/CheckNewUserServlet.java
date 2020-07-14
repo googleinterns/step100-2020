@@ -32,32 +32,29 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
 @WebServlet("/checkNewUser")
-public class CheckNewUserServlet extends HttpServlet {
+public class CheckNewUserServlet extends AuthenticatedServlet {
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) 
+      throws IOException {
     boolean isUserNew = false;
 
-    if (userService.isUserLoggedIn()) {
-      String userId = userService.getCurrentUser().getUserId();
-
-      // Check if user already exists in Datastore. If so, do nothing.
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      Key entityKey = KeyFactory.createKey("User", userId);
-      try {
-        datastore.get(entityKey);
-      } catch (EntityNotFoundException e) {
-        // If the user doesn't exist in Datastore.
-        isUserNew = true;
-      }
-    } else {
-      ErrorHandler.sendError(response, "User not logged in.");
-      return;
+    // Check if user already exists in Datastore. If so, do nothing.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Key entityKey = KeyFactory.createKey("User", userId);
+    try {
+      datastore.get(entityKey);
+    } catch (EntityNotFoundException e) {
+      // If the user doesn't exist in Datastore.
+      isUserNew = true;
     }
 
     String json = String.format("{\"isUserNew\": %b}", isUserNew);
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }
+
+  @Override
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {}
 }

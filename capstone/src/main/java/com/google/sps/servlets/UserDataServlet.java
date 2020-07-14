@@ -44,31 +44,31 @@ import error.ErrorHandler;
  * Servlet to handle returning User data from the Datastore.
  */
 @WebServlet("/user")
-public class UserDataServlet extends HttpServlet {
+public class UserDataServlet extends AuthenticatedServlet {
 
   /**
    * Gets User data from the Datastore and returns it.
    */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) 
+      throws IOException {
     UserService userService = UserServiceFactory.getUserService();
     User currentUser = null;
 
-    if (userService.isUserLoggedIn()) {
-      String userId = userService.getCurrentUser().getUserId();
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-      Key entityKey = KeyFactory.createKey("User", userId);
-      try {
-        currentUser = User.fromEntity(datastore.get(entityKey));
-      } catch (EntityNotFoundException e) {
-        ErrorHandler.sendError(response, "User not found.");
-      }
-    } else {
-      ErrorHandler.sendError(response, "User not logged in.");
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Key entityKey = KeyFactory.createKey("User", userId);
+    try {
+      currentUser = User.fromEntity(datastore.get(entityKey));
+    } catch (EntityNotFoundException e) {
+      ErrorHandler.sendError(response, "User not found.");
     }
 
     // Convert to json
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(currentUser));
   }
+
+  @Override
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {}
 }

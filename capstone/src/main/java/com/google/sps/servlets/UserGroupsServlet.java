@@ -45,7 +45,7 @@ import error.ErrorHandler;
  * Servlet that returns a user's groups data from the Datastore.
  */
 @WebServlet("/user-groups")
-public class UserGroupsServlet extends HttpServlet {
+public class UserGroupsServlet extends AuthenticatedServlet {
 
   private UserService userService = UserServiceFactory.getUserService();
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -54,22 +54,18 @@ public class UserGroupsServlet extends HttpServlet {
    * Gets User's Group data from the Datastore and returns it.
    */
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) 
+      throws IOException {
     Entity currentUser = null;
     ArrayList<UserGroupResponse> groups = new ArrayList<>();
 
-    if (userService.isUserLoggedIn()) {
-      currentUser = getUserEntity(response);
+    currentUser = getUserEntity(userId, response);
 
-      LinkedHashSet<Long> groupIds = (currentUser.getProperty("groups") == null)
-        ? new LinkedHashSet<>()
-        : new LinkedHashSet<Long>((ArrayList<Long>) currentUser.getProperty("groups"));
+    LinkedHashSet<Long> groupIds = (currentUser.getProperty("groups") == null)
+      ? new LinkedHashSet<>()
+      : new LinkedHashSet<Long>((ArrayList<Long>) currentUser.getProperty("groups"));
       
-      groups = getGroupsFromIds(groupIds, response);
-    } else {
-      ErrorHandler.sendError(response, "User not logged in.");
-      return;
-    }
+    groups = getGroupsFromIds(groupIds, response);
 
     // If either of these values are null, an error occured. Do not continue.
     if (currentUser == null || groups == null) {
@@ -84,8 +80,7 @@ public class UserGroupsServlet extends HttpServlet {
   /*
    * Returns the User Entity corresponding to the current user.
    */
-  public Entity getUserEntity(HttpServletResponse response) throws IOException {
-    String userId = userService.getCurrentUser().getUserId();
+  public Entity getUserEntity(String userId, HttpServletResponse response) throws IOException {
     Key entityKey = KeyFactory.createKey("User", userId);
     try {
       return datastore.get(entityKey);
@@ -114,4 +109,8 @@ public class UserGroupsServlet extends HttpServlet {
     }
     return groups;
   }
+
+  @Override
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {}
 }
