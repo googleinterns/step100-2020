@@ -30,7 +30,7 @@ public final class UserGroupResponse {
    * Creates and returns a UserGroupResponse object given a group Entity.
    */
   public static UserGroupResponse fromEntity(Entity entity) {
-    long groupId = (long) entity.getProperty("groupId");
+    long groupId = (long) entity.getKey().getId();
     String groupName = (String) entity.getProperty("groupName");
     String headerImg = (String) entity.getProperty("headerImg");
     // TODO: fix below code, won't work with Challenges as EmbeddedEntities of Groups

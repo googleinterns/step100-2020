@@ -1,5 +1,6 @@
 package com.google.sps.Objects;
 
+import com.google.appengine.api.datastore.Entity;
 import java.util.ArrayList;
 
 public final class Group {
@@ -7,17 +8,17 @@ public final class Group {
   private final ArrayList<String> memberIds;
   private final ArrayList<Challenge> challenges;
   private final ArrayList<Post> posts;
-  private final Poll poll;
+  private final ArrayList<Option> options;
   private final String groupName;
   private final String headerImg;
   private final long groupId;
 
   public Group(ArrayList<String> memberIds, ArrayList<Challenge> challenges, ArrayList<Post> posts, 
-      Poll poll, String groupName, String headerImg, long groupId) {
+      ArrayList<Option> options, String groupName, String headerImg, long groupId) {
     this.memberIds = memberIds;
     this.challenges = challenges;
     this.posts = posts;
-    this.poll = poll;
+    this.options = options;
     this.groupName = groupName;
     this.headerImg = headerImg;
     this.groupId = groupId;
@@ -35,8 +36,8 @@ public final class Group {
     return posts;
   }
 
-  public Poll getPoll() {
-    return poll;
+  public ArrayList<Option> getOptions() {
+    return options;
   }
 
   public String getGroupName() {
@@ -61,5 +62,13 @@ public final class Group {
 
   public void addPost(Post newPost) {
     this.posts.add(newPost);
+  }
+
+  /**
+   * Creates and returns a Group object given a Group entity.
+   */
+  public static Group fromEntity(Entity entity) {
+    // TO DO - complete
+    return null;
   }
 }
