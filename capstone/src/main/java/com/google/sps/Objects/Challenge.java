@@ -79,7 +79,7 @@ public final class Challenge {
    * @return boolean
    */
   public boolean getHasUserCompleted(String userId) {
-    if (this.usersCompleted == null) {
+    if (this.usersCompleted == null || this.usersCompleted == null) {
       return false;
     } else {
       return this.usersCompleted.contains(userId);
@@ -93,6 +93,9 @@ public final class Challenge {
    * @return Challenge object
    */
   public static Challenge fromEntity(Entity entity) {
+    if (entity == null) {
+      return null;
+    }
     String challengeName = (String) entity.getProperty("name");
     long dueDate = (long) entity.getProperty("dueDate");
     long id = entity.getKey().getId();

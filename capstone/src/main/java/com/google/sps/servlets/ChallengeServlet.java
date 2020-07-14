@@ -11,10 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.repackaged.com.google.common.collect.Iterables;
 import com.google.sps.Objects.Challenge;
 import com.google.sps.Objects.Time;
 import com.google.sps.Objects.response.ChallengeResponse;
@@ -26,22 +22,27 @@ public class ChallengeServlet extends AuthenticatedServlet {
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    String groupId = request.getParameter("id");
-    //    Entity groupEntity = ServletHelper.getGroupEntity(groupId, datastore, response);
-    //    ChallengeResponse challengeResponse =
-    //        this.buildChallengeResponse2(groupEntity, userId, datastore, response);
+    Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
+    ChallengeResponse challengeResponse =
+        this.buildChallengeResponse2(groupEntity, userId, datastore, response);
 
-    Query query = new Query("Challenge").addSort("timestamp", SortDirection.DESCENDING);
-    PreparedQuery results = datastore.prepare(query);
-    ChallengeResponse challengeResponse = this.buildChallengeResponse(results, userId);
+    //    Query query = new Query("Challenge").addSort("timestamp", SortDirection.DESCENDING);
+    //    PreparedQuery results = datastore.prepare(query);
+    //    ChallengeResponse challengeResponse = this.buildChallengeResponse(results, userId);
     ServletHelper.write(response, challengeResponse, "application/json");
   }
 
   private ChallengeResponse buildChallengeResponse2(
       Entity groupEntity, String userId, DatastoreService datastore, HttpServletResponse response)
       throws IOException {
-    List<Long> challengeIds = (ArrayList<Long>) groupEntity.getProperty("challenge");
+    List<Long> challengeIds =
+        (groupEntity.getProperty("challenges") == null)
+            ? new ArrayList<Long>()
+            : (ArrayList<Long>) groupEntity.getProperty("challenges");
     Challenge challenge = this.getMostRecentChallenge(challengeIds, datastore, response);
+    if (challenge == null) {
+      return null;
+    }
     boolean hasUserCompleted = challenge.getHasUserCompleted(userId);
     return new ChallengeResponse(challenge, hasUserCompleted);
   }
@@ -66,20 +67,20 @@ public class ChallengeServlet extends AuthenticatedServlet {
     return newestChallenge;
   }
 
-  private ChallengeResponse buildChallengeResponse(PreparedQuery results, String userId) {
-    Challenge challenge = null;
-    ChallengeResponse challengeResponse = null;
-    // Check if there are challenges in database
-    if (Iterables.size(results.asIterable()) > 0) {
-      // Get most recent challenge in database
-      Entity entity = results.asIterable().iterator().next();
-      challenge = Challenge.fromEntity(entity);
-      // Gets whether current user has completed challenge
-      boolean hasUserCompleted = challenge.getHasUserCompleted(userId);
-      challengeResponse = new ChallengeResponse(challenge, hasUserCompleted);
-    }
-    return challengeResponse;
-  }
+  //  private ChallengeResponse buildChallengeResponse(PreparedQuery results, String userId) {
+  //    Challenge challenge = null;
+  //    ChallengeResponse challengeResponse = null;
+  //    // Check if there are challenges in database
+  //    if (Iterables.size(results.asIterable()) > 0) {
+  //      // Get most recent challenge in database
+  //      Entity entity = results.asIterable().iterator().next();
+  //      challenge = Challenge.fromEntity(entity);
+  //      // Gets whether current user has completed challenge
+  //      boolean hasUserCompleted = challenge.getHasUserCompleted(userId);
+  //      challengeResponse = new ChallengeResponse(challenge, hasUserCompleted);
+  //    }
+  //    return challengeResponse;
+  //  }
 
   @Override
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)

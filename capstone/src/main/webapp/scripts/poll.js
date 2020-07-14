@@ -30,7 +30,6 @@ function addPollOption() {
  * weekly challenge.
  */
 function getPollOptions() {
-  console.log("in get poll options " + groupId);
   fetch(`poll?id=${groupId}`)
     .then(response => response.json())
     .then(pollData => {
