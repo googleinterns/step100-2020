@@ -19,9 +19,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -35,6 +37,7 @@ import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
+import com.google.sps.Objects.Group;
 import com.google.sps.Objects.Option;
 
 /**
@@ -42,7 +45,8 @@ import com.google.sps.Objects.Option;
  *
  * @author lucyqu
  */
-@RunWith(JUnit4.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(PollServlet.class)
 public class PollServletTest {
 
   private static final String USER_EMAIL = "test@test.com";
@@ -75,6 +79,7 @@ public class PollServletTest {
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
+    PowerMockito.mockStatic(Group.class);
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -137,6 +142,7 @@ public class PollServletTest {
   @Test
   public void doGet_userLoggedIn() throws IOException {
     this.addOptionsToGroup();
+    when(Group.getGroupEntity(mockRequest, mockResponse, datastore)).thenReturn(GROUP_ENTITY);
     pollServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
 
