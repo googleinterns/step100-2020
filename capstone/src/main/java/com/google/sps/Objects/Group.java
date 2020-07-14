@@ -6,15 +6,15 @@ import java.util.ArrayList;
 public final class Group {
 
   private final ArrayList<String> memberIds;
-  private final ArrayList<Challenge> challenges;
-  private final ArrayList<Post> posts;
-  private final ArrayList<Option> options;
+  private final ArrayList<Long> challenges;
+  private final ArrayList<Long> posts;
+  private final ArrayList<Long> options;
   private final String groupName;
   private final String headerImg;
   private final long groupId;
 
-  public Group(ArrayList<String> memberIds, ArrayList<Challenge> challenges, ArrayList<Post> posts, 
-      ArrayList<Option> options, String groupName, String headerImg, long groupId) {
+  public Group(ArrayList<String> memberIds, ArrayList<Long> challenges, ArrayList<Long> posts, 
+      ArrayList<Long> options, String groupName, String headerImg, long groupId) {
     this.memberIds = memberIds;
     this.challenges = challenges;
     this.posts = posts;
@@ -28,15 +28,15 @@ public final class Group {
     return memberIds;
   }
 
-  public ArrayList<Challenge> challenges() {
+  public ArrayList<Long> challenges() {
     return challenges;
   }
 
-  public ArrayList<Post> getPosts() {
+  public ArrayList<Long> getPosts() {
     return posts;
   }
 
-  public ArrayList<Option> getOptions() {
+  public ArrayList<Long> getOptions() {
     return options;
   }
 
@@ -52,7 +52,7 @@ public final class Group {
     return groupId;
   }
 
-  public void addChallenge(Challenge newChallenge) {
+  public void addChallenge(Long newChallenge) {
     this.challenges.add(newChallenge);
   }
 
@@ -60,7 +60,26 @@ public final class Group {
     this.memberIds.add(memberId);
   }
 
-  public void addPost(Post newPost) {
+  public void addPost(Long newPost) {
     this.posts.add(newPost);
+  }
+
+  /* Given a Group entity, creates and returns a Group object. */
+  public static Group fromEntity(Entity entity) {
+    ArrayList<String> memberIds = (ArrayList<String>) entity.getProperty("memberIds");
+    ArrayList<Long> challenges = (entity.getProperty("challenges") == null) 
+      ? new ArrayList<Long>() 
+      : (ArrayList<Long>) entity.getProperty("challenges");   
+    ArrayList<Long> posts = (entity.getProperty("posts") == null) 
+      ? new ArrayList<Long>() 
+      : (ArrayList<Long>) entity.getProperty("posts");   
+    ArrayList<Long> options = (entity.getProperty("options") == null) 
+      ? new ArrayList<Long>() 
+      : (ArrayList<Long>) entity.getProperty("options");   
+    String groupName = (String) entity.getProperty("groupName");
+    String headerImg = (String) entity.getProperty("headerImg");
+    long groupId = entity.getKey().getId();
+
+    return new Group(memberIds, challenges, posts, options, groupName, headerImg, groupId);
   }
 }
