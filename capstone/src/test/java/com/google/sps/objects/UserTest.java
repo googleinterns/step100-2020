@@ -1,4 +1,4 @@
-package com.google.sps.servlets;
+package com.google.sps.objects;
 
 import static org.junit.Assert.assertTrue;
 

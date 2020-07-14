@@ -1,6 +1,11 @@
 package com.google.sps.Objects;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
@@ -129,7 +134,7 @@ public final class User {
   /**
    * Creates and returns a User object given a user Entity.
    */
-  public static User fromEntity(Entity entity) {
+  public static User fromEntity(Entity entity) throws EntityNotFoundException {
     String userId = (String) entity.getProperty("userId");
     String firstName = (String) entity.getProperty("firstName");
     String lastName = (String) entity.getProperty("lastName");
@@ -143,12 +148,11 @@ public final class User {
         ? new LinkedHashSet<>()
         : new LinkedHashSet<Long>((ArrayList<Long>) entity.getProperty("groups"));
 
-    LinkedHashSet<String> badgeIds = (entity.getProperty("badges") == null)
+    LinkedHashSet<Long> badgeIds = (entity.getProperty("badges") == null)
         ? new LinkedHashSet<>()
-        : new LinkedHashSet<String>((ArrayList<String>) entity.getProperty("badges"));
+        : new LinkedHashSet<Long>((ArrayList<Long>) entity.getProperty("badges"));
 
-    // TODO: use badgeIds to create list of badge objects
-    LinkedHashSet<Badge> badges = new LinkedHashSet<>();
+    LinkedHashSet<Badge> badges = getBadgeList(badgeIds);
 
     User user = new User(userId, firstName, lastName, email, phoneNumber, profilePic, 
                          badges, groupIds, interests);
@@ -170,5 +174,25 @@ public final class User {
     userEntity.setProperty("groups", groups);
     userEntity.setProperty("interests", interests);
     return userEntity;
+  }
+
+  /**
+   * Helper method for {@code fromEntity()}. Returns a list of badges given a list of badge ids.
+   */
+  private static LinkedHashSet<Badge> getBadgeList(LinkedHashSet<Long> badgeIds) 
+      throws EntityNotFoundException { 
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    LinkedHashSet<Badge> badges = new LinkedHashSet<>();
+    for (long badgeId : badgeIds) {
+      Key badgeKey = KeyFactory.createKey("Badge", badgeId);
+      Entity badgeEntity = null;
+      try {
+        badgeEntity = datastore.get(badgeKey);
+      } catch (EntityNotFoundException e) {
+        throw new EntityNotFoundException(badgeKey);
+      }
+      badges.add(Badge.fromEntity(badgeEntity));
+    }
+    return badges;
   }
 }

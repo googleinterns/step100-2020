@@ -17,26 +17,59 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
 import com.google.sps.Objects.response.MemberResponse;
+import error.ErrorHandler;
 
 @WebServlet("/all-group-members")
 
-public class AllGroupMembersServlet extends HttpServlet {
+public class AllGroupMembersServlet extends AuthenticatedServlet {
 
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  private ErrorHandler errorHandler = new ErrorHandler();
 
-    Query query = new Query("User");
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    Long groupId = Long.parseLong(request.getParameter("groupId"));
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
+    Entity groupEntity = getGroupFromId(response, groupId, datastore);
+    if (groupEntity == null) return;
+
+    ArrayList<String> allGroupMembers = (ArrayList<String>) groupEntity.getProperty("memberIds");
 
     List<MemberResponse> basicMemberProfiles = new ArrayList<>();
-    for (Entity entity : results.asIterable()) {
+    for (String memberId : allGroupMembers) {
+      Entity userEntity = getUserFromId(response, memberId, datastore);
+      if (userEntity != null && !memberId.equals(userId)) {
       MemberResponse member = MemberResponse.fromEntity(
-        entity, /* includeBadges= */ false);
+        userEntity, /* includeBadges= */ false);
       basicMemberProfiles.add(member);
+      }
     }
 
     // Convert to json
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(basicMemberProfiles)); 
   }
+
+  private Entity getGroupFromId(
+    HttpServletResponse response, long groupId, DatastoreService datastore)  throws IOException {
+      try {
+        return datastore.get(KeyFactory.createKey("Group", groupId));
+      } catch (EntityNotFoundException e) {
+        errorHandler.sendError(response, "Group does not exist.");
+        return null;
+      }
+  }
+
+  private Entity getUserFromId(
+    HttpServletResponse response,String userId, DatastoreService datastore)  throws IOException {
+      try {
+        return datastore.get(KeyFactory.createKey("User", userId));
+      } catch (EntityNotFoundException e) {
+        errorHandler.sendError(response, "Group does not exist.");
+        return null;
+      }
+  }
+
+  @Override
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {}
 }

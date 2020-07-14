@@ -1,5 +1,9 @@
 function loadMembers() {
-  fetch(`/all-group-members`).then(response => response.json()).then((allGroupMembers) => {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const groupId = urlParams.get('groupId');
+  console.log(groupId);
+  fetch(`/all-group-members?groupId=${groupId}`).then(response => response.json()).then((allGroupMembers) => {
     const allMembers = allGroupMembers;
     const memberGrid = document.getElementsByClassName("member-grid-container")[0];
     memberGrid.innerHTML = '';

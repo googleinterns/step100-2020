@@ -59,6 +59,18 @@
           <span class="close">&times;</span>
         </div>
       </div>
+
+      <div class="add-member-modal" id="add-member-modal">
+        <div class="add-member-modal-content">
+          <span class="close" onclick="closeMemberModal()">&times;</span>
+          <h2>Add Group Member</h2>
+          <form id="add-member">
+            <label for="member-email-input">Enter an email</label>
+            <input type="text" class="input-field" name="email-input" id="email-input">
+            <button class="add-member-btn" onclick="addMember()">Add</button>
+          </form>
+        </div>
+      </div>
         
       <div class="challenge-container">
         <h2>
