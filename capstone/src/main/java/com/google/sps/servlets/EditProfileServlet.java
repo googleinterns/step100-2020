@@ -61,7 +61,7 @@ public class EditProfileServlet extends AuthenticatedServlet {
       ArrayList<String> interests, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity userEntity = getExistingUser(userId, response, datastore);
-    User user = getUpdatedUser(userEntity, first, last, email, phone, interests);
+    User user = getUpdatedUser(userEntity, first, last, email, phone, interests, response);
     datastore.put(user.toEntity());
   }
 
@@ -85,8 +85,14 @@ public class EditProfileServlet extends AuthenticatedServlet {
    * Creates updated user object to return.
    */
   private User getUpdatedUser(Entity entity, String first, String last, String email, String phone, 
-      ArrayList<String> interests) {
-    User user = User.fromEntity(entity);
+      ArrayList<String> interests, HttpServletResponse response) throws IOException {
+    User user;
+    try {
+      user = User.fromEntity(entity);
+    } catch (EntityNotFoundException e) {
+      ErrorHandler.sendError(response, "Unable to get " + e.getKey().getKind());
+      return null;
+    }
     user.setFirstName(first);
     user.setLastName(last);
     user.setEmail(email);

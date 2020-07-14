@@ -52,7 +52,23 @@
 }
 
 #badge-container h4 {
-  padding: 0 10px;
+  margin: 5px;
+  padding: 0 5px;
+}
+
+#badge-container #badge-grid {
+  display: grid;
+  gap: 20px;
+  grid-auto-flow: dense;
+  grid-template-columns: repeat(auto-fill, minmax(45px, 45px));
+  margin: 10px 10px 10px 12px;
+}
+
+#badge-container #badge-grid .badge {
+  background-color: var(--badges-gray);
+  border-radius: 4px;
+  height: 45px;
+  width: 45px;
 }
 
 .sidebar #group-buttons button {
