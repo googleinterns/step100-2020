@@ -67,12 +67,17 @@ public final class Option {
   }
 
   public static Option getOptionEntity(EmbeddedEntity entity) {
+    System.out.println("in getOptionEntity");
+    System.out.println(entity.getKey());
     long id = entity.getKey().getId();
+    System.out.println("id " + id);
     String text = (String) entity.getProperty("text");
+    System.out.println("text " + text);
     List<String> votes =
         (entity.getProperty("votes") == null)
             ? new ArrayList<String>()
             : (ArrayList<String>) entity.getProperty("votes");
+    System.out.println(votes + "------------");
     return new Option(id, text, votes);
   }
 
@@ -107,11 +112,13 @@ public final class Option {
   }
 
   public EmbeddedEntity toEmbeddedEntity() {
+    System.out.println("in to embedded entity");
     EmbeddedEntity optionEntity = new EmbeddedEntity();
     long timestamp = System.currentTimeMillis();
     optionEntity.setProperty("text", text);
     optionEntity.setProperty("votes", this.votes);
     optionEntity.setProperty("timestamp", timestamp);
+    System.out.println("before returning option entity" + optionEntity);
     return optionEntity;
   }
 }

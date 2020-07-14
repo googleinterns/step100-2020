@@ -49,7 +49,9 @@ public class ServletHelper {
       HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
       throws IOException {
     String groupIdString = request.getParameter("id");
+    System.out.println(groupIdString);
     long groupId = Long.parseLong(groupIdString);
+    System.out.println("after parsing" + groupId);
     Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     return groupEntity;
   }

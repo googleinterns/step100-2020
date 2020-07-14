@@ -8,7 +8,7 @@ const NO_CHALLENGES =
 let groupId;
 
 function getGroupId() {
-  groupId = window.location.search.substring(1);
+  groupId = window.location.search.substring(1).split("=")[1];
   console.log(groupId);
 }
 
@@ -19,7 +19,7 @@ function addPollOption() {
   const text = document.getElementById("input-box").value;
   if (text.trim() === "") return;
   document.getElementById("input-box").value = "";
-  fetch(`poll?text=${text}`, { method: "POST" }).then(
+  fetch(`poll?text=${text}&id=${groupId}`, { method: "POST" }).then(
     setTimeout(getPollOptions, 500)
   );
 }

@@ -11,11 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.sps.Objects.Option;
 import com.google.sps.Objects.comparator.OptionsComparator;
 import com.google.sps.Objects.response.PollResponse;
@@ -27,12 +24,12 @@ public class PollServlet extends AuthenticatedServlet {
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    //    Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
-    //    PollResponse pollResponse = this.buildPollResponse2(groupEntity, userId);
+    Entity groupEntity = ServletHelper.getGroupEntity(request, response, datastore);
+    PollResponse pollResponse = this.buildPollResponse2(groupEntity, userId, response, datastore);
 
-    Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
-    PreparedQuery results = datastore.prepare(query);
-    PollResponse pollResponse = this.buildPollResponse(results, userId);
+    //    Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
+    //    PreparedQuery results = datastore.prepare(query);
+    //    PollResponse pollResponse = this.buildPollResponse(results, userId);
     ServletHelper.write(response, pollResponse, "application/json");
   }
 
@@ -42,31 +39,40 @@ public class PollServlet extends AuthenticatedServlet {
     String text = request.getParameter("text");
     Option option = new Option(0, text, new ArrayList<String>());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(option.toEntity());
-    //    this.updateGroupData(request, response, datastore, option);
+    Entity optionEntity = option.toEntity();
+    datastore.put(optionEntity);
+    this.updateGroupData(request, response, datastore, optionEntity);
   }
 
   private void updateGroupData(
       HttpServletRequest request,
       HttpServletResponse response,
       DatastoreService datastore,
-      Option option)
+      Entity optionEntity)
       throws IOException {
     Entity entity = ServletHelper.getGroupEntity(request, response, datastore);
-    List<EmbeddedEntity> options = (List<EmbeddedEntity>) entity.getProperty("options");
-    options.add(option.toEmbeddedEntity());
+    List<Long> options =
+        (entity.getProperty("options") == null)
+            ? new ArrayList<Long>()
+            : (List<Long>) entity.getProperty("options");
+    options.add(optionEntity.getKey().getId());
     entity.setProperty("options", options);
     datastore.put(entity);
   }
 
-  private PollResponse buildPollResponse2(Entity groupEntity, String userId) {
-    ArrayList<EmbeddedEntity> optionEntities =
-        (ArrayList<EmbeddedEntity>) groupEntity.getProperty("options");
+  private PollResponse buildPollResponse2(
+      Entity groupEntity, String userId, HttpServletResponse response, DatastoreService datastore)
+      throws IOException {
+    ArrayList<Long> optionIds =
+        (groupEntity.getProperty("options") == null)
+            ? new ArrayList<Long>()
+            : (ArrayList<Long>) groupEntity.getProperty("options");
     List<Option> options = new ArrayList<Option>();
     List<Long> votedOptions = new ArrayList<Long>();
 
-    for (EmbeddedEntity entity : optionEntities) {
-      Option option = Option.getOptionEntity(entity);
+    for (Long optionId : optionIds) {
+      Entity entity = ServletHelper.getEntityFromId(response, optionId, datastore, "Option");
+      Option option = Option.fromEntity(entity);
       List<String> votes = option.getVotes();
       long id = option.getId();
       options.add(option);
