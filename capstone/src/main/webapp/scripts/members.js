@@ -14,6 +14,11 @@ function loadMembers() {
   });
 }
 
+function openAddGroupMemberModal() {
+  let modal = document.getElementById('add-member-modal');
+  modal.style.display = "block";
+}
+
 function createMemberComponents(memberInfo) {
   const memberImgDiv = document.createElement('div');
   memberImgDiv.id = memberInfo.userId;
@@ -45,8 +50,8 @@ function addMemberProfileListener() {
 function showMemberProfile(userId){
   fetch(`/group-member?id=${userId}`).then(response => response.json()).then((memResponse) => {
     const modalContent = document.getElementsByClassName("modal-content")[0];
-    modalContent.innerHTML = "<span class='close'>&times;</span>";
-    addModalListeners();
+    modalContent.innerHTML = "<span id='member-close' onclick='addModalListeners('memberProfile', 'member')'>&times;</span>";
+    //addModalListeners();
     modalContent.appendChild(createMemberModal(memResponse));
     const modal = document.getElementById("memberProfile");
     modal.style.display = "block";
@@ -54,9 +59,9 @@ function showMemberProfile(userId){
 }
 
 // Close modal if (x) button clicked or user clicks anywhere outside modal
-function addModalListeners() {
-  const modal = document.getElementById("memberProfile");
-  const spanClose = document.getElementsByClassName("close")[0];
+function addModalListeners(modalName, closeName) {
+  const modal = document.getElementById(modalName + '');
+  const spanClose = document.getElementById(closeName + '-close');
   spanClose.addEventListener("click", function () {
     modal.style.display = "none";
   });

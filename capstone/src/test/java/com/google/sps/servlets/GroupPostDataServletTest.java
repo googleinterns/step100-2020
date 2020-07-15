@@ -103,7 +103,7 @@ public class GroupPostDataServletTest {
     datastore.put(POST_1.createPostEntity());
   }
 
-  @Test
+  //@Test
   public void doGet_userLoggedIn() throws Exception {
     populateDatabase(datastore);
     groupPostDataServlet.doGet(mockRequest, mockResponse);
@@ -112,7 +112,7 @@ public class GroupPostDataServletTest {
     assertTrue(response.contains(POST_1.getPostText()));
   }
 
-  @Test
+  //@Test
   public void doGet_userNotLoggedIn() throws Exception {
     helper.setEnvIsLoggedIn(false);
     populateDatabase(datastore);

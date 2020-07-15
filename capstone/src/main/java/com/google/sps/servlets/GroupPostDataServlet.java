@@ -35,6 +35,7 @@ import java.net.URL;
 import com.google.sps.Objects.User;
 import com.google.sps.Objects.Post;
 import com.google.sps.Objects.Comment;
+import com.google.sps.Objects.Group;
 import com.google.sps.Objects.response.PostResponse;
 import error.ErrorHandler;
 
@@ -46,6 +47,7 @@ public class GroupPostDataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+    //Long groupId = Long.parseLong(request.getParameter("groupId"));
     String userId = this.getUserId(response);
     if (userId.equals("")) return;
     Query query = new Query("Post").addSort("timestamp", SortDirection.DESCENDING);
@@ -70,6 +72,7 @@ public class GroupPostDataServlet extends HttpServlet {
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Receives submitted post 
+    //Long groupId = Long.parseLong(request.getParameter("groupId"));
     String authorName = "Jane Doe";
     String postText = request.getParameter("post-input");
     String challengeName = "Challenge Name";
@@ -80,7 +83,16 @@ public class GroupPostDataServlet extends HttpServlet {
     // Creates entity with submitted data and add to database
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Post post = new Post(0, authorName, postText, comments, challengeName, System.currentTimeMillis(), img, likes);
-    datastore.put(post.createPostEntity());
+    Entity newPost = post.createPostEntity();
+    datastore.put(newPost);
+
+    // Adds postId to group 
+    //Entity group = Group.getGroupEntity(request, response, datastore);
+    //ArrayList<Long> postIds = 
+    //  (ArrayList<Long>) group.getProperty("posts");
+    //postIds.add(Post.getPostEntity(newPost).getPostId());
+    //group.setProperty("posts", postIds);
+    //datastore.put(group);
 
     // Redirect back to the HTML page.
     response.sendRedirect("/group.html");

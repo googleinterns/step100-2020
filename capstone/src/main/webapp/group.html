@@ -24,7 +24,7 @@
 
     <div id="members-container">
         <h4 class="align-vertical">Members</h4>
-        <button class="plus-icon align-vertical" type="image" ><img class="small-icon" src="images/plus_icon.png" alt/></button>
+        <button class="plus-icon align-vertical" type="image" onclick="openAddGroupMemberModal()"><img class="small-icon" src="images/plus_icon.png" alt/></button>
         <div class="scrollbox">
           <div class="member-grid-container"></div>
         </div>
@@ -53,16 +53,16 @@
         </form>
       </div>
 
-      <div id="memberProfile" class="modal">
+      <div id="memberProfile" class="member-modal">
         <!-- Modal content -->
-        <div class="modal-content">
-          <span class="close">&times;</span>
+        <div class="member-content">
+          <span id="member-close" onclick="addModalListeners('memberProfile', 'member')">&times;</span>
         </div>
       </div>
 
-      <div class="add-member-modal" id="add-member-modal">
-        <div class="add-member-modal-content">
-          <span class="close" onclick="closeMemberModal()">&times;</span>
+      <div class="add-member" id="add-member-modal">
+        <div class="add-member-content">
+          <span id="add-close" onclick="addModalListeners('add-member-modal', 'add')">&times;</span>
           <h2>Add Group Member</h2>
           <form id="add-member">
             <label for="member-email-input">Enter an email</label>

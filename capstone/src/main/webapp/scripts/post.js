@@ -8,7 +8,11 @@ function init() {
 let postResponse;
 
 function loadPosts() {
-  fetch('/group-post').then(response => response.json()).then((postsResp) => {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const groupId = urlParams.get('groupId');
+  console.log(groupId);
+  fetch(`/group-post?groupId=${groupId}`).then(response => response.json()).then((postsResp) => {
     postResponse = postsResp;
     const posts = postResponse["posts"];
     const allPostsList = document.getElementById('posts-container');
@@ -201,10 +205,11 @@ function createCommentBox(post) {
 
 // Gets URL for uploaded image
 function fetchBlobstoreUrlAndShowForm() {
-  fetch('/post-image').then((response) => {
+  fetch(`/post-image`).then((response) => {
   	return response.text();
   }).then((imageUploadUrl) => {
     const messageForm = document.getElementById('post-form');
+    console.log(imageUploadUrl);
     messageForm.action = imageUploadUrl;
   });
 }

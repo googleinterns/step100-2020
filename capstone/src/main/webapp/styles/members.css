@@ -46,8 +46,9 @@
 }
 
 /* Modal background */
-.modal {
+.member-modal, .add-member {
   display: none;
+  visibility: none;
   position: fixed;
   z-index: 1;
   padding-top: 100px;
@@ -56,11 +57,11 @@
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.75);
 }
 
 /* Modal Content */
-.modal-content {
+.member-content, .add-member-content {
   background-color: var(--near-white);
   margin: auto;
   padding: 15px 20px;
@@ -69,15 +70,17 @@
 }
 
 /* The Close Button */
-.close {
+#add-close, #member-close {
   color: #aaaaaa;
   float: right;
   font-size: 28px;
   font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
+#add-close:hover,
+#add-close:focus, 
+#member-close:hover, 
+#member-close:focus {
   color: var(--black);
   text-decoration: none;
   cursor: pointer;
@@ -120,4 +123,53 @@
 .member-badges {
   align-content: center;
   margin: 0 auto;
+}
+
+.add-member h2 {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 10px 10px 20px 0px;
+}
+
+.add-member input {
+  background-color: var(--placeholder-gray);
+  border-radius: 10px;
+  border: none;
+  width: 100%;
+  height: 40px;
+  color: #8a8686;
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  text-indent: 1em;
+  outline: none;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: 20px;
+}
+
+.add-member label {
+  display: block;
+  font-size: 16px;
+  margin: 10px 10px 20px 0px;
+}
+
+.add-member input:focus {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  outline: none;
+}
+
+.add-member-btn {
+  background-color: var(--dark-green);
+  border: none;
+  border-radius: 15px;
+  color: var(--white);
+  cursor: pointer;
+  display: block;
+  font-size: 16px;
+  margin: 10px auto 10px;
+  padding: 10px;
+  text-align: center;
+  width: 100px;
 }
