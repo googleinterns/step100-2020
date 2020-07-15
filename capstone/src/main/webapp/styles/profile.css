@@ -52,7 +52,23 @@
 }
 
 #badge-container h4 {
-  padding: 0 10px;
+  margin: 5px;
+  padding: 0 5px;
+}
+
+#badge-container #badge-grid {
+  display: grid;
+  gap: 20px;
+  grid-auto-flow: dense;
+  grid-template-columns: repeat(auto-fill, minmax(45px, 45px));
+  margin: 10px 10px 10px 12px;
+}
+
+#badge-container #badge-grid .badge {
+  background-color: var(--badges-gray);
+  border-radius: 4px;
+  height: 45px;
+  width: 45px;
 }
 
 .sidebar #group-buttons button {
@@ -148,6 +164,14 @@ a:link, a:visited, a:hover, a:active {
   border-radius: 10px;
   height: 200px;
   width: 100%;
+}
+
+#logout-btn {
+  height: 30px;
+  position: fixed;
+  right: 100px;
+  top: 50px;
+  width: 30px;
 }
 
 @media screen and (max-width: 650px) {
@@ -274,10 +298,95 @@ a:link, a:visited, a:hover, a:active {
   width: 200px;
 }
 
+/* Style the create group modal */
+.group-modal {
+  background-color: rgba(0, 0, 0, 0.75);
+  left: 0;
+  height: 100%;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  transform: scale(1.1);
+  transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+  visibility: hidden;
+  width: 100%;
+  z-index: 2;
+}
+
+.group-modal-content {
+  align-items: center;
+  background-color: white;
+  border-radius: 0.5rem;
+  color: var(--black);
+  display: flex;
+  flex-direction: column;
+  font-family: Roboto;
+  justify-content: center;
+  left: 50%;
+  padding: 1rem 1.5rem;
+  position: absolute;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  width: 24rem;
+}
+
+.group-modal h2 {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.group-modal form {
+  margin: 0;
+  width: 95%;
+}
+
+.group-modal .close {
+  color: var(--text-gray);
+  cursor: pointer;
+  font-weight: normal;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.group-modal label {
+  display: block;
+  font-size: 16px;
+  padding: .5em .75em .3em 0;
+}
+
+.group-modal input {
+  background-color: var(--placeholder-gray);
+  border-radius: 10px;
+  border: none;
+  display: block;
+  margin: 0.25rem -0.25rem;
+  padding: 0.6rem 0.6rem;
+  width: 100%;
+}
+
+.group-modal input:focus {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  outline: none;
+}
+
+.create-group-btn {
+  background-color: var(--dark-green);
+  border: none;
+  border-radius: 15px;
+  color: var(--white);
+  cursor: pointer;
+  display: block;
+  font-size: 16px;
+  margin: 20px auto 20px;
+  padding: 10px;
+  text-align: center;
+  width: 100px;
+}
+
 .show-modal {
   opacity: 1;
   transform: scale(1.0);
   transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
   visibility: visible;
 }
-

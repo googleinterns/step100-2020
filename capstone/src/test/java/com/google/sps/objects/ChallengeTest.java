@@ -42,7 +42,7 @@ public class ChallengeTest {
   public void setUp() {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
-    badge = new Badge(/* challenge name */ CHALLENGE_NAME, /* icon */ null, /* timestamp */ 234567);
+    badge = new Badge(/* badgeId */ 123, /* challenge name */ CHALLENGE_NAME, /* icon */ null, /* timestamp */ 234567);
     challenge =
         new Challenge(
             CHALLENGE_NAME, /* challenge name */

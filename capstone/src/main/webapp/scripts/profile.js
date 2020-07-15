@@ -22,6 +22,25 @@
  */
 function loadPage() {
   getUserData();
+  createLogoutUrl();
+}
+
+/*
+ * Create the logout url for the Users API.
+ * Fetch the authentication status of the user from the server.
+ */
+function createLogoutUrl() {
+  fetch('/login')
+ .then(response => response.json())
+ .then((login) => {
+    // Need to set button's url to logout url.
+    const logoutUrl = login.logoutUrl;
+    const logoutButton = document.getElementById("logout-btn");
+    logoutButton.setAttribute('href', logoutUrl);
+    if (!logout.loggedIn) {
+      window.location.href = 'index.html';
+    }
+  });
 }
 
 /** Fetch current user's data from the server */
@@ -50,8 +69,7 @@ function displayUserInfo(user) {
 
   getGroupData(user.groups);
   
-  displayBadges(user.badges); // maybe change this to getBadgeData?
-                              // or just add to Badge and User class
+  displayBadges(user.badges);
 }
 
 /** Display user's interests. */
@@ -80,19 +98,14 @@ function displayGroups(groups) {
   const groupsContainer = document.getElementById("groups-container");
   const groupElement = document.getElementById("group-template");
 
-  // Hard coded group for now, will remove once we support users joining different groups
-  let groupElementNode = document.importNode(groupElement.content, true);
-  let groupLink = groupElementNode.getElementById('group-page-link');
-  groupLink.href = "group.html";
-  let groupName = groupElementNode.getElementById('group-name');
-  groupName.innerText = "Group Name";
-  groupsContainer.appendChild(groupElementNode);
-
   for (group of groups) {
     let groupElementNode = document.importNode(groupElement.content, true);
 
     let groupContainer = groupElementNode.querySelector('.group-container');
-    // TODO: Set group-container div's id to be the groupId.
+    groupContainer.setAttribute("id", group.groupId);
+    
+    let groupLink = groupElementNode.getElementById('group-page-link');
+    groupLink.href = "group.html?groupId=" + group.groupId;
 
     let groupName = groupElementNode.getElementById('group-name');
     groupName.innerText = group.groupName;
@@ -111,7 +124,19 @@ function displayChallenges(groups) {
 
 /** Display the user's earned badges  */
 function displayBadges(badges) {
+  const badgeContainer = document.getElementById('badge-grid');
+  for (badge of badges) {
+    badgeContainer.appendChild(createBadgeElement(badge));
+  }
+}
 
+/** Create a badge element to display */
+function createBadgeElement(badge) {
+  let badgeElement = document.createElement('div');
+  badgeElement.setAttribute('id', badge.badgeId);
+  badgeElement.setAttribute('class', 'badge');
+  badgeElement.setAttribute('title', badge.challengeName);
+  // TODO: Set image based off of badge.iconUrl
 }
 
 /** Display the user's profile picture */
@@ -126,8 +151,8 @@ function editProfile() {
 }
 
 /** Close modal form */
-function closeModal() {
-  let modal = document.getElementById('edit-modal');
+function closeModal(type) {
+  let modal = document.getElementById(type + '-modal');
   modal.classList.toggle('show-modal');
 }
 
@@ -158,17 +183,27 @@ function saveEdits() {
     params.append('phone', phoneNumber);
     params.append('interests', interests);
 
-    // Send a POST request to the servlet which registers a new user.
+    // Send a POST request to the servlet which edits the user profile.
     fetch('/editProfile', {method: 'POST', body: params});
   }
 }
 
-/** Code to handle User joining a group */
-function joinGroup() {
-
+/** Open a modal form to let users create a group */
+function openGroupModal() {
+  let modal = document.getElementById('group-modal');
+  modal.classList.toggle('show-modal');
 }
 
-/** Code to handle User creating a group */
+/** Save user's created group to database */
 function createGroup() {
+  const groupForm = document.getElementById('create-group');
+  if (groupForm.reportValidity()) {
+    const name = document.getElementById('group-name-input').value;
+    
+    const params = new URLSearchParams();
+    params.append('groupName', name);
 
+    // Send a POST request to the servlet which creates a new group.
+    fetch('/createGroup', {method: 'POST', body: params});
+  }
 }
