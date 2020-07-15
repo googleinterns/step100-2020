@@ -139,6 +139,7 @@ public class PostTest {
     assertEquals(likes.size(), 1);
 
     post.removeLike("test user 1");
+
     likes = post.getLikes();
     assertEquals(likes.size(), 0);
   }
@@ -157,7 +158,7 @@ public class PostTest {
   }
 
   @Test
-  public void getAndCreatePostEntityTest() {
+  public void toAndFromPostEntityTest() {
     Entity entity = post.toEntity();
     Post returnedPost = Post.fromEntity(entity);
 
