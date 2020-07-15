@@ -10,11 +10,18 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.io.PrintWriter;
 import com.google.gson.Gson;
 import com.google.sps.Objects.response.MemberResponse;
 import error.ErrorHandler;
@@ -27,24 +34,54 @@ public class GroupMemberServlet extends HttpServlet {
   // Adds a new member to a group 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
-    String userId = this.getUserId(response);
+    String email = request.getParameter("email");
     Long groupId = Long.parseLong(request.getParameter("groupId"));
-    
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Entity memberEntity = getMemberEntity(email, response, datastore);
     Entity group = this.getGroupFromId(response, groupId, datastore);
-    if (group != null && !userId.equals("")) {
+    if (group == null) return;
+
+    String memResponse = doPost_helper(response, datastore, groupId, memberEntity, group);
+    String json = "{\"response\":" + "\"" + memResponse + "\"}";
+    response.setContentType("application/json;");
+    response.getWriter().println(json);
+  }
+
+  // If no account for email, return 'This email doesn't have an account'
+  // If user already in group, return 'User already in group'
+  // If user not it group, add user and return 'User added to group'
+  private String doPost_helper(HttpServletResponse response, DatastoreService datastore, Long groupId, Entity memberEntity, Entity group) {
+    String memResponse = "";
+    if (memberEntity == null) {
+      memResponse += "This email doesn't have an account.";
+    } else {
+
       ArrayList<String> members = 
         (ArrayList<String>) group.getProperty("members");
       if (members == null) {
         members = new ArrayList<>();
       }
 
-      this.addMember(members, userId);
-      group.setProperty("members", members);
-      datastore.put(group);
-    } else {
-      return;
+      String memberId = (String) memberEntity.getProperty("userId");
+      if (members.contains(memberId)) {
+        memResponse += "User is already in group.";
+      } else {
+        this.addMember(members, memberId);
+        group.setProperty("memberIds", members);
+        datastore.put(group);
+        memResponse += "User added to group.";
+      }
     }
+    return memResponse;
+  }
+
+  private Entity getMemberEntity(String email, HttpServletResponse response, DatastoreService datastore){
+    Filter findMemberEntity =
+    new FilterPredicate("email", FilterOperator.EQUAL, email);
+    Query query = new Query("User").setFilter(findMemberEntity);
+    PreparedQuery pq = datastore.prepare(query);
+    return pq.asSingleEntity();
   }
 
   private void addMember(ArrayList<String> members, String userId) {

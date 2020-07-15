@@ -8,9 +8,7 @@ function init() {
 let postResponse;
 
 function loadPosts() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const groupId = urlParams.get('groupId');
+  const groupId = getGroupId();
   console.log(groupId);
   fetch(`/group-post?groupId=${groupId}`).then(response => response.json()).then((postsResp) => {
     postResponse = postsResp;

@@ -1,9 +1,7 @@
 function loadMembers() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const groupId = urlParams.get('groupId');
+  const groupId = getGroupId();
   console.log(groupId);
-  fetch(`/all-group-members?groupId=${groupId}`).then(response => response.json()).then((allGroupMembers) => {
+  fetch(`/all-group-members?groupId=5735052650479616`).then(response => response.json()).then((allGroupMembers) => {
     const allMembers = allGroupMembers;
     const memberGrid = document.getElementsByClassName("member-grid-container")[0];
     memberGrid.innerHTML = '';
@@ -14,9 +12,27 @@ function loadMembers() {
   });
 }
 
+function getGroupId() {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get('groupId');
+}
+
 function openAddGroupMemberModal() {
   let modal = document.getElementById('add-member-modal');
   modal.style.display = "block";
+}
+
+function addMember(){
+  console.log("add member")
+  const groupId = getGroupId();
+  const emailInput = document.getElementById('email-input').value;
+  let request = new Request(`/group-member?email=${emailInput}&groupId=5735052650479616`, { method: "POST" });
+  fetch(request).then(response => response.json()).then((memberResp) => {
+    console.log(memberResp);
+    const memberUpdate = document.getElementById("memberUpdate");
+    memberUpdate.innerText = memResponse.response;
+  }); 
 }
 
 function createMemberComponents(memberInfo) {
