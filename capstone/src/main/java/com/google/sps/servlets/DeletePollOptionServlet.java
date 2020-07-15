@@ -15,7 +15,6 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.sps.Objects.Group;
 
 import error.ErrorHandler;
 
@@ -32,12 +31,13 @@ public class DeletePollOptionServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    List<Long> options = this.getOptionsList(request, response, datastore);
+    long groupId = Long.parseLong(request.getParameter("groupId"));
+    List<Long> options = this.getOptionsList(groupId, request, response, datastore);
     long maxVotedId = this.getMaxVotedOption(options, response, datastore);
     if (maxVotedId != 0) {
       try {
         this.deleteEntity(maxVotedId, datastore);
-        this.updateGroupOptionsList(maxVotedId, request, response, datastore);
+        this.updateGroupOptionsList(groupId, maxVotedId, request, response, datastore);
       } catch (EntityNotFoundException e) {
         ErrorHandler.sendError(response, "Entity not found.");
         return;
@@ -48,10 +48,12 @@ public class DeletePollOptionServlet extends HttpServlet {
   }
 
   private List<Long> getOptionsList(
-      HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
+      long groupId,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      DatastoreService datastore)
       throws IOException {
-    Group group = new Group(null, null, null, null, "", "", 0);
-    Entity entity = group.getGroupEntity(request, response, datastore);
+    Entity entity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     List<Long> options =
         (entity.getProperty("options") == null)
             ? new ArrayList<Long>()
@@ -92,12 +94,13 @@ public class DeletePollOptionServlet extends HttpServlet {
   }
 
   private void updateGroupOptionsList(
+      long groupId,
       long optionId,
       HttpServletRequest request,
       HttpServletResponse response,
       DatastoreService datastore)
       throws IOException {
-    Entity groupEntity = Group.getGroupEntity(request, response, datastore);
+    Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     List<Long> options =
         (groupEntity.getProperty("options") == null)
             ? new ArrayList<Long>()

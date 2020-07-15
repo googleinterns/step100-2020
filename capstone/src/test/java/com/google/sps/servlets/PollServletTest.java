@@ -38,6 +38,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.sps.Objects.Option;
+import com.google.sps.Objects.response.PollResponse;
 
 /**
  * Unit tests for {@link PollServlet}.
@@ -56,7 +57,6 @@ public class PollServletTest {
   private static final List<Long> OPTION_IDS = new ArrayList<Long>(Arrays.asList(1L, 2L));
   private static final String GROUP_NAME = "Runners Club";
   private static final String GROUP_ID = "1";
-  //  private static final Entity GROUP_ENTITY = new Entity("Group");
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -128,6 +128,10 @@ public class PollServletTest {
 
   private List<Option> getOptions() {
     List<Option> options = new ArrayList<Option>();
+    for (String text : OPTION_TEXT) {
+      Option option = new Option(0, text, new ArrayList<String>());
+      options.add(option);
+    }
     return options;
   }
 
@@ -141,6 +145,25 @@ public class PollServletTest {
     pollServlet.doGet(mockRequest, mockResponse);
 
     String response = responseWriter.toString();
+    assertTrue(response.contains(USER_ID));
+  }
+
+  @Test
+  public void doGet_userLoggedIn_withOptions() throws IOException {
+    Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
+    datastore.put(groupEntity);
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
+    doReturn(groupEntity).when(pollServlet).getGroupEntity(mockRequest, mockResponse, datastore);
+    PollResponse pollResponse = new PollResponse(this.getOptions(), new ArrayList<Long>(), USER_ID);
+    //    doReturn(pollResponse)
+    //        .when(pollServlet)
+    //        .buildPollResponse(groupEntity, USER_ID, mockResponse, datastore);
+    when(pollServlet.buildPollResponse(groupEntity, USER_ID, mockResponse, datastore))
+        .thenReturn(pollResponse);
+    pollServlet.doGet(mockRequest, mockResponse);
+
+    String response = responseWriter.toString();
+    System.out.println(response);
     assertTrue(response.contains(USER_ID));
   }
 

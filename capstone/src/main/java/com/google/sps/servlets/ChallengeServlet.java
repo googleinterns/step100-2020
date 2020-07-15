@@ -12,7 +12,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.Objects.Challenge;
-import com.google.sps.Objects.Group;
 import com.google.sps.Objects.Time;
 import com.google.sps.Objects.response.ChallengeResponse;
 
@@ -23,7 +22,10 @@ public class ChallengeServlet extends AuthenticatedServlet {
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity groupEntity = this.getGroupEntity(request, response, datastore);
+    long groupId = Long.parseLong(request.getParameter("groupId"));
+
+    Entity groupEntity = this.getGroupEntity(groupId, request, response, datastore);
+    System.out.println("group entity ===========" + groupEntity);
     ChallengeResponse challengeResponse =
         this.buildChallengeResponse(groupEntity, userId, datastore, response);
     ServletHelper.write(response, challengeResponse, "application/json");
@@ -47,9 +49,14 @@ public class ChallengeServlet extends AuthenticatedServlet {
     this.updateChallengesList(request, response, datastore, challengeEntity);
   }
 
-  private ChallengeResponse buildChallengeResponse(
+  public ChallengeResponse buildChallengeResponse(
       Entity groupEntity, String userId, DatastoreService datastore, HttpServletResponse response)
       throws IOException {
+    System.out.println("in build challenge response");
+    System.out.println(groupEntity);
+    if (groupEntity == null) {
+      return null;
+    }
     List<Long> challengeIds =
         (groupEntity.getProperty("challenges") == null)
             ? new ArrayList<Long>()
@@ -62,10 +69,13 @@ public class ChallengeServlet extends AuthenticatedServlet {
     return new ChallengeResponse(challenge, hasUserCompleted);
   }
 
-  private Entity getGroupEntity(
-      HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
+  public Entity getGroupEntity(
+      long groupId,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      DatastoreService datastore)
       throws IOException {
-    return Group.getGroupEntity(request, response, datastore);
+    return ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
   }
 
   private Challenge getMostRecentChallenge(
@@ -87,13 +97,15 @@ public class ChallengeServlet extends AuthenticatedServlet {
     }
   }
 
-  private void updateChallengesList(
+  public void updateChallengesList(
       HttpServletRequest request,
       HttpServletResponse response,
       DatastoreService datastore,
       Entity challengeEntity)
       throws IOException {
-    Entity groupEntity = this.getGroupEntity(request, response, datastore);
+    long groupId = Long.parseLong(request.getParameter("groupId"));
+    Entity groupEntity = this.getGroupEntity(groupId, request, response, datastore);
+    System.out.println(groupEntity);
     List<Long> challenges =
         (groupEntity.getProperty("challenges") == null)
             ? new ArrayList<Long>()

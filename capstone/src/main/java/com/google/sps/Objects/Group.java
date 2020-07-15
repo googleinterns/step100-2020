@@ -1,14 +1,6 @@
 package com.google.sps.Objects;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.Entity;
-import com.google.sps.servlets.ServletHelper;
 
 public class Group {
 
@@ -75,14 +67,5 @@ public class Group {
 
   public void addPost(Long newPost) {
     this.postIds.add(newPost);
-  }
-
-  public static Entity getGroupEntity(
-      HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
-      throws IOException {
-    String groupIdString = request.getParameter("groupId");
-    long groupId = Long.parseLong(groupIdString);
-    Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
-    return groupEntity;
   }
 }
