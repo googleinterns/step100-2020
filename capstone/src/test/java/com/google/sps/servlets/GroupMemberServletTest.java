@@ -85,7 +85,7 @@ public class GroupMemberServletTest {
     groupMemberServlet = null;
   }
 
-   /* Create a Group entity */
+  /* Create a Group entity */
   private Entity createGroupEntity(long groupId) {
     Entity groupEntity = new Entity("Group", groupId);
     groupEntity.setProperty("groupId", groupId);
