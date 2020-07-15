@@ -56,7 +56,6 @@ public class PollServletTest {
   private static final List<Long> OPTION_IDS = new ArrayList<Long>(Arrays.asList(1L, 2L));
   private static final String GROUP_NAME = "Runners Club";
   private static final String GROUP_ID = "1";
-  //  private static final Entity GROUP_ENTITY = new Entity("Group");
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
