@@ -97,8 +97,7 @@ public class DeletePollOptionServlet extends HttpServlet {
       HttpServletResponse response,
       DatastoreService datastore)
       throws IOException {
-    Group group = new Group(null, null, null, null, "", "", 0);
-    Entity groupEntity = group.getGroupEntity(request, response, datastore);
+    Entity groupEntity = Group.getGroupEntity(request, response, datastore);
     List<Long> options =
         (groupEntity.getProperty("options") == null)
             ? new ArrayList<Long>()
