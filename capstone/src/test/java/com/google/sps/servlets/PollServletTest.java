@@ -53,6 +53,7 @@ public class PollServletTest {
   private static final long NEW_OPTION_ID = 2;
   private static final List<String> OPTION_TEXT =
       new ArrayList<String>(Arrays.asList("Run", "Jog", "Climb a tree", "Bungee jump"));
+  private static final List<Long> OPTION_IDS = new ArrayList<Long>(Arrays.asList(1L, 2L));
   private static final String GROUP_NAME = "Runners Club";
   private static final String GROUP_ID = "1";
   //  private static final Entity GROUP_ENTITY = new Entity("Group");
@@ -95,6 +96,22 @@ public class PollServletTest {
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
   }
 
+  @After
+  public void tearDown() {
+    helper.tearDown();
+    responseWriter = null;
+    datastore = null;
+    pollServlet = null;
+  }
+
+  private void addOptionsToDb() {
+    ImmutableList.Builder<Entity> option = ImmutableList.builder();
+    for (String text : OPTION_TEXT) {
+      option.add(createOption(text));
+    }
+    datastore.put(option.build());
+  }
+
   private Entity createOption(String text) {
     Entity optionEntity = new Entity("Option");
     long timestamp = System.currentTimeMillis();
@@ -102,14 +119,6 @@ public class PollServletTest {
     optionEntity.setProperty("votes", new ArrayList<String>());
     optionEntity.setProperty("timestamp", timestamp);
     return optionEntity;
-  }
-
-  @After
-  public void tearDown() {
-    helper.tearDown();
-    responseWriter = null;
-    datastore = null;
-    pollServlet = null;
   }
 
   private Entity createGroup(String userId, String groupName) {
@@ -125,36 +134,21 @@ public class PollServletTest {
     return groupEntity;
   }
 
-  private void addOptionsToGroup() {
-    Entity groupEntity = new Entity("Group");
-    List<Long> options =
-        (groupEntity.getProperty("options") == null)
-            ? new ArrayList<Long>()
-            : (List<Long>) groupEntity.getProperty("options");
-    ImmutableList.Builder<Entity> option = ImmutableList.builder();
-    for (String text : OPTION_TEXT) {
-      Entity optionEntity = createOption(text);
-      option.add(optionEntity);
-      options.add(optionEntity.getKey().getId());
-    }
-    datastore.put(option.build());
-    datastore.put(groupEntity);
+  private List<Option> getOptions() {
+    List<Option> options = new ArrayList<Option>();
+    return options;
   }
 
   @Test
-  public void doGet_userLoggedIn() throws IOException {
+  public void doGet_userLoggedIn_noOptions() throws IOException {
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);
-    System.out.println(groupEntity);
-    System.out.println("in do get user logged in --------------");
-    //    this.addOptionsToGroup();
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
     doReturn(groupEntity).when(pollServlet).getGroupEntity(mockRequest, mockResponse, datastore);
-    System.out.println("after when --------");
-    //        .thenReturn(new Entity("Group"));
+
     pollServlet.doGet(mockRequest, mockResponse);
+
     String response = responseWriter.toString();
-    System.out.println(response);
     assertTrue(response.contains(USER_ID));
   }
 

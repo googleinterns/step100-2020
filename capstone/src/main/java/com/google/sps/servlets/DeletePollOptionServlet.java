@@ -50,7 +50,8 @@ public class DeletePollOptionServlet extends HttpServlet {
   private List<Long> getOptionsList(
       HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
       throws IOException {
-    Entity entity = Group.getGroupEntity(request, response, datastore);
+    Group group = new Group(null, null, null, null, "", "", 0);
+    Entity entity = group.getGroupEntity(request, response, datastore);
     List<Long> options =
         (entity.getProperty("options") == null)
             ? new ArrayList<Long>()
@@ -96,7 +97,8 @@ public class DeletePollOptionServlet extends HttpServlet {
       HttpServletResponse response,
       DatastoreService datastore)
       throws IOException {
-    Entity groupEntity = Group.getGroupEntity(request, response, datastore);
+    Group group = new Group(null, null, null, null, "", "", 0);
+    Entity groupEntity = group.getGroupEntity(request, response, datastore);
     List<Long> options =
         (groupEntity.getProperty("options") == null)
             ? new ArrayList<Long>()

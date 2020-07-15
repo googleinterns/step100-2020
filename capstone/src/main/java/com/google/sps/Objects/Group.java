@@ -77,7 +77,7 @@ public class Group {
     this.postIds.add(newPost);
   }
 
-  public Entity getGroupEntity(
+  public static Entity getGroupEntity(
       HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
       throws IOException {
     String groupIdString = request.getParameter("groupId");

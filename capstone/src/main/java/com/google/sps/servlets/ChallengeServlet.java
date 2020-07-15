@@ -23,52 +23,10 @@ public class ChallengeServlet extends AuthenticatedServlet {
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity groupEntity = Group.getGroupEntity(request, response, datastore);
+    Entity groupEntity = this.getGroupEntity(request, response, datastore);
     ChallengeResponse challengeResponse =
         this.buildChallengeResponse(groupEntity, userId, datastore, response);
     ServletHelper.write(response, challengeResponse, "application/json");
-  }
-
-  private ChallengeResponse buildChallengeResponse(
-      Entity groupEntity, String userId, DatastoreService datastore, HttpServletResponse response)
-      throws IOException {
-    List<Long> challengeIds =
-        (groupEntity.getProperty("challenges") == null)
-            ? new ArrayList<Long>()
-            : (ArrayList<Long>) groupEntity.getProperty("challenges");
-    Challenge challenge = this.getMostRecentChallenge(challengeIds, datastore, response);
-    if (challenge == null) {
-      return null;
-    }
-    boolean hasUserCompleted = challenge.getHasUserCompleted(userId);
-    return new ChallengeResponse(challenge, hasUserCompleted);
-  }
-
-  private Challenge getMostRecentChallenge(
-      List<Long> challengeIds, DatastoreService datastore, HttpServletResponse response)
-      throws IOException {
-    Challenge newestChallenge = null;
-    Entity newestChallengeEntity = null;
-    Long newestTimestamp = 0L;
-
-    for (Long challengeId : challengeIds) {
-      // get newest challenge
-      Entity entity = ServletHelper.getEntityFromId(response, challengeId, datastore, "Challenge");
-      Long timestamp = (Long) entity.getProperty("timestamp");
-      if (timestamp > newestTimestamp) {
-        newestTimestamp = timestamp;
-        newestChallengeEntity = entity;
-      }
-    }
-    if (newestChallengeEntity == null) {
-      return null;
-    }
-    // If the newest challenge's due date already passed
-    if ((long) newestChallengeEntity.getProperty("dueDate") < System.currentTimeMillis()) {
-      return null;
-    }
-    newestChallenge = Challenge.fromEntity(newestChallengeEntity);
-    return newestChallenge;
   }
 
   @Override
@@ -89,13 +47,53 @@ public class ChallengeServlet extends AuthenticatedServlet {
     this.updateChallengesList(request, response, datastore, challengeEntity);
   }
 
+  private ChallengeResponse buildChallengeResponse(
+      Entity groupEntity, String userId, DatastoreService datastore, HttpServletResponse response)
+      throws IOException {
+    List<Long> challengeIds =
+        (groupEntity.getProperty("challenges") == null)
+            ? new ArrayList<Long>()
+            : (ArrayList<Long>) groupEntity.getProperty("challenges");
+    Challenge challenge = this.getMostRecentChallenge(challengeIds, datastore, response);
+    if (challenge == null) {
+      return null;
+    }
+    boolean hasUserCompleted = challenge.getHasUserCompleted(userId);
+    return new ChallengeResponse(challenge, hasUserCompleted);
+  }
+
+  private Entity getGroupEntity(
+      HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
+      throws IOException {
+    return Group.getGroupEntity(request, response, datastore);
+  }
+
+  private Challenge getMostRecentChallenge(
+      List<Long> challengeIds, DatastoreService datastore, HttpServletResponse response)
+      throws IOException {
+
+    if (challengeIds.size() == 0) {
+      return null;
+    } else {
+      long mostRecentChallengeId = challengeIds.get(challengeIds.size() - 1);
+      Entity newestChallengeEntity =
+          ServletHelper.getEntityFromId(response, mostRecentChallengeId, datastore, "Challenge");
+      // if challenge already passed
+      if ((long) newestChallengeEntity.getProperty("dueDate") < System.currentTimeMillis()) {
+        return null;
+      } else {
+        return Challenge.fromEntity(newestChallengeEntity);
+      }
+    }
+  }
+
   private void updateChallengesList(
       HttpServletRequest request,
       HttpServletResponse response,
       DatastoreService datastore,
       Entity challengeEntity)
       throws IOException {
-    Entity groupEntity = Group.getGroupEntity(request, response, datastore);
+    Entity groupEntity = this.getGroupEntity(request, response, datastore);
     List<Long> challenges =
         (groupEntity.getProperty("challenges") == null)
             ? new ArrayList<Long>()
