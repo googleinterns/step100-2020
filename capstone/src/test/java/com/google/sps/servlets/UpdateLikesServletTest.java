@@ -145,6 +145,8 @@ public class UpdateLikesServletTest {
 
   @Test
   public void doPost_removeLike() throws Exception {
+    addLikestoPost();
+
     POST_1.getLikes().add(USER_ID);
     POST_1.getLikes().add("test 2");
 
@@ -153,13 +155,21 @@ public class UpdateLikesServletTest {
 
     updateLikesServlet.doPost(mockRequest, mockResponse);
 
-    Key postKey = KeyFactory.createKey("Post", POST_ID);
-    Entity post = datastore.get(postKey);
+    Entity post = datastore.get(KeyFactory.createKey("Post", POST_ID));
 
     POST_1.getLikes().remove(USER_ID);
 
     String jsonOriginal = new Gson().toJson(POST_1);
     String jsonStored = new Gson().toJson(Post.getPostEntity(post));
     assertEquals(jsonOriginal, jsonStored);
+  }
+
+  private void addLikestoPost() throws IOException, EntityNotFoundException {
+    Entity postEntity = datastore.get(KeyFactory.createKey("Post", POST_ID));
+    ArrayList<String> likes = new ArrayList<String>();
+    likes.add(USER_ID);
+    likes.add("test 2");
+    postEntity.setProperty("likes", likes);
+    datastore.put(postEntity);
   }
 }
