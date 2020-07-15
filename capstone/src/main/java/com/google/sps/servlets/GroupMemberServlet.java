@@ -71,9 +71,21 @@ public class GroupMemberServlet extends HttpServlet {
         group.setProperty("memberIds", members);
         datastore.put(group);
         memResponse += "User added to group.";
+        addGroupToUser(response, datastore, groupId, memberEntity);
       }
     }
     return memResponse;
+  }
+
+  private void addGroupToUser(HttpServletResponse response, DatastoreService datastore, Long groupId, Entity memberEntity) {
+    ArrayList<Long> groups = 
+        (ArrayList<Long>) memberEntity.getProperty("groups");
+    if (groups == null) {
+      groups = new ArrayList<>();
+    }
+    groups.add(groupId);
+    memberEntity.setProperty("groups", groups);
+    datastore.put(memberEntity);
   }
 
   private Entity getMemberEntity(String email, HttpServletResponse response, DatastoreService datastore){
