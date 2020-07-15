@@ -25,6 +25,37 @@ p {
   width: 50%;
 }
 
+/* Sidebar and Navbar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  float: right;
+  margin-right: 7%;
+  margin-top: 50px;
+  position: relative;
+}
+
+.navbar {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.navbar #logout-btn {
+  height: 30px;
+  width: 30px;
+}
+
+.navbar #profile-btn {
+  background-color: var(--orange);
+  border-radius: 50%;
+  height: 35px;
+  margin: 0 1em;
+  width: 35px;
+}
+
 /* Group Header*/
 .group-header {
   border-radius: 10px;
