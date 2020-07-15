@@ -83,14 +83,6 @@ public class PollServletTest {
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
-    //    // Add test data
-    //    ImmutableList.Builder<Entity> option = ImmutableList.builder();
-    //    for (String text : OPTION_TEXT) {
-    //      option.add(createOption(text));
-    //    }
-    //    datastore.put(option.build());
-    //    datastore.put(createGroup(USER_ID, GROUP_NAME));
-
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));

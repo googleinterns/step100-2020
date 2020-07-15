@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -56,9 +57,9 @@ public class ChallengeServletTest {
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
+  @Spy private ChallengeServlet challengeServlet;
   private StringWriter responseWriter;
   private DatastoreService datastore;
-  private ChallengeServlet challengeServlet;
 
   @Before
   public void setUp() throws IOException {
@@ -74,8 +75,6 @@ public class ChallengeServletTest {
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
-
-    challengeServlet = new ChallengeServlet();
   }
 
   /**
