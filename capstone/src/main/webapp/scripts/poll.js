@@ -9,7 +9,6 @@ let groupId;
 
 function getGroupId() {
   groupId = window.location.search.substring(1).split("=")[1];
-  console.log(groupId);
 }
 
 /**
@@ -60,7 +59,6 @@ function getPollOptions() {
  * updated.
  */
 function getChallenge() {
-  console.log("in get challenge " + groupId);
   //Milliseconds until challenge due date.
   let dueDateMillis = 0;
   fetch(`challenge?groupId=${groupId}`)
@@ -141,7 +139,6 @@ function updatePoll() {
  * Adds challenge to database. If there are no poll options, display no challenge text.
  */
 function addChallengeToDb() {
-  console.log(topChallenge);
   topChallenge
     ? fetch(`challenge?name=${topChallenge}&groupId=${groupId}`, {
         method: "POST"
