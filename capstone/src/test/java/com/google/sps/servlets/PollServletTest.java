@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -19,11 +20,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.Spy;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -37,7 +37,6 @@ import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
-import com.google.sps.Objects.Group;
 import com.google.sps.Objects.Option;
 
 /**
@@ -45,17 +44,18 @@ import com.google.sps.Objects.Option;
  *
  * @author lucyqu
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(PollServlet.class)
+@RunWith(JUnit4.class)
 public class PollServletTest {
 
   private static final String USER_EMAIL = "test@test.com";
   private static final String USER_ID = "test";
-  private static final String GROUP_NAME = "Runners Club";
-  private static final Entity GROUP_ENTITY = createGroup(USER_ID, GROUP_NAME);
   private static final String NEW_OPTION = "Do a 5k";
+  private static final long NEW_OPTION_ID = 2;
   private static final List<String> OPTION_TEXT =
       new ArrayList<String>(Arrays.asList("Run", "Jog", "Climb a tree", "Bungee jump"));
+  private static final String GROUP_NAME = "Runners Club";
+  private static final String GROUP_ID = "1";
+  //  private static final Entity GROUP_ENTITY = new Entity("Group");
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -72,25 +72,27 @@ public class PollServletTest {
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
+  @Spy private PollServlet pollServlet;
   private StringWriter responseWriter;
   private DatastoreService datastore;
-  private PollServlet pollServlet;
 
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
-    PowerMockito.mockStatic(Group.class);
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
-    // Add test data
-    datastore.put(GROUP_ENTITY);
+    //    // Add test data
+    //    ImmutableList.Builder<Entity> option = ImmutableList.builder();
+    //    for (String text : OPTION_TEXT) {
+    //      option.add(createOption(text));
+    //    }
+    //    datastore.put(option.build());
+    //    datastore.put(createGroup(USER_ID, GROUP_NAME));
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
-
-    pollServlet = new PollServlet();
   }
 
   private Entity createOption(String text) {
@@ -102,13 +104,21 @@ public class PollServletTest {
     return optionEntity;
   }
 
-  private static Entity createGroup(String userId, String groupName) {
+  @After
+  public void tearDown() {
+    helper.tearDown();
+    responseWriter = null;
+    datastore = null;
+    pollServlet = null;
+  }
+
+  private Entity createGroup(String userId, String groupName) {
     ArrayList<String> members = new ArrayList<String>();
     members.add(userId);
     Entity groupEntity = new Entity("Group");
     groupEntity.setProperty("memberIds", members);
-    groupEntity.setProperty("challenges", new ArrayList<Long>());
-    groupEntity.setProperty("posts", new ArrayList<Long>());
+    groupEntity.setProperty("challenges", null);
+    groupEntity.setProperty("posts", null);
     groupEntity.setProperty("options", new ArrayList<Long>());
     groupEntity.setProperty("groupName", groupName);
     groupEntity.setProperty("headerImg", "");
@@ -116,7 +126,7 @@ public class PollServletTest {
   }
 
   private void addOptionsToGroup() {
-    Entity groupEntity = GROUP_ENTITY;
+    Entity groupEntity = new Entity("Group");
     List<Long> options =
         (groupEntity.getProperty("options") == null)
             ? new ArrayList<Long>()
@@ -131,25 +141,21 @@ public class PollServletTest {
     datastore.put(groupEntity);
   }
 
-  @After
-  public void tearDown() {
-    helper.tearDown();
-    responseWriter = null;
-    datastore = null;
-    pollServlet = null;
-  }
-
   @Test
   public void doGet_userLoggedIn() throws IOException {
-    this.addOptionsToGroup();
-    when(Group.getGroupEntity(mockRequest, mockResponse, datastore)).thenReturn(GROUP_ENTITY);
+    Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
+    datastore.put(groupEntity);
+    System.out.println(groupEntity);
+    System.out.println("in do get user logged in --------------");
+    //    this.addOptionsToGroup();
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
+    doReturn(groupEntity).when(pollServlet).getGroupEntity(mockRequest, mockResponse, datastore);
+    System.out.println("after when --------");
+    //        .thenReturn(new Entity("Group"));
     pollServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
-
+    System.out.println(response);
     assertTrue(response.contains(USER_ID));
-    for (String text : OPTION_TEXT) {
-      assertTrue(response.contains(text));
-    }
   }
 
   @Test
@@ -162,13 +168,22 @@ public class PollServletTest {
     assertTrue(response.contains("Oops an error happened!"));
   }
 
+  /**
+   * Tests that the option is correctly stored into datastore.
+   *
+   * @throws IOException exception thrown if cannot read or write from file
+   * @throws EntityNotFoundException exception thrown if cannot find entity in datastore
+   */
   @Test
-  public void doPost_userLoggedIn() throws IOException, EntityNotFoundException {
+  public void doPost_userLoggedIn_optionsTest() throws IOException, EntityNotFoundException {
+    Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
+    datastore.put(groupEntity);
     when(mockRequest.getParameter("text")).thenReturn(NEW_OPTION);
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
+    doReturn(groupEntity).when(pollServlet).getGroupEntity(mockRequest, mockResponse, datastore);
 
     pollServlet.doPost(mockRequest, mockResponse);
-    // id of Option increments for each new Option that is added
-    Key optionKey = KeyFactory.createKey("Option", OPTION_TEXT.size() + 1);
+    Key optionKey = KeyFactory.createKey("Option", NEW_OPTION_ID);
     Entity optionEntity = datastore.get(optionKey);
     long id = optionEntity.getKey().getId();
     Option option = new Option(id, NEW_OPTION, new ArrayList<String>());
@@ -177,6 +192,34 @@ public class PollServletTest {
     String returnedOptionJson = new Gson().toJson(returnedOption);
 
     assertEquals(optionJson, returnedOptionJson);
+  }
+
+  /**
+   * Tests that the options list for the group entity is updated properly when user inputs new
+   * option.
+   *
+   * @throws IOException exception thrown if cannot read or write from file
+   * @throws EntityNotFoundException exception thrown if cannot find entity in datastore
+   */
+  @Test
+  public void doPost_userLoggedIn_groupOptionsListTest()
+      throws IOException, EntityNotFoundException {
+    Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
+    datastore.put(groupEntity);
+    when(mockRequest.getParameter("text")).thenReturn(NEW_OPTION);
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
+    doReturn(groupEntity).when(pollServlet).getGroupEntity(mockRequest, mockResponse, datastore);
+
+    pollServlet.doPost(mockRequest, mockResponse);
+    List<Long> options = new ArrayList<Long>();
+    options.add(NEW_OPTION_ID);
+    groupEntity.setProperty("options", options);
+    Key groupKey = KeyFactory.createKey("Group", Integer.parseInt(GROUP_ID));
+    Entity groupFromDatastore = datastore.get(groupKey);
+    String groupFromDatastoreJson = new Gson().toJson(groupFromDatastore);
+    String groupJson = new Gson().toJson(groupEntity);
+
+    assertEquals(groupFromDatastoreJson, groupJson);
   }
 
   @Test(expected = EntityNotFoundException.class)

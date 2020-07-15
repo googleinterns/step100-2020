@@ -24,7 +24,7 @@ public class PollServlet extends AuthenticatedServlet {
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity groupEntity = Group.getGroupEntity(request, response, datastore);
+    Entity groupEntity = this.getGroupEntity(request, response, datastore);
     PollResponse pollResponse = this.buildPollResponse(groupEntity, userId, response, datastore);
     ServletHelper.write(response, pollResponse, "application/json");
   }
@@ -40,13 +40,19 @@ public class PollServlet extends AuthenticatedServlet {
     this.updateOptionsList(request, response, datastore, optionEntity);
   }
 
+  public Entity getGroupEntity(
+      HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
+      throws IOException {
+    return Group.getGroupEntity(request, response, datastore);
+  }
+
   private void updateOptionsList(
       HttpServletRequest request,
       HttpServletResponse response,
       DatastoreService datastore,
       Entity optionEntity)
       throws IOException {
-    Entity entity = Group.getGroupEntity(request, response, datastore);
+    Entity entity = this.getGroupEntity(request, response, datastore);
     List<Long> options =
         (entity.getProperty("options") == null)
             ? new ArrayList<Long>()
