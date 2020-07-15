@@ -102,7 +102,7 @@ public class GroupPostDataServlet extends HttpServlet {
   }
 
   private String getUserId(HttpServletResponse response) throws IOException {
-  UserService userService = UserServiceFactory.getUserService();
+    UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
       return userService.getCurrentUser().getUserId();
     }

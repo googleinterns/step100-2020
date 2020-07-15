@@ -68,6 +68,7 @@ public class CommentTest {
     entity.setProperty("userId", USER_ID);
     entity.setProperty("commentText", COMMENT_TEXT);
     entity.setProperty("timestamp", TIMESTAMP);
+    
     Comment returnedComment = Comment.getCommentEntity(entity);
 
     String jsonRetrieved = new Gson().toJson(returnedComment);
