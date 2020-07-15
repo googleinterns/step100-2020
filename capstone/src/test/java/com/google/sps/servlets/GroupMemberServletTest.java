@@ -71,6 +71,8 @@ public class GroupMemberServletTest {
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
+    populateDatabase(datastore);
+
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
@@ -114,7 +116,6 @@ public class GroupMemberServletTest {
 
   @Test
   public void doPost_invalidPost() throws IOException, EntityNotFoundException {
-    populateDatabase(datastore);
     when(mockRequest.getParameter("groupId")).thenReturn("1122");
 
     groupMemberServlet.doPost(mockRequest, mockResponse);

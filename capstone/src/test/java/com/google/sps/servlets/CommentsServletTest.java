@@ -91,6 +91,8 @@ private final LocalServiceTestHelper helper =
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
+    populateDatabase(datastore);
+
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
@@ -112,7 +114,6 @@ private final LocalServiceTestHelper helper =
 
   @Test
   public void doPost_addComment() throws Exception {
-    populateDatabase(datastore);
     when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
     when(mockRequest.getParameter("comment-text")).thenReturn(COMMENT_TEXT);
 
@@ -128,7 +129,6 @@ private final LocalServiceTestHelper helper =
   @Test
   public void doPost_userNotLoggedIn() throws IOException, EntityNotFoundException {
     helper.setEnvIsLoggedIn(false);
-    populateDatabase(datastore);
     when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
     when(mockRequest.getParameter("comment-text")).thenReturn(COMMENT_TEXT);
 
@@ -140,7 +140,6 @@ private final LocalServiceTestHelper helper =
 
   @Test
   public void doPost_invalidPost() throws IOException, EntityNotFoundException {
-    populateDatabase(datastore);
     when(mockRequest.getParameter("id")).thenReturn(Long.toString(5));
     when(mockRequest.getParameter("comment-text")).thenReturn(COMMENT_TEXT);
 

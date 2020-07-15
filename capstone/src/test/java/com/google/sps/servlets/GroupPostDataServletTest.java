@@ -84,6 +84,8 @@ public class GroupPostDataServletTest {
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
+    populateDatabase(datastore);
+
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
@@ -105,7 +107,6 @@ public class GroupPostDataServletTest {
 
   @Test
   public void doGet_userLoggedIn() throws Exception {
-    populateDatabase(datastore);
     groupPostDataServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
 
@@ -115,7 +116,6 @@ public class GroupPostDataServletTest {
   @Test
   public void doGet_userNotLoggedIn() throws Exception {
     helper.setEnvIsLoggedIn(false);
-    populateDatabase(datastore);
     groupPostDataServlet.doGet(mockRequest, mockResponse);
     
     String response = responseWriter.toString();

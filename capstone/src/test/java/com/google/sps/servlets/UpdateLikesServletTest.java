@@ -84,6 +84,8 @@ public class UpdateLikesServletTest {
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
+    populateDatabase(datastore);
+
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
@@ -111,7 +113,6 @@ public class UpdateLikesServletTest {
 
   @Test
   public void doPost_invalidPost() throws IOException, EntityNotFoundException {
-    populateDatabase(datastore);
     when(mockRequest.getParameter("id")).thenReturn(Long.toString(5));
     when(mockRequest.getParameter("liked")).thenReturn("true");
 
@@ -127,7 +128,6 @@ public class UpdateLikesServletTest {
 
   @Test
   public void doPost_addLike() throws Exception {
-    populateDatabase(datastore);
     when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
     when(mockRequest.getParameter("liked")).thenReturn("true");
 
@@ -147,7 +147,6 @@ public class UpdateLikesServletTest {
   public void doPost_removeLike() throws Exception {
     POST_1.getLikes().add(USER_ID);
     POST_1.getLikes().add("test 2");
-    populateDatabase(datastore);
 
     when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
     when(mockRequest.getParameter("liked")).thenReturn("false");
