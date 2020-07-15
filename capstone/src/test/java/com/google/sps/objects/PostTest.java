@@ -109,8 +109,16 @@ public class PostTest {
     post.addComment(testComment2);
 
     assertEquals(post.getComments().size(), 2);
-    assertTrue(post.getComments().get(0).equals(testComment1));
-    assertTrue(post.getComments().get(1).equals(testComment2));
+    assertTrue(equalCommentCheck(post.getComments().get(0), testComment1));
+    assertTrue(equalCommentCheck(post.getComments().get(1), testComment2));
+  }
+
+  public boolean equalCommentCheck(Comment comment1, Comment comment2) {
+    if (!(comment1 instanceof Comment) || !(comment2 instanceof Comment)){
+      return false;
+    } 
+    return comment1.getCommentText().equals(comment2.getCommentText()) &&
+      comment1.getUser().equals(comment2.getUser());
   }
 
   @Test

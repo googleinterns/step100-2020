@@ -86,6 +86,7 @@ public class CommentTest {
     datastore.put(commentEntity);
 
     ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) commentEntity.getProperty("comments");
+
     assertEquals(commentEntitys.get(0).getProperty("commentText"), COMMENT_TEXT);
     assertEquals(commentEntitys.get(0).getProperty("userId"), USER_ID);
   }
