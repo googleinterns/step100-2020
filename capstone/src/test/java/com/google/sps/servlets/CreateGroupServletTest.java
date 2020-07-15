@@ -119,16 +119,15 @@ public class CreateGroupServletTest {
   @Test
   public void doPost_addGroup() throws Exception {
     when(mockRequest.getParameter("groupName")).thenReturn(GROUP_NAME);
+    Key groupKey = KeyFactory.createKey("Group", GROUP_ID);
+    Key userKey = KeyFactory.createKey("User", USER_ID);
 
     createGroupServlet.doPost(mockRequest, mockResponse);
-    Key groupKey = KeyFactory.createKey("Group", GROUP_ID);
     Entity group = datastore.get(groupKey);
-    Key userKey = KeyFactory.createKey("User", USER_ID);
     Entity user = datastore.get(userKey);
 
     String jsonDs = new Gson().toJson(Group.fromEntity(group));
     String jsonCurrent = new Gson().toJson(GROUP_1);
-    
     assertEquals(jsonDs, jsonCurrent);
     assertThat(User.fromEntity(user).getGroups().contains(GROUP_ID));
   }
@@ -136,22 +135,20 @@ public class CreateGroupServletTest {
   @Test
   public void doPost_addMultipleGroups() throws Exception {
     when(mockRequest.getParameter("groupName")).thenReturn(GROUP_NAME);
+    Key groupKey = KeyFactory.createKey("Group", GROUP_ID);
+    Key groupKey2 = KeyFactory.createKey("Group", GROUP_ID_2);
+    Key userKey = KeyFactory.createKey("User", USER_ID);
 
     createGroupServlet.doPost(mockRequest, mockResponse);
     createGroupServlet.doPost(mockRequest, mockResponse);
-    Key groupKey = KeyFactory.createKey("Group", GROUP_ID);
     Entity group1 = datastore.get(groupKey);
-    Key groupKey2 = KeyFactory.createKey("Group", GROUP_ID_2);
     Entity group2 = datastore.get(groupKey2);
-    Key userKey = KeyFactory.createKey("User", USER_ID);
     Entity user = datastore.get(userKey);
 
     String jsonDs1 = new Gson().toJson(Group.fromEntity(group1));
     String jsonCurrent1 = new Gson().toJson(GROUP_1);
-
     String jsonDs2 = new Gson().toJson(Group.fromEntity(group2));
     String jsonCurrent2 = new Gson().toJson(GROUP_2);
-    
     assertEquals(jsonDs1, jsonCurrent1);
     assertEquals(jsonDs2, jsonCurrent2);
     assertThat(User.fromEntity(user).getGroups().contains(GROUP_ID) &&

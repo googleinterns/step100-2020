@@ -6,19 +6,19 @@ import java.util.ArrayList;
 public final class Group {
 
   private final ArrayList<String> memberIds;
-  private final ArrayList<Long> challenges;
-  private final ArrayList<Long> posts;
-  private final ArrayList<Long> options;
+  private final ArrayList<Long> challengeIds;
+  private final ArrayList<Long> postIds;
+  private final ArrayList<Long> optionIds;
   private final String groupName;
   private final String headerImg;
   private final long groupId;
 
-  public Group(ArrayList<String> memberIds, ArrayList<Long> challenges, ArrayList<Long> posts, 
-      ArrayList<Long> options, String groupName, String headerImg, long groupId) {
+  public Group(ArrayList<String> memberIds, ArrayList<Long> challengeIds, ArrayList<Long> postIds, 
+      ArrayList<Long> optionIds, String groupName, String headerImg, long groupId) {
     this.memberIds = memberIds;
-    this.challenges = challenges;
-    this.posts = posts;
-    this.options = options;
+    this.challengeIds = challengeIds;
+    this.postIds = postIds;
+    this.optionIds = optionIds;
     this.groupName = groupName;
     this.headerImg = headerImg;
     this.groupId = groupId;
@@ -29,15 +29,15 @@ public final class Group {
   }
 
   public ArrayList<Long> challenges() {
-    return challenges;
+    return challengeIds;
   }
 
   public ArrayList<Long> getPosts() {
-    return posts;
+    return postIds;
   }
 
   public ArrayList<Long> getOptions() {
-    return options;
+    return optionIds;
   }
 
   public String getGroupName() {
@@ -53,7 +53,7 @@ public final class Group {
   }
 
   public void addChallenge(Long newChallenge) {
-    this.challenges.add(newChallenge);
+    this.challengeIds.add(newChallenge);
   }
 
   public void addMember(String memberId) {
@@ -61,25 +61,26 @@ public final class Group {
   }
 
   public void addPost(Long newPost) {
-    this.posts.add(newPost);
+    this.postIds.add(newPost);
   }
 
   /* Given a Group entity, creates and returns a Group object. */
   public static Group fromEntity(Entity entity) {
     ArrayList<String> memberIds = (ArrayList<String>) entity.getProperty("memberIds");
-    ArrayList<Long> challenges = (entity.getProperty("challenges") == null) 
-      ? new ArrayList<Long>() 
-      : (ArrayList<Long>) entity.getProperty("challenges");   
-    ArrayList<Long> posts = (entity.getProperty("posts") == null) 
-      ? new ArrayList<Long>() 
-      : (ArrayList<Long>) entity.getProperty("posts");   
-    ArrayList<Long> options = (entity.getProperty("options") == null) 
-      ? new ArrayList<Long>() 
-      : (ArrayList<Long>) entity.getProperty("options");   
+    ArrayList<Long> challenges = getPropertyList("challenges", entity);
+    ArrayList<Long> posts = getPropertyList("posts", entity); 
+    ArrayList<Long> options = getPropertyList("options", entity);   
     String groupName = (String) entity.getProperty("groupName");
     String headerImg = (String) entity.getProperty("headerImg");
     long groupId = entity.getKey().getId();
 
     return new Group(memberIds, challenges, posts, options, groupName, headerImg, groupId);
+  }
+
+  private static ArrayList<Long> getPropertyList(String property, Entity entity) {
+    ArrayList<Long> propertyList = (entity.getProperty(property) == null) 
+      ? new ArrayList<Long>() 
+      : (ArrayList<Long>) entity.getProperty(property);   
+    return propertyList;
   }
 }
