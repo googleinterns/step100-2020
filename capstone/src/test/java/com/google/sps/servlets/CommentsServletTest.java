@@ -109,7 +109,7 @@ private final LocalServiceTestHelper helper =
 
   private void populateDatabase(DatastoreService datastore) {
     // Add test data.
-    datastore.put(POST_1.createPostEntity());
+    datastore.put(POST_1.toEntity());
   }
 
   @Test
@@ -122,8 +122,8 @@ private final LocalServiceTestHelper helper =
     Key postKey = KeyFactory.createKey("Post", POST_ID);
     Entity post = datastore.get(postKey);
 
-    Post returnedPost = Post.getPostEntity(post);
-    assertTrue(returnedPost.getComments().get(0).equals(COMMENT_1));
+    Post returnedPost = Post.fromEntity(post);
+    assertTrue(returnedPost.getComments().get(0).getCommentText().equals(COMMENT_TEXT));
   }
 
   @Test

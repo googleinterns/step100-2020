@@ -102,7 +102,7 @@ public class GroupPostDataServletTest {
 
   private void populateDatabase(DatastoreService datastore) {
     // Add test data.
-    datastore.put(POST_1.createPostEntity());
+    datastore.put(POST_1.toEntity());
   }
 
   @Test

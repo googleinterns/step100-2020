@@ -123,7 +123,7 @@ public class UpdateLikesServletTest {
 
   private void populateDatabase(DatastoreService datastore) {
     // Add test data.
-    datastore.put(POST_1.createPostEntity());
+    datastore.put(POST_1.toEntity());
   }
 
   @Test
@@ -139,7 +139,7 @@ public class UpdateLikesServletTest {
     POST_1.getLikes().add(USER_ID);
 
     String jsonOriginal = new Gson().toJson(POST_1);
-    String jsonStored = new Gson().toJson(Post.getPostEntity(post));
+    String jsonStored = new Gson().toJson(Post.fromEntity(post));
     assertEquals(jsonOriginal, jsonStored);
   }
 
@@ -160,7 +160,7 @@ public class UpdateLikesServletTest {
     POST_1.getLikes().remove(USER_ID);
 
     String jsonOriginal = new Gson().toJson(POST_1);
-    String jsonStored = new Gson().toJson(Post.getPostEntity(post));
+    String jsonStored = new Gson().toJson(Post.fromEntity(post));
     assertEquals(jsonOriginal, jsonStored);
   }
 

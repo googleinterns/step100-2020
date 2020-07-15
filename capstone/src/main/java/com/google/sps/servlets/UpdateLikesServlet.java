@@ -18,18 +18,17 @@ import java.util.Set;
 import error.ErrorHandler;
 
 @WebServlet("/update-likes")
-public class UpdateLikesServlet extends HttpServlet {
+public class UpdateLikesServlet extends AuthenticatedServlet {
 
   private ErrorHandler errorHandler = new ErrorHandler();
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get post id and action of user (liked or unliked)
     Long postId = Long.parseLong(request.getParameter("id"));
     boolean isLiked = Boolean.parseBoolean(request.getParameter("liked"));
    
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    String userId = this.getUserId(response);
     Entity post = this.getPostFromId(response, postId, datastore);
     if (post == null || userId.equals("")) return;
     ArrayList<String> likes = (ArrayList<String>) post.getProperty("likes");
@@ -51,15 +50,6 @@ public class UpdateLikesServlet extends HttpServlet {
     }
   }
 
-  private String getUserId(HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      return userService.getCurrentUser().getUserId();
-    }
-    errorHandler.sendError(response, "User is not logged in.");
-    return "";
-  }
-
   private Entity getPostFromId(HttpServletResponse response, long postId, DatastoreService datastore) throws IOException {
     try {
       return datastore.get(KeyFactory.createKey("Post", postId));
@@ -68,4 +58,8 @@ public class UpdateLikesServlet extends HttpServlet {
       return null;
     }
   }
+
+  @Override
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {}
 }

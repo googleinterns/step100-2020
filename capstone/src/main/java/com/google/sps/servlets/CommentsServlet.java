@@ -24,7 +24,7 @@ import error.ErrorHandler;
 
 @WebServlet("/post-comment")
 
-public class CommentsServlet extends AuthenticatedServlet {
+public class CommentsServlet extends AuthenticatedServlet  {
   
   private ErrorHandler errorHandler = new ErrorHandler();
 
@@ -63,6 +63,6 @@ public class CommentsServlet extends AuthenticatedServlet {
   }
 
   @Override
-  public void doGet(
-      String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {}
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {}
 }

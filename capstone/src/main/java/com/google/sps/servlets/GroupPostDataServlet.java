@@ -39,15 +39,13 @@ import com.google.sps.Objects.response.PostResponse;
 import error.ErrorHandler;
 
 @WebServlet("/group-post")
-public class GroupPostDataServlet extends HttpServlet {
+public class GroupPostDataServlet extends AuthenticatedServlet {
 
   private ErrorHandler errorHandler = new ErrorHandler();
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    String userId = this.getUserId(response);
-    if (userId.equals("")) return;
     Query query = new Query("Post").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
@@ -55,7 +53,7 @@ public class GroupPostDataServlet extends HttpServlet {
     List<Post> posts = new ArrayList<>();
     List<Long> likedPosts = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      posts.add(Post.getPostEntity(entity));
+      posts.add(Post.fromEntity(entity));
       ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
       if (likes != null && likes.contains(userId)) {
         likedPosts.add(entity.getKey().getId());
@@ -68,7 +66,7 @@ public class GroupPostDataServlet extends HttpServlet {
     response.getWriter().println(new Gson().toJson(postsRes));
   }
 
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Receives submitted post 
     String authorName = "Jane Doe";
     String postText = request.getParameter("post-input");
@@ -80,7 +78,7 @@ public class GroupPostDataServlet extends HttpServlet {
     // Creates entity with submitted data and add to database
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Post post = new Post(0, authorName, postText, comments, challengeName, System.currentTimeMillis(), img, likes);
-    datastore.put(post.createPostEntity());
+    datastore.put(post.toEntity());
 
     // Redirect back to the HTML page.
     response.sendRedirect("/group.html");
@@ -99,14 +97,5 @@ public class GroupPostDataServlet extends HttpServlet {
       blobKey = blobKeys.get(0).getKeyString();
     }
     return blobKey;
-  }
-
-  private String getUserId(HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      return userService.getCurrentUser().getUserId();
-    }
-    ErrorHandler.sendError(response, "User is not logged in.");
-    return "";
   }
 }

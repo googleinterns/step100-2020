@@ -21,13 +21,12 @@ import error.ErrorHandler;
 
 @WebServlet("/group-member")
 
-public class GroupMemberServlet extends HttpServlet {
+public class GroupMemberServlet extends AuthenticatedServlet {
 
   @Override
   // Adds a new member to a group 
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
     
-    String userId = this.getUserId(response);
     Long groupId = Long.parseLong(request.getParameter("groupId"));
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -51,15 +50,6 @@ public class GroupMemberServlet extends HttpServlet {
     if (!members.contains(userId)) {
       members.add(userId);
     }
-  }
-
-  private String getUserId(HttpServletResponse response) throws IOException {
-  UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      return userService.getCurrentUser().getUserId();
-    }
-    ErrorHandler.sendError(response, "User is not logged in.");
-    return "";
   }
 
   private Entity getGroupFromId(
@@ -96,4 +86,8 @@ public class GroupMemberServlet extends HttpServlet {
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(memResponse));  
   }
+
+  @Override
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {}
 }
