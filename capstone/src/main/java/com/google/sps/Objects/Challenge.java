@@ -79,7 +79,7 @@ public final class Challenge {
    * @return boolean
    */
   public boolean getHasUserCompleted(String userId) {
-    if (this.usersCompleted == null || this.usersCompleted == null) {
+    if (this.usersCompleted == null) {
       return false;
     } else {
       return this.usersCompleted.contains(userId);
