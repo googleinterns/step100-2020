@@ -114,6 +114,11 @@ public class PollServletTest {
     return optionEntity;
   }
 
+  private void putGroupInDb() {
+    Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
+    datastore.put(groupEntity);
+  }
+
   private List<Option> getOptions() {
     List<Option> options = new ArrayList<Option>();
     for (String text : OPTION_TEXT) {
@@ -125,8 +130,7 @@ public class PollServletTest {
 
   @Test
   public void doGet_userLoggedIn_noOptions() throws IOException {
-    Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
-    datastore.put(groupEntity);
+    this.putGroupInDb();
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
 
     pollServlet.doGet(mockRequest, mockResponse);
@@ -167,8 +171,7 @@ public class PollServletTest {
    */
   @Test
   public void doPost_userLoggedIn_optionsTest() throws IOException, EntityNotFoundException {
-    Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
-    datastore.put(groupEntity);
+    this.putGroupInDb();
     when(mockRequest.getParameter("text")).thenReturn(NEW_OPTION);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
 

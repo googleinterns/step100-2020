@@ -2,8 +2,6 @@ package com.google.sps.servlets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -120,9 +118,6 @@ public class ChallengeServletTest {
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    doReturn(groupEntity)
-        .when(challengeServlet)
-        .getEntityFromId(Integer.parseInt(GROUP_ID), "Group", mockRequest, mockResponse, datastore);
 
     challengeServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
@@ -137,9 +132,6 @@ public class ChallengeServletTest {
     groupEntity.setProperty("challenges", CHALLENGE_IDS);
     datastore.put(groupEntity);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    doReturn(groupEntity)
-        .when(challengeServlet)
-        .getEntityFromId(Integer.parseInt(GROUP_ID), "Group", mockRequest, mockResponse, datastore);
     Entity challengeEntity = this.createChallenge(CHALLENGE_NAME, DUE_DATE);
     datastore.put(challengeEntity);
 
@@ -157,9 +149,6 @@ public class ChallengeServletTest {
     groupEntity.setProperty("challenges", CHALLENGE_IDS);
     datastore.put(groupEntity);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    doReturn(groupEntity)
-        .when(challengeServlet)
-        .getEntityFromId(Integer.parseInt(GROUP_ID), "Group", mockRequest, mockResponse, datastore);
     Entity challengeEntity = this.createChallenge(CHALLENGE_NAME, PAST_DUE_DATE);
     datastore.put(challengeEntity);
 
@@ -186,9 +175,6 @@ public class ChallengeServletTest {
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    doNothing()
-        .when(challengeServlet)
-        .updateChallengesList(mockRequest, mockResponse, datastore, groupEntity);
 
     challengeServlet.doPost(mockRequest, mockResponse);
     Key challengeKey = KeyFactory.createKey("Challenge", CHALLENGE_ID);
@@ -212,9 +198,6 @@ public class ChallengeServletTest {
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    doReturn(groupEntity)
-        .when(challengeServlet)
-        .getEntityFromId(Integer.parseInt(GROUP_ID), "Group", mockRequest, mockResponse, datastore);
 
     challengeServlet.updateChallengesList(mockRequest, mockResponse, datastore, challengeEntity);
     Key groupKey = KeyFactory.createKey("Group", Integer.parseInt(GROUP_ID));

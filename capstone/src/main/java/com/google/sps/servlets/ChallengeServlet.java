@@ -23,7 +23,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     long groupId = Long.parseLong(request.getParameter("groupId"));
-    Entity groupEntity = this.getEntityFromId(groupId, "Group", request, response, datastore);
+    Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     ChallengeResponse challengeResponse =
         this.buildChallengeResponse(groupEntity, userId, datastore, response, request);
     ServletHelper.write(response, challengeResponse, "application/json");
@@ -47,7 +47,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
     this.updateChallengesList(request, response, datastore, challengeEntity);
   }
 
-  public ChallengeResponse buildChallengeResponse(
+  private ChallengeResponse buildChallengeResponse(
       Entity groupEntity,
       String userId,
       DatastoreService datastore,
@@ -69,17 +69,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
     return new ChallengeResponse(challenge, hasUserCompleted);
   }
 
-  public Entity getEntityFromId(
-      long id,
-      String type,
-      HttpServletRequest request,
-      HttpServletResponse response,
-      DatastoreService datastore)
-      throws IOException {
-    return ServletHelper.getEntityFromId(response, id, datastore, type);
-  }
-
-  public Challenge getMostRecentChallenge(
+  private Challenge getMostRecentChallenge(
       List<Long> challengeIds,
       DatastoreService datastore,
       HttpServletResponse response,
@@ -90,7 +80,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
     } else {
       long mostRecentChallengeId = challengeIds.get(challengeIds.size() - 1);
       Entity newestChallengeEntity =
-          this.getEntityFromId(mostRecentChallengeId, "Challenge", request, response, datastore);
+          ServletHelper.getEntityFromId(response, mostRecentChallengeId, datastore, "Challenge");
       if (newestChallengeEntity == null) {
         return null;
       }
@@ -110,7 +100,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
       Entity challengeEntity)
       throws IOException {
     long groupId = Long.parseLong(request.getParameter("groupId"));
-    Entity groupEntity = this.getEntityFromId(groupId, "Group", request, response, datastore);
+    Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     List<Long> challenges =
         (groupEntity.getProperty("challenges") == null)
             ? new ArrayList<Long>()

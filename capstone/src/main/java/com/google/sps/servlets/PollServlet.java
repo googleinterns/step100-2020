@@ -24,7 +24,7 @@ public class PollServlet extends AuthenticatedServlet {
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     long groupId = Long.parseLong(request.getParameter("groupId"));
-    Entity groupEntity = this.getGroupEntity(groupId, request, response, datastore);
+    Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     PollResponse pollResponse = this.buildPollResponse(groupEntity, userId, response, datastore);
     ServletHelper.write(response, pollResponse, "application/json");
   }
@@ -40,15 +40,6 @@ public class PollServlet extends AuthenticatedServlet {
     this.updateOptionsList(request, response, datastore, optionEntity);
   }
 
-  public Entity getGroupEntity(
-      long groupId,
-      HttpServletRequest request,
-      HttpServletResponse response,
-      DatastoreService datastore)
-      throws IOException {
-    return ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
-  }
-
   private void updateOptionsList(
       HttpServletRequest request,
       HttpServletResponse response,
@@ -56,7 +47,7 @@ public class PollServlet extends AuthenticatedServlet {
       Entity optionEntity)
       throws IOException {
     long groupId = Long.parseLong(request.getParameter("groupId"));
-    Entity entity = this.getGroupEntity(groupId, request, response, datastore);
+    Entity entity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     List<Long> options =
         (entity.getProperty("options") == null)
             ? new ArrayList<Long>()
@@ -66,7 +57,7 @@ public class PollServlet extends AuthenticatedServlet {
     datastore.put(entity);
   }
 
-  public PollResponse buildPollResponse(
+  private PollResponse buildPollResponse(
       Entity groupEntity, String userId, HttpServletResponse response, DatastoreService datastore)
       throws IOException {
     ArrayList<Long> optionIds =
@@ -76,10 +67,8 @@ public class PollServlet extends AuthenticatedServlet {
     List<Option> options = new ArrayList<Option>();
     List<Long> votedOptions = new ArrayList<Long>();
 
-    System.out.println(optionIds.toString());
     for (Long optionId : optionIds) {
       Entity entity = ServletHelper.getEntityFromId(response, optionId, datastore, "Option");
-      System.out.println(entity);
       Option option = Option.fromEntity(entity);
       List<String> votes = option.getVotes();
       long id = option.getId();
