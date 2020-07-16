@@ -140,7 +140,9 @@ public class PollServletTest {
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    doReturn(groupEntity).when(pollServlet).getGroupEntity(mockRequest, mockResponse, datastore);
+    doReturn(groupEntity)
+        .when(pollServlet)
+        .getGroupEntity(Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore);
 
     pollServlet.doGet(mockRequest, mockResponse);
 
@@ -153,7 +155,9 @@ public class PollServletTest {
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    doReturn(groupEntity).when(pollServlet).getGroupEntity(mockRequest, mockResponse, datastore);
+    doReturn(groupEntity)
+        .when(pollServlet)
+        .getGroupEntity(Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore);
     PollResponse pollResponse = new PollResponse(this.getOptions(), new ArrayList<Long>(), USER_ID);
     //    doReturn(pollResponse)
     //        .when(pollServlet)
@@ -189,7 +193,9 @@ public class PollServletTest {
     datastore.put(groupEntity);
     when(mockRequest.getParameter("text")).thenReturn(NEW_OPTION);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    doReturn(groupEntity).when(pollServlet).getGroupEntity(mockRequest, mockResponse, datastore);
+    doReturn(groupEntity)
+        .when(pollServlet)
+        .getGroupEntity(Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore);
 
     pollServlet.doPost(mockRequest, mockResponse);
     Key optionKey = KeyFactory.createKey("Option", NEW_OPTION_ID);
@@ -217,7 +223,9 @@ public class PollServletTest {
     datastore.put(groupEntity);
     when(mockRequest.getParameter("text")).thenReturn(NEW_OPTION);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    doReturn(groupEntity).when(pollServlet).getGroupEntity(mockRequest, mockResponse, datastore);
+    doReturn(groupEntity)
+        .when(pollServlet)
+        .getGroupEntity(Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore);
 
     pollServlet.doPost(mockRequest, mockResponse);
     List<Long> options = new ArrayList<Long>();

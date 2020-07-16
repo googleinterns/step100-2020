@@ -205,9 +205,10 @@ public class ChallengeServletTest {
     Entity challengeEntity = this.createChallenge(CHALLENGE_NAME);
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
     doReturn(groupEntity)
         .when(challengeServlet)
-        .getGroupEntity(mockRequest, mockResponse, datastore);
+        .getGroupEntity(Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore);
 
     challengeServlet.updateChallengesList(mockRequest, mockResponse, datastore, challengeEntity);
     Key groupKey = KeyFactory.createKey("Group", Integer.parseInt(GROUP_ID));

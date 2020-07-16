@@ -105,7 +105,6 @@ public class ChallengeServlet extends AuthenticatedServlet {
       throws IOException {
     long groupId = Long.parseLong(request.getParameter("groupId"));
     Entity groupEntity = this.getGroupEntity(groupId, request, response, datastore);
-    System.out.println(groupEntity);
     List<Long> challenges =
         (groupEntity.getProperty("challenges") == null)
             ? new ArrayList<Long>()
