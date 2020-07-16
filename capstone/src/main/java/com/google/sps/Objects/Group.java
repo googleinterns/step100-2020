@@ -1,9 +1,10 @@
 package com.google.sps.Objects;
 
-import com.google.appengine.api.datastore.Entity;
 import java.util.ArrayList;
 
-public final class Group {
+import com.google.appengine.api.datastore.Entity;
+
+public class Group {
 
   private final ArrayList<String> memberIds;
   private final ArrayList<Long> challengeIds;
@@ -13,12 +14,18 @@ public final class Group {
   private final String headerImg;
   private final long groupId;
 
-  public Group(ArrayList<String> memberIds, ArrayList<Long> challengeIds, ArrayList<Long> postIds, 
-      ArrayList<Long> optionIds, String groupName, String headerImg, long groupId) {
+  public Group(
+      ArrayList<String> memberIds,
+      ArrayList<Long> challenges,
+      ArrayList<Long> posts,
+      ArrayList<Long> options,
+      String groupName,
+      String headerImg,
+      long groupId) {
     this.memberIds = memberIds;
-    this.challengeIds = challengeIds;
-    this.postIds = postIds;
-    this.optionIds = optionIds;
+    this.challengeIds = challenges;
+    this.postIds = posts;
+    this.optionIds = options;
     this.groupName = groupName;
     this.headerImg = headerImg;
     this.groupId = groupId;
@@ -68,8 +75,8 @@ public final class Group {
   public static Group fromEntity(Entity entity) {
     ArrayList<String> memberIds = (ArrayList<String>) entity.getProperty("memberIds");
     ArrayList<Long> challenges = getPropertyList("challenges", entity);
-    ArrayList<Long> posts = getPropertyList("posts", entity); 
-    ArrayList<Long> options = getPropertyList("options", entity);   
+    ArrayList<Long> posts = getPropertyList("posts", entity);
+    ArrayList<Long> options = getPropertyList("options", entity);
     String groupName = (String) entity.getProperty("groupName");
     String headerImg = (String) entity.getProperty("headerImg");
     long groupId = entity.getKey().getId();
@@ -78,9 +85,10 @@ public final class Group {
   }
 
   private static ArrayList<Long> getPropertyList(String property, Entity entity) {
-    ArrayList<Long> propertyList = (entity.getProperty(property) == null) 
-      ? new ArrayList<Long>() 
-      : (ArrayList<Long>) entity.getProperty(property);   
+    ArrayList<Long> propertyList =
+        (entity.getProperty(property) == null)
+            ? new ArrayList<Long>()
+            : (ArrayList<Long>) entity.getProperty(property);
     return propertyList;
   }
 }

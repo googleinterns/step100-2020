@@ -119,3 +119,9 @@
   align-content: center;
   margin: 0 auto;
 }
+
+@media (max-width: 1600px) {
+  #members-container {
+    margin-right: 1%;
+  }
+}

@@ -5,6 +5,11 @@ let maxVotes;
 let topChallenge = null;
 const NO_CHALLENGES =
   "No current challenges. Submit a suggestion in the poll and mark checkbox for challenge to be posted. The challenge will be updated weekly based on top voted poll option.";
+let groupId;
+
+function getGroupId() {
+  groupId = window.location.search.substring(1).split("=")[1];
+}
 
 /**
  * Adds new option to poll.
@@ -13,7 +18,7 @@ function addPollOption() {
   const text = document.getElementById("input-box").value;
   if (text.trim() === "") return;
   document.getElementById("input-box").value = "";
-  fetch(`poll?text=${text}`, { method: "POST" }).then(
+  fetch(`poll?text=${text}&groupId=${groupId}`, { method: "POST" }).then(
     setTimeout(getPollOptions, 500)
   );
 }
@@ -24,7 +29,7 @@ function addPollOption() {
  * weekly challenge.
  */
 function getPollOptions() {
-  fetch("/poll")
+  fetch(`poll?groupId=${groupId}`)
     .then(response => response.json())
     .then(pollData => {
       const optionsContainer = document.getElementById("options-container");
@@ -56,7 +61,7 @@ function getPollOptions() {
 function getChallenge() {
   //Milliseconds until challenge due date.
   let dueDateMillis = 0;
-  fetch("challenge")
+  fetch(`challenge?groupId=${groupId}`)
     .then(response => response.json())
     .then(challengeData => {
       const weeklyChallenge = document.getElementById("weekly-challenge");
@@ -125,7 +130,9 @@ function checkWeek(dueDateMillis) {
  * Deletes the top poll option, adding that option as a new challenge to the database.
  */
 function updatePoll() {
-  fetch("delete-top-option", { method: "POST" }).then(addChallengeToDb);
+  fetch(`delete-top-option?groupId=${groupId}`, { method: "POST" }).then(
+    addChallengeToDb
+  );
 }
 
 /**
@@ -133,7 +140,9 @@ function updatePoll() {
  */
 function addChallengeToDb() {
   topChallenge
-    ? fetch(`challenge?name=${topChallenge}`, { method: "POST" })
+    ? fetch(`challenge?name=${topChallenge}&groupId=${groupId}`, {
+        method: "POST"
+      })
     : noChallengeText();
 }
 

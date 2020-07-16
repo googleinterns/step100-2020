@@ -88,10 +88,9 @@ public final class Option {
    */
   public Entity toEntity() {
     Entity optionEntity = new Entity("Option");
-    long timestamp = System.currentTimeMillis();
     optionEntity.setProperty("text", text);
     optionEntity.setProperty("votes", this.votes);
-    optionEntity.setProperty("timestamp", timestamp);
+    optionEntity.setProperty("timestamp", System.currentTimeMillis());
     return optionEntity;
   }
 }
