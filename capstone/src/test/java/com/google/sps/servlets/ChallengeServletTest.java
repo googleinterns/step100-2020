@@ -105,42 +105,46 @@ public class ChallengeServletTest {
     challengeServlet = null;
   }
 
-  //  @Test
-  //  public void doGet_challengeName() throws IOException {
-  //    Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
-  //    datastore.put(groupEntity);
-  //    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-  //    doReturn(groupEntity)
-  //        .when(challengeServlet)
-  //        .getGroupEntity(mockRequest, mockResponse, datastore);
-  //    assertEquals(
-  //        groupEntity, challengeServlet.getGroupEntity(mockRequest, mockResponse, datastore));
-  //    Challenge challenge =
-  //        new Challenge(
-  //            CHALLENGE_NAME, DUE_DATE, null /* badge */, new ArrayList<String>(), CHALLENGE_ID);
-  //    ChallengeResponse challengeResponse = new ChallengeResponse(challenge, false);
-  //    doReturn(challengeResponse)
-  //        .when(challengeServlet)
-  //        .buildChallengeResponse(groupEntity, USER_ID, datastore, mockResponse);
-  //
-  //    assertEquals(
-  //        challengeResponse,
-  //        challengeServlet.buildChallengeResponse(groupEntity, USER_ID, datastore, mockResponse));
-  //
-  //    System.out.println("00000000000");
-  //    System.out.println(
-  //        challengeServlet
-  //            .buildChallengeResponse(groupEntity, USER_ID, datastore, mockResponse)
-  //            .getChallenge()
-  //            .getChallengeName());
-  //
-  //    challengeServlet.doGet(mockRequest, mockResponse);
-  //
-  //    String response = responseWriter.toString();
-  //    System.out.println(response);
-  //
-  //    //    assertTrue(response.contains(CHALLENGE_NAME));
-  //  }
+  @Test
+  public void doGet_noChallenges() throws IOException {
+    Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
+    datastore.put(groupEntity);
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
+    doReturn(groupEntity)
+        .when(challengeServlet)
+        .getGroupEntity(Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore);
+    //    assertEquals(
+    //        groupEntity,
+    //        challengeServlet.getGroupEntity(
+    //            Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore));
+
+    //    Challenge challenge =
+    //        new Challenge(
+    //            CHALLENGE_NAME, DUE_DATE, null /* badge */, new ArrayList<String>(),
+    // CHALLENGE_ID);
+    //    ChallengeResponse challengeResponse = new ChallengeResponse(challenge, false);
+    //    doReturn(challengeResponse)
+    //        .when(challengeServlet)
+    //        .buildChallengeResponse(groupEntity, USER_ID, datastore, mockResponse);
+    //
+    //    assertEquals(
+    //        challengeResponse,
+    //        challengeServlet.buildChallengeResponse(groupEntity, USER_ID, datastore,
+    // mockResponse));
+    //
+    //    System.out.println("00000000000");
+    //    System.out.println(
+    //        challengeServlet
+    //            .buildChallengeResponse(groupEntity, USER_ID, datastore, mockResponse)
+    //            .getChallenge()
+    //            .getChallengeName());
+
+    challengeServlet.doGet(mockRequest, mockResponse);
+
+    String response = responseWriter.toString();
+    String emptyString = "\"\"\n";
+    assertEquals(response, emptyString);
+  }
 
   private Entity createGroup(String userId, String groupName) {
     ArrayList<String> members = new ArrayList<String>();
