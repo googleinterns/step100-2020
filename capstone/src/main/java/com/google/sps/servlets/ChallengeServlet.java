@@ -99,6 +99,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
       DatastoreService datastore,
       Entity challengeEntity)
       throws IOException {
+    System.out.println("in update challenges list " + challengeEntity);
     long groupId = Long.parseLong(request.getParameter("groupId"));
     Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     List<Long> challenges =
@@ -108,5 +109,6 @@ public class ChallengeServlet extends AuthenticatedServlet {
     challenges.add(challengeEntity.getKey().getId());
     groupEntity.setProperty("challenges", challenges);
     datastore.put(groupEntity);
+    System.out.println(groupEntity);
   }
 }

@@ -38,8 +38,9 @@ public class ChallengeServletTest {
   private static final String USER_EMAIL = "test@test.com";
   private static final String USER_ID = "test";
   private static final String NEW_CHALLENGE = "Bike 20 miles";
+  private static final long NEW_CHALLENGE_ID = 3L;
   private static final String CHALLENGE_NAME = "Run";
-  private static final long CHALLENGE_ID = 2;
+  private static final long CHALLENGE_ID = 2L;
   private static final long DUE_DATE = 2594865260645L;
   private static final long PAST_DUE_DATE = 1234;
   private static final String GROUP_NAME = "Runners Club";
@@ -143,6 +144,11 @@ public class ChallengeServletTest {
     assertTrue(response.contains("false"));
   }
 
+  /**
+   * Tests for when the most recent challenge in the database has a due date in the past.
+   *
+   * @throws IOException exception thrown if cannot read or write to file.
+   */
   @Test
   public void doGet_withChallenge_passedDueDate() throws IOException {
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
@@ -170,7 +176,8 @@ public class ChallengeServletTest {
   }
 
   @Test
-  public void doPost_userLoggedIn() throws IOException, EntityNotFoundException {
+  public void doPost_userLoggedIn_challengeAddedToDbTest()
+      throws IOException, EntityNotFoundException {
     when(mockRequest.getParameter("name")).thenReturn(NEW_CHALLENGE);
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);
@@ -192,21 +199,30 @@ public class ChallengeServletTest {
     assertEquals(challenge.getChallengeName(), returnedChallenge.getChallengeName());
   }
 
+  /**
+   * Tests that the list of challenge ids in the Group entity gets updated as a new challenge is
+   * inserted into the database.
+   *
+   * @throws IOException exception thrown if cannot read or write to file
+   * @throws EntityNotFoundException exception thrown if entity is not in database
+   */
   @Test
-  public void updateChallengesListTest() throws IOException, EntityNotFoundException {
-    Entity challengeEntity = this.createChallenge(CHALLENGE_NAME, DUE_DATE);
+  public void doPost_userLoggedIn_updateGroupChallengesListTest()
+      throws IOException, EntityNotFoundException {
+    when(mockRequest.getParameter("name")).thenReturn(NEW_CHALLENGE);
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);
+    Entity challengeEntity = this.createChallenge(CHALLENGE_NAME, DUE_DATE);
+    datastore.put(challengeEntity);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
 
-    challengeServlet.updateChallengesList(mockRequest, mockResponse, datastore, challengeEntity);
+    challengeServlet.doPost(mockRequest, mockResponse);
     Key groupKey = KeyFactory.createKey("Group", Integer.parseInt(GROUP_ID));
-    Entity returnedEntity = datastore.get(groupKey);
-    List<Long> returnedChallenges = (ArrayList<Long>) returnedEntity.getProperty("challenges");
+    Entity entity = datastore.get(groupKey);
+    List<Long> challenges = (ArrayList<Long>) entity.getProperty("challenges");
 
-    assertEquals(returnedChallenges.size(), 1);
-    // Cannot use assertEquals for this assertion because returning long
-    assert returnedChallenges.get(0) == 0L;
+    assertEquals(challenges.size(), 1);
+    assert challenges.get(0) == NEW_CHALLENGE_ID;
   }
 
   @Test(expected = EntityNotFoundException.class)

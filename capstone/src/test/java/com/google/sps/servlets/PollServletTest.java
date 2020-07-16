@@ -119,15 +119,6 @@ public class PollServletTest {
     datastore.put(groupEntity);
   }
 
-  private List<Option> getOptions() {
-    List<Option> options = new ArrayList<Option>();
-    for (String text : OPTION_TEXT) {
-      Option option = new Option(0, text, new ArrayList<String>());
-      options.add(option);
-    }
-    return options;
-  }
-
   @Test
   public void doGet_userLoggedIn_noOptions() throws IOException {
     this.putGroupInDb();
