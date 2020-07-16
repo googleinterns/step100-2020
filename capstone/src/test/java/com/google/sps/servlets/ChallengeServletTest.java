@@ -35,7 +35,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
 import com.google.sps.Objects.Challenge;
-import com.google.sps.Objects.response.ChallengeResponse;
 
 public class ChallengeServletTest {
 
@@ -49,15 +48,6 @@ public class ChallengeServletTest {
   private static final String GROUP_NAME = "Runners Club";
   private static final String GROUP_ID = "1";
   private static final List<Long> CHALLENGE_IDS = new ArrayList<Long>(Arrays.asList(2L));
-  private static final Challenge CHALLENGE =
-      new Challenge(
-          CHALLENGE_NAME,
-          DUE_DATE,
-          null, /* badge */
-          new ArrayList<String>(), /* users completed */
-          CHALLENGE_ID);
-  private static final ChallengeResponse CHALLENGE_RESPONSE =
-      new ChallengeResponse(CHALLENGE, /* is challenge marked completed */ false);
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(

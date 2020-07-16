@@ -2,7 +2,6 @@ package com.google.sps.servlets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -34,11 +33,9 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.sps.Objects.Option;
-import com.google.sps.Objects.response.PollResponse;
 
 /**
  * Unit tests for {@link PollServlet}.
@@ -54,7 +51,7 @@ public class PollServletTest {
   private static final long NEW_OPTION_ID = 2;
   private static final List<String> OPTION_TEXT =
       new ArrayList<String>(Arrays.asList("Run", "Jog", "Climb a tree", "Bungee jump"));
-  private static final List<Long> OPTION_IDS = new ArrayList<Long>(Arrays.asList(1L, 2L));
+  private static final List<Long> OPTION_IDS = new ArrayList<Long>(Arrays.asList(2L));
   private static final String GROUP_NAME = "Runners Club";
   private static final String GROUP_ID = "1";
 
@@ -96,23 +93,6 @@ public class PollServletTest {
     pollServlet = null;
   }
 
-  private void addOptionsToDb() {
-    ImmutableList.Builder<Entity> option = ImmutableList.builder();
-    for (String text : OPTION_TEXT) {
-      option.add(createOption(text));
-    }
-    datastore.put(option.build());
-  }
-
-  private Entity createOption(String text) {
-    Entity optionEntity = new Entity("Option");
-    long timestamp = System.currentTimeMillis();
-    optionEntity.setProperty("text", text);
-    optionEntity.setProperty("votes", new ArrayList<String>());
-    optionEntity.setProperty("timestamp", timestamp);
-    return optionEntity;
-  }
-
   private Entity createGroup(String userId, String groupName) {
     ArrayList<String> members = new ArrayList<String>();
     members.add(userId);
@@ -124,6 +104,14 @@ public class PollServletTest {
     groupEntity.setProperty("groupName", groupName);
     groupEntity.setProperty("headerImg", "");
     return groupEntity;
+  }
+
+  private Entity createOption() {
+    Entity optionEntity = new Entity("Option");
+    optionEntity.setProperty("text", NEW_OPTION);
+    optionEntity.setProperty("votes", new ArrayList<Long>());
+    optionEntity.setProperty("timestamp", System.currentTimeMillis());
+    return optionEntity;
   }
 
   private List<Option> getOptions() {
@@ -140,9 +128,6 @@ public class PollServletTest {
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    doReturn(groupEntity)
-        .when(pollServlet)
-        .getGroupEntity(Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore);
 
     pollServlet.doGet(mockRequest, mockResponse);
 
@@ -151,22 +136,17 @@ public class PollServletTest {
   }
 
   @Test
-  public void doGet_userLoggedIn_withOptions() throws IOException {
+  public void doGet_userLoggedIn_withOption() throws IOException {
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
+    groupEntity.setProperty("options", OPTION_IDS);
     datastore.put(groupEntity);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    doReturn(groupEntity)
-        .when(pollServlet)
-        .getGroupEntity(Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore);
-    PollResponse pollResponse = new PollResponse(this.getOptions(), new ArrayList<Long>(), USER_ID);
-    when(pollServlet.buildPollResponse(groupEntity, USER_ID, mockResponse, datastore))
-        .thenReturn(pollResponse);
+    datastore.put(this.createOption());
 
     pollServlet.doGet(mockRequest, mockResponse);
-
     String response = responseWriter.toString();
-    System.out.println(response);
-    assertTrue(response.contains(USER_ID));
+
+    assertTrue(response.contains(NEW_OPTION));
   }
 
   @Test
@@ -191,9 +171,6 @@ public class PollServletTest {
     datastore.put(groupEntity);
     when(mockRequest.getParameter("text")).thenReturn(NEW_OPTION);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    doReturn(groupEntity)
-        .when(pollServlet)
-        .getGroupEntity(Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore);
 
     pollServlet.doPost(mockRequest, mockResponse);
     Key optionKey = KeyFactory.createKey("Option", NEW_OPTION_ID);
@@ -221,9 +198,6 @@ public class PollServletTest {
     datastore.put(groupEntity);
     when(mockRequest.getParameter("text")).thenReturn(NEW_OPTION);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    doReturn(groupEntity)
-        .when(pollServlet)
-        .getGroupEntity(Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore);
 
     pollServlet.doPost(mockRequest, mockResponse);
     List<Long> options = new ArrayList<Long>();

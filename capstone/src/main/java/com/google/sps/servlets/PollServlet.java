@@ -76,8 +76,10 @@ public class PollServlet extends AuthenticatedServlet {
     List<Option> options = new ArrayList<Option>();
     List<Long> votedOptions = new ArrayList<Long>();
 
+    System.out.println(optionIds.toString());
     for (Long optionId : optionIds) {
       Entity entity = ServletHelper.getEntityFromId(response, optionId, datastore, "Option");
+      System.out.println(entity);
       Option option = Option.fromEntity(entity);
       List<String> votes = option.getVotes();
       long id = option.getId();
