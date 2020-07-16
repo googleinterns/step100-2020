@@ -3,28 +3,19 @@ package com.google.sps.objects;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.gson.Gson;
-
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.sps.Objects.response.MemberResponse;
 import com.google.sps.Objects.Badge;
+import com.google.sps.Objects.response.MemberResponse;
 
-/**
- * Unit tests for MemberResponse.
- *
- */
+/** Unit tests for MemberResponse. */
 public class MemberResponseTest {
 
   private static final String PROFILE_PIC = "";
@@ -46,13 +37,13 @@ public class MemberResponseTest {
   @Before
   public void setUp() {
     helper.setUp();
-    memberResponse = 
-      new MemberResponse(
-        PROFILE_PIC, /* profilePic */ 
-        FIRST_NAME, /* firstName */
-        LAST_NAME, /* lastName */
-        new LinkedHashSet<Badge>(), /* badges */
-        USER_ID /*userId */);
+    memberResponse =
+        new MemberResponse(
+            PROFILE_PIC, /* profilePic */
+            FIRST_NAME, /* firstName */
+            LAST_NAME, /* lastName */
+            new LinkedHashSet<Badge>(), /* badges */
+            USER_ID /*userId */);
   }
 
   @After
@@ -79,11 +70,13 @@ public class MemberResponseTest {
   @Test
   public void getBadgesTest_noBadge() {
     assertEquals(memberResponse.getBadges().size(), 0);
+
     badge = new Badge(
       /* badge id */ BADGE_ID,
       /* challenge name */ CHALLENGE_NAME, 
       /* icon */ null, 
       /* timestamp */ BADGE_TIMESTAMP);
+
     memberResponse.getBadges().add(badge);
     assertEquals(memberResponse.getBadges().size(), 1);
   }
@@ -95,10 +88,9 @@ public class MemberResponseTest {
     entity.setProperty("firstName", FIRST_NAME);
     entity.setProperty("lastName", LAST_NAME);
     entity.setProperty("userId", USER_ID);
-    MemberResponse returnedMemberResponse = MemberResponse.fromEntity(entity, false /*includeBadges*/);
-    
+    MemberResponse returnedMemberResponse =
+        MemberResponse.fromEntity(entity, false /*includeBadges*/);
+
     assertTrue(returnedMemberResponse.equals(memberResponse));
-  } 
+  }
 }
-
-

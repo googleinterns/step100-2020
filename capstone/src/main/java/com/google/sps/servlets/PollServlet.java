@@ -12,9 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.sps.Objects.Option;
 import com.google.sps.Objects.comparator.OptionsComparator;
 import com.google.sps.Objects.response.PollResponse;
@@ -25,10 +22,10 @@ public class PollServlet extends AuthenticatedServlet {
   @Override
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    Query query = new Query("Option").addSort("timestamp", SortDirection.ASCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
-    PollResponse pollResponse = this.buildPollResponse(results, userId);
+    long groupId = Long.parseLong(request.getParameter("groupId"));
+    Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
+    PollResponse pollResponse = this.buildPollResponse(groupEntity, userId, response, datastore);
     ServletHelper.write(response, pollResponse, "application/json");
   }
 
@@ -38,26 +35,40 @@ public class PollServlet extends AuthenticatedServlet {
     String text = request.getParameter("text");
     Option option = new Option(0, text, new ArrayList<String>());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(option.toEntity());
+    Entity optionEntity = option.toEntity();
+    datastore.put(optionEntity);
+    this.updateOptionsList(request, response, datastore, optionEntity);
   }
 
-  /**
-   * Builds a PollResponse object by populating two ArrayLists, one that holds all options in a poll
-   * and the other containing the ids of options for which the user has voted.
-   *
-   * @param results query results
-   * @param userId user id
-   * @return PollResponse object
-   */
-  private PollResponse buildPollResponse(PreparedQuery results, String userId) {
-    // All options in a poll
+  private void updateOptionsList(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      DatastoreService datastore,
+      Entity optionEntity)
+      throws IOException {
+    long groupId = Long.parseLong(request.getParameter("groupId"));
+    Entity entity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
+    List<Long> options =
+        (entity.getProperty("options") == null)
+            ? new ArrayList<Long>()
+            : (List<Long>) entity.getProperty("options");
+    options.add(optionEntity.getKey().getId());
+    entity.setProperty("options", options);
+    datastore.put(entity);
+  }
+
+  private PollResponse buildPollResponse(
+      Entity groupEntity, String userId, HttpServletResponse response, DatastoreService datastore)
+      throws IOException {
+    ArrayList<Long> optionIds =
+        (groupEntity.getProperty("options") == null)
+            ? new ArrayList<Long>()
+            : (ArrayList<Long>) groupEntity.getProperty("options");
     List<Option> options = new ArrayList<Option>();
-    /*
-     * List to keep track of options current user has voted for so that checkboxes
-     * can be marked as checked on frontend side
-     */
     List<Long> votedOptions = new ArrayList<Long>();
-    for (Entity entity : results.asIterable()) {
+
+    for (Long optionId : optionIds) {
+      Entity entity = ServletHelper.getEntityFromId(response, optionId, datastore, "Option");
       Option option = Option.fromEntity(entity);
       List<String> votes = option.getVotes();
       long id = option.getId();

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.HashMap;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,9 +16,13 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.common.collect.ImmutableMap;
 import com.google.sps.Objects.Post;
 import com.google.sps.Objects.Comment;
 
@@ -27,26 +32,38 @@ import com.google.sps.Objects.Comment;
  */
 public class PostTest {
 
-  private static final String AUTHOR_ID = "123123123";
   private static final String POST_TEXT = "a great post";
   private static final String CHALLENGE_NAME = "run 4 miles";
   private static final String IMG = "";
   private static final long TIMESTAMP = 123123123;
+  private static final long POST_ID = 4324344;
+  private static final String USER_EMAIL = "test@mctest.com";
+  private static final String USER_ID = "testy-mc-test";
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
-          new LocalDatastoreServiceTestConfig()
-              .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
+            new LocalDatastoreServiceTestConfig()
+                .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
+            new LocalUserServiceTestConfig())
+          .setEnvEmail(USER_EMAIL)
+          .setEnvIsLoggedIn(true)
+          .setEnvAuthDomain("gmail.com")
+          .setEnvAttributes(
+              new HashMap(
+                  ImmutableMap.of(
+                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
   private Post post;
+  private DatastoreService datastore;
 
   @Before
   public void setUp() {
     helper.setUp();
+    datastore = DatastoreServiceFactory.getDatastoreService();
     post = 
       new Post(
-        /* postId */ 4324344,
-        /* authorId */ AUTHOR_ID,
+        /* postId */ POST_ID,
+        /* authorId */ USER_ID,
         /* postText */ POST_TEXT,
         /* comments */ new ArrayList<Comment>(),
         /* challengeName */ CHALLENGE_NAME, 
@@ -158,9 +175,14 @@ public class PostTest {
   }
 
   @Test
-  public void toAndFromPostEntityTest() {
+  public void toAndFromPostEntityTest() throws Exception {
     Entity entity = post.toEntity();
-    Post returnedPost = Post.fromEntity(entity);
+    datastore.put(entity);
+
+    Key postKey = KeyFactory.createKey("Post", POST_ID);
+    Entity retreivedPost = datastore.get(postKey);
+
+    Post returnedPost = Post.fromEntity(retreivedPost);
 
     assertTrue(returnedPost.equals(post));
   }
