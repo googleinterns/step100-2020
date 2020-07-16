@@ -13,14 +13,21 @@
     <link rel="stylesheet" href="styles/members.css"></link>
     <link rel="stylesheet" href="styles/style.css"></link>
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script src="scripts/group.js"></script>
     <script src="scripts/post.js"></script>
     <script src="scripts/poll.js"></script>
     <script src="scripts/members.js"></script>
+    <script src="scripts/logout.js"></script>
     <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
     <title>Group</title>
   </head>
 
   <body onload="init()">
+    <div class=sidebar>
+      <div id=navbar class="navbar">
+        <a id="logout-btn" title="Logout"><img src="images/logout.svg"></img></a>
+        <a id="profile-btn" href="profile.html" title="Profile"></a>
+      </div>
 
     <div id="members-container">
         <h4 class="align-vertical">Members</h4>
@@ -123,9 +130,3 @@
 
   </body>
 </html>
-  
-
-
-
-
-  

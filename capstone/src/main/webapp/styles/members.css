@@ -5,9 +5,7 @@
   height: 280px;
   padding: 25px;
   width: 200px;
-  float: right;
-  margin-right: 7%;
-  margin-top: 230px;
+  margin-top: 180px;
 }
 
 #members-container h4 {
@@ -125,6 +123,7 @@
   margin: 0 auto;
 }
 
+<<<<<<< HEAD
 .add-member h2 {
   font-size: 22px;
   font-weight: bold;
@@ -173,3 +172,10 @@
   text-align: center;
   width: 100px;
 }
+
+@media (max-width: 1600px) {
+  #members-container {
+    margin-right: 1%;
+  }
+}
+

@@ -36,7 +36,7 @@ public final class Post {
     this.likes = likes;
   }
 
-  public static Post getPostEntity(Entity entity) {
+  public static Post fromEntity(Entity entity) {
     long postId = entity.getKey().getId();
     long timestamp = (long) entity.getProperty("timestamp");
     String authorId = (String) entity.getProperty("authorId");
@@ -56,11 +56,11 @@ public final class Post {
   private static void createCommentObjectList(ArrayList<Comment> comments, Entity entity) {
     ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
     for (EmbeddedEntity comment: commentEntitys) {
-      comments.add(Comment.getCommentEntity(comment));
+      comments.add(Comment.fromEntity(comment));
     }
   }
 
-  public Entity createPostEntity() {
+  public Entity toEntity() {
     Entity entity = new Entity("Post");
     entity.setProperty("authorId", this.authorId);
     entity.setProperty("timestamp", this.timestamp);

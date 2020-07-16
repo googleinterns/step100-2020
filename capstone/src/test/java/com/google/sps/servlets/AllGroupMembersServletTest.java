@@ -107,9 +107,6 @@ public class AllGroupMembersServletTest {
   @After
   public void tearDown() {
     helper.tearDown();
-    responseWriter = null;
-    datastore = null;
-    allGroupMembersServlet = null;
   }
 
   /* Create a Group entity */

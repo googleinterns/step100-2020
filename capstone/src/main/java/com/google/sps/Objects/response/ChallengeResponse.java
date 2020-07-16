@@ -23,4 +23,8 @@ public class ChallengeResponse {
     this.challenge = challenge;
     this.hasUserCompleted = hasUserCompleted;
   }
+
+  public Challenge getChallenge() {
+    return this.challenge;
+  }
 }

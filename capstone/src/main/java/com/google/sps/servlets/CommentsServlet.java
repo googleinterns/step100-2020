@@ -24,7 +24,7 @@ import error.ErrorHandler;
 
 @WebServlet("/post-comment")
 
-public class CommentsServlet extends AuthenticatedServlet {
+public class CommentsServlet extends AuthenticatedServlet  {
   
   private ErrorHandler errorHandler = new ErrorHandler();
 
@@ -41,12 +41,13 @@ public class CommentsServlet extends AuthenticatedServlet {
     ArrayList<EmbeddedEntity> allComments = (ArrayList<EmbeddedEntity>) postEntity.getProperty("comments");
 
     // Create comment entity and add to comment arraylist for post
+    Comment submittedComment = new Comment(System.currentTimeMillis(), commentText, userId);
     if (allComments == null) {
       ArrayList<EmbeddedEntity> comments = new ArrayList<>();
-      comments.add(Comment.toEntity(commentText, userId));
+      comments.add(submittedComment.toEntity());
       postEntity.setProperty("comments", comments);
     } else {
-      allComments.add(Comment.toEntity(commentText, userId));
+      allComments.add(submittedComment.toEntity());
       postEntity.setProperty("comments", allComments);
     }
     datastore.put(postEntity);
@@ -63,5 +64,6 @@ public class CommentsServlet extends AuthenticatedServlet {
   }
 
   @Override
-  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {}
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {}
 }

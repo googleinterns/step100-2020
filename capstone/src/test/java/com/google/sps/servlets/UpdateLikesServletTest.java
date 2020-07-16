@@ -84,6 +84,8 @@ public class UpdateLikesServletTest {
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
+    populateDatabase(datastore);
+
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
@@ -111,7 +113,6 @@ public class UpdateLikesServletTest {
 
   @Test
   public void doPost_invalidPost() throws IOException, EntityNotFoundException {
-    populateDatabase(datastore);
     when(mockRequest.getParameter("id")).thenReturn(Long.toString(5));
     when(mockRequest.getParameter("liked")).thenReturn("true");
 
@@ -122,12 +123,11 @@ public class UpdateLikesServletTest {
 
   private void populateDatabase(DatastoreService datastore) {
     // Add test data.
-    datastore.put(POST_1.createPostEntity());
+    datastore.put(POST_1.toEntity());
   }
 
   @Test
   public void doPost_addLike() throws Exception {
-    populateDatabase(datastore);
     when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
     when(mockRequest.getParameter("liked")).thenReturn("true");
 
@@ -139,28 +139,37 @@ public class UpdateLikesServletTest {
     POST_1.getLikes().add(USER_ID);
 
     String jsonOriginal = new Gson().toJson(POST_1);
-    String jsonStored = new Gson().toJson(Post.getPostEntity(post));
+    String jsonStored = new Gson().toJson(Post.fromEntity(post));
     assertEquals(jsonOriginal, jsonStored);
   }
 
   @Test
   public void doPost_removeLike() throws Exception {
+    addLikestoPost();
+
     POST_1.getLikes().add(USER_ID);
     POST_1.getLikes().add("test 2");
-    populateDatabase(datastore);
 
     when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
     when(mockRequest.getParameter("liked")).thenReturn("false");
 
     updateLikesServlet.doPost(mockRequest, mockResponse);
 
-    Key postKey = KeyFactory.createKey("Post", POST_ID);
-    Entity post = datastore.get(postKey);
+    Entity post = datastore.get(KeyFactory.createKey("Post", POST_ID));
 
     POST_1.getLikes().remove(USER_ID);
 
     String jsonOriginal = new Gson().toJson(POST_1);
-    String jsonStored = new Gson().toJson(Post.getPostEntity(post));
+    String jsonStored = new Gson().toJson(Post.fromEntity(post));
     assertEquals(jsonOriginal, jsonStored);
+  }
+
+  private void addLikestoPost() throws IOException, EntityNotFoundException {
+    Entity postEntity = datastore.get(KeyFactory.createKey("Post", POST_ID));
+    ArrayList<String> likes = new ArrayList<String>();
+    likes.add(USER_ID);
+    likes.add("test 2");
+    postEntity.setProperty("likes", likes);
+    datastore.put(postEntity);
   }
 }

@@ -28,12 +28,12 @@ import error.ErrorHandler;
 
 @WebServlet("/group-member")
 
-public class GroupMemberServlet extends HttpServlet {
+public class GroupMemberServlet extends AuthenticatedServlet {
 
   @Override
   // Adds a new member to a group 
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
     String email = request.getParameter("email");
     Long groupId = Long.parseLong(request.getParameter("groupId"));
 
@@ -102,15 +102,6 @@ public class GroupMemberServlet extends HttpServlet {
     }
   }
 
-  private String getUserId(HttpServletResponse response) throws IOException {
-  UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      return userService.getCurrentUser().getUserId();
-    }
-    ErrorHandler.sendError(response, "User is not logged in.");
-    return "";
-  }
-
   private Entity getGroupFromId(
     HttpServletResponse response, long groupId, DatastoreService datastore) throws IOException {
     try {
@@ -145,4 +136,8 @@ public class GroupMemberServlet extends HttpServlet {
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(memResponse));  
   }
+
+  @Override
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {}
 }

@@ -4,6 +4,10 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 
 import error.ErrorHandler;
@@ -46,14 +50,14 @@ public class ServletHelper {
   }
 
   /**
-  * Retrieves the entity from the database based on id.
-  *
-  * @param response HttpServletResponse
-  * @param id id of entity
-  * @param datastore datastore holding all data
-  * @return Entity
-  * @throws IOException error thrown from sendError method
-  */
+   * Retrieves the entity from the database based on id.
+   *
+   * @param response HttpServletResponse
+   * @param id id of entity
+   * @param datastore datastore holding all data
+   * @return Entity
+   * @throws IOException error thrown from sendError method
+   */
   public static Entity getEntityFromId(
       HttpServletResponse response, long id, DatastoreService datastore, String type)
       throws IOException {

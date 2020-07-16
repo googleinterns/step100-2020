@@ -35,10 +35,12 @@ public class CommentTest {
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
 
   private Comment comment;
+  private DatastoreService datastore;
 
   @Before
   public void setUp() {
     helper.setUp();
+    datastore = DatastoreServiceFactory.getDatastoreService();
     comment = 
       new Comment(
         TIMESTAMP, /* timestamp */ 
@@ -63,30 +65,11 @@ public class CommentTest {
   }
 
   @Test
-  public void getCommentEntityTest() {
-    EmbeddedEntity entity = new EmbeddedEntity();
-    entity.setProperty("userId", USER_ID);
-    entity.setProperty("commentText", COMMENT_TEXT);
-    entity.setProperty("timestamp", TIMESTAMP);
-    Comment returnedComment = Comment.getCommentEntity(entity);
+  public void toAndFromCommentEntityTest() {
+    EmbeddedEntity entity = comment.toEntity();
+    Comment returnedComment = Comment.fromEntity(entity);
 
-    String jsonRetrieved = new Gson().toJson(returnedComment);
-    String jsonOriginal = new Gson().toJson(comment);
-    assertTrue(jsonRetrieved.equals(jsonOriginal));
-  }
-
-  @Test
-  public void toEntityTest() {
-    EmbeddedEntity entity = comment.toEntity(comment.getCommentText(), comment.getUser());
-    ArrayList<EmbeddedEntity> allComments = new ArrayList<>();
-    allComments.add(entity);
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("comments", allComments);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(commentEntity);
-
-    ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) commentEntity.getProperty("comments");
-    assertEquals(commentEntitys.get(0).getProperty("commentText"), COMMENT_TEXT);
-    assertEquals(commentEntitys.get(0).getProperty("userId"), USER_ID);
+    assertTrue(returnedComment.getCommentText().equals(COMMENT_TEXT));
+    assertTrue(returnedComment.getUser().equals(USER_ID));
   }
 }

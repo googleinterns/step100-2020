@@ -91,6 +91,8 @@ private final LocalServiceTestHelper helper =
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
+    populateDatabase(datastore);
+
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
@@ -107,12 +109,11 @@ private final LocalServiceTestHelper helper =
 
   private void populateDatabase(DatastoreService datastore) {
     // Add test data.
-    datastore.put(POST_1.createPostEntity());
+    datastore.put(POST_1.toEntity());
   }
 
   @Test
   public void doPost_addComment() throws Exception {
-    populateDatabase(datastore);
     when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
     when(mockRequest.getParameter("comment-text")).thenReturn(COMMENT_TEXT);
 
@@ -121,14 +122,13 @@ private final LocalServiceTestHelper helper =
     Key postKey = KeyFactory.createKey("Post", POST_ID);
     Entity post = datastore.get(postKey);
 
-    Post returnedPost = Post.getPostEntity(post);
-    assertTrue(returnedPost.getComments().get(0).equals(COMMENT_1));
+    Post returnedPost = Post.fromEntity(post);
+    assertTrue(returnedPost.getComments().get(0).getCommentText().equals(COMMENT_TEXT));
   }
 
   @Test
   public void doPost_userNotLoggedIn() throws IOException, EntityNotFoundException {
     helper.setEnvIsLoggedIn(false);
-    populateDatabase(datastore);
     when(mockRequest.getParameter("id")).thenReturn(Long.toString(POST_ID));
     when(mockRequest.getParameter("comment-text")).thenReturn(COMMENT_TEXT);
 
@@ -140,7 +140,6 @@ private final LocalServiceTestHelper helper =
 
   @Test
   public void doPost_invalidPost() throws IOException, EntityNotFoundException {
-    populateDatabase(datastore);
     when(mockRequest.getParameter("id")).thenReturn(Long.toString(5));
     when(mockRequest.getParameter("comment-text")).thenReturn(COMMENT_TEXT);
 

@@ -70,11 +70,7 @@ public final class MemberResponse {
     if (!(other instanceof MemberResponse)) return false;
     MemberResponse memResponse = (MemberResponse) other;
     if (memResponse.badges != null && memResponse.badges.size() > 0) {
-      return profilePic.equals(memResponse.profilePic) &&
-        firstName.equals(memResponse.firstName) &&
-        lastName.equals(memResponse.lastName) &&
-        userId.equals(memResponse.userId) &&
-        badges.containsAll(memResponse.badges);
+      if (!badges.containsAll(memResponse.badges)) return false;
     }
     return profilePic.equals(memResponse.profilePic) &&
       firstName.equals(memResponse.firstName) &&

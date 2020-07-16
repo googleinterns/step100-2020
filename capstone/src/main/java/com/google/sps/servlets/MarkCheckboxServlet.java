@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.KeyFactory;
 
 import error.ErrorHandler;
 
@@ -30,7 +28,7 @@ public class MarkCheckboxServlet extends AuthenticatedServlet {
     String type = request.getParameter("type");
     long id = this.parseToLong(response, idString);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity entity = this.getEntityFromId(response, id, datastore, type);
+    Entity entity = ServletHelper.getEntityFromId(response, id, datastore, type);
     if (entity == null) {
       entity = new Entity(type);
     }
@@ -55,26 +53,6 @@ public class MarkCheckboxServlet extends AuthenticatedServlet {
     } catch (NumberFormatException e) {
       ErrorHandler.sendError(response, "Cannot parse to long.");
       return 0;
-    }
-  }
-
-  /**
-   * Retrieves the entity from the database based on id.
-   *
-   * @param response HttpServletResponse
-   * @param id of current checkbox
-   * @param datastore datastore holding all data
-   * @return Entity
-   * @throws IOException error thrown from sendError method
-   */
-  private Entity getEntityFromId(
-      HttpServletResponse response, long id, DatastoreService datastore, String type)
-      throws IOException {
-    try {
-      return datastore.get(KeyFactory.createKey(type, id));
-    } catch (EntityNotFoundException e) {
-      ErrorHandler.sendError(response, "Cannot get entity from datastore");
-      return null;
     }
   }
 
