@@ -38,11 +38,11 @@ public class ChallengeServletTest {
   private static final String USER_EMAIL = "test@test.com";
   private static final String USER_ID = "test";
   private static final String NEW_CHALLENGE = "Bike 20 miles";
-  private static final long NEW_CHALLENGE_ID = 3L;
+  private static final Long NEW_CHALLENGE_ID = 3L;
   private static final String CHALLENGE_NAME = "Run";
-  private static final long CHALLENGE_ID = 2L;
-  private static final long DUE_DATE = 2594865260645L;
-  private static final long PAST_DUE_DATE = 1234;
+  private static final Long CHALLENGE_ID = 2L;
+  private static final Long DUE_DATE = 2594865260645L;
+  private static final Long PAST_DUE_DATE = 1234L;
   private static final String GROUP_NAME = "Runners Club";
   private static final String GROUP_ID = "1";
   private static final List<Long> CHALLENGE_IDS = new ArrayList<Long>(Arrays.asList(2L));
@@ -222,7 +222,7 @@ public class ChallengeServletTest {
     List<Long> challenges = (ArrayList<Long>) entity.getProperty("challenges");
 
     assertEquals(challenges.size(), 1);
-    assert challenges.get(0) == NEW_CHALLENGE_ID;
+    assertEquals(challenges.get(0), NEW_CHALLENGE_ID);
   }
 
   @Test(expected = EntityNotFoundException.class)
