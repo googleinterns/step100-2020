@@ -1,4 +1,5 @@
 function init() {
+  createLogoutUrl();
   getGroupId();
   loadPosts();
   getPollOptions();

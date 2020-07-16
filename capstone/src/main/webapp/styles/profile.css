@@ -166,6 +166,14 @@ a:link, a:visited, a:hover, a:active {
   width: 100%;
 }
 
+#logout-btn {
+  height: 30px;
+  position: fixed;
+  right: 100px;
+  top: 50px;
+  width: 30px;
+}
+
 @media screen and (max-width: 650px) {
   .content {
     align-items: center;

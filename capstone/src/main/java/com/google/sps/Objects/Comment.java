@@ -3,6 +3,8 @@ package com.google.sps.Objects;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EmbeddedEntity;
 
+import java.util.ArrayList;
+
 public final class Comment {
 
   private final long timestamp;
@@ -20,6 +22,24 @@ public final class Comment {
     String commentText = (String) entity.getProperty("commentText");
     String userId = (String) entity.getProperty("userId");
     return new Comment(timestamp, commentText, userId);
+  }
+
+  public static EmbeddedEntity toEntity(String commentText, String userId) {
+    EmbeddedEntity commentEntity = new EmbeddedEntity();
+    commentEntity.setProperty("timestamp", System.currentTimeMillis());
+    commentEntity.setProperty("commentText", commentText);
+    commentEntity.setProperty("userId", userId);
+    return commentEntity;
+  }
+
+  public static ArrayList<EmbeddedEntity> createCommentEntities(ArrayList<Comment> comments) {
+    ArrayList<EmbeddedEntity> allComments = new ArrayList<>();
+    for (Comment comment: comments) {
+      allComments.add(
+        toEntity(comment.getCommentText(), comment.getUser())
+      );
+    } 
+    return allComments;
   }
 
   public long getTimestamp() {

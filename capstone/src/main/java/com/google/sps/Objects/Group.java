@@ -2,6 +2,8 @@ package com.google.sps.Objects;
 
 import java.util.ArrayList;
 
+import com.google.appengine.api.datastore.Entity;
+
 public class Group {
 
   private final ArrayList<String> memberIds;
@@ -67,5 +69,26 @@ public class Group {
 
   public void addPost(Long newPost) {
     this.postIds.add(newPost);
+  }
+
+  /* Given a Group entity, creates and returns a Group object. */
+  public static Group fromEntity(Entity entity) {
+    ArrayList<String> memberIds = (ArrayList<String>) entity.getProperty("memberIds");
+    ArrayList<Long> challenges = getPropertyList("challenges", entity);
+    ArrayList<Long> posts = getPropertyList("posts", entity);
+    ArrayList<Long> options = getPropertyList("options", entity);
+    String groupName = (String) entity.getProperty("groupName");
+    String headerImg = (String) entity.getProperty("headerImg");
+    long groupId = entity.getKey().getId();
+
+    return new Group(memberIds, challenges, posts, options, groupName, headerImg, groupId);
+  }
+
+  private static ArrayList<Long> getPropertyList(String property, Entity entity) {
+    ArrayList<Long> propertyList =
+        (entity.getProperty(property) == null)
+            ? new ArrayList<Long>()
+            : (ArrayList<Long>) entity.getProperty(property);
+    return propertyList;
   }
 }

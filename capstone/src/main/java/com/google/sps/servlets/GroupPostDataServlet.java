@@ -36,18 +36,15 @@ import com.google.sps.Objects.User;
 import com.google.sps.Objects.Post;
 import com.google.sps.Objects.Comment;
 import com.google.sps.Objects.response.PostResponse;
+import error.ErrorHandler;
 
 @WebServlet("/group-post")
-public class GroupPostDataServlet extends HttpServlet {
+public class GroupPostDataServlet extends AuthenticatedServlet {
+
+  private ErrorHandler errorHandler = new ErrorHandler();
 
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    String userId = "";
-    UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      userId = userService.getCurrentUser().getUserId();
-    }
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     Query query = new Query("Post").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -56,7 +53,7 @@ public class GroupPostDataServlet extends HttpServlet {
     List<Post> posts = new ArrayList<>();
     List<Long> likedPosts = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      posts.add(postEntity(entity));
+      posts.add(Post.fromEntity(entity));
       ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
       if (likes != null && likes.contains(userId)) {
         likedPosts.add(entity.getKey().getId());
@@ -69,64 +66,22 @@ public class GroupPostDataServlet extends HttpServlet {
     response.getWriter().println(new Gson().toJson(postsRes));
   }
 
-  public Post postEntity(Entity entity) {
-    Post userPost = Post.getPostEntity(entity);
-    // Create list of comment objects from list of comment entities 
-    if (entity.getProperty("comments") != null) {
-      createCommentObjectList(userPost.getComments(), entity);
-    }
-    return userPost;
-  }
-
-  private void createCommentObjectList(ArrayList<Comment> comments, Entity entity) {
-    ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
-    for (EmbeddedEntity comment: commentEntitys) {
-      comments.add(Comment.getCommentEntity(comment));
-    }
-  }
-
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Receives submitted post 
-    long timestamp = System.currentTimeMillis();
     String authorName = "Jane Doe";
     String postText = request.getParameter("post-input");
     String challengeName = "Challenge Name";
     String img = getUploadedFileUrl(request, "image");
-    ArrayList<String> likes = new ArrayList<>();
+    HashSet<String> likes = new HashSet<>();
     ArrayList<Comment> comments = new ArrayList<>();
 
     // Creates entity with submitted data and add to database
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(createPostEntity(timestamp, authorName, postText, challengeName, img, likes, comments));
+    Post post = new Post(0, authorName, postText, comments, challengeName, System.currentTimeMillis(), img, likes);
+    datastore.put(post.toEntity());
 
     // Redirect back to the HTML page.
     response.sendRedirect("/group.html");
-  }
-
-  private Entity createPostEntity(long timestamp, String authorName, 
-    String postText, String challengeName, String img, ArrayList<String> likes, ArrayList<Comment> comments) {
-    Entity taskEntity = new Entity("Post");
-    taskEntity.setProperty("authorId", authorName);
-    taskEntity.setProperty("timestamp", timestamp);
-    taskEntity.setProperty("postText", postText);
-    taskEntity.setProperty("challengeName", challengeName);
-    taskEntity.setProperty("img", img);
-    taskEntity.setProperty("likes", likes);
-    taskEntity.setProperty("comments", createCommentEntities(comments));
-    return taskEntity;
-	}
-
-  // Create list of comment entities from list of comment objects
-  private ArrayList<EmbeddedEntity> createCommentEntities(ArrayList<Comment> comments) {
-    ArrayList<EmbeddedEntity> allComments = new ArrayList<>();
-    for (Comment comment: comments) {
-      EmbeddedEntity commentEntity = new EmbeddedEntity();
-      commentEntity.setProperty("timestamp", comment.getTimestamp());
-      commentEntity.setProperty("commentText", comment.getCommentText());
-      commentEntity.setProperty("userId", comment.getUser());
-      allComments.add(commentEntity);
-    } 
-    return allComments;
   }
 
    /** Returns a key that points to the uploaded file, or null if the user didn't upload a file. */

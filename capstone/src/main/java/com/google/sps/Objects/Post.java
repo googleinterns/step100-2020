@@ -3,6 +3,7 @@ package com.google.sps.Objects;
 import java.util.ArrayList;
 import java.util.HashSet;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EmbeddedEntity;
 
 public final class Post {
 
@@ -35,7 +36,7 @@ public final class Post {
     this.likes = likes;
   }
 
-  public static Post getPostEntity(Entity entity) {
+  public static Post fromEntity(Entity entity) {
     long postId = entity.getKey().getId();
     long timestamp = (long) entity.getProperty("timestamp");
     String authorId = (String) entity.getProperty("authorId");
@@ -46,7 +47,44 @@ public final class Post {
       ? new HashSet<>() 
       : new HashSet<String>((ArrayList<String>) entity.getProperty("likes"));   
     ArrayList<Comment> comments = new ArrayList<>();
+     if (entity.getProperty("comments") != null) {
+      createCommentObjectList(comments, entity);
+    }
     return new Post(postId, authorId, postText, comments, challengeName, timestamp, img, likes);
+  }
+
+  private static void createCommentObjectList(ArrayList<Comment> comments, Entity entity) {
+    ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
+    for (EmbeddedEntity comment: commentEntitys) {
+      comments.add(Comment.getCommentEntity(comment));
+    }
+  }
+
+  public Entity toEntity() {
+    Entity entity = new Entity("Post");
+    entity.setProperty("authorId", this.authorId);
+    entity.setProperty("timestamp", this.timestamp);
+    entity.setProperty("postText", this.postText);
+    entity.setProperty("challengeName", this.challengeName);
+    entity.setProperty("img", this.img);
+    entity.setProperty("likes", new ArrayList<>(this.likes));
+    entity.setProperty("comments", Comment.createCommentEntities(this.comments));
+    return entity;
+  }
+
+  @Override 
+  public boolean equals(Object other) {
+    if (other == null) return false;
+    if (other == this) return true;
+    if (!(other instanceof Post)) return false;
+    Post post = (Post) other;
+    return timestamp == post.timestamp &&
+      authorId.equals(post.authorId) &&
+      postText.equals(post.postText) &&
+      challengeName.equals(post.challengeName) &&
+      img.equals(post.img) &&
+      likes.containsAll(post.likes) &&
+      comments.containsAll(post.comments);
   }
 
   public long getTimestamp() {
