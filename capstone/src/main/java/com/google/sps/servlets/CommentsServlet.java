@@ -30,22 +30,24 @@ public class CommentsServlet extends AuthenticatedServlet  {
 
   @Override
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
-   
+
     // Get post id and comment text
     Long postId = Long.parseLong(request.getParameter("id"));
     String commentText = request.getParameter("comment-text");
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity postEntity = this.getPostFromId(response, postId, datastore);
+    if (postEntity == null) return;
     ArrayList<EmbeddedEntity> allComments = (ArrayList<EmbeddedEntity>) postEntity.getProperty("comments");
 
     // Create comment entity and add to comment arraylist for post
+    Comment submittedComment = new Comment(System.currentTimeMillis(), commentText, userId);
     if (allComments == null) {
       ArrayList<EmbeddedEntity> comments = new ArrayList<>();
-      comments.add(Comment.toEntity(commentText, userId));
+      comments.add(submittedComment.toEntity());
       postEntity.setProperty("comments", comments);
     } else {
-      allComments.add(Comment.toEntity(commentText, userId));
+      allComments.add(submittedComment.toEntity());
       postEntity.setProperty("comments", allComments);
     }
     datastore.put(postEntity);

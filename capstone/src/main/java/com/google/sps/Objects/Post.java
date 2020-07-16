@@ -56,7 +56,7 @@ public final class Post {
   private static void createCommentObjectList(ArrayList<Comment> comments, Entity entity) {
     ArrayList<EmbeddedEntity> commentEntitys = (ArrayList<EmbeddedEntity>) entity.getProperty("comments");
     for (EmbeddedEntity comment: commentEntitys) {
-      comments.add(Comment.getCommentEntity(comment));
+      comments.add(Comment.fromEntity(comment));
     }
   }
 
