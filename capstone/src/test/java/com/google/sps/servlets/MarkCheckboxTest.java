@@ -40,21 +40,16 @@ public class MarkCheckboxTest {
   private static final String NEW_CHALLENGE = "Run";
   private static final long DUE_DATE = 12345;
 
-  private final LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(
-              new LocalDatastoreServiceTestConfig()
-                  .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
-              new LocalUserServiceTestConfig())
-          .setEnvEmail(USER_EMAIL)
-          .setEnvIsLoggedIn(true)
-          .setEnvAuthDomain("gmail.com")
+  private final LocalServiceTestHelper helper = new LocalServiceTestHelper(
+      new LocalDatastoreServiceTestConfig().setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
+      new LocalUserServiceTestConfig()).setEnvEmail(USER_EMAIL).setEnvIsLoggedIn(true).setEnvAuthDomain("gmail.com")
           .setEnvAttributes(
-              new HashMap(
-                  ImmutableMap.of(
-                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+              new HashMap(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
-  @Mock private HttpServletRequest mockRequest;
-  @Mock private HttpServletResponse mockResponse;
+  @Mock
+  private HttpServletRequest mockRequest;
+  @Mock
+  private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private DatastoreService datastore;
   private MarkCheckboxServlet markCheckboxServlet;
@@ -104,7 +99,7 @@ public class MarkCheckboxTest {
     Key key = KeyFactory.createKey(TYPE, Long.parseLong(CHECKBOX_ID));
 
     // trigger EntityNotfoundException
-    Entity entity = datastore.get(key);
+    datastore.get(key);
   }
 
   @Test

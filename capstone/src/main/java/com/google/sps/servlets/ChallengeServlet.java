@@ -12,7 +12,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.Objects.Challenge;
-import com.google.sps.Objects.Group;
 import com.google.sps.Objects.Time;
 import com.google.sps.Objects.response.ChallengeResponse;
 
@@ -23,9 +22,10 @@ public class ChallengeServlet extends AuthenticatedServlet {
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity groupEntity = this.getGroupEntity(request, response, datastore);
+    long groupId = Long.parseLong(request.getParameter("groupId"));
+    Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     ChallengeResponse challengeResponse =
-        this.buildChallengeResponse(groupEntity, userId, datastore, response);
+        this.buildChallengeResponse(groupEntity, userId, datastore, response, request);
     ServletHelper.write(response, challengeResponse, "application/json");
   }
 
@@ -48,13 +48,20 @@ public class ChallengeServlet extends AuthenticatedServlet {
   }
 
   private ChallengeResponse buildChallengeResponse(
-      Entity groupEntity, String userId, DatastoreService datastore, HttpServletResponse response)
+      Entity groupEntity,
+      String userId,
+      DatastoreService datastore,
+      HttpServletResponse response,
+      HttpServletRequest request)
       throws IOException {
+    if (groupEntity == null) {
+      return null;
+    }
     List<Long> challengeIds =
         (groupEntity.getProperty("challenges") == null)
             ? new ArrayList<Long>()
             : (ArrayList<Long>) groupEntity.getProperty("challenges");
-    Challenge challenge = this.getMostRecentChallenge(challengeIds, datastore, response);
+    Challenge challenge = this.getMostRecentChallenge(challengeIds, datastore, response, request);
     if (challenge == null) {
       return null;
     }
@@ -62,22 +69,21 @@ public class ChallengeServlet extends AuthenticatedServlet {
     return new ChallengeResponse(challenge, hasUserCompleted);
   }
 
-  private Entity getGroupEntity(
-      HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
-      throws IOException {
-    return Group.getGroupEntity(request, response, datastore);
-  }
-
   private Challenge getMostRecentChallenge(
-      List<Long> challengeIds, DatastoreService datastore, HttpServletResponse response)
+      List<Long> challengeIds,
+      DatastoreService datastore,
+      HttpServletResponse response,
+      HttpServletRequest request)
       throws IOException {
-
     if (challengeIds.size() == 0) {
       return null;
     } else {
       long mostRecentChallengeId = challengeIds.get(challengeIds.size() - 1);
       Entity newestChallengeEntity =
           ServletHelper.getEntityFromId(response, mostRecentChallengeId, datastore, "Challenge");
+      if (newestChallengeEntity == null) {
+        return null;
+      }
       // if challenge already passed
       if ((long) newestChallengeEntity.getProperty("dueDate") < System.currentTimeMillis()) {
         return null;
@@ -93,7 +99,8 @@ public class ChallengeServlet extends AuthenticatedServlet {
       DatastoreService datastore,
       Entity challengeEntity)
       throws IOException {
-    Entity groupEntity = this.getGroupEntity(request, response, datastore);
+    long groupId = Long.parseLong(request.getParameter("groupId"));
+    Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     List<Long> challenges =
         (groupEntity.getProperty("challenges") == null)
             ? new ArrayList<Long>()
