@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -70,7 +69,7 @@ public class PollServletTest {
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
-  @Spy private PollServlet pollServlet;
+  private PollServlet pollServlet;
   private StringWriter responseWriter;
   private DatastoreService datastore;
 
@@ -79,6 +78,7 @@ public class PollServletTest {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
+    pollServlet = new PollServlet();
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
