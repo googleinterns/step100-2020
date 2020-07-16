@@ -62,7 +62,6 @@ public class ChallengeServlet extends AuthenticatedServlet {
             ? new ArrayList<Long>()
             : (ArrayList<Long>) groupEntity.getProperty("challenges");
     Challenge challenge = this.getMostRecentChallenge(challengeIds, datastore, response, request);
-    System.out.println(challenge);
     if (challenge == null) {
       return null;
     }
@@ -86,23 +85,19 @@ public class ChallengeServlet extends AuthenticatedServlet {
       HttpServletResponse response,
       HttpServletRequest request)
       throws IOException {
-    System.out.println(challengeIds.toString());
     if (challengeIds.size() == 0) {
       return null;
     } else {
       long mostRecentChallengeId = challengeIds.get(challengeIds.size() - 1);
       Entity newestChallengeEntity =
           this.getEntityFromId(mostRecentChallengeId, "Challenge", request, response, datastore);
-      System.out.println("newest challenge entity" + newestChallengeEntity);
       if (newestChallengeEntity == null) {
         return null;
       }
       // if challenge already passed
       if ((long) newestChallengeEntity.getProperty("dueDate") < System.currentTimeMillis()) {
-        System.out.println(System.currentTimeMillis());
         return null;
       } else {
-        System.out.println("returning newest challenge");
         return Challenge.fromEntity(newestChallengeEntity);
       }
     }

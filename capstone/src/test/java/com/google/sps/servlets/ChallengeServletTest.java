@@ -84,14 +84,17 @@ public class ChallengeServletTest {
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
-    //    // Add test data
-    //    ImmutableList.Builder<Entity> challenge = ImmutableList.builder();
-    //    challenge.add(createChallenge(CHALLENGE_NAME));
-    //    datastore.put(challenge.build());
-
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
+  }
+
+  @After
+  public void tearDown() {
+    helper.tearDown();
+    responseWriter = null;
+    datastore = null;
+    challengeServlet = null;
   }
 
   /**
@@ -109,12 +112,17 @@ public class ChallengeServletTest {
     return challengeEntity;
   }
 
-  @After
-  public void tearDown() {
-    helper.tearDown();
-    responseWriter = null;
-    datastore = null;
-    challengeServlet = null;
+  private Entity createGroup(String userId, String groupName) {
+    ArrayList<String> members = new ArrayList<String>();
+    members.add(userId);
+    Entity groupEntity = new Entity("Group");
+    groupEntity.setProperty("memberIds", members);
+    groupEntity.setProperty("challenges", null);
+    groupEntity.setProperty("posts", null);
+    groupEntity.setProperty("options", new ArrayList<Long>());
+    groupEntity.setProperty("groupName", groupName);
+    groupEntity.setProperty("headerImg", "");
+    return groupEntity;
   }
 
   @Test
@@ -171,27 +179,6 @@ public class ChallengeServletTest {
 
     assertEquals(emptyString, response);
   }
-
-  private Entity createGroup(String userId, String groupName) {
-    ArrayList<String> members = new ArrayList<String>();
-    members.add(userId);
-    Entity groupEntity = new Entity("Group");
-    groupEntity.setProperty("memberIds", members);
-    groupEntity.setProperty("challenges", null);
-    groupEntity.setProperty("posts", null);
-    groupEntity.setProperty("options", new ArrayList<Long>());
-    groupEntity.setProperty("groupName", groupName);
-    groupEntity.setProperty("headerImg", "");
-    return groupEntity;
-  }
-
-  //  @Test
-  //  public void doGet_testUserNotCompleted() throws IOException {
-  //    challengeServlet.doGet(mockRequest, mockResponse);
-  //    String response = responseWriter.toString();
-  //
-  //    assertTrue(response.contains("false"));
-  //  }
 
   @Test
   public void doGet_userNotLoggedIn() throws IOException {
