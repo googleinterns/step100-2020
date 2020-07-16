@@ -1,4 +1,5 @@
 function init() {
+  getGroupId();
   loadPosts();
   getPollOptions();
   fetchBlobstoreUrlAndShowForm();
@@ -8,7 +9,6 @@ function init() {
 let postResponse;
 
 function loadPosts() {
-  const groupId = getGroupId();
   console.log(groupId);
   fetch(`/group-post?groupId=${groupId}`).then(response => response.json()).then((postsResp) => {
     postResponse = postsResp;

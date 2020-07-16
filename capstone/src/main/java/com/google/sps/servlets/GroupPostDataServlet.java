@@ -72,7 +72,7 @@ public class GroupPostDataServlet extends HttpServlet {
 
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Receives submitted post 
-    //Long groupId = Long.parseLong(request.getParameter("groupId"));
+    Long groupId = Long.parseLong(request.getParameter("groupId"));
     String authorName = "Jane Doe";
     String postText = request.getParameter("post-input");
     String challengeName = "Challenge Name";

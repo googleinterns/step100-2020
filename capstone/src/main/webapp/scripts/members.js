@@ -1,7 +1,6 @@
 function loadMembers() {
-  const groupId = getGroupId();
   console.log(groupId);
-  fetch(`/all-group-members?groupId=4890627720347648`).then(response => response.json()).then((allGroupMembers) => {
+  fetch(`/all-group-members?groupId=${groupId}`).then(response => response.json()).then((allGroupMembers) => {
     const allMembers = allGroupMembers;
     const memberGrid = document.getElementsByClassName("member-grid-container")[0];
     memberGrid.innerHTML = '';
@@ -12,28 +11,33 @@ function loadMembers() {
   });
 }
 
+let groupId;
+
 function getGroupId() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  return urlParams.get('groupId');
+  groupId = urlParams.get('groupId');
 }
 
 function openAddGroupMemberModal() {
   let modal = document.getElementById('add-member-modal');
   modal.style.display = "block";
+  console.log(groupId);
 }
 
 function addMember(){
-  console.log("add member")
-  const groupId = getGroupId();
+  console.log(groupId);
+  let request = new Request(`/group-member?groupId=${groupId}&email=${emailInput}`, { method: "POST" });
   const emailInput = document.getElementById('email-input').value;
-  let request = new Request(`/group-member?email=${emailInput}&groupId=4890627720347648`, { method: "POST" });
   fetch(request).then(response => response.json()).then((memberResp) => {
     openAddGroupMemberModal();
     console.log(memberResp);
-    const memberUpdate = document.getElementById("memberUpdate");
-    memberUpdate.innerText = memResponse.response;
+    //const memberUpdate = document.getElementById("memberUpdate");
+    //memberUpdate.innerText = memResponse.response;
+    console.log(groupId);
   }); 
+  console.log(groupId);
+
 }
 
 function createMemberComponents(memberInfo) {
