@@ -23,11 +23,9 @@ public class ChallengeServlet extends AuthenticatedServlet {
       throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     long groupId = Long.parseLong(request.getParameter("groupId"));
-
-    Entity groupEntity = this.getGroupEntity(groupId, request, response, datastore);
-    System.out.println("group entity ===========" + groupEntity);
+    Entity groupEntity = this.getEntityFromId(groupId, "Group", request, response, datastore);
     ChallengeResponse challengeResponse =
-        this.buildChallengeResponse(groupEntity, userId, datastore, response);
+        this.buildChallengeResponse(groupEntity, userId, datastore, response, request);
     ServletHelper.write(response, challengeResponse, "application/json");
   }
 
@@ -50,10 +48,12 @@ public class ChallengeServlet extends AuthenticatedServlet {
   }
 
   public ChallengeResponse buildChallengeResponse(
-      Entity groupEntity, String userId, DatastoreService datastore, HttpServletResponse response)
+      Entity groupEntity,
+      String userId,
+      DatastoreService datastore,
+      HttpServletResponse response,
+      HttpServletRequest request)
       throws IOException {
-    System.out.println("in build challenge response");
-    System.out.println(groupEntity);
     if (groupEntity == null) {
       return null;
     }
@@ -61,7 +61,8 @@ public class ChallengeServlet extends AuthenticatedServlet {
         (groupEntity.getProperty("challenges") == null)
             ? new ArrayList<Long>()
             : (ArrayList<Long>) groupEntity.getProperty("challenges");
-    Challenge challenge = this.getMostRecentChallenge(challengeIds, datastore, response);
+    Challenge challenge = this.getMostRecentChallenge(challengeIds, datastore, response, request);
+    System.out.println(challenge);
     if (challenge == null) {
       return null;
     }
@@ -69,29 +70,39 @@ public class ChallengeServlet extends AuthenticatedServlet {
     return new ChallengeResponse(challenge, hasUserCompleted);
   }
 
-  public Entity getGroupEntity(
-      long groupId,
+  public Entity getEntityFromId(
+      long id,
+      String type,
       HttpServletRequest request,
       HttpServletResponse response,
       DatastoreService datastore)
       throws IOException {
-    return ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
+    return ServletHelper.getEntityFromId(response, id, datastore, type);
   }
 
-  private Challenge getMostRecentChallenge(
-      List<Long> challengeIds, DatastoreService datastore, HttpServletResponse response)
+  public Challenge getMostRecentChallenge(
+      List<Long> challengeIds,
+      DatastoreService datastore,
+      HttpServletResponse response,
+      HttpServletRequest request)
       throws IOException {
-
+    System.out.println(challengeIds.toString());
     if (challengeIds.size() == 0) {
       return null;
     } else {
       long mostRecentChallengeId = challengeIds.get(challengeIds.size() - 1);
       Entity newestChallengeEntity =
-          ServletHelper.getEntityFromId(response, mostRecentChallengeId, datastore, "Challenge");
+          this.getEntityFromId(mostRecentChallengeId, "Challenge", request, response, datastore);
+      System.out.println("newest challenge entity" + newestChallengeEntity);
+      if (newestChallengeEntity == null) {
+        return null;
+      }
       // if challenge already passed
       if ((long) newestChallengeEntity.getProperty("dueDate") < System.currentTimeMillis()) {
+        System.out.println(System.currentTimeMillis());
         return null;
       } else {
+        System.out.println("returning newest challenge");
         return Challenge.fromEntity(newestChallengeEntity);
       }
     }
@@ -104,7 +115,7 @@ public class ChallengeServlet extends AuthenticatedServlet {
       Entity challengeEntity)
       throws IOException {
     long groupId = Long.parseLong(request.getParameter("groupId"));
-    Entity groupEntity = this.getGroupEntity(groupId, request, response, datastore);
+    Entity groupEntity = this.getEntityFromId(groupId, "Group", request, response, datastore);
     List<Long> challenges =
         (groupEntity.getProperty("challenges") == null)
             ? new ArrayList<Long>()

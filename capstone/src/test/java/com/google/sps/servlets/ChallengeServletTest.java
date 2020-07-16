@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,9 +33,9 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.sps.Objects.Challenge;
+import com.google.sps.Objects.response.ChallengeResponse;
 
 public class ChallengeServletTest {
 
@@ -42,10 +43,21 @@ public class ChallengeServletTest {
   private static final String USER_ID = "test";
   private static final String NEW_CHALLENGE = "Bike 20 miles";
   private static final String CHALLENGE_NAME = "Run";
-  private static final long CHALLENGE_ID = 3;
-  private static final long DUE_DATE = 12345;
+  private static final long CHALLENGE_ID = 2;
+  private static final long DUE_DATE = 2594865260645L;
+  private static final long PAST_DUE_DATE = 1234;
   private static final String GROUP_NAME = "Runners Club";
-  private static final String GROUP_ID = "2";
+  private static final String GROUP_ID = "1";
+  private static final List<Long> CHALLENGE_IDS = new ArrayList<Long>(Arrays.asList(2L));
+  private static final Challenge CHALLENGE =
+      new Challenge(
+          CHALLENGE_NAME,
+          DUE_DATE,
+          null, /* badge */
+          new ArrayList<String>(), /* users completed */
+          CHALLENGE_ID);
+  private static final ChallengeResponse CHALLENGE_RESPONSE =
+      new ChallengeResponse(CHALLENGE, /* is challenge marked completed */ false);
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -72,10 +84,10 @@ public class ChallengeServletTest {
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
-    // Add test data
-    ImmutableList.Builder<Entity> challenge = ImmutableList.builder();
-    challenge.add(createChallenge(CHALLENGE_NAME));
-    datastore.put(challenge.build());
+    //    // Add test data
+    //    ImmutableList.Builder<Entity> challenge = ImmutableList.builder();
+    //    challenge.add(createChallenge(CHALLENGE_NAME));
+    //    datastore.put(challenge.build());
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
@@ -88,11 +100,11 @@ public class ChallengeServletTest {
    * @param text challenge name
    * @return entity
    */
-  private Entity createChallenge(String text) {
+  private Entity createChallenge(String text, long dueDate) {
     Entity challengeEntity = new Entity("Challenge");
     challengeEntity.setProperty("name", text);
-    challengeEntity.setProperty("dueDate", DUE_DATE);
-    challengeEntity.setProperty("votes", new ArrayList<String>());
+    challengeEntity.setProperty("dueDate", dueDate);
+    challengeEntity.setProperty("votes", null);
     challengeEntity.setProperty("timestamp", System.currentTimeMillis());
     return challengeEntity;
   }
@@ -112,38 +124,52 @@ public class ChallengeServletTest {
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
     doReturn(groupEntity)
         .when(challengeServlet)
-        .getGroupEntity(Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore);
-    //    assertEquals(
-    //        groupEntity,
-    //        challengeServlet.getGroupEntity(
-    //            Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore));
-
-    //    Challenge challenge =
-    //        new Challenge(
-    //            CHALLENGE_NAME, DUE_DATE, null /* badge */, new ArrayList<String>(),
-    // CHALLENGE_ID);
-    //    ChallengeResponse challengeResponse = new ChallengeResponse(challenge, false);
-    //    doReturn(challengeResponse)
-    //        .when(challengeServlet)
-    //        .buildChallengeResponse(groupEntity, USER_ID, datastore, mockResponse);
-    //
-    //    assertEquals(
-    //        challengeResponse,
-    //        challengeServlet.buildChallengeResponse(groupEntity, USER_ID, datastore,
-    // mockResponse));
-    //
-    //    System.out.println("00000000000");
-    //    System.out.println(
-    //        challengeServlet
-    //            .buildChallengeResponse(groupEntity, USER_ID, datastore, mockResponse)
-    //            .getChallenge()
-    //            .getChallengeName());
+        .getEntityFromId(Integer.parseInt(GROUP_ID), "Group", mockRequest, mockResponse, datastore);
 
     challengeServlet.doGet(mockRequest, mockResponse);
-
     String response = responseWriter.toString();
     String emptyString = "\"\"\n";
-    assertEquals(response, emptyString);
+
+    assertEquals(emptyString, response);
+  }
+
+  @Test
+  public void doGet_withChallenge() throws IOException {
+    Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
+    groupEntity.setProperty("challenges", CHALLENGE_IDS);
+    datastore.put(groupEntity);
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
+    doReturn(groupEntity)
+        .when(challengeServlet)
+        .getEntityFromId(Integer.parseInt(GROUP_ID), "Group", mockRequest, mockResponse, datastore);
+    Entity challengeEntity = this.createChallenge(CHALLENGE_NAME, DUE_DATE);
+    datastore.put(challengeEntity);
+
+    challengeServlet.doGet(mockRequest, mockResponse);
+    String response = responseWriter.toString();
+
+    assertTrue(response.contains(CHALLENGE_NAME));
+    assertTrue(response.contains(String.valueOf(DUE_DATE)));
+    assertTrue(response.contains("false"));
+  }
+
+  @Test
+  public void doGet_withChallenge_passedDueDate() throws IOException {
+    Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
+    groupEntity.setProperty("challenges", CHALLENGE_IDS);
+    datastore.put(groupEntity);
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
+    doReturn(groupEntity)
+        .when(challengeServlet)
+        .getEntityFromId(Integer.parseInt(GROUP_ID), "Group", mockRequest, mockResponse, datastore);
+    Entity challengeEntity = this.createChallenge(CHALLENGE_NAME, PAST_DUE_DATE);
+    datastore.put(challengeEntity);
+
+    challengeServlet.doGet(mockRequest, mockResponse);
+    String response = responseWriter.toString();
+    String emptyString = "\"\"\n";
+
+    assertEquals(emptyString, response);
   }
 
   private Entity createGroup(String userId, String groupName) {
@@ -188,7 +214,6 @@ public class ChallengeServletTest {
         .updateChallengesList(mockRequest, mockResponse, datastore, groupEntity);
 
     challengeServlet.doPost(mockRequest, mockResponse);
-    // id of Challenge increments for each new Challenge that is added
     Key challengeKey = KeyFactory.createKey("Challenge", CHALLENGE_ID);
     Entity entity = datastore.get(challengeKey);
     long id = entity.getKey().getId();
@@ -197,22 +222,22 @@ public class ChallengeServletTest {
             NEW_CHALLENGE, /* challenge name*/
             DUE_DATE, /* due date */
             null, /* badge */
-            new ArrayList<String>(), /* users completed */
+            null, /* users completed */
             id /* id of challenge */);
     Challenge returnedChallenge = Challenge.fromEntity(entity);
 
-    assertEquals(returnedChallenge.getChallengeName(), challenge.getChallengeName());
+    assertEquals(challenge.getChallengeName(), returnedChallenge.getChallengeName());
   }
 
   @Test
   public void updateChallengesListTest() throws IOException, EntityNotFoundException {
-    Entity challengeEntity = this.createChallenge(CHALLENGE_NAME);
+    Entity challengeEntity = this.createChallenge(CHALLENGE_NAME, DUE_DATE);
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
     doReturn(groupEntity)
         .when(challengeServlet)
-        .getGroupEntity(Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore);
+        .getEntityFromId(Integer.parseInt(GROUP_ID), "Group", mockRequest, mockResponse, datastore);
 
     challengeServlet.updateChallengesList(mockRequest, mockResponse, datastore, challengeEntity);
     Key groupKey = KeyFactory.createKey("Group", Integer.parseInt(GROUP_ID));

@@ -159,11 +159,9 @@ public class PollServletTest {
         .when(pollServlet)
         .getGroupEntity(Integer.parseInt(GROUP_ID), mockRequest, mockResponse, datastore);
     PollResponse pollResponse = new PollResponse(this.getOptions(), new ArrayList<Long>(), USER_ID);
-    //    doReturn(pollResponse)
-    //        .when(pollServlet)
-    //        .buildPollResponse(groupEntity, USER_ID, mockResponse, datastore);
     when(pollServlet.buildPollResponse(groupEntity, USER_ID, mockResponse, datastore))
         .thenReturn(pollResponse);
+
     pollServlet.doGet(mockRequest, mockResponse);
 
     String response = responseWriter.toString();
