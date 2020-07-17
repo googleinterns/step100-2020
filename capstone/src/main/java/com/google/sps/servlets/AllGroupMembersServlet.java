@@ -18,6 +18,7 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.sps.Objects.response.MemberResponse;
 import error.ErrorHandler;
+import com.google.sps.servlets.ServletHelper;
 
 @WebServlet("/all-group-members")
 
@@ -30,14 +31,14 @@ public class AllGroupMembersServlet extends AuthenticatedServlet {
     Long groupId = Long.parseLong(request.getParameter("groupId"));
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity groupEntity = getGroupFromId(response, groupId, datastore);
+    Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     if (groupEntity == null) return;
 
     ArrayList<String> allGroupMembers = (ArrayList<String>) groupEntity.getProperty("memberIds");
 
     List<MemberResponse> basicMemberProfiles = new ArrayList<>();
     for (String memberId : allGroupMembers) {
-      Entity userEntity = getUserFromId(response, memberId, datastore);
+      Entity userEntity = ServletHelper.getUserFromId(response, memberId, datastore);
       if (userEntity != null && !memberId.equals(userId)) {
       MemberResponse member = MemberResponse.fromEntity(
         userEntity, /* includeBadges= */ false);
@@ -48,26 +49,6 @@ public class AllGroupMembersServlet extends AuthenticatedServlet {
     // Convert to json
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(basicMemberProfiles)); 
-  }
-
-  private Entity getGroupFromId(
-    HttpServletResponse response, long groupId, DatastoreService datastore)  throws IOException {
-      try {
-        return datastore.get(KeyFactory.createKey("Group", groupId));
-      } catch (EntityNotFoundException e) {
-        errorHandler.sendError(response, "Group does not exist.");
-        return null;
-      }
-  }
-
-  private Entity getUserFromId(
-    HttpServletResponse response,String userId, DatastoreService datastore)  throws IOException {
-      try {
-        return datastore.get(KeyFactory.createKey("User", userId));
-      } catch (EntityNotFoundException e) {
-        errorHandler.sendError(response, "Group does not exist.");
-        return null;
-      }
   }
 
   @Override

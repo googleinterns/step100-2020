@@ -68,4 +68,24 @@ public class ServletHelper {
       return null;
     }
   }
+
+  /**
+   * Retrieves the user entity from the database based on id.
+   *
+   * @param response HttpServletResponse
+   * @param id id of user
+   * @param datastore datastore holding all data
+   * @return Entity
+   * @throws IOException error thrown from sendError method
+   */
+  public static Entity getUserFromId(
+      HttpServletResponse response, String id, DatastoreService datastore)
+      throws IOException {
+    try {
+      return datastore.get(KeyFactory.createKey("User", id));
+    } catch (EntityNotFoundException e) {
+      ErrorHandler.sendError(response, "Cannot get entity from datastore");
+      return null;
+    }
+  }
 }

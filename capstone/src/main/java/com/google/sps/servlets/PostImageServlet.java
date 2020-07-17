@@ -25,7 +25,7 @@ public class PostImageServlet extends HttpServlet {
     Long groupId = Long.parseLong(request.getParameter("groupId"));
 
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    String url = "/group-post?groupId="+groupId;
+    String url = "/group-post?groupId=" + groupId;
     String uploadUrl = blobstoreService.createUploadUrl(url);
 
     response.setContentType("text/html");

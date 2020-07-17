@@ -1,7 +1,6 @@
 let postResponse;
 
 function loadPosts() {
-  console.log(groupId);
   fetch(`/group-post?groupId=${groupId}`).then(response => response.json()).then((postsResp) => {
     postResponse = postsResp;
     const posts = postResponse["posts"];
@@ -209,7 +208,6 @@ function fetchBlobstoreUrlAndShowForm() {
     })
     .then(imageUploadUrl => {
       const messageForm = document.getElementById("post-form");
-      console.log(imageUploadUrl);
       messageForm.action = imageUploadUrl;
     });
 }

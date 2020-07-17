@@ -24,6 +24,7 @@ import java.util.Set;
 import java.io.PrintWriter;
 import com.google.gson.Gson;
 import com.google.sps.Objects.response.MemberResponse;
+import com.google.sps.servlets.ServletHelper;
 import error.ErrorHandler;
 
 @WebServlet("/group-member")
@@ -39,7 +40,7 @@ public class GroupMemberServlet extends AuthenticatedServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity memberEntity = getMemberEntity(email, response, datastore);
-    Entity group = this.getGroupFromId(response, groupId, datastore);
+    Entity group = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     if (group == null) return;
 
     String memResponse = doPost_helper(response, datastore, groupId, memberEntity, group);
@@ -108,23 +109,13 @@ public class GroupMemberServlet extends AuthenticatedServlet {
     }
   }
 
-  private Entity getUserFromId(
-    HttpServletResponse response, String userId, DatastoreService datastore) throws IOException {
-    try {
-      return datastore.get(KeyFactory.createKey("User", userId));
-    } catch (EntityNotFoundException e) {
-      ErrorHandler.sendError(response, "User does not exist.");
-      return null;
-    }
-  }
-
   // Gets a MemberResponse object from userId
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     String userId = request.getParameter("id");
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity member = this.getUserFromId(response, userId, datastore);
+    Entity member = ServletHelper.getUserFromId(response, userId, datastore);
     MemberResponse memResponse = MemberResponse.fromEntity(
       member, /* includeBadges= */ true);
 
