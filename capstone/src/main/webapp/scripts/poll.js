@@ -6,10 +6,15 @@ let topChallenge = null;
 const NO_CHALLENGES =
   "No current challenges. Submit a suggestion in the poll and mark checkbox for challenge to be posted. The challenge will be updated weekly based on top voted poll option.";
 
+let groupId;
+function getGroupId() {
+  groupId = window.location.search.substring(1).split("=")[1];
+}
+
 /**
  * Adds new option to poll.
  */
-function addPollOption(groupId) {
+function addPollOption() {
   const text = document.getElementById("input-box").value;
   if (text.trim() === "") return;
   document.getElementById("input-box").value = "";
@@ -23,7 +28,7 @@ function addPollOption(groupId) {
  * that the current logged in user has voted for, from server and load to DOM. Then get the
  * weekly challenge.
  */
-function getPollOptions(groupId) {
+function getPollOptions() {
   fetch(`poll?groupId=${groupId}`)
     .then(response => response.json())
     .then(pollData => {
@@ -46,14 +51,14 @@ function getPollOptions(groupId) {
         return;
       }
     })
-    .then(getChallenge(groupId));
+    .then(getChallenge);
 }
 
 /**
  * Gets the current challenge from server and post to DOM. Check if the challenge needs to be
  * updated.
  */
-function getChallenge(groupId) {
+function getChallenge() {
   //Milliseconds until challenge due date.
   let dueDateMillis = 0;
   fetch(`challenge?groupId=${groupId}`)
@@ -124,16 +129,16 @@ function checkWeek(dueDateMillis) {
 /**
  * Deletes the top poll option, adding that option as a new challenge to the database.
  */
-function updatePoll(groupId) {
+function updatePoll() {
   fetch(`delete-top-option?groupId=${groupId}`, { method: "POST" }).then(
-    addChallengeToDb(groupId)
+    addChallengeToDb
   );
 }
 
 /**
  * Adds challenge to database. If there are no poll options, display no challenge text.
  */
-function addChallengeToDb(groupId) {
+function addChallengeToDb() {
   topChallenge
     ? fetch(`challenge?name=${topChallenge}&groupId=${groupId}`, {
         method: "POST"
@@ -260,3 +265,5 @@ function markChallenge(id, checked) {
     method: "POST"
   });
 }
+
+getGroupId();

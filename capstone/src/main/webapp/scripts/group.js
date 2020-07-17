@@ -1,21 +1,21 @@
-let groupId;
+let group_id;
 
 function init() {
-  getGroupId();
-  checkMembership(groupId);
+  getId();
+  checkMembership(group_id);
   createLogoutUrl();
   loadPosts();
-  getPollOptions(groupId);
+  getPollOptions();
   fetchBlobstoreUrlAndShowForm();
   loadMembers();
 }
 
-function getGroupId() {
-  groupId = window.location.search.substring(1).split("=")[1];
+function getId() {
+  group_id = window.location.search.substring(1).split("=")[1];
 }
 
-function checkMembership(groupId) {
-  fetch(`/join-group?groupId=${groupId}`)
+function checkMembership(group_id) {
+  fetch(`/join-group?groupId=${group_id}`)
     .then(response => response.json())
     .then(isMemberData =>
       handleJoinGroupModal(isMemberData["groupName"], isMemberData["isMember"])
@@ -23,6 +23,7 @@ function checkMembership(groupId) {
 }
 
 function handleJoinGroupModal(groupName, isMember) {
+  setGroupBannerText(groupName);
   if (!isMember) {
     showJoinGroupModal(groupName);
   } else {
@@ -48,7 +49,11 @@ function hideJoinGroupModal() {
 }
 
 function joinGroup() {
-  fetch(`/join-group?groupId=${groupId}`, { method: "POST" }).then(
+  fetch(`/join-group?groupId=${group_id}`, { method: "POST" }).then(
     hideJoinGroupModal
   );
+}
+
+function setGroupBannerText(groupName) {
+  document.getElementById("group-name").textContent = groupName;
 }
