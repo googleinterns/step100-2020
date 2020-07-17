@@ -102,8 +102,7 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
     if (postIds == null) {
       postIds = new ArrayList<Long>();
     }
-    Post storedPost = Post.fromEntity(postEntity);
-    postIds.add(storedPost.getPostId());
+    postIds.add(postEntity.getKey().getId());
     groupEntity.setProperty("posts", postIds);
     datastore.put(groupEntity);
   }
