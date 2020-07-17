@@ -37,9 +37,11 @@ function showJoinGroupModal(groupName) {
   paragraph.style.display = "block";
   let text = document.createTextNode(`Join ${groupName} to view its content`);
   paragraph.appendChild(text);
+
   let button = document.getElementById("join-group-btn");
   button.style.display = "block";
   button.addEventListener("click", joinGroup);
+
   let aTag = document.getElementById("go-to-profile");
   aTag.style.display = "block";
   aTag.setAttribute("href", "profile.html");
