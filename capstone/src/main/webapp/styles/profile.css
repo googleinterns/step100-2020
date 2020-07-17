@@ -283,6 +283,14 @@ a:link, a:visited, a:hover, a:active {
   outline: none;
 }
 
+.edit-modal input:read-only {
+  background-color: var(--background);
+  color: var(--text-gray);
+  cursor: default;
+  box-shadow: none;
+  outline: none;
+}
+
 .save-btn {
   background-color: var(--dark-green);
   border: none;
