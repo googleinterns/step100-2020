@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.sps.Objects.response.JoinGroupResponse;
 
 @WebServlet("/join-group")
 public class JoinGroupServlet extends AuthenticatedServlet {
@@ -23,13 +24,9 @@ public class JoinGroupServlet extends AuthenticatedServlet {
     long groupId = Long.parseLong(request.getParameter("groupId"));
     Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     boolean isMember = this.getIsMember(userId, groupEntity);
-
-    String json = "{";
-    json += "\"isMember\": ";
-    json += "\"" + String.valueOf(isMember) + "\"";
-    json += "}";
-    response.setContentType("application/json");
-    response.getWriter().println(json);
+    String groupName = (String) groupEntity.getProperty("groupName");
+    JoinGroupResponse joinGroupResponse = new JoinGroupResponse(groupName, isMember);
+    ServletHelper.write(response, joinGroupResponse, "application/json");
   }
 
   /**
@@ -61,7 +58,6 @@ public class JoinGroupServlet extends AuthenticatedServlet {
    */
   private void updateGroupMembersList(
       Entity groupEntity, String userId, DatastoreService datastore) {
-    System.out.println("update group members list");
     List<String> memberIds = (ArrayList<String>) groupEntity.getProperty("memberIds");
     memberIds.add(userId);
     groupEntity.setProperty("memberIds", memberIds);
@@ -80,7 +76,6 @@ public class JoinGroupServlet extends AuthenticatedServlet {
         (userEntity.getProperty("groups") == null)
             ? new ArrayList<Long>()
             : (ArrayList<Long>) userEntity.getProperty("groups");
-    System.out.println("update user groups list");
     if (!groupIds.contains(groupId)) {
       groupIds.add(groupId);
     }
