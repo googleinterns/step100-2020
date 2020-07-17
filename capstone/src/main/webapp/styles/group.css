@@ -15,7 +15,7 @@ p {
 
 .group-container {
   width: var(--container-width);
-  margin: 0 auto;
+  margin: 60px auto;
 }
 
 .group-content {
@@ -31,7 +31,6 @@ p {
   flex-direction: column;
   float: right;
   margin-right: 7%;
-  margin-top: 50px;
   position: relative;
 }
 
@@ -488,9 +487,9 @@ input[type="checkbox"]:checked + label:before {
   border-left: 4px solid var(--dark-green);
 }
 
-.join-group-modal {
+#join-group-modal {
   position: fixed; /* Sit on top of the page content */
-  display: block; /* Hidden by default */
+  display: none; /* Hidden by default */
   width: 100%; /* Full width (cover the whole page) */
   height: 100%; /* Full height (cover the whole page) */
   top: 0;
@@ -502,7 +501,8 @@ input[type="checkbox"]:checked + label:before {
   cursor: pointer; /* Add a pointer on hover */
 }
 
-.join-group-text {
+#join-group-text {
+  display: none;
   position: absolute;
   top: 40%;
   left: 50%;
@@ -511,7 +511,8 @@ input[type="checkbox"]:checked + label:before {
   -ms-transform: translate(-50%, -50%);
 }
 
-.join-group-btn {
+#join-group-btn {
+  display: none;
   position: absolute;
   top: 50%;
   left: 50%;
