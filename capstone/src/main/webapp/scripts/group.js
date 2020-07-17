@@ -40,12 +40,16 @@ function showJoinGroupModal(groupName) {
   let button = document.getElementById("join-group-btn");
   button.style.display = "block";
   button.addEventListener("click", joinGroup);
+  let aTag = document.getElementById("go-to-profile");
+  aTag.style.display = "block";
+  aTag.setAttribute("href", "profile.html");
 }
 
 function hideJoinGroupModal() {
   document.getElementById("join-group-modal").style.display = "none";
   document.getElementById("join-group-text").style.display = "none";
   document.getElementById("join-group-btn").style.display = "none";
+  document.getElementById("go-to-profile").style.display = "none";
 }
 
 function joinGroup() {
