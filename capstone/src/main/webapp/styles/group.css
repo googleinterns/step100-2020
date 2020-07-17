@@ -487,3 +487,42 @@ input[type="checkbox"]:checked + label:before {
   height: 15px;
   border-left: 4px solid var(--dark-green);
 }
+
+.join-group-modal {
+  position: fixed; /* Sit on top of the page content */
+  display: block; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white; /* Black background with opacity */
+  z-index: 100; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+}
+
+.join-group-text {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  font-size: 36px;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+
+.join-group-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 24px;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background: var(--dark-green);
+  color: white;
+  text-decoration: none;
+  padding: 15px 20px;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+}
