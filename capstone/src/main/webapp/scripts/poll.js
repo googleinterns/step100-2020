@@ -5,16 +5,11 @@ let maxVotes;
 let topChallenge = null;
 const NO_CHALLENGES =
   "No current challenges. Submit a suggestion in the poll and mark checkbox for challenge to be posted. The challenge will be updated weekly based on top voted poll option.";
-let groupId;
-
-function getGroupId() {
-  groupId = window.location.search.substring(1).split("=")[1];
-}
 
 /**
  * Adds new option to poll.
  */
-function addPollOption() {
+function addPollOption(groupId) {
   const text = document.getElementById("input-box").value;
   if (text.trim() === "") return;
   document.getElementById("input-box").value = "";
@@ -28,7 +23,7 @@ function addPollOption() {
  * that the current logged in user has voted for, from server and load to DOM. Then get the
  * weekly challenge.
  */
-function getPollOptions() {
+function getPollOptions(groupId) {
   fetch(`poll?groupId=${groupId}`)
     .then(response => response.json())
     .then(pollData => {
@@ -51,14 +46,14 @@ function getPollOptions() {
         return;
       }
     })
-    .then(getChallenge);
+    .then(getChallenge(groupId));
 }
 
 /**
  * Gets the current challenge from server and post to DOM. Check if the challenge needs to be
  * updated.
  */
-function getChallenge() {
+function getChallenge(groupId) {
   //Milliseconds until challenge due date.
   let dueDateMillis = 0;
   fetch(`challenge?groupId=${groupId}`)
@@ -129,16 +124,16 @@ function checkWeek(dueDateMillis) {
 /**
  * Deletes the top poll option, adding that option as a new challenge to the database.
  */
-function updatePoll() {
+function updatePoll(groupId) {
   fetch(`delete-top-option?groupId=${groupId}`, { method: "POST" }).then(
-    addChallengeToDb
+    addChallengeToDb(groupId)
   );
 }
 
 /**
  * Adds challenge to database. If there are no poll options, display no challenge text.
  */
-function addChallengeToDb() {
+function addChallengeToDb(groupId) {
   topChallenge
     ? fetch(`challenge?name=${topChallenge}&groupId=${groupId}`, {
         method: "POST"
