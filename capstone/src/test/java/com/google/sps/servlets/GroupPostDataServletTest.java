@@ -113,7 +113,7 @@ public class GroupPostDataServletTest {
     assertTrue(response.contains(POST_1.getPostText()));
   }
 
-  //@Test
+  @Test
   public void doGet_userNotLoggedIn() throws Exception {
     helper.setEnvIsLoggedIn(false);
     groupPostDataServlet.doGet(mockRequest, mockResponse);

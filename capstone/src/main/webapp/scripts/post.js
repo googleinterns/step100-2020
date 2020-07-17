@@ -1,8 +1,7 @@
 let postResponse;
 
 function loadPosts() {
-  fetch(`/group-post?groupId=${groupId}`).then(response => response.json()).then((postsResp) => {
-    postResponse = postsResp;
+  fetch(`/group-post?groupId=${groupId}`).then(response => response.json()).then((postResponse) => {
     const posts = postResponse["posts"];
     const allPostsList = document.getElementById('posts-container');
     allPostsList.innerHTML = '';

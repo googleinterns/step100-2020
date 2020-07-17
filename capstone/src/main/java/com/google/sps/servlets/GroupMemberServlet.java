@@ -61,28 +61,31 @@ public class GroupMemberServlet extends AuthenticatedServlet {
       }
 
       String memberId = (String) memberEntity.getProperty("userId");
-      if (members.contains(memberId)) {
-        memResponse += "User is already in group.";
-      } else {
+      if (addGroupToUser(response, datastore, groupId, memberEntity)) {
         this.addMember(members, memberId);
         group.setProperty("memberIds", members);
         datastore.put(group);
         memResponse += "User added to group.";
-        addGroupToUser(response, datastore, groupId, memberEntity);
+      } else {
+        memResponse += "User is already in group.";
       }
     }
     return memResponse;
   }
 
-  private void addGroupToUser(HttpServletResponse response, DatastoreService datastore, Long groupId, Entity memberEntity) {
+  private boolean addGroupToUser(HttpServletResponse response, DatastoreService datastore, Long groupId, Entity memberEntity) {
     ArrayList<Long> groups = 
         (ArrayList<Long>) memberEntity.getProperty("groups");
     if (groups == null) {
       groups = new ArrayList<>();
     }
-    groups.add(groupId);
-    memberEntity.setProperty("groups", groups);
-    datastore.put(memberEntity);
+    if (!groups.contains(groupId)) {
+      groups.add(groupId);
+      memberEntity.setProperty("groups", groups);
+      datastore.put(memberEntity);
+      return true;
+    } 
+    return false;
   }
 
   private Entity getMemberEntity(String email, HttpServletResponse response, DatastoreService datastore){
@@ -96,16 +99,6 @@ public class GroupMemberServlet extends AuthenticatedServlet {
   private void addMember(ArrayList<String> members, String userId) {
     if (!members.contains(userId)) {
       members.add(userId);
-    }
-  }
-
-  private Entity getGroupFromId(
-    HttpServletResponse response, long groupId, DatastoreService datastore) throws IOException {
-    try {
-      return datastore.get(KeyFactory.createKey("Group", groupId));
-    } catch (EntityNotFoundException e) {
-      ErrorHandler.sendError(response, "Group does not exist.");
-      return null;
     }
   }
 
