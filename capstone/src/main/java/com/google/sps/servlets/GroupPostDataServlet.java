@@ -53,7 +53,6 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
     Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     ArrayList<Long> postIds = 
         (ArrayList<Long>) groupEntity.getProperty("posts");
-    if (postIds == null) return;
 
     List<Post> posts = new ArrayList<>();
     List<Long> likedPosts = new ArrayList<>();

@@ -40,6 +40,7 @@ public class GroupMemberServlet extends AuthenticatedServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity memberEntity = getMemberEntity(email, response, datastore);
+    if (memberEntity == null) return;
     Entity group = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     if (group == null) return;
 
@@ -88,11 +89,15 @@ public class GroupMemberServlet extends AuthenticatedServlet {
     return false;
   }
 
-  private Entity getMemberEntity(String email, HttpServletResponse response, DatastoreService datastore){
+  private Entity getMemberEntity(String email, HttpServletResponse response, DatastoreService datastore) throws IOException {
     Filter findMemberEntity =
     new FilterPredicate("email", FilterOperator.EQUAL, email);
     Query query = new Query("User").setFilter(findMemberEntity);
     PreparedQuery pq = datastore.prepare(query);
+    if (pq.asSingleEntity() == null) {
+      ErrorHandler.sendError(response, "Cannot get entity from datastore");
+      return null;
+    }
     return pq.asSingleEntity();
   }
 
@@ -103,21 +108,17 @@ public class GroupMemberServlet extends AuthenticatedServlet {
   }
 
   // Gets a MemberResponse object from userId
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    String userId = request.getParameter("id");
+    String memberId = request.getParameter("id");
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity member = ServletHelper.getUserFromId(response, userId, datastore);
+    Entity member = ServletHelper.getUserFromId(response, memberId, datastore);
     MemberResponse memResponse = MemberResponse.fromEntity(
-      member, /* includeBadges= */ true);
+      member, /* includeBadges= */ false);
 
     // Convert to json
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(memResponse));  
   }
-
-  @Override
-  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
-      throws IOException {}
 }

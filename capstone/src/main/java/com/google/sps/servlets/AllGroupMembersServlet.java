@@ -40,9 +40,9 @@ public class AllGroupMembersServlet extends AuthenticatedServlet {
     for (String memberId : allGroupMembers) {
       Entity userEntity = ServletHelper.getUserFromId(response, memberId, datastore);
       if (userEntity != null && !memberId.equals(userId)) {
-      MemberResponse member = MemberResponse.fromEntity(
-        userEntity, /* includeBadges= */ false);
-      basicMemberProfiles.add(member);
+        MemberResponse member = MemberResponse.fromEntity(
+          userEntity, /* includeBadges= */ false);
+        basicMemberProfiles.add(member);
       }
     }
 

@@ -44,43 +44,34 @@ public class AllGroupMembersServletTest {
 
   private static final String USER_EMAIL = "test@test.com";
   private static final String USER_ID = "test";
+  private static final String OTHER_ID = "other";
+  private static final String OTHER_EMAIL = "other@test.com";
 
-  private final LocalServiceTestHelper helper =
-      new LocalServiceTestHelper(
-              new LocalDatastoreServiceTestConfig()
-                  .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
-              new LocalUserServiceTestConfig())
-          .setEnvEmail(USER_EMAIL)
-          .setEnvIsLoggedIn(true)
-          .setEnvAuthDomain("gmail.com")
+  private final LocalServiceTestHelper helper = new LocalServiceTestHelper(
+      new LocalDatastoreServiceTestConfig().setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
+      new LocalUserServiceTestConfig()).setEnvEmail(USER_EMAIL).setEnvIsLoggedIn(true).setEnvAuthDomain("gmail.com")
           .setEnvAttributes(
-              new HashMap(
-                  ImmutableMap.of(
-                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+              new HashMap(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
-  private static final long GROUP_1_ID = 1234;
+  private static final String GROUP_1_ID = "1";
   private static final String GROUP_NAME = "The 3 Musketeers";
   private static final String HEADER_IMAGE = "";
-  private static final String USER_1_ID = "22222";
-  private static final String USER_2_ID = "333333";
 
-  private final User USER_1 =  new User("22222", "Test", "McTest", 
-                          "testy@gmail.com", 
+  private static final User CURRENT_USER = new User(USER_ID, "Test", "McTest", 
+                          USER_EMAIL, 
                           /* phoneNumber= */ "123-456-7890", 
                           /* profilePic= */ "", 
                           /* badges= */ new LinkedHashSet<Badge>(), 
                           /* groups= */ new LinkedHashSet<Long>(), 
-                          /* interests= */ new ArrayList<String>()
-  );
+                          /* interests= */ new ArrayList<String>());
 
-  private final User USER_2 =  new User("333333", "Test", "McTest2", 
-                          "testy2@gmail.com", 
-                          /* phoneNumber= */ "111-111-1111", 
+  private static final User OTHER_USER = new User(OTHER_ID, "Test Two", "McTest", 
+                          OTHER_EMAIL, 
+                          /* phoneNumber= */ "123-456-0000", 
                           /* profilePic= */ "", 
                           /* badges= */ new LinkedHashSet<Badge>(), 
                           /* groups= */ new LinkedHashSet<Long>(), 
-                          /* interests= */ new ArrayList<String>()
-  );
+                          /* interests= */ new ArrayList<String>());    
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -95,8 +86,10 @@ public class AllGroupMembersServletTest {
     datastore = DatastoreServiceFactory.getDatastoreService();
 
     // Add test data
-    Entity group1 = createGroupEntity(GROUP_1_ID);
+    Entity group1 = createGroupEntity();
     datastore.put(group1);
+    datastore.put(CURRENT_USER.toEntity());
+    datastore.put(OTHER_USER.toEntity());
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
@@ -110,24 +103,35 @@ public class AllGroupMembersServletTest {
   }
 
   /* Create a Group entity */
-  private Entity createGroupEntity(long groupId) {
-    Entity groupEntity = new Entity("Group", groupId);
-    groupEntity.setProperty("groupId", groupId);
+  private Entity createGroupEntity() {
+    Entity groupEntity = new Entity("Group");
     groupEntity.setProperty("groupName", GROUP_NAME);
     groupEntity.setProperty("headerImg", HEADER_IMAGE);
-    groupEntity.setProperty("memberIds", new ArrayList<String>(Arrays.asList(USER_1_ID, USER_2_ID)));
+    groupEntity.setProperty("memberIds", new ArrayList<String>(Arrays.asList(USER_ID, OTHER_ID)));
+    groupEntity.setProperty("posts", null);
+    groupEntity.setProperty("options", new ArrayList<Long>());
     groupEntity.setProperty("challenges", new ArrayList<Challenge>());
     return groupEntity;
   }
 
-  //@Test
+  @Test
   public void doGet_getAllGroupMembers() throws IOException, EntityNotFoundException {
-    when(mockRequest.getParameter("groupId")).thenReturn(Long.toString(GROUP_1_ID));
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_1_ID);
     allGroupMembersServlet.doGet(mockRequest, mockResponse);
     String response = responseWriter.toString();
-    System.out.println(response);
 
-    assertTrue(response.contains(USER_1_ID));
-    assertTrue(response.contains(USER_2_ID));
+    assertTrue(response.contains(OTHER_ID));
+    assertTrue(!response.contains(USER_ID));
+  }
+
+  @Test
+  public void doGet_userNotLoggedIn() throws Exception {
+    helper.setEnvIsLoggedIn(false);
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_1_ID);
+
+    allGroupMembersServlet.doGet(mockRequest, mockResponse);
+    String response = responseWriter.toString();
+
+    assertThat(response).contains("error");
   }
 }

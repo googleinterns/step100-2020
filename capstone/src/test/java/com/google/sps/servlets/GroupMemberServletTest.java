@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,14 +39,17 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.sps.Objects.User;
 import com.google.sps.Objects.Challenge;
+import com.google.sps.Objects.Badge;
 
 public class GroupMemberServletTest {
 
   private static final String USER_EMAIL = "test@test.com";
   private static final String USER_ID = "test";
-  private static final long GROUP_1_ID = 1234;
+  private static final String GROUP_1_ID = "1";
   private static final String GROUP_NAME = "The 3 Musketeers";
   private static final String HEADER_IMAGE = "";
+  private static final String OTHER_ID = "other";
+  private static final String OTHER_EMAIL = "other@test.com";
  
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -58,6 +63,21 @@ public class GroupMemberServletTest {
               new HashMap(
                   ImmutableMap.of(
                       "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+
+  private static final User CURRENT_USER = new User(USER_ID, "Test", "McTest", 
+    USER_EMAIL, 
+    /* phoneNumber= */ "123-456-7890", 
+    /* profilePic= */ "", 
+    /* badges= */ new LinkedHashSet<Badge>(), 
+    /* groups= */ new LinkedHashSet<Long>(), 
+    /* interests= */ new ArrayList<String>());
+
+  private static final User OTHER_USER = new User(OTHER_ID, "Test Two",     "McTest", OTHER_EMAIL, 
+    /* phoneNumber= */ "123-456-0000", 
+    /* profilePic= */ "", 
+    /* badges= */ new LinkedHashSet<Badge>(), 
+    /* groups= */ new LinkedHashSet<Long>(), 
+    /* interests= */ new ArrayList<String>());    
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -88,26 +108,52 @@ public class GroupMemberServletTest {
   }
 
   /* Create a Group entity */
-  private Entity createGroupEntity(long groupId) {
-    Entity groupEntity = new Entity("Group", groupId);
-    groupEntity.setProperty("groupId", groupId);
+  private Entity createGroupEntity() {
+    Entity groupEntity = new Entity("Group");
     groupEntity.setProperty("groupName", GROUP_NAME);
     groupEntity.setProperty("headerImg", HEADER_IMAGE);
-    groupEntity.setProperty("members", new ArrayList<String>());
+    groupEntity.setProperty("memberIds", new ArrayList<String>(Arrays.asList(USER_ID)));
+    groupEntity.setProperty("posts", null);
+    groupEntity.setProperty("options", new ArrayList<Long>());
     groupEntity.setProperty("challenges", new ArrayList<Challenge>());
     return groupEntity;
   }
 
   private void populateDatabase(DatastoreService datastore) {
     // Add test data.
-    Entity group1 = createGroupEntity(GROUP_1_ID);
+    CURRENT_USER.addGroup(Long.parseLong(GROUP_1_ID));
+    datastore.put(CURRENT_USER.toEntity());
+    datastore.put(OTHER_USER.toEntity());
+    Entity group1 = createGroupEntity();
     datastore.put(group1);
+  }
+
+  @Test
+  public void doGet_userNotLoggedIn() throws IOException, EntityNotFoundException {
+    helper.setEnvIsLoggedIn(false);
+    when(mockRequest.getParameter("id")).thenReturn(USER_ID);
+
+    groupMemberServlet.doGet(mockRequest, mockResponse);
+    String response = responseWriter.toString();
+    System.out.println(response);
+    assertTrue(response.contains("Oops an error happened!"));
+  }
+
+  @Test
+  public void doGet_validMember() throws IOException, EntityNotFoundException {
+    when(mockRequest.getParameter("id")).thenReturn(USER_ID);
+    
+    groupMemberServlet.doGet(mockRequest, mockResponse);
+
+    String response = responseWriter.toString();
+    assertThat(response).contains(USER_ID);
   }
 
   @Test
   public void doPost_userNotLoggedIn() throws IOException, EntityNotFoundException {
     helper.setEnvIsLoggedIn(false);
-    when(mockRequest.getParameter("groupId")).thenReturn(Long.toString(GROUP_1_ID));
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_1_ID);
+    when(mockRequest.getParameter("email")).thenReturn(USER_EMAIL);
 
     groupMemberServlet.doPost(mockRequest, mockResponse);
     String response = responseWriter.toString();
@@ -115,22 +161,37 @@ public class GroupMemberServletTest {
   }
 
   @Test
-  public void doPost_invalidPost() throws IOException, EntityNotFoundException {
+  public void doPost_invalidGroup() throws IOException, EntityNotFoundException {
     when(mockRequest.getParameter("groupId")).thenReturn("1122");
+    when(mockRequest.getParameter("email")).thenReturn(USER_EMAIL);
 
     groupMemberServlet.doPost(mockRequest, mockResponse);
+
     String response = responseWriter.toString();
     assertThat(response).contains("error");
   }
 
-  //TODO: implement group member tests 
   @Test
-  public void doPost_addGroupMember() throws IOException, EntityNotFoundException {}
+  public void doPost_invalidMember() throws IOException, EntityNotFoundException {
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_1_ID);
+    when(mockRequest.getParameter("email")).thenReturn("notamember@gmail.com");
 
-  @Test
-  public void doGet_invalidMember() throws IOException, EntityNotFoundException {}
+    groupMemberServlet.doPost(mockRequest, mockResponse);
 
-  @Test
-  public void doGet_validMember() throws IOException, EntityNotFoundException {}
+    String response = responseWriter.toString();
+    System.out.println(response);
+    assertThat(response).contains("error");
+  }
+
+  //@Test
+  public void doPost_memberNotInGroup() throws IOException, EntityNotFoundException {
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_1_ID);
+    when(mockRequest.getParameter("email")).thenReturn(USER_EMAIL);
+
+    groupMemberServlet.doPost(mockRequest, mockResponse);
+
+    String response = responseWriter.toString();
+    System.out.println(response);
+  }
 }
 
