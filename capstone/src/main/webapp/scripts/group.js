@@ -31,12 +31,19 @@ function handleJoinGroupModal(isMember) {
 function showJoinGroupModal() {
   document.getElementById("join-group-modal").style.display = "block";
   document.getElementById("join-group-text").style.display = "block";
-  document.getElementById("join-group-btn").style.display = "block";
+  let button = document.getElementById("join-group-btn");
+  button.style.display = "block";
+  button.addEventListener("click", joinGroup);
 }
 
 function hideJoinGroupModal() {
-  console.log("hide");
   document.getElementById("join-group-modal").style.display = "none";
   document.getElementById("join-group-text").style.display = "none";
   document.getElementById("join-group-btn").style.display = "none";
+}
+
+function joinGroup() {
+  fetch(`/join-group?groupId=${groupId}`, { method: "POST" }).then(
+    hideJoinGroupModal
+  );
 }
