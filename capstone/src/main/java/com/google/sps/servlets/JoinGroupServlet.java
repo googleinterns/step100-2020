@@ -61,7 +61,10 @@ public class JoinGroupServlet extends AuthenticatedServlet {
    */
   private void updateGroupMembersList(
       Entity groupEntity, String userId, DatastoreService datastore) {
-    List<String> memberIds = (ArrayList<String>) groupEntity.getProperty("memberIds");
+    List<String> memberIds =
+        (groupEntity.getProperty("memberIds") == null)
+            ? new ArrayList<String>()
+            : (ArrayList<String>) groupEntity.getProperty("memberIds");
     memberIds.add(userId);
     groupEntity.setProperty("memberIds", memberIds);
     datastore.put(groupEntity);
