@@ -27,8 +27,13 @@ public class JoinGroupServlet extends HttpServlet {
       String userId = userService.getCurrentUser().getUserId();
       long groupId = Long.parseLong(request.getParameter("groupId"));
       Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
-      String isMember = String.valueOf(this.getIsMember(userId, groupEntity));
-      ServletHelper.write(response, isMember, "application/json");
+      boolean isMember = this.getIsMember(userId, groupEntity);
+      String json = "{";
+      json += "\"isMember\": ";
+      json += "\"" + String.valueOf(isMember) + "\"";
+      json += "}";
+      response.setContentType("application/json");
+      response.getWriter().println(json);
     } else {
       // Redirect user to sign in page
     }
@@ -42,7 +47,7 @@ public class JoinGroupServlet extends HttpServlet {
   }
 
   private boolean getIsMember(String userId, Entity groupEntity) {
-    List<Long> members = (ArrayList<Long>) groupEntity.getProperty("members");
+    List<String> members = (ArrayList<String>) groupEntity.getProperty("memberIds");
     return members.contains(userId);
   }
 }
