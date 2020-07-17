@@ -45,7 +45,10 @@ public class JoinGroupServlet extends AuthenticatedServlet {
   }
 
   private boolean getIsMember(String userId, Entity groupEntity) {
-    List<String> members = (ArrayList<String>) groupEntity.getProperty("memberIds");
+    List<String> members =
+        (groupEntity.getProperty("memberIds") == null)
+            ? new ArrayList<String>()
+            : (ArrayList<String>) groupEntity.getProperty("memberIds");
     return members.contains(userId);
   }
 

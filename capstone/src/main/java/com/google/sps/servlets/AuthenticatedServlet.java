@@ -21,6 +21,8 @@ public abstract class AuthenticatedServlet extends HttpServlet {
       this.doGet(userId, request, response);
     } else {
       ErrorHandler.sendError(response, "User is not logged in.");
+      String loginUrl = userService.createLoginURL("/");
+      response.sendRedirect(loginUrl);
     }
   }
 
