@@ -203,12 +203,13 @@ function createCommentBox(post) {
 
 // Gets URL for uploaded image
 function fetchBlobstoreUrlAndShowForm() {
-  fetch("/post-image")
+  fetch(`/post-image?groupId=${groupId}`)
     .then(response => {
       return response.text();
     })
     .then(imageUploadUrl => {
       const messageForm = document.getElementById("post-form");
+      console.log(imageUploadUrl);
       messageForm.action = imageUploadUrl;
     });
 }

@@ -12,6 +12,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EmbeddedEntity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
@@ -46,22 +47,23 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
 
   @Override
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-    //Long groupId = Long.parseLong(request.getParameter("groupId"));
-    Query query = new Query("Post").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
+    Long groupId = Long.parseLong(request.getParameter("groupId"));
+    Entity groupEntity = getGroupFromId(response, groupId, datastore);
+    ArrayList<Long> postIds = 
+        (ArrayList<Long>) groupEntity.getProperty("posts");
+    if (postIds == null) return;
 
     List<Post> posts = new ArrayList<>();
     List<Long> likedPosts = new ArrayList<>();
-    for (Entity entity : results.asIterable()) {
+    for (Long id : postIds) {
+      Entity entity = getPostFromId(response, id, datastore);
       posts.add(Post.fromEntity(entity));
       ArrayList<String> likes = (ArrayList<String>) entity.getProperty("likes");
       if (likes != null && likes.contains(userId)) {
         likedPosts.add(entity.getKey().getId());
       }
     }
-
     // Convert to json
     PostResponse postsRes = new PostResponse(posts, likedPosts, userId);
     response.setContentType("application/json;");
@@ -69,9 +71,11 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
   }
 
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     // Receives submitted post 
     Long groupId = Long.parseLong(request.getParameter("groupId"));
-    String authorName = "Jane Doe";
+    Entity userEntity = getUserFromId(response, userId, datastore);
+    String authorName = userEntity.getProperty("firstName") + " " + userEntity.getProperty("lastName");
     String postText = request.getParameter("post-input");
     String challengeName = "Challenge Name";
     String img = getUploadedFileUrl(request, "image");
@@ -79,12 +83,58 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
     ArrayList<Comment> comments = new ArrayList<>();
 
     // Creates entity with submitted data and add to database
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Post post = new Post(0, authorName, postText, comments, challengeName, System.currentTimeMillis(), img, likes);
-    datastore.put(post.toEntity());
+    Entity postEntity = post.toEntity();
+    datastore.put(postEntity);
+
+    // Add postsId to group
+    addPostToGroup(response, groupId, datastore, postEntity);
 
     // Redirect back to the HTML page.
-    response.sendRedirect("/group.html");
+    response.sendRedirect("/group.html?groupId="+groupId);
+  }
+
+  private void addPostToGroup(HttpServletResponse response, Long groupId, DatastoreService datastore, Entity postEntity) throws IOException {
+    Entity groupEntity = getGroupFromId(response, groupId, datastore);
+    ArrayList<Long> postIds = 
+        (ArrayList<Long>) groupEntity.getProperty("posts");
+    if (postIds == null) {
+      postIds = new ArrayList<Long>();
+    }
+    Post storedPost = Post.fromEntity(postEntity);
+    postIds.add(storedPost.getPostId());
+    groupEntity.setProperty("posts", postIds);
+    datastore.put(groupEntity);
+  }
+
+  private Entity getGroupFromId(
+    HttpServletResponse response, long groupId, DatastoreService datastore) throws IOException {
+    try {
+      return datastore.get(KeyFactory.createKey("Group", groupId));
+    } catch (EntityNotFoundException e) {
+      ErrorHandler.sendError(response, "Group does not exist.");
+      return null;
+    }
+  }
+
+  private Entity getUserFromId(
+    HttpServletResponse response, String userId, DatastoreService datastore) throws IOException {
+    try {
+      return datastore.get(KeyFactory.createKey("User", userId));
+    } catch (EntityNotFoundException e) {
+      ErrorHandler.sendError(response, "User does not exist.");
+      return null;
+    }
+  }
+
+  private Entity getPostFromId(
+    HttpServletResponse response, Long postId, DatastoreService datastore) throws IOException {
+    try {
+      return datastore.get(KeyFactory.createKey("Post", postId));
+    } catch (EntityNotFoundException e) {
+      ErrorHandler.sendError(response, "Post does not exist.");
+      return null;
+    }
   }
 
    /** Returns a key that points to the uploaded file, or null if the user didn't upload a file. */

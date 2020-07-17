@@ -1,6 +1,5 @@
 function loadMembers() {
-  console.log(groupId);
-  fetch(`/all-group-members?groupId=${groupId}`).then(response => response.json()).then((allGroupMembers) => {
+  fetch(`all-group-members?groupId=${groupId}`).then(response => response.json()).then((allGroupMembers) => {
     const allMembers = allGroupMembers;
     const memberGrid = document.getElementsByClassName("member-grid-container")[0];
     memberGrid.innerHTML = '';
@@ -11,33 +10,17 @@ function loadMembers() {
   });
 }
 
-let groupId;
-
-function getGroupId() {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  groupId = urlParams.get('groupId');
-}
-
 function openAddGroupMemberModal() {
   let modal = document.getElementById('add-member-modal');
   modal.style.display = "block";
-  console.log(groupId);
 }
 
 function addMember(){
-  console.log(groupId);
-  let request = new Request(`/group-member?groupId=${groupId}&email=${emailInput}`, { method: "POST" });
   const emailInput = document.getElementById('email-input').value;
-  fetch(request).then(response => response.json()).then((memberResp) => {
-    openAddGroupMemberModal();
-    console.log(memberResp);
-    //const memberUpdate = document.getElementById("memberUpdate");
-    //memberUpdate.innerText = memResponse.response;
-    console.log(groupId);
-  }); 
-  console.log(groupId);
-
+  const params = new URLSearchParams();
+  params.append('groupId', groupId);
+  params.append('email', emailInput);
+  fetch(`/group-member`, { method: "POST", body: params });
 }
 
 function createMemberComponents(memberInfo) {
@@ -69,20 +52,21 @@ function addMemberProfileListener() {
 
 // Show group member profile (profile pic, name, and badges)
 function showMemberProfile(userId){
-  fetch(`/group-member?id=${userId}`).then(response => response.json()).then((memResponse) => {
-    const modalContent = document.getElementsByClassName("modal-content")[0];
-    modalContent.innerHTML = "<span id='member-close' onclick='addModalListeners('memberProfile', 'member')'>&times;</span>";
-    //addModalListeners();
+  fetch(`/group-member?groupId=${groupId}&id=${userId}`).then(response => response.json()).then((memResponse) => {
+    const modalContent = document.getElementsByClassName("member-content")[0];
+    modalContent.innerHTML = "<span id='member-close'>&times;</span>";
+    addModalListeners('memberProfile', 'member-close');
     modalContent.appendChild(createMemberModal(memResponse));
     const modal = document.getElementById("memberProfile");
     modal.style.display = "block";
   });
 }
 
+
 // Close modal if (x) button clicked or user clicks anywhere outside modal
 function addModalListeners(modalName, closeName) {
-  const modal = document.getElementById(modalName + '');
-  const spanClose = document.getElementById(closeName + '-close');
+  const modal = document.getElementById(modalName);
+  const spanClose = document.getElementById(closeName);
   spanClose.addEventListener("click", function () {
     modal.style.display = "none";
   });

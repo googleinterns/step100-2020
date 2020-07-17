@@ -63,19 +63,19 @@
       <div id="memberProfile" class="member-modal">
         <!-- Modal content -->
         <div class="member-content">
-          <span id="member-close" onclick="addModalListeners('memberProfile', 'member')">&times;</span>
+          <span class="member-close">&times;</span>
         </div>
       </div>
 
       <div class="add-member" id="add-member-modal">
         <div class="add-member-content">
-          <span id="add-close" onclick="addModalListeners('add-member-modal', 'add')">&times;</span>
+          <span id="add-close" onclick="addModalListeners('add-member-modal', 'add-close')">&times;</span>
           <h2>Add Group Member</h2>
-          <form id="add-member">
+          <form id="add-member" onsubmit="addMember()" method="POST">
             <label for="member-email-input">Enter an email</label>
             <input type="text" class="input-field" name="email-input" id="email-input">
             <p id=memberUpdate></p>
-            <button class="add-member-btn" onclick="addMember()">Add</button>
+            <button class="add-member-btn">Add</button>
           </form>
         </div>
       </div>

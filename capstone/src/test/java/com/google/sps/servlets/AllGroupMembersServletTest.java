@@ -127,7 +127,7 @@ public class AllGroupMembersServletTest {
     String response = responseWriter.toString();
     System.out.println(response);
 
-    assertTrue(response.contains(USER_1.getFirstName()));
-    assertTrue(response.contains(USER_2.getFirstName()));
+    assertTrue(response.contains(USER_1.getUserId()));
+    assertTrue(response.contains(USER_2.getUserId()));
   }
 }

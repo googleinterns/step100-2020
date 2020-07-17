@@ -43,9 +43,6 @@ public class GroupMemberServlet extends AuthenticatedServlet {
     if (group == null) return;
 
     String memResponse = doPost_helper(response, datastore, groupId, memberEntity, group);
-    String json = "{\"response\":" + "\"" + memResponse + "\"}";
-    response.setContentType("application/json;");
-    response.getWriter().println(json);
   }
 
   // If no account for email, return 'This email doesn't have an account'
@@ -56,9 +53,8 @@ public class GroupMemberServlet extends AuthenticatedServlet {
     if (memberEntity == null) {
       memResponse += "This email doesn't have an account.";
     } else {
-
       ArrayList<String> members = 
-        (ArrayList<String>) group.getProperty("members");
+        (ArrayList<String>) group.getProperty("memberIds");
       if (members == null) {
         members = new ArrayList<>();
       }
