@@ -162,17 +162,4 @@ public class PostTest {
     assertEquals(likes.size(), 1);
     assertTrue(likes.contains("test user 2"));
   }
-
-  //  @Test
-  //  public void toAndFromPostEntityTest() throws Exception {
-  //    Entity entity = post.toEntity();
-  //    datastore.put(entity);
-  //
-  //    Key postKey = KeyFactory.createKey("Post", POST_ID);
-  //    Entity retreivedPost = datastore.get(postKey);
-  //
-  //    Post returnedPost = Post.fromEntity(retreivedPost);
-  //
-  //    assertTrue(returnedPost.equals(post));
-  //  }
 }
