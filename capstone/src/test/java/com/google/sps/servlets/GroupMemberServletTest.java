@@ -40,6 +40,7 @@ import com.google.gson.Gson;
 import com.google.sps.Objects.User;
 import com.google.sps.Objects.Challenge;
 import com.google.sps.Objects.Badge;
+import com.google.sps.Objects.Group;
 
 public class GroupMemberServletTest {
 
@@ -77,7 +78,7 @@ public class GroupMemberServletTest {
     /* profilePic= */ "", 
     /* badges= */ new LinkedHashSet<Badge>(), 
     /* groups= */ new LinkedHashSet<Long>(), 
-    /* interests= */ new ArrayList<String>());    
+    /* interests= */ new ArrayList<String>()); 
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -124,8 +125,7 @@ public class GroupMemberServletTest {
     CURRENT_USER.addGroup(Long.parseLong(GROUP_1_ID));
     datastore.put(CURRENT_USER.toEntity());
     datastore.put(OTHER_USER.toEntity());
-    Entity group1 = createGroupEntity();
-    datastore.put(group1);
+    datastore.put(createGroupEntity());
   }
 
   @Test
@@ -134,19 +134,32 @@ public class GroupMemberServletTest {
     when(mockRequest.getParameter("id")).thenReturn(USER_ID);
 
     groupMemberServlet.doGet(mockRequest, mockResponse);
+
     String response = responseWriter.toString();
-    System.out.println(response);
+    assertTrue(response.contains("Oops an error happened!"));
+  }
+
+  @Test
+  public void doGet_invalidMember() throws IOException, EntityNotFoundException {
+    when(mockRequest.getParameter("id")).thenReturn("not an id");
+
+    groupMemberServlet.doGet(mockRequest, mockResponse);
+
+    String response = responseWriter.toString();
     assertTrue(response.contains("Oops an error happened!"));
   }
 
   @Test
   public void doGet_validMember() throws IOException, EntityNotFoundException {
     when(mockRequest.getParameter("id")).thenReturn(USER_ID);
-    
-    groupMemberServlet.doGet(mockRequest, mockResponse);
+    Key userKey = KeyFactory.createKey("User", USER_ID);
 
-    String response = responseWriter.toString();
-    assertThat(response).contains(USER_ID);
+    groupMemberServlet.doGet(mockRequest, mockResponse);
+    Entity user = datastore.get(userKey);
+
+    String jsonDs = new Gson().toJson(User.fromEntity(user));
+    String jsonCurrent = new Gson().toJson(CURRENT_USER);
+    assertEquals(jsonDs, jsonCurrent);
   }
 
   @Test
@@ -156,6 +169,7 @@ public class GroupMemberServletTest {
     when(mockRequest.getParameter("email")).thenReturn(USER_EMAIL);
 
     groupMemberServlet.doPost(mockRequest, mockResponse);
+
     String response = responseWriter.toString();
     assertTrue(response.contains("Oops an error happened!"));
   }
@@ -179,19 +193,23 @@ public class GroupMemberServletTest {
     groupMemberServlet.doPost(mockRequest, mockResponse);
 
     String response = responseWriter.toString();
-    System.out.println(response);
     assertThat(response).contains("error");
   }
 
-  //@Test
+  @Test
   public void doPost_memberNotInGroup() throws IOException, EntityNotFoundException {
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_1_ID);
-    when(mockRequest.getParameter("email")).thenReturn(USER_EMAIL);
+    when(mockRequest.getParameter("email")).thenReturn(OTHER_EMAIL);
+    Key groupKey = KeyFactory.createKey("Group", Long.parseLong(GROUP_1_ID));
+    Key userKey = KeyFactory.createKey("User", OTHER_ID);
 
     groupMemberServlet.doPost(mockRequest, mockResponse);
+    Entity group = datastore.get(groupKey);
+    Entity user = datastore.get(userKey);
 
-    String response = responseWriter.toString();
-    System.out.println(response);
+    String jsonDs = new Gson().toJson(Group.fromEntity(group));
+    assertTrue(jsonDs.contains(OTHER_ID));
+    assertThat(User.fromEntity(user).getGroups().contains(GROUP_1_ID));
   }
 }
 

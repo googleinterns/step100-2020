@@ -58,20 +58,20 @@ public class AllGroupMembersServletTest {
   private static final String HEADER_IMAGE = "";
 
   private static final User CURRENT_USER = new User(USER_ID, "Test", "McTest", 
-                          USER_EMAIL, 
-                          /* phoneNumber= */ "123-456-7890", 
-                          /* profilePic= */ "", 
-                          /* badges= */ new LinkedHashSet<Badge>(), 
-                          /* groups= */ new LinkedHashSet<Long>(), 
-                          /* interests= */ new ArrayList<String>());
+    USER_EMAIL, 
+    /* phoneNumber= */ "123-456-7890", 
+    /* profilePic= */ "", 
+    /* badges= */ new LinkedHashSet<Badge>(), 
+    /* groups= */ new LinkedHashSet<Long>(), 
+    /* interests= */ new ArrayList<String>());
 
   private static final User OTHER_USER = new User(OTHER_ID, "Test Two", "McTest", 
-                          OTHER_EMAIL, 
-                          /* phoneNumber= */ "123-456-0000", 
-                          /* profilePic= */ "", 
-                          /* badges= */ new LinkedHashSet<Badge>(), 
-                          /* groups= */ new LinkedHashSet<Long>(), 
-                          /* interests= */ new ArrayList<String>());    
+    OTHER_EMAIL, 
+    /* phoneNumber= */ "123-456-0000", 
+    /* profilePic= */ "", 
+    /* badges= */ new LinkedHashSet<Badge>(), 
+    /* groups= */ new LinkedHashSet<Long>(), 
+    /* interests= */ new ArrayList<String>());    
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -86,10 +86,7 @@ public class AllGroupMembersServletTest {
     datastore = DatastoreServiceFactory.getDatastoreService();
 
     // Add test data
-    Entity group1 = createGroupEntity();
-    datastore.put(group1);
-    datastore.put(CURRENT_USER.toEntity());
-    datastore.put(OTHER_USER.toEntity());
+    populateDatabase(datastore);
 
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
@@ -100,6 +97,14 @@ public class AllGroupMembersServletTest {
   @After
   public void tearDown() {
     helper.tearDown();
+  }
+
+  private void populateDatabase(DatastoreService datastore) {
+    // Add test data.
+    Entity group1 = createGroupEntity();
+    datastore.put(group1);
+    datastore.put(CURRENT_USER.toEntity());
+    datastore.put(OTHER_USER.toEntity());
   }
 
   /* Create a Group entity */
@@ -117,9 +122,10 @@ public class AllGroupMembersServletTest {
   @Test
   public void doGet_getAllGroupMembers() throws IOException, EntityNotFoundException {
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_1_ID);
+    
     allGroupMembersServlet.doGet(mockRequest, mockResponse);
+    
     String response = responseWriter.toString();
-
     assertTrue(response.contains(OTHER_ID));
     assertTrue(!response.contains(USER_ID));
   }

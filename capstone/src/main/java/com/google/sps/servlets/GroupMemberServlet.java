@@ -114,6 +114,7 @@ public class GroupMemberServlet extends AuthenticatedServlet {
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity member = ServletHelper.getUserFromId(response, memberId, datastore);
+    if (member == null) return;
     MemberResponse memResponse = MemberResponse.fromEntity(
       member, /* includeBadges= */ false);
 

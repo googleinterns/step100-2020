@@ -48,18 +48,18 @@ import com.google.sps.Objects.Badge;
 
 public class GroupPostDataServletTest {
 
-  private static final String USER_EMAIL = "test@test.com";
-  private static final String USER_ID = "test";
   private static final String POST_TEXT = "a great post";
   private static final String CHALLENGE_NAME = "run 4 miles";
   private static final String IMG = "";
   private static final long TIMESTAMP = 123123123;
-  private static final long POST_ID = 1;
-  private static final String GROUP_NAME = "Pals";
-  private static final String GROUP_ID = "1";
+  private static final long POST_ID = 2;
+  private static final String USER_EMAIL = "test@test.com";
+  private static final String USER_ID = "test";
+  private static final String GROUP_1_ID = "1";
+  private static final String GROUP_NAME = "The 3 Musketeers";
   private static final String HEADER_IMAGE = "";
-
- private final LocalServiceTestHelper helper =
+ 
+  private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
               new LocalDatastoreServiceTestConfig()
                   .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
@@ -82,7 +82,7 @@ public class GroupPostDataServletTest {
     IMG, /* img */
     new HashSet<String>() /* likes */);
 
-   private static final User CURRENT_USER = new User(USER_ID, "Test", "McTest", 
+  private static final User CURRENT_USER = new User(USER_ID, "Test", "McTest", 
     USER_EMAIL, 
     /* phoneNumber= */ "123-456-7890", 
     /* profilePic= */ "", 
@@ -102,6 +102,8 @@ public class GroupPostDataServletTest {
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
 
+    populateDatabase(datastore);
+
     // Set up a fake HTTP response.
     responseWriter = new StringWriter();
     when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
@@ -118,55 +120,39 @@ public class GroupPostDataServletTest {
 
   private void populateDatabase(DatastoreService datastore) {
     // Add test data.
+    CURRENT_USER.addGroup(Long.parseLong(GROUP_1_ID));
     datastore.put(CURRENT_USER.toEntity());
+    datastore.put(createGroupEntity());
     datastore.put(POST_1.toEntity());
-    datastore.put(createGroup(USER_ID));
   }
 
-  private Entity createGroup(String userId) {
-    ArrayList<String> members = new ArrayList<String>();
-    members.add(userId);
+  /* Create a Group entity */
+  private Entity createGroupEntity() {
     Entity groupEntity = new Entity("Group");
-    groupEntity.setProperty("memberIds", members);
-    groupEntity.setProperty("challenges", null);
-    groupEntity.setProperty("posts", new ArrayList<Long>(Arrays.asList(POST_ID)));
-    groupEntity.setProperty("options", new ArrayList<Long>());
     groupEntity.setProperty("groupName", GROUP_NAME);
     groupEntity.setProperty("headerImg", HEADER_IMAGE);
+    groupEntity.setProperty("memberIds", new ArrayList<String>(Arrays.asList(USER_ID)));
+    groupEntity.setProperty("posts", new ArrayList<Long>(Arrays.asList(POST_ID)));
+    groupEntity.setProperty("options", new ArrayList<Long>());
+    groupEntity.setProperty("challenges", new ArrayList<Challenge>());
     return groupEntity;
   }
 
   @Test
   public void doGet_userLoggedIn() throws Exception {
-    populateDatabase(datastore);
-    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_1_ID);
 
     groupPostDataServlet.doGet(mockRequest, mockResponse);
+
     String response = responseWriter.toString();
     System.out.println(response);
-    String jsonCurrent = new Gson().toJson(POST_1);
-    assertTrue(assertEqualsJson(response, jsonCurrent));
-  } 
-
-  public void doPost_userLoggedIn() throws Exception {
-    datastore.put(CURRENT_USER.toEntity());
-    datastore.put(createGroup(USER_ID));
-    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
-    when(mockRequest.getParameter("post-text")).thenReturn(POST_TEXT);
-
-    groupPostDataServlet.doPost(mockRequest, mockResponse);
-    String response = responseWriter.toString();
-    System.out.println(response);
-
-    assertTrue(response.contains(Long.toString(POST_ID)));
-    Entity groupEntity = datastore.get(KeyFactory.createKey("Group", GROUP_ID));
-    ArrayList<Long> postIds = (ArrayList<Long>) groupEntity.getProperty("posts");
-    assertTrue(postIds.get(0).equals(POST_ID));
+    assertTrue(response.contains(POST_TEXT));
   } 
 
   @Test
   public void doGet_userNotLoggedIn() throws Exception {
     helper.setEnvIsLoggedIn(false);
+
     groupPostDataServlet.doGet(mockRequest, mockResponse);
     
     String response = responseWriter.toString();
@@ -176,6 +162,7 @@ public class GroupPostDataServletTest {
   @Test
   public void doPost_userNotLoggedIn() throws Exception {
     helper.setEnvIsLoggedIn(false);
+
     groupPostDataServlet.doPost(mockRequest, mockResponse);
     
     String response = responseWriter.toString();
