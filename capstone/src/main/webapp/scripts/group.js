@@ -1,8 +1,8 @@
-let group_id;
+let groupId;
 
 function init() {
-  getId();
-  checkMembership(group_id);
+  getGroupId();
+  checkMembership();
   createLogoutUrl();
   loadPosts();
   getPollOptions();
@@ -10,12 +10,12 @@ function init() {
   loadMembers();
 }
 
-function getId() {
-  group_id = window.location.search.substring(1).split("=")[1];
+function getGroupId() {
+  groupId = window.location.search.substring(1).split("=")[1];
 }
 
-function checkMembership(group_id) {
-  fetch(`/join-group?groupId=${group_id}`)
+function checkMembership() {
+  fetch(`/join-group?groupId=${groupId}`)
     .then(response => response.json())
     .then(isMemberData =>
       handleJoinGroupModal(isMemberData["groupName"], isMemberData["isMember"])
@@ -55,7 +55,7 @@ function hideJoinGroupModal() {
 }
 
 function joinGroup() {
-  fetch(`/join-group?groupId=${group_id}`, { method: "POST" }).then(
+  fetch(`/join-group?groupId=${groupId}`, { method: "POST" }).then(
     hideJoinGroupModal
   );
 }
