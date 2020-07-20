@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -47,16 +49,21 @@ public class ChallengeServletTest {
   private static final String GROUP_ID = "1";
   private static final List<Long> CHALLENGE_IDS = new ArrayList<Long>(Arrays.asList(2L));
 
-  private final LocalServiceTestHelper helper = new LocalServiceTestHelper(
-      new LocalDatastoreServiceTestConfig().setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
-      new LocalUserServiceTestConfig()).setEnvEmail(USER_EMAIL).setEnvIsLoggedIn(true).setEnvAuthDomain("gmail.com")
+  private final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(
+              new LocalDatastoreServiceTestConfig()
+                  .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
+              new LocalUserServiceTestConfig())
+          .setEnvEmail(USER_EMAIL)
+          .setEnvIsLoggedIn(true)
+          .setEnvAuthDomain("gmail.com")
           .setEnvAttributes(
-              new HashMap(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+              new HashMap(
+                  ImmutableMap.of(
+                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
-  @Mock
-  private HttpServletRequest mockRequest;
-  @Mock
-  private HttpServletResponse mockResponse;
+  @Mock private HttpServletRequest mockRequest;
+  @Mock private HttpServletResponse mockResponse;
   private ChallengeServlet challengeServlet;
   private StringWriter responseWriter;
   private DatastoreService datastore;
@@ -140,8 +147,7 @@ public class ChallengeServletTest {
   }
 
   /**
-   * Tests for when the most recent challenge in the database has a due date in
-   * the past.
+   * Tests for when the most recent challenge in the database has a due date in the past.
    *
    * @throws IOException exception thrown if cannot read or write to file.
    */
@@ -166,13 +172,15 @@ public class ChallengeServletTest {
     helper.setEnvIsLoggedIn(false);
 
     challengeServlet.doGet(mockRequest, mockResponse);
-    String response = responseWriter.toString();
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    verify(mockResponse).sendRedirect(captor.capture());
 
-    assertTrue(response.contains("Oops an error happened!"));
+    assertEquals("/_ah/login?continue=%2F", captor.getValue());
   }
 
   @Test
-  public void doPost_userLoggedIn_challengeAddedToDbTest() throws IOException, EntityNotFoundException {
+  public void doPost_userLoggedIn_challengeAddedToDbTest()
+      throws IOException, EntityNotFoundException {
     when(mockRequest.getParameter("name")).thenReturn(NEW_CHALLENGE);
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);
@@ -182,26 +190,28 @@ public class ChallengeServletTest {
     Key challengeKey = KeyFactory.createKey("Challenge", CHALLENGE_ID);
     Entity entity = datastore.get(challengeKey);
     long id = entity.getKey().getId();
-    Challenge challenge = new Challenge(NEW_CHALLENGE, /* challenge name */
-        DUE_DATE, /* due date */
-        null, /* badge */
-        null, /* users completed */
-        id /* id of challenge */);
+    Challenge challenge =
+        new Challenge(
+            NEW_CHALLENGE, /* challenge name */
+            DUE_DATE, /* due date */
+            null, /* badge */
+            null, /* users completed */
+            id /* id of challenge */);
     Challenge returnedChallenge = Challenge.fromEntity(entity);
 
     assertEquals(challenge.getChallengeName(), returnedChallenge.getChallengeName());
   }
 
   /**
-   * Tests that the list of challenge ids in the Group entity gets updated as a
-   * new challenge is inserted into the database.
+   * Tests that the list of challenge ids in the Group entity gets updated as a new challenge is
+   * inserted into the database.
    *
-   * @throws IOException             exception thrown if cannot read or write to
-   *                                 file
+   * @throws IOException exception thrown if cannot read or write to file
    * @throws EntityNotFoundException exception thrown if entity is not in database
    */
   @Test
-  public void doPost_userLoggedIn_updateGroupChallengesListTest() throws IOException, EntityNotFoundException {
+  public void doPost_userLoggedIn_updateGroupChallengesListTest()
+      throws IOException, EntityNotFoundException {
     when(mockRequest.getParameter("name")).thenReturn(NEW_CHALLENGE);
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);

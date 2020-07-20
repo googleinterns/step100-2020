@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -149,9 +151,10 @@ public class PollServletTest {
     helper.setEnvIsLoggedIn(false);
 
     pollServlet.doGet(mockRequest, mockResponse);
-    String response = responseWriter.toString();
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    verify(mockResponse).sendRedirect(captor.capture());
 
-    assertTrue(response.contains("Oops an error happened!"));
+    assertEquals("/_ah/login?continue=%2F", captor.getValue());
   }
 
   /**

@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -135,9 +137,10 @@ public class JoinGroupServletTest {
     helper.setEnvIsLoggedIn(false);
 
     joinGroupServlet.doGet(mockRequest, mockResponse);
-    String response = responseWriter.toString();
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    verify(mockResponse).sendRedirect(captor.capture());
 
-    assertTrue(response.contains("Oops an error happened!"));
+    assertEquals("/_ah/login?continue=%2F", captor.getValue());
   }
 
   /**
@@ -196,8 +199,9 @@ public class JoinGroupServletTest {
     helper.setEnvIsLoggedIn(false);
 
     joinGroupServlet.doPost(mockRequest, mockResponse);
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    verify(mockResponse).sendRedirect(captor.capture());
 
-    String response = responseWriter.toString();
-    assertTrue(response.contains("Oops an error happened!"));
+    assertEquals("/_ah/login?continue=%2F", captor.getValue());
   }
 }

@@ -2,16 +2,13 @@ package com.google.sps.servlets;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -27,15 +25,10 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.sps.Objects.User;
 import com.google.sps.Objects.Challenge;
 
 public class GroupMemberServletTest {
@@ -45,7 +38,7 @@ public class GroupMemberServletTest {
   private static final long GROUP_1_ID = 1234;
   private static final String GROUP_NAME = "The 3 Musketeers";
   private static final String HEADER_IMAGE = "";
- 
+
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
               new LocalDatastoreServiceTestConfig()
@@ -87,7 +80,7 @@ public class GroupMemberServletTest {
     groupMemberServlet = null;
   }
 
-   /* Create a Group entity */
+  /* Create a Group entity */
   private Entity createGroupEntity(long groupId) {
     Entity groupEntity = new Entity("Group", groupId);
     groupEntity.setProperty("groupId", groupId);
@@ -110,8 +103,10 @@ public class GroupMemberServletTest {
     when(mockRequest.getParameter("groupId")).thenReturn(Long.toString(GROUP_1_ID));
 
     groupMemberServlet.doPost(mockRequest, mockResponse);
-    String response = responseWriter.toString();
-    assertTrue(response.contains("Oops an error happened!"));
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    verify(mockResponse).sendRedirect(captor.capture());
+
+    assertEquals("/_ah/login?continue=%2F", captor.getValue());
   }
 
   @Test
@@ -123,7 +118,7 @@ public class GroupMemberServletTest {
     assertThat(response).contains("error");
   }
 
-  //TODO: implement group member tests 
+  // TODO: implement group member tests
   @Test
   public void doPost_addGroupMember() throws IOException, EntityNotFoundException {}
 
@@ -133,4 +128,3 @@ public class GroupMemberServletTest {
   @Test
   public void doGet_validMember() throws IOException, EntityNotFoundException {}
 }
-
