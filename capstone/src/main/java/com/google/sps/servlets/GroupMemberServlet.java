@@ -10,13 +10,21 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.io.PrintWriter;
 import com.google.gson.Gson;
 import com.google.sps.Objects.response.MemberResponse;
+import com.google.sps.servlets.ServletHelper;
 import error.ErrorHandler;
 
 @WebServlet("/group-member")
@@ -26,24 +34,64 @@ public class GroupMemberServlet extends AuthenticatedServlet {
   @Override
   // Adds a new member to a group 
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
+
+    String email = request.getParameter("email");
     Long groupId = Long.parseLong(request.getParameter("groupId"));
-    
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity group = this.getGroupFromId(response, groupId, datastore);
-    if (group != null && !userId.equals("")) {
+    Entity memberEntity = getMemberEntity(email, response, datastore);
+    if (memberEntity == null) return;
+    Entity group = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
+    if (group == null) return;
+
+    doPost_maybeAddUserToGroup(response, datastore, groupId, memberEntity, group);
+  }
+
+  // If no account for email, return 'This email doesn't have an account'
+  // If user already in group, return 'User already in group'
+  // If user not it group, add user and return 'User added to group'
+  private void doPost_maybeAddUserToGroup(HttpServletResponse response, DatastoreService datastore, Long groupId, Entity memberEntity, Entity group) {
+    if (memberEntity != null) {
       ArrayList<String> members = 
-        (ArrayList<String>) group.getProperty("members");
+        (ArrayList<String>) group.getProperty("memberIds");
       if (members == null) {
         members = new ArrayList<>();
       }
 
-      this.addMember(members, userId);
-      group.setProperty("members", members);
-      datastore.put(group);
-    } else {
-      return;
+      String memberId = (String) memberEntity.getProperty("userId");
+      if (addGroupToUser(response, datastore, groupId, memberEntity)) {
+        this.addMember(members, memberId);
+        group.setProperty("memberIds", members);
+        datastore.put(group);
+      } 
     }
+  }
+
+  private boolean addGroupToUser(HttpServletResponse response, DatastoreService datastore, Long groupId, Entity memberEntity) {
+    ArrayList<Long> groups = 
+        (ArrayList<Long>) memberEntity.getProperty("groups");
+    if (groups == null) {
+      groups = new ArrayList<>();
+    }
+    if (!groups.contains(groupId)) {
+      groups.add(groupId);
+      memberEntity.setProperty("groups", groups);
+      datastore.put(memberEntity);
+      return true;
+    } 
+    return false;
+  }
+
+  private Entity getMemberEntity(String email, HttpServletResponse response, DatastoreService datastore) throws IOException {
+    Filter findMemberEntity =
+    new FilterPredicate("email", FilterOperator.EQUAL, email);
+    Query query = new Query("User").setFilter(findMemberEntity);
+    PreparedQuery pq = datastore.prepare(query);
+    if (pq.asSingleEntity() == null) {
+      ErrorHandler.sendError(response, "Cannot get entity from datastore");
+      return null;
+    }
+    return pq.asSingleEntity();
   }
 
   private void addMember(ArrayList<String> members, String userId) {
@@ -52,42 +100,19 @@ public class GroupMemberServlet extends AuthenticatedServlet {
     }
   }
 
-  private Entity getGroupFromId(
-    HttpServletResponse response, long groupId, DatastoreService datastore) throws IOException {
-    try {
-      return datastore.get(KeyFactory.createKey("Group", groupId));
-    } catch (EntityNotFoundException e) {
-      ErrorHandler.sendError(response, "Group does not exist.");
-      return null;
-    }
-  }
-
-  private Entity getUserFromId(
-    HttpServletResponse response, String userId, DatastoreService datastore) throws IOException {
-    try {
-      return datastore.get(KeyFactory.createKey("User", userId));
-    } catch (EntityNotFoundException e) {
-      ErrorHandler.sendError(response, "User does not exist.");
-      return null;
-    }
-  }
-
   // Gets a MemberResponse object from userId
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    String userId = request.getParameter("id");
+    String memberId = request.getParameter("id");
     
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity member = this.getUserFromId(response, userId, datastore);
+    Entity member = ServletHelper.getUserFromId(response, memberId, datastore);
+    if (member == null) return;
     MemberResponse memResponse = MemberResponse.fromEntity(
-      member, /* includeBadges= */ true);
+      member, /* includeBadges= */ false);
 
     // Convert to json
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(memResponse));  
   }
-
-  @Override
-  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
-      throws IOException {}
 }

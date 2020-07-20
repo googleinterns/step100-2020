@@ -17,26 +17,40 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
 import com.google.sps.Objects.response.MemberResponse;
+import error.ErrorHandler;
+import com.google.sps.servlets.ServletHelper;
 
 @WebServlet("/all-group-members")
 
-public class AllGroupMembersServlet extends HttpServlet {
+public class AllGroupMembersServlet extends AuthenticatedServlet {
 
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  private ErrorHandler errorHandler = new ErrorHandler();
 
-    Query query = new Query("User");
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    Long groupId = Long.parseLong(request.getParameter("groupId"));
+
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
+    Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
+    if (groupEntity == null) return;
+
+    ArrayList<String> allGroupMembers = (ArrayList<String>) groupEntity.getProperty("memberIds");
 
     List<MemberResponse> basicMemberProfiles = new ArrayList<>();
-    for (Entity entity : results.asIterable()) {
-      MemberResponse member = MemberResponse.fromEntity(
-        entity, /* includeBadges= */ false);
-      basicMemberProfiles.add(member);
+    for (String memberId : allGroupMembers) {
+      Entity userEntity = ServletHelper.getUserFromId(response, memberId, datastore);
+      if (userEntity != null && !memberId.equals(userId)) {
+        MemberResponse member = MemberResponse.fromEntity(
+          userEntity, /* includeBadges= */ false);
+        basicMemberProfiles.add(member);
+      }
     }
 
     // Convert to json
     response.setContentType("application/json;");
     response.getWriter().println(new Gson().toJson(basicMemberProfiles)); 
   }
+
+  @Override
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {}
 }

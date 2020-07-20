@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
@@ -161,5 +162,13 @@ public class PostTest {
     likes = post.getLikes();
     assertEquals(likes.size(), 1);
     assertTrue(likes.contains("test user 2"));
+  }
+
+  @Test
+  public void toAndFromPostEntityTest() throws Exception {
+    Entity entity = post.toEntity();
+    Post returnedPost = Post.fromEntity(entity);
+
+    assertTrue(returnedPost.equals(post));
   }
 }

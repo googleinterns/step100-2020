@@ -12,6 +12,11 @@ import com.google.gson.Gson;
 
 import error.ErrorHandler;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.KeyFactory;
+
 /**
  * This class writes the JSON object to the response object's outut stream.
  *

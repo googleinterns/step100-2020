@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import com.google.sps.servlets.ServletHelper;
 import error.ErrorHandler;
 
 @WebServlet("/update-likes")
@@ -29,7 +30,7 @@ public class UpdateLikesServlet extends AuthenticatedServlet {
     boolean isLiked = Boolean.parseBoolean(request.getParameter("liked"));
    
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity post = this.getPostFromId(response, postId, datastore);
+    Entity post = ServletHelper.getEntityFromId(response, postId, datastore, "Post");
     if (post == null || userId.equals("")) return;
     ArrayList<String> likes = (ArrayList<String>) post.getProperty("likes");
     if (likes == null) {
@@ -47,15 +48,6 @@ public class UpdateLikesServlet extends AuthenticatedServlet {
       if (!likes.contains(userId)) likes.add(userId);
     } else {
       likes.remove(userId);
-    }
-  }
-
-  private Entity getPostFromId(HttpServletResponse response, long postId, DatastoreService datastore) throws IOException {
-    try {
-      return datastore.get(KeyFactory.createKey("Post", postId));
-    } catch (EntityNotFoundException e) {
-      errorHandler.sendError(response, "Post does not exist.");
-      return null;
     }
   }
 
