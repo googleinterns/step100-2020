@@ -177,12 +177,7 @@ public class PostTest {
   //@Test
   public void toAndFromPostEntityTest() throws Exception {
     Entity entity = post.toEntity();
-    datastore.put(entity);
-
-    Key postKey = KeyFactory.createKey("Post", POST_ID);
-    Entity retreivedPost = datastore.get(postKey);
-
-    Post returnedPost = Post.fromEntity(retreivedPost);
+    Post returnedPost = Post.fromEntity(entity);
 
     assertTrue(returnedPost.equals(post));
   }

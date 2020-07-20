@@ -20,6 +20,7 @@ import java.io.PrintWriter;
 import com.google.sps.Objects.Post;
 import com.google.sps.Objects.Comment;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.sps.servlets.ServletHelper;
 import error.ErrorHandler;
 
 @WebServlet("/post-comment")
@@ -36,7 +37,7 @@ public class CommentsServlet extends AuthenticatedServlet  {
     String commentText = request.getParameter("comment-text");
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity postEntity = this.getPostFromId(response, postId, datastore);
+    Entity postEntity = ServletHelper.getEntityFromId(response, postId, datastore, "Post");
     if (postEntity == null) return;
     ArrayList<EmbeddedEntity> allComments = (ArrayList<EmbeddedEntity>) postEntity.getProperty("comments");
 
@@ -51,16 +52,6 @@ public class CommentsServlet extends AuthenticatedServlet  {
       postEntity.setProperty("comments", allComments);
     }
     datastore.put(postEntity);
-  }
-
-  private Entity getPostFromId(
-    HttpServletResponse response, long postId, DatastoreService datastore)  throws IOException {
-      try {
-        return datastore.get(KeyFactory.createKey("Post", postId));
-      } catch (EntityNotFoundException e) {
-        errorHandler.sendError(response, "Post does not exist.");
-        return null;
-      }
   }
 
   @Override

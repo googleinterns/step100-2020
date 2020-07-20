@@ -12,6 +12,11 @@ import com.google.gson.Gson;
 
 import error.ErrorHandler;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.KeyFactory;
+
 /**
  * This class writes the JSON object to the response object's outut stream.
  *
@@ -58,6 +63,26 @@ public class ServletHelper {
       throws IOException {
     try {
       return datastore.get(KeyFactory.createKey(type, id));
+    } catch (EntityNotFoundException e) {
+      ErrorHandler.sendError(response, "Cannot get entity from datastore");
+      return null;
+    }
+  }
+
+  /**
+   * Retrieves the user entity from the database based on id.
+   *
+   * @param response HttpServletResponse
+   * @param id id of user
+   * @param datastore datastore holding all data
+   * @return Entity
+   * @throws IOException error thrown from sendError method
+   */
+  public static Entity getUserFromId(
+      HttpServletResponse response, String id, DatastoreService datastore)
+      throws IOException {
+    try {
+      return datastore.get(KeyFactory.createKey("User", id));
     } catch (EntityNotFoundException e) {
       ErrorHandler.sendError(response, "Cannot get entity from datastore");
       return null;

@@ -1,10 +1,16 @@
 package com.google.sps.Objects;
-
+import com.google.appengine.api.datastore.Entity;
+import java.io.IOException;
 import java.util.ArrayList;
 
-import com.google.appengine.api.datastore.Entity;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-public class Group {
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
+import com.google.sps.servlets.ServletHelper;
+
+public final class Group {
 
   private final ArrayList<String> memberIds;
   private final ArrayList<Long> challengeIds;
@@ -29,6 +35,15 @@ public class Group {
     this.groupName = groupName;
     this.headerImg = headerImg;
     this.groupId = groupId;
+  }
+
+  public static Entity getGroupEntity(
+      HttpServletRequest request, HttpServletResponse response, DatastoreService datastore)
+      throws IOException {
+    String groupIdString = request.getParameter("groupId");
+    long groupId = Long.parseLong(groupIdString);
+    Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
+    return groupEntity;
   }
 
   public ArrayList<String> getMemberIds() {

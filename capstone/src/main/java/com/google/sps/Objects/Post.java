@@ -87,6 +87,10 @@ public final class Post {
       comments.containsAll(post.comments);
   }
 
+  public long getPostId() {
+    return postId;
+  }
+
   public long getTimestamp() {
     return timestamp;
   }

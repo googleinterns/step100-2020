@@ -21,8 +21,12 @@ public class PostImageServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    
+    Long groupId = Long.parseLong(request.getParameter("groupId"));
+
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    String uploadUrl = blobstoreService.createUploadUrl("/group-post");
+    String url = "/group-post?groupId=" + groupId;
+    String uploadUrl = blobstoreService.createUploadUrl(url);
 
     response.setContentType("text/html");
     response.getWriter().println(uploadUrl);

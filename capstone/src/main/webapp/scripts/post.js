@@ -1,21 +1,16 @@
 let postResponse;
 
 function loadPosts() {
-  fetch("/group-post")
-    .then(response => response.json())
-    .then(postsResp => {
-      postResponse = postsResp;
-      const posts = postResponse["posts"];
-      const allPostsList = document.getElementById("posts-container");
-      allPostsList.innerHTML = "";
-      for (let i = 0; i < posts.length; i++) {
-        allPostsList.appendChild(
-          createSinglePost(posts[i], postResponse["likedPosts"])
-        );
-      }
-      addCommentInputListener();
-      addLikeButtonListener();
-    });
+  fetch(`/group-post?groupId=${groupId}`).then(response => response.json()).then((postResponse) => {
+    const posts = postResponse["posts"];
+    const allPostsList = document.getElementById('posts-container');
+    allPostsList.innerHTML = '';
+    for (let i = 0; i < posts.length; i++) {
+      allPostsList.appendChild(createSinglePost(posts[i], postResponse["likedPosts"]));
+    }
+    addCommentInputListener();
+    addLikeButtonListener();
+  });
 }
 
 function addCommentInputListener() {
@@ -206,7 +201,7 @@ function createCommentBox(post) {
 
 // Gets URL for uploaded image
 function fetchBlobstoreUrlAndShowForm() {
-  fetch("/post-image")
+  fetch(`/post-image?groupId=${groupId}`)
     .then(response => {
       return response.text();
     })
