@@ -1,22 +1,18 @@
 package com.google.sps.servlets;
 
-import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static com.google.sps.utils.TestUtils.assertEqualsJson;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.HashMap;
-import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,27 +20,22 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-import com.google.sps.Objects.Post;
-import com.google.sps.Objects.Group;
-import com.google.sps.Objects.Comment;
-import com.google.sps.Objects.Challenge;
-import com.google.sps.Objects.User;
 import com.google.sps.Objects.Badge;
+import com.google.sps.Objects.Challenge;
+import com.google.sps.Objects.Comment;
+import com.google.sps.Objects.Post;
+import com.google.sps.Objects.User;
 
 public class GroupPostDataServletTest {
 
@@ -58,7 +49,7 @@ public class GroupPostDataServletTest {
   private static final String GROUP_1_ID = "1";
   private static final String GROUP_NAME = "The 3 Musketeers";
   private static final String HEADER_IMAGE = "";
- 
+
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
               new LocalDatastoreServiceTestConfig()
@@ -72,23 +63,28 @@ public class GroupPostDataServletTest {
                   ImmutableMap.of(
                       "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
-  private final Post POST_1 = new Post(
-    POST_ID, /* postId */ 
-    USER_ID, /* authorId */ 
-    POST_TEXT, /* postText */
-    new ArrayList<Comment>(), /* comments */
-    CHALLENGE_NAME, /* challengeName */
-    TIMESTAMP, /* timestamp */
-    IMG, /* img */
-    new HashSet<String>() /* likes */);
+  private final Post POST_1 =
+      new Post(
+          POST_ID, /* postId */
+          USER_ID, /* authorId */
+          POST_TEXT, /* postText */
+          new ArrayList<Comment>(), /* comments */
+          CHALLENGE_NAME, /* challengeName */
+          TIMESTAMP, /* timestamp */
+          IMG, /* img */
+          new HashSet<String>() /* likes */);
 
-  private static final User CURRENT_USER = new User(USER_ID, "Test", "McTest", 
-    USER_EMAIL, 
-    /* phoneNumber= */ "123-456-7890", 
-    /* profilePic= */ "", 
-    /* badges= */ new LinkedHashSet<Badge>(), 
-    /* groups= */ new LinkedHashSet<Long>(), 
-    /* interests= */ new ArrayList<String>());
+  private static final User CURRENT_USER =
+      new User(
+          USER_ID,
+          "Test",
+          "McTest",
+          USER_EMAIL,
+          /* phoneNumber= */ "123-456-7890",
+          /* profilePic= */ "",
+          /* badges= */ new LinkedHashSet<Badge>(),
+          /* groups= */ new LinkedHashSet<Long>(),
+          /* interests= */ new ArrayList<String>());
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -146,16 +142,17 @@ public class GroupPostDataServletTest {
 
     String response = responseWriter.toString();
     assertTrue(response.contains(POST_TEXT));
-  } 
+  }
 
   @Test
   public void doGet_userNotLoggedIn() throws Exception {
     helper.setEnvIsLoggedIn(false);
 
     groupPostDataServlet.doGet(mockRequest, mockResponse);
-    
-    String response = responseWriter.toString();
-    assertTrue(response.contains("Oops an error happened!"));
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    verify(mockResponse).sendRedirect(captor.capture());
+
+    assertEquals("/_ah/login?continue=%2F", captor.getValue());
   }
 
   @Test
@@ -163,8 +160,9 @@ public class GroupPostDataServletTest {
     helper.setEnvIsLoggedIn(false);
 
     groupPostDataServlet.doPost(mockRequest, mockResponse);
-    
-    String response = responseWriter.toString();
-    assertTrue(response.contains("Oops an error happened!"));
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    verify(mockResponse).sendRedirect(captor.capture());
+
+    assertEquals("/_ah/login?continue=%2F", captor.getValue());
   }
 }

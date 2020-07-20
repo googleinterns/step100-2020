@@ -3,18 +3,16 @@ package com.google.sps.servlets;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -34,13 +33,12 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
-import com.google.sps.Objects.User;
-import com.google.sps.Objects.Challenge;
 import com.google.sps.Objects.Badge;
+import com.google.sps.Objects.Challenge;
 import com.google.sps.Objects.Group;
+import com.google.sps.Objects.User;
 
 public class GroupMemberServletTest {
 
@@ -51,7 +49,7 @@ public class GroupMemberServletTest {
   private static final String HEADER_IMAGE = "";
   private static final String OTHER_ID = "other";
   private static final String OTHER_EMAIL = "other@test.com";
- 
+
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
               new LocalDatastoreServiceTestConfig()
@@ -65,20 +63,29 @@ public class GroupMemberServletTest {
                   ImmutableMap.of(
                       "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
-  private static final User CURRENT_USER = new User(USER_ID, "Test", "McTest", 
-    USER_EMAIL, 
-    /* phoneNumber= */ "123-456-7890", 
-    /* profilePic= */ "", 
-    /* badges= */ new LinkedHashSet<Badge>(), 
-    /* groups= */ new LinkedHashSet<Long>(), 
-    /* interests= */ new ArrayList<String>());
+  private static final User CURRENT_USER =
+      new User(
+          USER_ID,
+          "Test",
+          "McTest",
+          USER_EMAIL,
+          /* phoneNumber= */ "123-456-7890",
+          /* profilePic= */ "",
+          /* badges= */ new LinkedHashSet<Badge>(),
+          /* groups= */ new LinkedHashSet<Long>(),
+          /* interests= */ new ArrayList<String>());
 
-  private static final User OTHER_USER = new User(OTHER_ID, "Test Two",     "McTest", OTHER_EMAIL, 
-    /* phoneNumber= */ "123-456-0000", 
-    /* profilePic= */ "", 
-    /* badges= */ new LinkedHashSet<Badge>(), 
-    /* groups= */ new LinkedHashSet<Long>(), 
-    /* interests= */ new ArrayList<String>()); 
+  private static final User OTHER_USER =
+      new User(
+          OTHER_ID,
+          "Test Two",
+          "McTest",
+          OTHER_EMAIL,
+          /* phoneNumber= */ "123-456-0000",
+          /* profilePic= */ "",
+          /* badges= */ new LinkedHashSet<Badge>(),
+          /* groups= */ new LinkedHashSet<Long>(),
+          /* interests= */ new ArrayList<String>());
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -134,9 +141,10 @@ public class GroupMemberServletTest {
     when(mockRequest.getParameter("id")).thenReturn(USER_ID);
 
     groupMemberServlet.doGet(mockRequest, mockResponse);
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    verify(mockResponse).sendRedirect(captor.capture());
 
-    String response = responseWriter.toString();
-    assertTrue(response.contains("Oops an error happened!"));
+    assertEquals("/_ah/login?continue=%2F", captor.getValue());
   }
 
   @Test
@@ -169,9 +177,10 @@ public class GroupMemberServletTest {
     when(mockRequest.getParameter("email")).thenReturn(USER_EMAIL);
 
     groupMemberServlet.doPost(mockRequest, mockResponse);
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    verify(mockResponse).sendRedirect(captor.capture());
 
-    String response = responseWriter.toString();
-    assertTrue(response.contains("Oops an error happened!"));
+    assertEquals("/_ah/login?continue=%2F", captor.getValue());
   }
 
   @Test
@@ -212,4 +221,3 @@ public class GroupMemberServletTest {
     assertThat(User.fromEntity(user).getGroups().contains(GROUP_1_ID));
   }
 }
-

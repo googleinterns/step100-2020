@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -48,22 +50,27 @@ public class PollServletTest {
   private static final String USER_ID = "test";
   private static final String NEW_OPTION = "Do a 5k";
   private static final long NEW_OPTION_ID = 2;
-  private static final List<String> OPTION_TEXT = new ArrayList<String>(
-      Arrays.asList("Run", "Jog", "Climb a tree", "Bungee jump"));
+  private static final List<String> OPTION_TEXT =
+      new ArrayList<String>(Arrays.asList("Run", "Jog", "Climb a tree", "Bungee jump"));
   private static final List<Long> OPTION_IDS = new ArrayList<Long>(Arrays.asList(2L));
   private static final String GROUP_NAME = "Runners Club";
   private static final String GROUP_ID = "1";
 
-  private final LocalServiceTestHelper helper = new LocalServiceTestHelper(
-      new LocalDatastoreServiceTestConfig().setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
-      new LocalUserServiceTestConfig()).setEnvEmail(USER_EMAIL).setEnvIsLoggedIn(true).setEnvAuthDomain("gmail.com")
+  private final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(
+              new LocalDatastoreServiceTestConfig()
+                  .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
+              new LocalUserServiceTestConfig())
+          .setEnvEmail(USER_EMAIL)
+          .setEnvIsLoggedIn(true)
+          .setEnvAuthDomain("gmail.com")
           .setEnvAttributes(
-              new HashMap(ImmutableMap.of("com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+              new HashMap(
+                  ImmutableMap.of(
+                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
-  @Mock
-  private HttpServletRequest mockRequest;
-  @Mock
-  private HttpServletResponse mockResponse;
+  @Mock private HttpServletRequest mockRequest;
+  @Mock private HttpServletResponse mockResponse;
   private PollServlet pollServlet;
   private StringWriter responseWriter;
   private DatastoreService datastore;
@@ -120,8 +127,8 @@ public class PollServletTest {
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_ID);
 
     pollServlet.doGet(mockRequest, mockResponse);
-
     String response = responseWriter.toString();
+
     assertTrue(response.contains(USER_ID));
   }
 
@@ -144,18 +151,17 @@ public class PollServletTest {
     helper.setEnvIsLoggedIn(false);
 
     pollServlet.doGet(mockRequest, mockResponse);
-    String response = responseWriter.toString();
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    verify(mockResponse).sendRedirect(captor.capture());
 
-    assertTrue(response.contains("Oops an error happened!"));
+    assertEquals("/_ah/login?continue=%2F", captor.getValue());
   }
 
   /**
    * Tests that the option is correctly stored into datastore.
    *
-   * @throws IOException             exception thrown if cannot read or write from
-   *                                 file
-   * @throws EntityNotFoundException exception thrown if cannot find entity in
-   *                                 datastore
+   * @throws IOException exception thrown if cannot read or write from file
+   * @throws EntityNotFoundException exception thrown if cannot find entity in datastore
    */
   @Test
   public void doPost_userLoggedIn_optionsTest() throws IOException, EntityNotFoundException {
@@ -176,16 +182,15 @@ public class PollServletTest {
   }
 
   /**
-   * Tests that the options list for the group entity is updated properly when
-   * user inputs new option.
+   * Tests that the options list for the group entity is updated properly when user inputs new
+   * option.
    *
-   * @throws IOException             exception thrown if cannot read or write from
-   *                                 file
-   * @throws EntityNotFoundException exception thrown if cannot find entity in
-   *                                 datastore
+   * @throws IOException exception thrown if cannot read or write from file
+   * @throws EntityNotFoundException exception thrown if cannot find entity in datastore
    */
   @Test
-  public void doPost_userLoggedIn_groupOptionsListTest() throws IOException, EntityNotFoundException {
+  public void doPost_userLoggedIn_groupOptionsListTest()
+      throws IOException, EntityNotFoundException {
     Entity groupEntity = this.createGroup(USER_ID, GROUP_NAME);
     datastore.put(groupEntity);
     when(mockRequest.getParameter("text")).thenReturn(NEW_OPTION);

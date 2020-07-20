@@ -15,7 +15,7 @@ p {
 
 .group-container {
   width: var(--container-width);
-  margin: 0 auto;
+  margin: 60px auto;
 }
 
 .group-content {
@@ -31,7 +31,6 @@ p {
   flex-direction: column;
   float: right;
   margin-right: 7%;
-  margin-top: 50px;
   position: relative;
 }
 
@@ -486,4 +485,65 @@ input[type="checkbox"]:checked + label:before {
   width: 100%;
   height: 15px;
   border-left: 4px solid var(--dark-green);
+}
+
+#join-group-modal {
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  z-index: 100; /* Specify a stack order to be on top */
+  cursor: pointer; /* Add a pointer on hover */
+}
+
+#join-group-text {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  font-size: 36px;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+
+#go-to-profile {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  font-size: 24px;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  color: var(--dark-green);
+  text-decoration: none;
+}
+
+#join-group-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 24px;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background: var(--dark-green);
+  color: white;
+  text-decoration: none;
+  padding: 15px 20px;
+  outline: none;
+  border: none;
+  border-radius: 10px;
+}
+
+@media (max-width: 1600px) {
+  .group-container {
+    margin-left: auto;
+    margin-right: 30%;
+  }
+
+  .sidebar {
+    margin-right: 3%;
+  }
 }

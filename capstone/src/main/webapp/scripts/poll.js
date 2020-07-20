@@ -5,11 +5,6 @@ let maxVotes;
 let topChallenge = null;
 const NO_CHALLENGES =
   "No current challenges. Submit a suggestion in the poll and mark checkbox for challenge to be posted. The challenge will be updated weekly based on top voted poll option.";
-let groupId;
-
-function getGroupId() {
-  groupId = window.location.search.substring(1).split("=")[1];
-}
 
 /**
  * Adds new option to poll.

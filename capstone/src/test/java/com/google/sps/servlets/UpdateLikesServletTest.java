@@ -2,17 +2,15 @@ package com.google.sps.servlets;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -32,11 +31,10 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
-import com.google.sps.Objects.Post;
 import com.google.sps.Objects.Comment;
+import com.google.sps.Objects.Post;
 
 public class UpdateLikesServletTest {
 
@@ -62,15 +60,16 @@ public class UpdateLikesServletTest {
                   ImmutableMap.of(
                       "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
-  private final Post POST_1 = new Post(
-    POST_ID, /* postId */ 
-    AUTHOR_ID, /* authorId */ 
-    POST_TEXT, /* postText */
-    new ArrayList<Comment>(), /* comments */
-    CHALLENGE_NAME, /* challengeName */
-    TIMESTAMP, /* timestamp */
-    IMG, /* img */
-    new HashSet<String>() /* likes */);
+  private final Post POST_1 =
+      new Post(
+          POST_ID, /* postId */
+          AUTHOR_ID, /* authorId */
+          POST_TEXT, /* postText */
+          new ArrayList<Comment>(), /* comments */
+          CHALLENGE_NAME, /* challengeName */
+          TIMESTAMP, /* timestamp */
+          IMG, /* img */
+          new HashSet<String>() /* likes */);
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -107,8 +106,10 @@ public class UpdateLikesServletTest {
     when(mockRequest.getParameter("liked")).thenReturn("true");
 
     updateLikesServlet.doPost(mockRequest, mockResponse);
-    String response = responseWriter.toString();
-    assertTrue(response.contains("Oops an error happened!"));
+    ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+    verify(mockResponse).sendRedirect(captor.capture());
+
+    assertEquals("/_ah/login?continue=%2F", captor.getValue());
   }
 
   @Test

@@ -79,8 +79,7 @@ public class ServletHelper {
    * @throws IOException error thrown from sendError method
    */
   public static Entity getUserFromId(
-      HttpServletResponse response, String id, DatastoreService datastore)
-      throws IOException {
+      HttpServletResponse response, String id, DatastoreService datastore) throws IOException {
     try {
       return datastore.get(KeyFactory.createKey("User", id));
     } catch (EntityNotFoundException e) {

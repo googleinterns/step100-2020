@@ -4,9 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,21 +14,14 @@ import org.junit.Test;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.gson.Gson;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
-import com.google.sps.Objects.Post;
 import com.google.sps.Objects.Comment;
+import com.google.sps.Objects.Post;
 
-/**
- * Unit tests for Post.
- *
- */
+/** Unit tests for Post. */
 public class PostTest {
 
   private static final String POST_TEXT = "a great post";
@@ -42,9 +34,9 @@ public class PostTest {
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
-            new LocalDatastoreServiceTestConfig()
-                .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
-            new LocalUserServiceTestConfig())
+              new LocalDatastoreServiceTestConfig()
+                  .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
+              new LocalUserServiceTestConfig())
           .setEnvEmail(USER_EMAIL)
           .setEnvIsLoggedIn(true)
           .setEnvAuthDomain("gmail.com")
@@ -60,16 +52,16 @@ public class PostTest {
   public void setUp() {
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
-    post = 
-      new Post(
-        /* postId */ POST_ID,
-        /* authorId */ USER_ID,
-        /* postText */ POST_TEXT,
-        /* comments */ new ArrayList<Comment>(),
-        /* challengeName */ CHALLENGE_NAME, 
-        /* timestamp */ TIMESTAMP, 
-        /* img */ IMG,
-        /* likes */ new HashSet<String>());
+    post =
+        new Post(
+            /* postId */ POST_ID,
+            /* authorId */ USER_ID,
+            /* postText */ POST_TEXT,
+            /* comments */ new ArrayList<Comment>(),
+            /* challengeName */ CHALLENGE_NAME,
+            /* timestamp */ TIMESTAMP,
+            /* img */ IMG,
+            /* likes */ new HashSet<String>());
   }
 
   @After
@@ -83,7 +75,7 @@ public class PostTest {
     assertEquals(post.getPostText(), POST_TEXT);
   }
 
-  @Test 
+  @Test
   public void getImgtTest() {
     assertEquals(post.getImg(), IMG);
   }
@@ -93,7 +85,7 @@ public class PostTest {
     assertEquals(post.getChallengeName(), CHALLENGE_NAME);
   }
 
-  @Test 
+  @Test
   public void getCommentsTest() {
     assertEquals(post.getComments().size(), 0);
   }
@@ -106,22 +98,20 @@ public class PostTest {
     HashSet<String> testLikes = new HashSet<String>();
     testLikes.add("user 1");
     testLikes.add("user 2");
-    
+
     assertEquals(testLikes, post.getLikes());
   }
 
   @Test
   public void addCommentTest() {
-    Comment testComment1 =  
-      new Comment(
-        /* userId */ 4324344, 
-        /* commentText */ "a great comment",
-        /* userId */ "123123123");
-    Comment testComment2 = 
-      new Comment(
-        55555555, /* userId */ 
-        "another great comment", /* commentText */ 
-        "09090909" /* userId */ );
+    Comment testComment1 =
+        new Comment(
+            /* userId */ 4324344, /* commentText */ "a great comment", /* userId */ "123123123");
+    Comment testComment2 =
+        new Comment(
+            55555555, /* userId */
+            "another great comment", /* commentText */
+            "09090909" /* userId */);
     post.addComment(testComment1);
     post.addComment(testComment2);
 
@@ -131,11 +121,11 @@ public class PostTest {
   }
 
   public boolean equalCommentCheck(Comment comment1, Comment comment2) {
-    if (!(comment1 instanceof Comment) || !(comment2 instanceof Comment)){
+    if (!(comment1 instanceof Comment) || !(comment2 instanceof Comment)) {
       return false;
-    } 
-    return comment1.getCommentText().equals(comment2.getCommentText()) &&
-      comment1.getUser().equals(comment2.getUser());
+    }
+    return comment1.getCommentText().equals(comment2.getCommentText())
+        && comment1.getUser().equals(comment2.getUser());
   }
 
   @Test
@@ -174,7 +164,7 @@ public class PostTest {
     assertTrue(likes.contains("test user 2"));
   }
 
-  //@Test
+  @Test
   public void toAndFromPostEntityTest() throws Exception {
     Entity entity = post.toEntity();
     Post returnedPost = Post.fromEntity(entity);
