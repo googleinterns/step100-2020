@@ -145,7 +145,6 @@ public class GroupPostDataServletTest {
     groupPostDataServlet.doGet(mockRequest, mockResponse);
 
     String response = responseWriter.toString();
-    System.out.println(response);
     assertTrue(response.contains(POST_TEXT));
   } 
 

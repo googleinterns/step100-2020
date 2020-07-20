@@ -51,7 +51,6 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Long groupId = Long.parseLong(request.getParameter("groupId"));
     Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
-    System.out.println("THE GROUP: " + groupEntity.getProperty("groupName"));
     ArrayList<Long> postIds = (ArrayList<Long>) groupEntity.getProperty("posts");
 
     List<Post> posts = new ArrayList<>();

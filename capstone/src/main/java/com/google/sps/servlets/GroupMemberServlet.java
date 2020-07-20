@@ -44,17 +44,14 @@ public class GroupMemberServlet extends AuthenticatedServlet {
     Entity group = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     if (group == null) return;
 
-    String memResponse = doPost_helper(response, datastore, groupId, memberEntity, group);
+    doPost_maybeAddUserToGroup(response, datastore, groupId, memberEntity, group);
   }
 
   // If no account for email, return 'This email doesn't have an account'
   // If user already in group, return 'User already in group'
   // If user not it group, add user and return 'User added to group'
-  private String doPost_helper(HttpServletResponse response, DatastoreService datastore, Long groupId, Entity memberEntity, Entity group) {
-    String memResponse = "";
-    if (memberEntity == null) {
-      memResponse += "This email doesn't have an account.";
-    } else {
+  private void doPost_maybeAddUserToGroup(HttpServletResponse response, DatastoreService datastore, Long groupId, Entity memberEntity, Entity group) {
+    if (memberEntity != null) {
       ArrayList<String> members = 
         (ArrayList<String>) group.getProperty("memberIds");
       if (members == null) {
@@ -66,12 +63,8 @@ public class GroupMemberServlet extends AuthenticatedServlet {
         this.addMember(members, memberId);
         group.setProperty("memberIds", members);
         datastore.put(group);
-        memResponse += "User added to group.";
-      } else {
-        memResponse += "User is already in group.";
-      }
+      } 
     }
-    return memResponse;
   }
 
   private boolean addGroupToUser(HttpServletResponse response, DatastoreService datastore, Long groupId, Entity memberEntity) {
