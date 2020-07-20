@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
-import error.ErrorHandler;
-
 public abstract class AuthenticatedServlet extends HttpServlet {
 
   @Override
@@ -20,9 +18,7 @@ public abstract class AuthenticatedServlet extends HttpServlet {
       String userId = userService.getCurrentUser().getUserId();
       this.doGet(userId, request, response);
     } else {
-      ErrorHandler.sendError(response, "User is not logged in.");
-      String loginUrl = userService.createLoginURL("/");
-      response.sendRedirect(loginUrl);
+      this.redirectToLogin(userService, response);
     }
   }
 
@@ -33,8 +29,21 @@ public abstract class AuthenticatedServlet extends HttpServlet {
       String userId = userService.getCurrentUser().getUserId();
       this.doPost(userId, request, response);
     } else {
-      ErrorHandler.sendError(response, "User is not logged in.");
+      this.redirectToLogin(userService, response);
     }
+  }
+
+  /**
+   * Redirects user to login page.
+   *
+   * @param userService UserService instance
+   * @param response response data
+   * @throws IOException exception thrown if cannot read or write to file
+   */
+  private void redirectToLogin(UserService userService, HttpServletResponse response)
+      throws IOException {
+    String loginUrl = userService.createLoginURL("/");
+    response.sendRedirect(loginUrl);
   }
 
   public abstract void doGet(
