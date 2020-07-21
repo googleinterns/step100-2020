@@ -63,3 +63,11 @@ function joinGroup() {
 function setGroupBannerText(groupName) {
   document.getElementById("group-name").textContent = groupName;
 }
+
+function loadTestData() {
+  fetch("/name-test-data", { method: "POST" });
+}
+
+function clickCheck() {
+  fetch("/name-data");
+}

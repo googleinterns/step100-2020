@@ -72,11 +72,13 @@
           <span id="add-close" onclick="addModalListeners('add-member-modal', 'add-close')">&times;</span>
           <h2>Add Group Member</h2>
           <form id="add-member" onsubmit="addMember()" method="POST">
-            <label for="member-email-input">Enter an email</label>
+            <label for="member-email-input">Enter email</label>
             <input type="text" class="input-field" name="email-input" id="email-input">
             <p id=memberUpdate></p>
             <button class="add-member-btn">Add</button>
           </form>
+          <button class="add-member-btn" onclick="loadTestData()">Load Test Data</button>
+          <button class="add-member-btn" onclick="clickCheck()">Counter check</button>
         </div>
       </div>
         
