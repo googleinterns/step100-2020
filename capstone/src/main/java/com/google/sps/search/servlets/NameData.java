@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -22,6 +24,7 @@ import com.google.sps.servlets.ServletHelper;
 public class NameData extends AuthenticatedServlet {
 
   Trie firstNameTrie;
+  Trie lastNameTrie;
   String trieFile = "../../data/trie";
 
   @Override
@@ -30,7 +33,8 @@ public class NameData extends AuthenticatedServlet {
     try {
       FileInputStream fileInput = new FileInputStream(new File(trieFile));
       ObjectInputStream objectInput = new ObjectInputStream(fileInput);
-      firstNameTrie = (Trie) objectInput.readObject();
+      firstNameTrie = ((List<Trie>) objectInput.readObject()).get(0);
+      lastNameTrie = ((List<Trie>) objectInput.readObject()).get(1);
 
       fileInput.close();
       objectInput.close();
@@ -39,28 +43,27 @@ public class NameData extends AuthenticatedServlet {
       System.err.println("File does not exist");
     } catch (IOException e) {
       System.err.println("Cannot read from file");
-    } catch (NumberFormatException e) {
-      System.err.println("Cannot parse to integer");
     } catch (ClassNotFoundException e) {
       System.err.println("Class not found");
     }
-    System.out.println("initializing new trie");
     firstNameTrie = new Trie();
+    lastNameTrie = new Trie();
   }
 
   @Override
   public void destroy() {
-    System.out.println("destroying");
     this.saveState();
   }
 
   public void saveState() {
-    System.out.println("saving state");
     FileOutputStream fileOutputStream;
     try {
       fileOutputStream = new FileOutputStream(new File(trieFile));
       ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-      objectOutputStream.writeObject(firstNameTrie);
+      List<Trie> triesList = new ArrayList<Trie>();
+      triesList.add(firstNameTrie);
+      triesList.add(lastNameTrie);
+      objectOutputStream.writeObject(triesList);
 
       objectOutputStream.close();
       fileOutputStream.close();
