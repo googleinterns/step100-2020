@@ -7,8 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -16,15 +14,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.sps.search.Trie;
+import com.google.sps.search.SearchPredictor;
 import com.google.sps.servlets.AuthenticatedServlet;
 import com.google.sps.servlets.ServletHelper;
 
 @WebServlet("/name-data")
 public class NameData extends AuthenticatedServlet {
 
-  Trie firstNameTrie;
-  Trie lastNameTrie;
+  SearchPredictor searchPredictor;
   String trieFile = "../../data/trie";
 
   @Override
@@ -33,8 +30,7 @@ public class NameData extends AuthenticatedServlet {
     try {
       FileInputStream fileInput = new FileInputStream(new File(trieFile));
       ObjectInputStream objectInput = new ObjectInputStream(fileInput);
-      firstNameTrie = ((List<Trie>) objectInput.readObject()).get(0);
-      lastNameTrie = ((List<Trie>) objectInput.readObject()).get(1);
+      searchPredictor = (SearchPredictor) objectInput.readObject();
 
       fileInput.close();
       objectInput.close();
@@ -46,8 +42,7 @@ public class NameData extends AuthenticatedServlet {
     } catch (ClassNotFoundException e) {
       System.err.println("Class not found");
     }
-    firstNameTrie = new Trie();
-    lastNameTrie = new Trie();
+    searchPredictor = new SearchPredictor();
   }
 
   @Override
@@ -60,10 +55,7 @@ public class NameData extends AuthenticatedServlet {
     try {
       fileOutputStream = new FileOutputStream(new File(trieFile));
       ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-      List<Trie> triesList = new ArrayList<Trie>();
-      triesList.add(firstNameTrie);
-      triesList.add(lastNameTrie);
-      objectOutputStream.writeObject(triesList);
+      objectOutputStream.writeObject(searchPredictor);
 
       objectOutputStream.close();
       fileOutputStream.close();
@@ -78,9 +70,12 @@ public class NameData extends AuthenticatedServlet {
   @Override
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    firstNameTrie.incrementCounter();
-    ServletHelper.write(response, firstNameTrie, "application/json");
-    System.out.println("This servlet has been accessed " + firstNameTrie.getCount() + " times");
+    searchPredictor.getFirstNameTrie().incrementCounter();
+    ServletHelper.write(response, searchPredictor, "application/json");
+    System.out.println(
+        "This servlet has been accessed "
+            + searchPredictor.getFirstNameTrie().getCount()
+            + " times");
   }
 
   @Override
