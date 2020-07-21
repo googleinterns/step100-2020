@@ -28,6 +28,9 @@ import com.google.sps.Objects.response.PostResponse;
 import com.google.sps.servlets.ServletHelper;
 import error.ErrorHandler;
 
+/**
+ * Parses a TSV file of fake group data and populates the Datastore with Group and Post entities.
+ */
 @WebServlet("/parse-group-data")
 public class ParseGroupDataServlet extends HttpServlet {
 
@@ -47,8 +50,8 @@ public class ParseGroupDataServlet extends HttpServlet {
     scanner.close();
   }
 
-  /*
-   * Creates a Group entity given a row of the TSV and adds to Datastore.
+  /**
+   * Create a Group entity given a row of the TSV and add to Datastore.
    */
   private void createGroupEntity(String[] fields) {
     String groupName = String.valueOf(fields[0]);
@@ -60,7 +63,7 @@ public class ParseGroupDataServlet extends HttpServlet {
   }
 
   /**
-   * Creates a list of postIds for a Group.
+   * Create a list of postIds for a Group.
    */
   private ArrayList<Long> getPosts(String[] fields, ArrayList<String> members) {
     ArrayList<Long> postIds = new ArrayList<>();
@@ -72,7 +75,7 @@ public class ParseGroupDataServlet extends HttpServlet {
   }
 
   /**
-   * Creates a Post object and adds it to the datastore given information from TSV file.
+   * Create a Post object and add it to the datastore given information from TSV file.
    */
   private long createPost(String postText, String author) {
     String authorName = author;
@@ -89,7 +92,7 @@ public class ParseGroupDataServlet extends HttpServlet {
   }
 
   /**
-   * Creates and returns a groupEntity given information from TSV file.
+   * Create and return a groupEntity given information from TSV file.
    */
   private Entity createGroupEntity(String groupName, ArrayList<String> members, 
       ArrayList<Long> posts) {
@@ -104,7 +107,7 @@ public class ParseGroupDataServlet extends HttpServlet {
   }
 
   /**
-   * Gets the memberIds of a group.
+   * Get the memberIds of a group.
    */
   private ArrayList<String> getMembers(String list) {
     // Trim any whitespace immediately following a comma.
@@ -119,7 +122,7 @@ public class ParseGroupDataServlet extends HttpServlet {
   }
 
   /**
-   * Returns a random member from a list of members.
+   * Return a random member from a list of members.
    */
   private String getRandomMember(ArrayList<String> members) {
     Random rand = new Random();
