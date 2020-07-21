@@ -30,7 +30,10 @@ public class NameData extends AuthenticatedServlet {
     try {
       FileInputStream fileInput = new FileInputStream(new File(trieFile));
       ObjectInputStream objectInput = new ObjectInputStream(fileInput);
-      Trie trie = (Trie) objectInput.readObject();
+      firstNameTrie = (Trie) objectInput.readObject();
+
+      fileInput.close();
+      objectInput.close();
       return;
     } catch (FileNotFoundException e) {
       System.err.println("File does not exist");
@@ -41,15 +44,18 @@ public class NameData extends AuthenticatedServlet {
     } catch (ClassNotFoundException e) {
       System.err.println("Class not found");
     }
+    System.out.println("initializing new trie");
     firstNameTrie = new Trie();
   }
 
   @Override
   public void destroy() {
+    System.out.println("destroying");
     this.saveState();
   }
 
   public void saveState() {
+    System.out.println("saving state");
     FileOutputStream fileOutputStream;
     try {
       fileOutputStream = new FileOutputStream(new File(trieFile));
@@ -58,12 +64,11 @@ public class NameData extends AuthenticatedServlet {
 
       objectOutputStream.close();
       fileOutputStream.close();
+      System.out.println("successfully written to file");
     } catch (FileNotFoundException e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
+      System.err.println("File does not exist");
     } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      System.err.println("Cannot write to file");
     }
   }
 
