@@ -67,7 +67,3 @@ function setGroupBannerText(groupName) {
 function loadTestData() {
   fetch("/name-test-data", { method: "POST" });
 }
-
-function clickCheck() {
-  fetch("/name-data");
-}
