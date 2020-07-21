@@ -10,12 +10,10 @@ public class Trie implements Serializable {
   private static final long serialVersionUID = 1L;
   private Map<String, Trie> children;
   private boolean isEnd;
-  int count;
 
   public Trie() {
     children = new HashMap<String, Trie>();
     isEnd = false;
-    count = 0;
   }
 
   public void insert(String name, String fullName) {
@@ -33,13 +31,5 @@ public class Trie implements Serializable {
 
   public Set<String> findAllWithPrefix() {
     return null;
-  }
-
-  public void incrementCounter() {
-    count++;
-  }
-
-  public int getCount() {
-    return this.count;
   }
 }

@@ -70,12 +70,7 @@ public class NameData extends AuthenticatedServlet {
   @Override
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    searchPredictor.getFirstNameTrie().incrementCounter();
     ServletHelper.write(response, searchPredictor, "application/json");
-    System.out.println(
-        "This servlet has been accessed "
-            + searchPredictor.getFirstNameTrie().getCount()
-            + " times");
   }
 
   @Override
