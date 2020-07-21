@@ -14,9 +14,11 @@ public class Trie implements Serializable {
 
   private static final long serialVerionID = 1L;
   private List<String> names;
+  int count;
 
   public Trie() {
     this.names = this.getNamesFromDb();
+    count = 0;
   }
 
   private List<String> getNamesFromDb() {
@@ -31,6 +33,14 @@ public class Trie implements Serializable {
       names.add(name);
     }
     return names;
+  }
+
+  public void incrementCounter() {
+    count++;
+  }
+
+  public int getCount() {
+    return this.count;
   }
 
   private void buildFirstNameTrie() {}
