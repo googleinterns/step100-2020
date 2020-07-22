@@ -25,7 +25,7 @@ public final class User {
   private ArrayList<String> interests;
 
   public User(String userId, String firstName, String lastName, 
-      String email, String phoneNumber, String profilePic, double latitude, double longitude, LinkedHashSet<Badge> badges, LinkedHashSet<Long> groups, ArrayList<String> interests) {
+        String email, String phoneNumber, String profilePic, double latitude, double longitude, LinkedHashSet<Badge> badges, LinkedHashSet<Long> groups, ArrayList<String> interests) {
     this.userId = userId;
     this.name = firstName + " " + lastName;
     this.firstName = firstName;
