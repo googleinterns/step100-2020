@@ -75,7 +75,7 @@ public class ParseUserDataServlet extends HttpServlet {
   }
 
   /**
-   * Get the groupsIds for all user groups.
+   * Get the groupIds for all user groups.
   */
   private LinkedHashSet<Long> getGroups(String groupNamesString) {
     groupNamesString = groupNamesString.replaceAll("(\\s*,\\s*)(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", ",");
@@ -91,7 +91,7 @@ public class ParseUserDataServlet extends HttpServlet {
   }
 
   /**
-   * Get the groupsId from Group entity
+   * Get the groupId from Group entity
   */
   private Long getGroupId(String groupName) {
     Filter findGroupEntity =
