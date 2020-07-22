@@ -20,6 +20,11 @@ import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.PreparedQuery;
 import java.io.PrintWriter;
 import com.google.sps.Objects.User;
 import com.google.sps.Objects.Badge;
@@ -29,7 +34,7 @@ import error.ErrorHandler;
 
 /**
  * Parses a TSV file of fake group data and populates the Datastore with Group and Post entities.
- */
+*/
 @WebServlet("/parse-user-data")
 public class ParseUserDataServlet extends HttpServlet {
 
@@ -51,7 +56,7 @@ public class ParseUserDataServlet extends HttpServlet {
 
   /**
    * Create all User entitys and add to datastore
-   */
+  */
   private void createUserEntity(String[] fields) {
     String firstName = String.valueOf(fields[0]);
     String lastName = String.valueOf(fields[1]);
@@ -70,18 +75,32 @@ public class ParseUserDataServlet extends HttpServlet {
   }
 
   /**
-   * Get the groupsIds of a user.
-   */
-  private LinkedHashSet<Long> getGroups(String groupString) {
-    groupString = groupString.replaceAll("(\\s*,\\s*)(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", ",");
+   * Get the groupsIds for all user groups.
+  */
+  private LinkedHashSet<Long> getGroups(String groupNamesString) {
+    groupNamesString = groupNamesString.replaceAll("(\\s*,\\s*)(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", ",");
 
-    String[] groupsArray = groupString.split(",");
+    String[] groupsArray = groupNamesString.split(",");
     Long[] groupsArrayLong = new Long[groupsArray.length];
     for (int i = 0; i < groupsArray.length; i++) {
-      groupsArrayLong[i] = Long.parseLong(groupsArray[i]);
+      groupsArrayLong[i] = getGroupId(groupsArray[i]);
     }
     LinkedHashSet<Long> groupsList = new LinkedHashSet<Long>(Arrays.asList(groupsArrayLong));
 
     return groupsList;
+  }
+
+  /**
+   * Get the groupsId from Group entity
+  */
+  private Long getGroupId(String groupName) {
+    Filter findGroupEntity =
+        new FilterPredicate("groupName", FilterOperator.EQUAL, groupName);
+    Query query = new Query("Group").setFilter(findGroupEntity);
+    PreparedQuery pq = datastore.prepare(query);
+    if (pq.asSingleEntity() == null) {
+      return 0L;
+    }
+    return pq.asSingleEntity().getKey().getId();
   }
 }
