@@ -48,7 +48,7 @@ public class TrieTest {
     assertEquals(forthLetter, "Y");
     assertEquals(keySet5.size(), 1);
     assertEquals(fullName, "Lucy Qu");
-    assertTrue(cChildren.get("Y").getIsEnd());
+    assertTrue(cChildren.get("Y").getIsName());
   }
 
   /** Handles case in which duplicate names are inserted into trie. */
@@ -81,7 +81,7 @@ public class TrieTest {
     assertEquals(forthLetter, "Y");
     assertEquals(keySet5.size(), 1);
     assertEquals(fullName, "Lucy Qu");
-    assertTrue(cChildren.get("Y").getIsEnd());
+    assertTrue(cChildren.get("Y").getIsName());
   }
   /**
    * Tests that inserting Rose (full name Rose Smith) and Rosie (full name Rosie Brown) into trie
@@ -112,11 +112,32 @@ public class TrieTest {
     assertEquals(keySet4.size(), 2);
     assertTrue(keySet4.contains("I"));
     assertTrue(keySet4.contains("E"));
-    assertTrue(sChildren.get("E").getIsEnd());
-    assertFalse(sChildren.get("I").getIsEnd());
+    assertTrue(sChildren.get("E").getIsName());
+    assertFalse(sChildren.get("I").getIsName());
     assertEquals(iChildren.size(), 1);
-    assertTrue(iChildren.keySet().contains("E"));
-    assertTrue(iChildren.get("E").getIsEnd());
+    assertTrue(iChildren.containsKey("E"));
+    assertTrue(iChildren.get("E").getIsName());
+  }
+
+  /** Inserts two names into the trie, where one name is the substring of another name. */
+  @Test
+  public void insertOneNameIsSubstringTest() {
+    trie.insert("Qu", "Lucy Qu");
+    trie.insert("Qui", "Jane Qui");
+    Set<String> keySet = trie.getChildren().keySet();
+    String Q = keySet.iterator().next();
+    Map<String, Trie> qChildren = trie.getChildren().get(Q).getChildren();
+    Set<String> keySet2 = qChildren.keySet();
+    String U = keySet2.iterator().next();
+    Map<String, Trie> uChildren = qChildren.get("U").getChildren();
+
+    assertEquals(keySet.size(), 1);
+    assertEquals(Q, "Q");
+    assertEquals(keySet2.size(), 1);
+    assertEquals(U, "U");
+    assertEquals(uChildren.size(), 2);
+    assertTrue(uChildren.containsKey("I"));
+    assertTrue(uChildren.containsKey("Lucy Qu"));
   }
 
   @Test
@@ -133,6 +154,33 @@ public class TrieTest {
     assertTrue(names.contains("Lucille Ball"));
     assertTrue(names.contains("Lucie White"));
     assertFalse(names.contains("Lilly Singh"));
+  }
+
+  @Test
+  public void searchWithPrefixSameNameTest() {
+    trie.insert("Lucy", "Lucy Qu");
+    trie.insert("Lucy", "Lucy Liu");
+    trie.insert("Ball", "Lucille Ball");
+
+    Set<String> names = trie.searchWithPrefix("Luc", "Luc");
+
+    assertEquals(names.size(), 2);
+    assertTrue(names.contains("Lucy Qu"));
+    assertTrue(names.contains("Lucy Liu"));
+    assertFalse(names.contains("Lucille Ball"));
+  }
+
+  /** Tests for search with prefix when one name in the trie is the substring of another name. */
+  @Test
+  public void searchWithPrefixOneNameIsSubstringTest() {
+    trie.insert("Qu", "Lucy Qu");
+    trie.insert("Quincy", "Jane Quincy");
+
+    Set<String> names = trie.searchWithPrefix("Qu", "Qu");
+
+    assertEquals(names.size(), 2);
+    assertTrue(names.contains("Lucy Qu"));
+    assertTrue(names.contains("Jane Quincy"));
   }
 
   @Test

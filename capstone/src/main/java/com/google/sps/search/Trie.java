@@ -17,7 +17,8 @@ public class Trie implements Serializable {
 
   private static final long serialVersionUID = 1L;
   private Map<String, Trie> children;
-  private boolean isEnd;
+  private boolean isName;
+  private boolean isFullName;
 
   /**
    * Constructor that sets the children of trie node and whether current node marks the end of the
@@ -25,7 +26,8 @@ public class Trie implements Serializable {
    */
   public Trie() {
     this.children = new HashMap<String, Trie>();
-    this.isEnd = false;
+    this.isName = false;
+    this.isFullName = false;
   }
 
   /**
@@ -36,8 +38,12 @@ public class Trie implements Serializable {
    */
   public void insert(String name, String fullName) {
     if (name.contentEquals("")) {
-      this.isEnd = true;
-      this.children.put(fullName, new Trie());
+      // indicates the end of first name or last name
+      this.isName = true;
+      // insert full name node as child
+      Trie fullNameNode = new Trie();
+      fullNameNode.setIsFullName(true);
+      this.children.put(fullName, fullNameNode);
     } else {
       String firstChar = name.substring(0, 1).toUpperCase();
       if (!(this.children.containsKey(firstChar))) {
@@ -76,11 +82,15 @@ public class Trie implements Serializable {
    */
   private Set<String> findAll(Set<String> names, String prefix) {
     Map<String, Trie> possibilities = children;
-    if (isEnd) {
-      StringBuilder sb = new StringBuilder();
-      for (String fullName : possibilities.keySet()) {
-        sb.append(fullName);
-        names.add(sb.toString());
+    /* If current node is the end of the a first name or last name, look through its map of children
+     * and add the full name nodes to set of names to be returned. */
+    if (this.isName) {
+      for (String child : possibilities.keySet()) {
+        StringBuilder sb = new StringBuilder();
+        if (possibilities.get(child).isFullName) {
+          sb.append(child);
+          names.add(sb.toString());
+        }
       }
     }
     for (String letter : possibilities.keySet()) {
@@ -106,7 +116,11 @@ public class Trie implements Serializable {
    *
    * @return boolean
    */
-  public boolean getIsEnd() {
-    return this.isEnd;
+  public boolean getIsName() {
+    return this.isName;
+  }
+
+  private void setIsFullName(boolean b) {
+    this.isFullName = b;
   }
 }
