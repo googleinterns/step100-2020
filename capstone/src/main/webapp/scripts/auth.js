@@ -77,12 +77,14 @@ function createNewUser() {
     const firstName = document.getElementById('first').value;
     const lastName = document.getElementById('last').value;
     const phoneNumber = document.getElementById('phone').value;
+    const address = document.getElementById('address').value;
     const interests = document.getElementById('interests').value;
 
     const params = new URLSearchParams();
     params.append('first', firstName);
     params.append('last', lastName);
     params.append('phone', phoneNumber);
+    params.append('address', address);
     params.append('interests', interests);
 
     // Send a POST request to the servlet which registers a new user.

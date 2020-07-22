@@ -41,6 +41,7 @@ public class CreateNewUserServlet extends AuthenticatedServlet {
     String first = request.getParameter("first");
     String last = request.getParameter("last");
     String phone = request.getParameter("phone");
+    String address = request.getParameter("address");
     ArrayList<String> interests = getInterests(request);
     
     UserService userService = UserServiceFactory.getUserService();
@@ -51,6 +52,7 @@ public class CreateNewUserServlet extends AuthenticatedServlet {
                         /* email= */ userService.getCurrentUser().getEmail(),
                         phone, 
                         /* profilePic= */ "", 
+                        /* address= */ address, 
                         /* latitude= */ 0, 
                         /* longitude= */ 0, 
                         /* badges= */ new LinkedHashSet<Badge>(), 

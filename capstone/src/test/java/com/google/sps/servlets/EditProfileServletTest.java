@@ -46,6 +46,7 @@ public class EditProfileServletTest {
   private static final String EDIT_FIRST = "Mister";
   private static final String EDIT_LAST = "McTest";
   private static final String EDIT_PHONE = "808-808-8080";
+  private static final String EDIT_ADDRESS = "1234 Rainbow Avenue, Candy, CA, 4321";
   private static final ArrayList<String> INTERESTS_LIST = new ArrayList<String>( 
       Arrays.asList("Testing", "Dancing"));
 
@@ -65,7 +66,8 @@ public class EditProfileServletTest {
   private static final User CURRENT_USER = new User(CURRENT_USER_ID, "Test", "McTest", 
                           CURRENT_USER_EMAIL, 
                           /* phoneNumber= */ "123-456-7890", 
-                          /* profilePic= */ "", 
+                          /* profilePic= */ "",
+                          /* address= */ "", 
                           /* latitude= */ 0,
                           /* longitude= */ 0,
                           /* badges= */ new LinkedHashSet<Badge>(), 
@@ -76,6 +78,7 @@ public class EditProfileServletTest {
                           EDIT_EMAIL, 
                           /* phoneNumber= */ EDIT_PHONE, 
                           /* profilePic= */ "", 
+                          /* address= */ EDIT_ADDRESS,
                           /* latitude= */ 0,
                           /* longitude= */ 0,
                           /* badges= */ new LinkedHashSet<Badge>(), 
@@ -116,6 +119,7 @@ public class EditProfileServletTest {
     when(mockRequest.getParameter("last")).thenReturn(EDIT_LAST);
     when(mockRequest.getParameter("email")).thenReturn(EDIT_EMAIL);    
     when(mockRequest.getParameter("phone")).thenReturn(EDIT_PHONE);
+    when(mockRequest.getParameter("address")).thenReturn(EDIT_ADDRESS);
     when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
 
     editProfileServlet.doPost(mockRequest, mockResponse);

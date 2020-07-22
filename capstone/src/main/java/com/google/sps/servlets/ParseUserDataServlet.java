@@ -68,9 +68,9 @@ public class ParseUserDataServlet extends HttpServlet {
   
     User testUser = new User(
       userId, firstName, lastName, email, /*phoneNumber*/ "0", 
-      /* Profile Picture */ "", latitude, longitude,
-      /* badges */ new LinkedHashSet<Badge>(), /* groups */ groupIds, 
-      /* interests */ new ArrayList<String>());
+      /* Profile Picture */ "",  /* Address */ "", 
+      latitude, longitude, /* badges */ new LinkedHashSet<Badge>(), 
+      /* groups */ groupIds, /* interests */ new ArrayList<String>());
     datastore.put(testUser.toEntity());
   }
 
