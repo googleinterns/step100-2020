@@ -64,6 +64,8 @@ public class CreateNewUserServletTest {
   private static final User USER_1 = new User(USER_ID, "Test", "McTest", USER_EMAIL, 
                           /* phoneNumber= */ "123-456-7890", 
                           /* profilePic= */ "", 
+                          /* latitude= */ 0,
+                          /* longitude= */ 0,
                           /* badges= */ new LinkedHashSet<Badge>(), 
                           /* groups= */ new LinkedHashSet<Long>(), 
                           /* interests= */ INTERESTS_LIST);
