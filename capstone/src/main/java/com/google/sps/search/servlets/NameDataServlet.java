@@ -19,7 +19,7 @@ import com.google.sps.servlets.AuthenticatedServlet;
 import com.google.sps.servlets.ServletHelper;
 
 @WebServlet("/name-data")
-public class NameData extends AuthenticatedServlet {
+public class NameDataServlet extends AuthenticatedServlet {
 
   SearchPredictor searchPredictor;
   String trieFile = "../../data/trie";
