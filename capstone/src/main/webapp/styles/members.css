@@ -171,18 +171,22 @@
   cursor: pointer;
   display: block;
   font-size: 16px;
-  margin: 0 auto;
+  margin: 10px auto;
   padding: 10px;
   text-align: center;
   width: 100px;
 }
 
 /* Search by name */
-.suggestions > div {
+#suggestions > div {
   padding: 15px;
 }
 
-.suggestions > div:hover {
+#suggestions > div:hover {
+  background-color: var(--placeholder-gray);
+}
+
+.autocomplete-active {
   background-color: var(--light-green);
 }
 
