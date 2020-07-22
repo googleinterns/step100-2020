@@ -1,16 +1,13 @@
 package com.google.sps.search;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
@@ -56,17 +53,5 @@ public class SearchPredictorTest {
   public void tearDown() {
     helper.tearDown();
     datastore = null;
-  }
-
-  @Test
-  public void suggestTest() {
-    List<String> names = new ArrayList<String>();
-    names.add("Lucy Qu");
-    names.add("Janice Luke");
-    names.add("Lucie Jones");
-    names.add("Lennie Martha");
-    //      when(searchPredictor.getNamesFromDb()).thenReturn(names);
-    //      Set<String> output = searchPredictor.suggest("Luc");
-    //      System.out.println(output);
   }
 }
