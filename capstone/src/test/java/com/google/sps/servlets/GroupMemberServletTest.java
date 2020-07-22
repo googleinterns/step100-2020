@@ -127,9 +127,12 @@ public class GroupMemberServletTest {
     groupEntity.setProperty("groupName", GROUP_NAME);
     groupEntity.setProperty("headerImg", HEADER_IMAGE);
     groupEntity.setProperty("memberIds", new ArrayList<String>(Arrays.asList(USER_ID)));
+    groupEntity.setProperty("locationIds", new ArrayList<Long>());
     groupEntity.setProperty("posts", null);
     groupEntity.setProperty("options", new ArrayList<Long>());
     groupEntity.setProperty("challenges", new ArrayList<Challenge>());
+    groupEntity.setProperty("midLatitude", 0.0);
+    groupEntity.setProperty("midLongitude", 0.0);
     return groupEntity;
   }
 

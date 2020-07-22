@@ -19,22 +19,31 @@ public final class Group {
   private final String groupName;
   private final String headerImg;
   private final long groupId;
+  private double midLatitude;
+  private double midLongitude;
+  private ArrayList<Long> locationIds;
 
   public Group(
       ArrayList<String> memberIds,
       ArrayList<Long> challenges,
       ArrayList<Long> posts,
       ArrayList<Long> options,
+      ArrayList<Long> locationsIds,
       String groupName,
       String headerImg,
-      long groupId) {
+      long groupId, 
+      double midLatitude, 
+      double midLongitude) {
     this.memberIds = memberIds;
     this.challengeIds = challenges;
     this.postIds = posts;
     this.optionIds = options;
+    this.locationIds = locationIds;
     this.groupName = groupName;
     this.headerImg = headerImg;
     this.groupId = groupId;
+    this.midLongitude = midLongitude;
+    this.midLatitude = midLatitude;
   }
 
   public static Entity getGroupEntity(
@@ -74,6 +83,30 @@ public final class Group {
     return groupId;
   }
 
+  public double getMidLatitude() {
+    return midLatitude;
+  }
+
+  public double getMidLongitude() {
+    return midLongitude;
+  }
+
+  public ArrayList<Long> getLocationsIds() { 
+    return locationIds;
+  }
+
+  public void setMidLatitude(double midLatitude) {
+    this.midLatitude = midLatitude;
+  }
+
+  public void setMidLongitude(double midLongitude) {
+    this.midLongitude = midLongitude;
+  }
+
+  public void setLocationIds(ArrayList<Long> locationIds) {
+    this.locationIds = locationIds;
+  }
+
   public void addChallenge(Long newChallenge) {
     this.challengeIds.add(newChallenge);
   }
@@ -92,11 +125,14 @@ public final class Group {
     ArrayList<Long> challenges = getPropertyList("challenges", entity);
     ArrayList<Long> posts = getPropertyList("posts", entity);
     ArrayList<Long> options = getPropertyList("options", entity);
+    ArrayList<Long> locationIds = getPropertyList("locations", entity);
     String groupName = (String) entity.getProperty("groupName");
     String headerImg = (String) entity.getProperty("headerImg");
+    double midLatitude = (double) entity.getProperty("midLatitude");
+    double midLongitude = (double) entity.getProperty("midLongitude");
     long groupId = entity.getKey().getId();
 
-    return new Group(memberIds, challenges, posts, options, groupName, headerImg, groupId);
+    return new Group(memberIds, challenges, posts, options, locationIds, groupName, headerImg, groupId, midLatitude, midLongitude);
   }
 
   private static ArrayList<Long> getPropertyList(String property, Entity entity) {
