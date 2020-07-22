@@ -7,15 +7,21 @@ import static org.junit.Assert.assertTrue;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class TrieTest {
 
+  private Trie trie;
+
+  @Before
+  public void setUp() {
+    trie = new Trie();
+  }
+
   /** Test that inserting one name will result in the correct trie structure. */
   @Test
   public void insertNameTest() {
-    Trie trie = new Trie();
-
     trie.insert("Lucy", "Lucy Qu");
     Set<String> keySet = trie.getChildren().keySet();
     String firstLetter = keySet.iterator().next();
@@ -48,8 +54,6 @@ public class TrieTest {
   /** Handles case in which duplicate names are inserted into trie. */
   @Test
   public void insertDuplicateNamesTest() {
-    Trie trie = new Trie();
-
     trie.insert("Lucy", "Lucy Qu");
     trie.insert("Lucy", "Lucy Qu");
     Set<String> keySet = trie.getChildren().keySet();
@@ -85,8 +89,6 @@ public class TrieTest {
    */
   @Test
   public void insertOverlappingNamesTest() {
-    Trie trie = new Trie();
-
     trie.insert("Rose", "Rose Smith");
     trie.insert("Rosie", "Rosie Brown");
     Set<String> keySet = trie.getChildren().keySet();
@@ -115,5 +117,30 @@ public class TrieTest {
     assertEquals(iChildren.size(), 1);
     assertTrue(iChildren.keySet().contains("E"));
     assertTrue(iChildren.get("E").getIsEnd());
+  }
+
+  @Test
+  public void searchWithPrefixTest() {
+    trie.insert("Lucy", "Lucy Qu");
+    trie.insert("Lucille", "Lucille Ball");
+    trie.insert("Lucie", "Lucie White");
+    trie.insert("Lilly", "Lilly Singh");
+
+    Set<String> names = trie.searchWithPrefix("Luc", "Luc");
+
+    assertEquals(names.size(), 3);
+    assertTrue(names.contains("Lucy Qu"));
+    assertTrue(names.contains("Lucille Ball"));
+    assertTrue(names.contains("Lucie White"));
+    assertFalse(names.contains("Lilly Singh"));
+  }
+
+  @Test
+  public void searchWithPrefixNoMatchTest() {
+    trie.insert("Terence", "Terence McKenna");
+
+    Set<String> names = trie.searchWithPrefix("Aud", "Aud");
+
+    assertEquals(names.size(), 0);
   }
 }
