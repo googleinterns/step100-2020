@@ -71,23 +71,28 @@
         <div class="add-member-content">
           <span id="add-close" onclick="addModalListeners('add-member-modal', 'add-close')">&times;</span>
           <h2>Add Group Member</h2>
-          <form id="add-member" onsubmit="addMember()" method="POST">
-            <label for="member-email-input">Enter email</label>
-            <input type="text" class="input-field" name="email-input" id="email-input" placeholder="Email">
-            <p id=memberUpdate></p>
-            <button class="add-member-btn">Add</button>
+
+          <form id="search-name" autocomplete="off">
+            <label for="member-name-input">Search by name</label>
+            <input type="text" class="input-field" name="name-search" id="name-search" placeholder="Name">
+            <div class="suggestions">
+              <div>Lucy Qu</div>
+              <div>Himani Yadav</div>
+              <div>Anika Bagga</div>
+            </div>
+            <button class="add-member-btn">Search</button>
           </form>
           
-
           <br></br>
           <hr></hr>
           <br></br>
 
-          <form id="search-name" autocomplete="off">
-              <label for="member-name-input">Search by name</label>
-              <input type="text" class="input-field" name="name-input" id="name-input" placeholder="Name">
-              <button class="add-member-btn">Submit</button>
-            </form>
+          <form id="add-member" onsubmit="addMember()" method="POST">
+            <label for="member-email-input">Add by email</label>
+            <input type="text" class="input-field" name="email-input" id="email-input" placeholder="Email">
+            <p id=memberUpdate></p>
+            <button class="add-member-btn">Add</button>
+          </form>
         </div>
       </div>
         
@@ -144,5 +149,6 @@
       </div>
     </template>
 
+    <script src="scripts/search.js"></script>
   </body>
 </html>

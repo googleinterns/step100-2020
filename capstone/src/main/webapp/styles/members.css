@@ -177,6 +177,15 @@
   width: 100px;
 }
 
+/* Search by name */
+.suggestions > div {
+  padding: 15px;
+}
+
+.suggestions > div:hover {
+  background-color: var(--light-green);
+}
+
 @media (max-width: 1600px) {
   #members-container {
     margin-right: 1%;
