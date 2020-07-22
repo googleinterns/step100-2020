@@ -73,10 +73,21 @@
           <h2>Add Group Member</h2>
           <form id="add-member" onsubmit="addMember()" method="POST">
             <label for="member-email-input">Enter email</label>
-            <input type="text" class="input-field" name="email-input" id="email-input">
+            <input type="text" class="input-field" name="email-input" id="email-input" placeholder="Email">
             <p id=memberUpdate></p>
             <button class="add-member-btn">Add</button>
           </form>
+          
+
+          <br></br>
+          <hr></hr>
+          <br></br>
+
+          <form id="search-name" autocomplete="off">
+              <label for="member-name-input">Search by name</label>
+              <input type="text" class="input-field" name="name-input" id="name-input" placeholder="Name">
+              <button class="add-member-btn">Submit</button>
+            </form>
         </div>
       </div>
         

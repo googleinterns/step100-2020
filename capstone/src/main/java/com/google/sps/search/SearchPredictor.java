@@ -2,6 +2,7 @@ package com.google.sps.search;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,7 +26,7 @@ public class SearchPredictor implements Serializable {
     this.populateTrie();
   }
 
-  private List<String> getNamesFromDb() {
+  public List<String> getNamesFromDb() {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("User");
     PreparedQuery pq = datastore.prepare(query);
@@ -49,8 +50,12 @@ public class SearchPredictor implements Serializable {
     }
   }
 
-  public Set<String> suggest() {
-    return null;
+  // incomplete
+  public Set<String> suggest(String phrase) {
+    Set<String> names = new HashSet<String>();
+    names.addAll(firstNameTrie.searchWithPrefix(phrase, phrase));
+    names.addAll(lastNameTrie.searchWithPrefix(phrase, phrase));
+    return names;
   }
 
   public Trie getFirstNameTrie() {

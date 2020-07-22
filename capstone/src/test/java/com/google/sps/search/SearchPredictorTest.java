@@ -1,0 +1,72 @@
+package com.google.sps.search;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.common.collect.ImmutableMap;
+
+public class SearchPredictorTest {
+
+  private static final String USER_EMAIL = "test@test.com";
+  private static final String USER_ID = "test";
+
+  private final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(
+              new LocalDatastoreServiceTestConfig()
+                  .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
+              new LocalUserServiceTestConfig())
+          .setEnvEmail(USER_EMAIL)
+          .setEnvIsLoggedIn(true)
+          .setEnvAuthDomain("gmail.com")
+          .setEnvAttributes(
+              new HashMap(
+                  ImmutableMap.of(
+                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+
+  @Mock private HttpServletRequest mockRequest;
+  @Mock private HttpServletResponse mockResponse;
+  @Spy private SearchPredictor searchPredictor;
+  private DatastoreService datastore;
+
+  @Before
+  public void setUp() throws IOException {
+    MockitoAnnotations.initMocks(this);
+    helper.setUp();
+    datastore = DatastoreServiceFactory.getDatastoreService();
+  }
+
+  @After
+  public void tearDown() {
+    helper.tearDown();
+    datastore = null;
+  }
+
+  @Test
+  public void suggestTest() {
+    List<String> names = new ArrayList<String>();
+    names.add("Lucy Qu");
+    names.add("Janice Luke");
+    names.add("Lucie Jones");
+    names.add("Lennie Martha");
+    //      when(searchPredictor.getNamesFromDb()).thenReturn(names);
+    //      Set<String> output = searchPredictor.suggest("Luc");
+    //      System.out.println(output);
+  }
+}

@@ -31,7 +31,7 @@ public class Trie implements Serializable {
   }
 
   /**
-   * Inserts name into trie, with full name being the last node appending to the end of the name.
+   * Inserts name into trie, with full name being the last node appended to the end of the name.
    *
    * @param name user first name or last name
    * @param fullName user full name.
@@ -42,7 +42,7 @@ public class Trie implements Serializable {
       this.isName = true;
       // insert full name node as child
       Trie fullNameNode = new Trie();
-      fullNameNode.setIsFullName(true);
+      fullNameNode.isFullName = true;
       this.children.put(fullName, fullNameNode);
     } else {
       String firstChar = name.substring(0, 1).toUpperCase();
@@ -118,9 +118,5 @@ public class Trie implements Serializable {
    */
   public boolean getIsName() {
     return this.isName;
-  }
-
-  private void setIsFullName(boolean b) {
-    this.isFullName = b;
   }
 }
