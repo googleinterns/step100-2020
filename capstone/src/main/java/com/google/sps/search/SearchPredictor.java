@@ -44,7 +44,7 @@ public class SearchPredictor implements Serializable {
   private void populateTrie() {
     for (String fullName : names) {
       String[] split = fullName.split("+");
-      // not as robust for internationalization
+      // not robust for internationalization
       String firstName = split[0];
       String lastName = split[1];
       firstNameTrie.insert(firstName, fullName);

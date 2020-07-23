@@ -206,12 +206,14 @@ public class TrieTest {
   public void searchWithPrefixOneNameIsSubstringTest() {
     trie.insert("Qu", "Lucy Qu");
     trie.insert("Quincy", "Jane Quincy");
+    trie.insert("Squirrel", "Jane Squirrel");
 
     Set<String> names = trie.searchWithPrefix("Qu", "Qu");
 
     assertEquals(names.size(), 2);
     assertTrue(names.contains("Lucy Qu"));
     assertTrue(names.contains("Jane Quincy"));
+    assertFalse(names.contains("Jane Squirrel"));
   }
 
   @Test
