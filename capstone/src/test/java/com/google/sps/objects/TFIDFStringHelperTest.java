@@ -106,4 +106,64 @@ public class TFIDFStringHelperTest {
   public void ngramTokenizer_emptyString() {
     assertEquals(TFIDFStringHelper.ngramTokenizer(""), new LinkedHashMap<String, Integer>());
   }
+
+  @Test
+  public void combineTwoMaps() {
+    LinkedHashMap<String, Integer> ngramsMap1 = new LinkedHashMap<String, Integer>();
+    ngramsMap1.put("how", 1);
+    ngramsMap1.put("about", 1);
+    ngramsMap1.put("how about", 1);
+
+    LinkedHashMap<String, Integer> ngramsMap2 = new LinkedHashMap<String, Integer>();
+    ngramsMap2.put("how", 2);
+    ngramsMap2.put("about", 1);
+    ngramsMap2.put("them", 1);
+    ngramsMap2.put("how about", 1);
+    ngramsMap2.put("about them", 1);
+    ngramsMap2.put("them how", 1);
+    ngramsMap2.put("how about them", 1);
+    ngramsMap2.put("about them how", 1);
+
+    LinkedHashMap<String, Integer> expectedMap = new LinkedHashMap<String, Integer>();
+    expectedMap.put("how", 3);
+    expectedMap.put("about", 2);
+    expectedMap.put("them", 1);
+    expectedMap.put("how about", 2);
+    expectedMap.put("about them", 1);
+    expectedMap.put("them how", 1);
+    expectedMap.put("how about them", 1);
+    expectedMap.put("about them how", 1);
+
+    assertEquals(expectedMap, TFIDFStringHelper.combineMaps(ngramsMap1, ngramsMap2));
+  }
+
+  @Test
+  public void combineThreeMaps() {
+    LinkedHashMap<String, Integer> ngramsMap1 = new LinkedHashMap<String, Integer>();
+    ngramsMap1.put("how", 1);
+    ngramsMap1.put("about", 1);
+    ngramsMap1.put("how about", 1);
+
+    LinkedHashMap<String, Integer> ngramsMap2 = new LinkedHashMap<String, Integer>();
+    ngramsMap2.put("how", 2);
+    ngramsMap2.put("about", 1);
+    ngramsMap2.put("them", 1);
+    ngramsMap2.put("how about", 1);
+    ngramsMap2.put("about them", 1);
+    ngramsMap2.put("them how", 1);
+    ngramsMap2.put("how about them", 1);
+    ngramsMap2.put("about them how", 1);
+
+    LinkedHashMap<String, Integer> expectedMap = new LinkedHashMap<String, Integer>();
+    expectedMap.put("how", 4);
+    expectedMap.put("about", 3);
+    expectedMap.put("them", 1);
+    expectedMap.put("how about", 3);
+    expectedMap.put("about them", 1);
+    expectedMap.put("them how", 1);
+    expectedMap.put("how about them", 1);
+    expectedMap.put("about them how", 1);
+
+    assertEquals(expectedMap, TFIDFStringHelper.combineMaps(ngramsMap1, ngramsMap1, ngramsMap2));
+  }
 }

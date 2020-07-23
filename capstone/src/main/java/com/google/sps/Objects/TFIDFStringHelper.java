@@ -1,6 +1,7 @@
 package com.google.sps.Objects;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,5 +82,19 @@ public class TFIDFStringHelper {
   public static String concat(String[] words, int startIndex, int n) {
     String[] nWords = Arrays.copyOfRange(words, startIndex, startIndex + n);
     return String.join(" ", nWords);
+  }
+
+  /**
+   * Combines two or more HashMaps of n-grams into a single map.
+   */
+  public static LinkedHashMap<String, Integer> combineMaps(LinkedHashMap<String, Integer>... maps) {
+    LinkedHashMap<String, Integer> ngrams = new LinkedHashMap<String, Integer>();
+    for (LinkedHashMap<String, Integer> map : maps) {
+      for (Map.Entry<String, Integer> entry : map.entrySet()) {
+        Integer count = ngrams.getOrDefault(entry.getKey(), 0);
+        ngrams.put(entry.getKey(), count + entry.getValue());
+      }
+    }
+    return ngrams;
   }
 }
