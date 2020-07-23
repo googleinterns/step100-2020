@@ -51,6 +51,8 @@ public class CreateNewUserServlet extends AuthenticatedServlet {
                         /* email= */ userService.getCurrentUser().getEmail(),
                         phone, 
                         /* profilePic= */ "", 
+                        /* latitude= */ 0, 
+                        /* longitude= */ 0, 
                         /* badges= */ new LinkedHashSet<Badge>(), 
                         /* groups= */ new LinkedHashSet<Long>(), 
                         interests);

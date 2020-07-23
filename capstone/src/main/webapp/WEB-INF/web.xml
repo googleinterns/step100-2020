@@ -5,10 +5,19 @@
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
   <servlet>
+    <servlet-name>parse-user-data</servlet-name>
+    <servlet-class>com.google.sps.servlets.ParseUserDataServlet</servlet-class>
+    <!--Set value to positive if you need to populate the datastore with test group data.
+        Once populated, set back to a negative number to avoid duplicate data. -->
+    <load-on-startup>1</load-on-startup> 
+  </servlet>
+
+  <servlet>
     <servlet-name>parse-test-group-data</servlet-name>
     <servlet-class>com.google.sps.servlets.ParseTestGroupDataServlet</servlet-class>
     <!--Set value to positive if you need to populate the datastore with test group data.
         Once populated, set back to a negative number to avoid duplicate data. -->
     <load-on-startup>-1</load-on-startup> 
   </servlet>
+
 </web-app>

@@ -18,13 +18,24 @@ public final class User {
   private String email;
   private String phoneNumber;
   private String profilePic;
+  private double longitude;
+  private double latitude;
   private final LinkedHashSet<Badge> badges;
   private final LinkedHashSet<Long> groups;
   private ArrayList<String> interests;
 
-  public User(String userId, String firstName, String lastName, 
-      String email, String phoneNumber, String profilePic,
-      LinkedHashSet<Badge> badges, LinkedHashSet<Long> groups, ArrayList<String> interests) {
+  public User(
+      String userId, 
+      String firstName, 
+      String lastName, 
+      String email, 
+      String phoneNumber, 
+      String profilePic, 
+      double latitude, 
+      double longitude, 
+      LinkedHashSet<Badge> badges, 
+      LinkedHashSet<Long> groups, 
+      ArrayList<String> interests) {
     this.userId = userId;
     this.name = firstName + " " + lastName;
     this.firstName = firstName;
@@ -32,6 +43,8 @@ public final class User {
     this.email = email;
     this.phoneNumber = phoneNumber;
     this.profilePic = profilePic;
+    this.longitude = longitude;
+    this.latitude = latitude;
     this.badges = badges;
     this.groups = groups;
     this.interests = interests;
@@ -77,6 +90,14 @@ public final class User {
     return interests;
   }
 
+  public double getLatitude() {
+    return latitude;
+  }
+
+  public double getLongitude() {
+    return longitude;
+  }
+
   public void setFirstName(String firstName) {
     this.firstName = firstName;
     this.name = firstName + " " + getLastName();
@@ -111,6 +132,14 @@ public final class User {
     this.groups.add(newGroupId);
   }
 
+  public void setLatitude(double latitude) {
+    this.latitude = latitude;
+  }
+
+  public void setLongitude(double longitude) {
+    this.longitude = longitude;
+  }
+
   /* 
    * Overrides the equals() method to effectively compare two User objects. 
    */
@@ -126,6 +155,8 @@ public final class User {
         email.equals(user.email) &&
         phoneNumber.equals(user.phoneNumber) &&
         profilePic.equals(user.profilePic) &&
+        latitude == user.latitude &&
+        longitude == user.longitude &&
         interests.containsAll(user.interests) && user.interests.containsAll(interests) &&
         groups.containsAll(user.groups) && user.groups.containsAll(groups) &&
         badges.containsAll(user.badges) && user.badges.containsAll(badges);
@@ -141,6 +172,8 @@ public final class User {
     String email = (String) entity.getProperty("email");
     String phoneNumber = (String) entity.getProperty("phoneNumber");
     String profilePic = ""; // TODO: add profilePic url to datastore/figure out Blobstore
+    double latitude = (double) entity.getProperty("latitude");
+    double longitude = (double) entity.getProperty("longitude");
     ArrayList<String> interests = (entity.getProperty("interests") == null)
         ? new ArrayList<>()
         : (ArrayList<String>) entity.getProperty("interests");
@@ -154,7 +187,7 @@ public final class User {
 
     LinkedHashSet<Badge> badges = getBadgeList(badgeIds);
 
-    User user = new User(userId, firstName, lastName, email, phoneNumber, profilePic, 
+    User user = new User(userId, firstName, lastName, email, phoneNumber, profilePic, latitude, longitude,
                          badges, groupIds, interests);
     return user;
   }
@@ -170,6 +203,8 @@ public final class User {
     userEntity.setProperty("email", email);
     userEntity.setProperty("phoneNumber", phoneNumber);
     userEntity.setProperty("profilePic", profilePic);
+    userEntity.setProperty("latitude", latitude);
+    userEntity.setProperty("longitude", longitude);
     userEntity.setProperty("badges", badges);
     userEntity.setProperty("groups", groups);
     userEntity.setProperty("interests", interests);

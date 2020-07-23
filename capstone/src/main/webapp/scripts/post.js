@@ -201,7 +201,7 @@ function createCommentBox(post) {
 
 // Gets URL for uploaded image
 function fetchBlobstoreUrlAndShowForm() {
-  fetch(`/post-image?groupId=${groupId}`)
+  fetch(`/post-image-servlet?groupId=${groupId}`)
     .then(response => {
       return response.text();
     })

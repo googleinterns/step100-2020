@@ -66,6 +66,8 @@ public class EditProfileServletTest {
                           CURRENT_USER_EMAIL, 
                           /* phoneNumber= */ "123-456-7890", 
                           /* profilePic= */ "", 
+                          /* latitude= */ 0,
+                          /* longitude= */ 0,
                           /* badges= */ new LinkedHashSet<Badge>(), 
                           /* groups= */ new LinkedHashSet<Long>(), 
                           /* interests= */ INTERESTS_LIST);
@@ -74,6 +76,8 @@ public class EditProfileServletTest {
                           EDIT_EMAIL, 
                           /* phoneNumber= */ EDIT_PHONE, 
                           /* profilePic= */ "", 
+                          /* latitude= */ 0,
+                          /* longitude= */ 0,
                           /* badges= */ new LinkedHashSet<Badge>(), 
                           /* groups= */ new LinkedHashSet<Long>(), 
                           /* interests= */ INTERESTS_LIST);                        
