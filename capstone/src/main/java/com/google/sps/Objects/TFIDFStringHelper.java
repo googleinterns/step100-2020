@@ -20,9 +20,31 @@ public class TFIDFStringHelper {
     }
 
     input = input.toLowerCase();
+    // TO-DO: Handle splitting up sentences/phrases into multiple Strings
+    input = removeUrls(input);
     // Regex identifies punctuation except apostrophes.
-    input = input.replaceAll("[\\p{P}&&[^']]", "");
+    input = input.replaceAll("[\\p{P}&&[^']]", " ");
+    input = removeExtraWhitespaces(input);
+  
     return input;  
+  }
+
+  /**
+   * Helper method for {@code sanitize()}. Removes urls from a String.
+   */
+  public static String removeUrls(String input) {
+    input = input.replaceAll("[\\S]+://[\\S]+", "");
+    input = input.replaceAll("www.[\\S]+", "");
+    return input;
+  }
+
+  /**
+   * Helper method for {@code sanitize()}. Removes extra whitespace from a String.
+   */
+  public static String removeExtraWhitespaces(String input) {
+    input = input.replaceAll(" +", " ");
+    input = input.trim();
+    return input;
   }
 
   /**

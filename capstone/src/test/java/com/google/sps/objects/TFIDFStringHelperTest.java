@@ -34,15 +34,23 @@ public class TFIDFStringHelperTest {
     String testString = "Don't you dare!!";
     String expectedString = "don't you dare";
 
-    assertEquals(TFIDFStringHelper.sanitize(testString), expectedString);
+    assertEquals(expectedString, TFIDFStringHelper.sanitize(testString));
   }
 
   @Test
   public void sanitize_StringWithNumbers() {
-    String testStringNumber = "D.on't you 2 dare!,!";
+    String testStringNumber = ".Don't you 2 dare!,!";
     String expectedStringNumber = "don't you 2 dare";
+
+    assertEquals(expectedStringNumber, TFIDFStringHelper.sanitize(testStringNumber));
+  }
+
+  @Test
+  public void sanitize_StringWithUrl() {
+    String testStringNumber = "users posting urls https://www.google.com/search?q= yo";
+    String expectedStringNumber = "users posting urls yo";
     
-    assertEquals(TFIDFStringHelper.sanitize(testStringNumber), expectedStringNumber);
+    assertEquals(expectedStringNumber, TFIDFStringHelper.sanitize(testStringNumber));
   }
 
   @Test
@@ -64,7 +72,7 @@ public class TFIDFStringHelperTest {
     expectedNgramsMap.put("how about them", 1);
     expectedNgramsMap.put("about them how", 1);
 
-    assertEquals(TFIDFStringHelper.ngramTokenizer(testNgrams), expectedNgramsMap);
+    assertEquals(expectedNgramsMap, TFIDFStringHelper.ngramTokenizer(testNgrams));
   }
 
   @Test
@@ -79,7 +87,7 @@ public class TFIDFStringHelperTest {
     expectedNgramsMap2.put("no not no", 1);
     expectedNgramsMap2.put("not no not", 1);
 
-    assertEquals(TFIDFStringHelper.ngramTokenizer(testNgrams2), expectedNgramsMap2);
+    assertEquals(expectedNgramsMap2, TFIDFStringHelper.ngramTokenizer(testNgrams2));
   }
 
   @Test
@@ -91,7 +99,7 @@ public class TFIDFStringHelperTest {
     expectedNgramsMap3.put("about", 1);
     expectedNgramsMap3.put("how about", 1);
 
-    assertEquals(TFIDFStringHelper.ngramTokenizer(testNgrams3), expectedNgramsMap3);
+    assertEquals(expectedNgramsMap3, TFIDFStringHelper.ngramTokenizer(testNgrams3));
   }
 
   @Test
