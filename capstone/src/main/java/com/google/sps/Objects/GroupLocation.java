@@ -23,6 +23,7 @@ public class GroupLocation {
     this.groupId = groupId;
   }
 
+  /* Find group midpoint by groupId */
   public Coordinate findGroupMidPoint(Long groupId) throws IOException{
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     
@@ -34,12 +35,13 @@ public class GroupLocation {
     return findMidPoint(groupCoordinates);
   }
 
+  /* Create array of group's coordinate locations */
   public ArrayList<Coordinate> createGroupPointsArray(ArrayList<String> allGroupMembers) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ArrayList<Coordinate> groupPoints = new ArrayList<>();
     for(String memberId: allGroupMembers) {
       Entity userEntity = getUserEntity(memberId, datastore);
-      if (userEntity != null) {
+      if (userEntity != null && (double) userEntity.getProperty("latitude") != 0.0 && (double) userEntity.getProperty("longitude") != 0.0) {
         Coordinate newCoordinate = new Coordinate(
           (double) userEntity.getProperty("latitude"), 
           (double) userEntity.getProperty("longitude"));
@@ -49,6 +51,7 @@ public class GroupLocation {
     return groupPoints;
   }
 
+  /* Calculate geographic midpoint of all group coordinates */
   public Coordinate findMidPoint(ArrayList<Coordinate> groupLocations) {
     double x = 0.0;
     double y = 0.0;
