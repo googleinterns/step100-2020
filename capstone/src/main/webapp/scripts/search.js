@@ -13,11 +13,17 @@ let currentFocus = -1;
 
 function autocomplete() {
   //   searchInput.addEventListener("keyup", filter);
-  searchInput.addEventListener("keyup", getSuggestions);
-  searchInput.addEventListener("keydown", checkKey);
+  searchInput.addEventListener("keyup", checkKey);
 }
 
-function filter(suggestions) {
+function getSuggestions() {
+  const input = document.getElementById("name-search").value;
+  fetch(`name-data?input=${input}`)
+    .then(response => response.json())
+    .then(suggestions => suggest(suggestions));
+}
+
+function suggest(suggestions) {
   const input = searchInput.value.toLowerCase();
   suggestionsPanel.innerHTML = "";
   suggestions.forEach(name => appendSuggestion(name));
@@ -41,6 +47,8 @@ function checkKey(e) {
     addActive(list);
   } else if (e.keyCode == 13) {
     //press enter
+  } else {
+    searchInput.addEventListener("keyup", getSuggestions());
   }
 }
 
@@ -70,13 +78,6 @@ function appendSuggestion(suggested) {
 
 function completeName(fullname) {
   searchInput.value = fullname;
-}
-
-function getSuggestions() {
-  const input = document.getElementById("name-search").value;
-  fetch(`name-data?input=${input}`)
-    .then(response => response.json())
-    .then(suggestions => filter(suggestions));
 }
 
 autocomplete();
