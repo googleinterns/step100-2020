@@ -30,9 +30,10 @@ import error.ErrorHandler;
 
 /**
  * Parses a TSV file of fake group data and populates the Datastore with Group and Post entities.
+ * To be used for testing only!
  */
-@WebServlet("/parse-group-data")
-public class ParseGroupDataServlet extends HttpServlet {
+@WebServlet("/parse-test-group-data")
+public class ParseTestGroupDataServlet extends HttpServlet {
 
   DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
