@@ -15,7 +15,7 @@ public class TFIDFStringHelper {
    */
   public static String sanitize(String input) {
     input = input.toLowerCase();
-    // Regex identifies all punctuation except apostrophes.
+    // Regex identifies punctuation except apostrophes.
     input = input.replaceAll("[\\p{P}&&[^']]", "");
     return input;  
   }
