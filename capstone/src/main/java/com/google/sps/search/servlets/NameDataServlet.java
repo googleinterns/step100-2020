@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -70,7 +71,9 @@ public class NameDataServlet extends AuthenticatedServlet {
   @Override
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    ServletHelper.write(response, searchPredictor, "application/json");
+    String input = request.getParameter("input");
+    Set<String> suggestions = searchPredictor.suggest(input);
+    ServletHelper.write(response, suggestions, "application/json");
   }
 
   @Override

@@ -1,27 +1,26 @@
 const searchInput = document.getElementById("name-search");
 const suggestionsPanel = document.getElementById("suggestions");
 
-let names = [
-  { fullname: "Lucy Qu" },
-  { fullname: "Lucy Liu" },
-  { fullname: "Himani Yadav" },
-  { fullname: "Anika Bagga" },
-  { fullname: "Lucille Ball" }
-];
+// let names = [
+//   { fullname: "Lucy Qu" },
+//   { fullname: "Lucy Liu" },
+//   { fullname: "Himani Yadav" },
+//   { fullname: "Anika Bagga" },
+//   { fullname: "Lucille Ball" }
+// ];
+
 let currentFocus = -1;
 
 function autocomplete() {
-  searchInput.addEventListener("keyup", filter);
-  searchInput.addEventListener("keyup", checkKey);
+  //   searchInput.addEventListener("keyup", filter);
+  searchInput.addEventListener("keyup", getSuggestions);
+  searchInput.addEventListener("keydown", checkKey);
 }
 
-function filter() {
+function filter(suggestions) {
   const input = searchInput.value.toLowerCase();
   suggestionsPanel.innerHTML = "";
-  const suggestions = names.filter(function(name) {
-    return name.fullname.toLowerCase().startsWith(input);
-  });
-  suggestions.forEach(suggested => appendSuggestion(suggested));
+  suggestions.forEach(name => appendSuggestion(name));
   if (input === "") {
     suggestionsPanel.innerHTML = "";
   }
@@ -64,13 +63,20 @@ function removeActive(list) {
 
 function appendSuggestion(suggested) {
   const name = document.createElement("div");
-  name.innerHTML = suggested.fullname;
-  name.addEventListener("click", () => completeName(suggested.fullname));
+  name.innerHTML = suggested;
+  name.addEventListener("click", () => completeName(suggested));
   suggestionsPanel.appendChild(name);
 }
 
 function completeName(fullname) {
   searchInput.value = fullname;
+}
+
+function getSuggestions() {
+  const input = document.getElementById("name-search").value;
+  fetch(`name-data?input=${input}`)
+    .then(response => response.json())
+    .then(suggestions => filter(suggestions));
 }
 
 autocomplete();

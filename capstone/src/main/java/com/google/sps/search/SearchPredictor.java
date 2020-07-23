@@ -54,10 +54,12 @@ public class SearchPredictor implements Serializable {
   }
 
   // incomplete
-  public Set<String> suggest(String phrase) {
+  public Set<String> suggest(String input) {
+    System.out.println("in suggest with input " + input);
     Set<String> names = new HashSet<String>();
-    names.addAll(firstNameTrie.searchWithPrefix(phrase, phrase));
-    names.addAll(lastNameTrie.searchWithPrefix(phrase, phrase));
+    names.addAll(firstNameTrie.searchWithPrefix(input, input));
+    names.addAll(lastNameTrie.searchWithPrefix(input, input));
+    System.out.println(names);
     return names;
   }
 
