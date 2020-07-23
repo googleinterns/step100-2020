@@ -42,6 +42,8 @@ public class CreateNewUserServlet extends AuthenticatedServlet {
     String last = request.getParameter("last");
     String phone = request.getParameter("phone");
     String address = request.getParameter("address");
+    double latitude = Double.parseDouble(request.getParameter("latitude"));
+    double longitude = Double.parseDouble(request.getParameter("longitude"));
     ArrayList<String> interests = getInterests(request);
     
     UserService userService = UserServiceFactory.getUserService();
@@ -53,8 +55,8 @@ public class CreateNewUserServlet extends AuthenticatedServlet {
                         phone, 
                         /* profilePic= */ "", 
                         /* address= */ address, 
-                        /* latitude= */ 0, 
-                        /* longitude= */ 0, 
+                        /* latitude= */ latitude, 
+                        /* longitude= */ longitude, 
                         /* badges= */ new LinkedHashSet<Badge>(), 
                         /* groups= */ new LinkedHashSet<Long>(), 
                         interests);

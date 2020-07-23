@@ -102,6 +102,8 @@ public class CreateNewUserServletTest {
     when(mockRequest.getParameter("last")).thenReturn(USER_1.getLastName());
     when(mockRequest.getParameter("phone")).thenReturn(USER_1.getPhoneNumber());
     when(mockRequest.getParameter("address")).thenReturn(USER_1.getAddress());
+    when(mockRequest.getParameter("latitude")).thenReturn(Double.toString(USER_1.getLatitude()));
+    when(mockRequest.getParameter("longitude")).thenReturn(Double.toString(USER_1.getLongitude()));
     when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
 
     createNewUserServlet.doPost(mockRequest, mockResponse);
