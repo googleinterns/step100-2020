@@ -14,6 +14,10 @@ public class TFIDFStringHelper {
    * Remove all punctuation and convert String to lowercase.
    */
   public static String sanitize(String input) {
+    if (input ==  null || input.length() == 0) {
+      return input;
+    }
+
     input = input.toLowerCase();
     // Regex identifies punctuation except apostrophes.
     input = input.replaceAll("[\\p{P}&&[^']]", "");
@@ -26,11 +30,18 @@ public class TFIDFStringHelper {
    * mapped with each term's freqency count.
    */
   public static LinkedHashMap<String, Integer> ngramTokenizer(String input) {
-    input = sanitize(input);
     LinkedHashMap<String, Integer> ngrams = new LinkedHashMap<String, Integer>();
+
+    if (input ==  null || input.length() == 0) {
+      return ngrams;
+    }
+
+    input = sanitize(input);
     String[] words = input.split(" ");
 
-    for (int n = 1; n <= 3; n++) {
+    int nLength = (words.length >= 3) ? 3 : words.length;
+
+    for (int n = 1; n <= nLength; n++) {
       for (int i = 0; i < words.length - n + 1; i++) {
         String ngram = concat(words, i, n);
         Integer count = ngrams.get(ngram);

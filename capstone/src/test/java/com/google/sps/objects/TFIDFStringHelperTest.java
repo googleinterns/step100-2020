@@ -27,6 +27,8 @@ public class TFIDFStringHelperTest {
   private LinkedHashMap<String, Integer> expectedNgramsMap;
   private final String testNgrams2 = "No not no Not";
   private LinkedHashMap<String, Integer> expectedNgramsMap2;
+  private final String testNgrams3 = "how about";
+  private LinkedHashMap<String, Integer> expectedNgramsMap3;
 
   @Before
   public void setUp() {
@@ -48,6 +50,11 @@ public class TFIDFStringHelperTest {
     expectedNgramsMap2.put("not no", 1);
     expectedNgramsMap2.put("no not no", 1);
     expectedNgramsMap2.put("not no not", 1);
+
+    expectedNgramsMap3 = new LinkedHashMap<String, Integer>();
+    expectedNgramsMap3.put("how", 1);
+    expectedNgramsMap3.put("about", 1);
+    expectedNgramsMap3.put("how about", 1);
   }
 
   @After
@@ -61,8 +68,13 @@ public class TFIDFStringHelperTest {
   }
 
   @Test
-  public void sanitizeStringWithNumbers() {
+  public void sanitize_StringWithNumbers() {
     assertEquals(TFIDFStringHelper.sanitize(testStringNumber), expectedStringNumber);
+  }
+
+  @Test
+  public void sanitize_nullString() {
+    assertEquals(TFIDFStringHelper.sanitize(null), null);
   }
 
   @Test
@@ -73,5 +85,15 @@ public class TFIDFStringHelperTest {
   @Test
   public void ngramTokenizer_notSanitized() {
     assertEquals(TFIDFStringHelper.ngramTokenizer(testNgrams2), expectedNgramsMap2);
+  }
+
+  @Test
+  public void ngramTokenizer_twoWords() {
+    assertEquals(TFIDFStringHelper.ngramTokenizer(testNgrams3), expectedNgramsMap3);
+  }
+
+  @Test
+  public void ngramTokenizer_emptyString() {
+    assertEquals(TFIDFStringHelper.ngramTokenizer(""), new LinkedHashMap<String, Integer>());
   }
 }
