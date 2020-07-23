@@ -1,6 +1,7 @@
 package com.google.sps.Objects;
 
 import java.util.LinkedHashMap;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,12 +45,8 @@ public class TFIDFStringHelper {
     for (int n = 1; n <= nLength; n++) {
       for (int i = 0; i < words.length - n + 1; i++) {
         String ngram = concat(words, i, n);
-        Integer count = ngrams.get(ngram);
-        if (count == null) {
-          ngrams.put(ngram, 1);
-        } else {
-          ngrams.put(ngram, count + 1);
-        }
+        Integer count = ngrams.getOrDefault(ngram, 0);
+        ngrams.put(ngram, count + 1);
       }
     }
 
@@ -60,13 +57,7 @@ public class TFIDFStringHelper {
    * Helper method for {@code ngramTokenizer()}. Concatenates words to form appropriate n-gram.
    */
   public static String concat(String[] words, int startIndex, int n) {
-    StringBuilder sb = new StringBuilder();
-    for (int i = startIndex; i < startIndex + n; i++) {
-      if (i > startIndex) {
-        sb.append(" ");
-      }
-      sb.append(words[i]);
-    }
-    return sb.toString();
+    String[] nWords = Arrays.copyOfRange(words, startIndex, startIndex + n);
+    return String.join(" ", nWords);
   }
 }
