@@ -55,10 +55,14 @@ public class SearchPredictor implements Serializable {
 
   // incomplete
   public Set<String> suggest(String input) {
-    System.out.println("in suggest with input " + input);
     Set<String> names = new HashSet<String>();
-    names.addAll(firstNameTrie.searchWithPrefix(input, input));
-    names.addAll(lastNameTrie.searchWithPrefix(input, input));
+    String[] split = input.split(" ");
+    for (int i = 0; i < split.length; i++) {
+      String partialName = split[i];
+      names.addAll(firstNameTrie.searchWithPrefix(partialName, partialName));
+      names.addAll(lastNameTrie.searchWithPrefix(partialName, partialName));
+    }
+
     System.out.println(names);
     return names;
   }

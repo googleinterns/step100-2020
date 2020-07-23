@@ -1,35 +1,10 @@
 const searchInput = document.getElementById("name-search");
 const suggestionsPanel = document.getElementById("suggestions");
 
-// let names = [
-//   { fullname: "Lucy Qu" },
-//   { fullname: "Lucy Liu" },
-//   { fullname: "Himani Yadav" },
-//   { fullname: "Anika Bagga" },
-//   { fullname: "Lucille Ball" }
-// ];
-
 let currentFocus = -1;
 
 function autocomplete() {
-  //   searchInput.addEventListener("keyup", filter);
   searchInput.addEventListener("keyup", checkKey);
-}
-
-function getSuggestions() {
-  const input = document.getElementById("name-search").value;
-  fetch(`name-data?input=${input}`)
-    .then(response => response.json())
-    .then(suggestions => suggest(suggestions));
-}
-
-function suggest(suggestions) {
-  const input = searchInput.value.toLowerCase();
-  suggestionsPanel.innerHTML = "";
-  suggestions.forEach(name => appendSuggestion(name));
-  if (input === "") {
-    suggestionsPanel.innerHTML = "";
-  }
 }
 
 function checkKey(e) {
@@ -48,7 +23,25 @@ function checkKey(e) {
   } else if (e.keyCode == 13) {
     //press enter
   } else {
-    searchInput.addEventListener("keyup", getSuggestions());
+    getSuggestions();
+  }
+}
+
+function getSuggestions() {
+  const input = document.getElementById("name-search").value;
+  if (input.trim() != "") {
+    fetch(`name-data?input=${input}`)
+      .then(response => response.json())
+      .then(suggestions => suggest(suggestions));
+  }
+}
+
+function suggest(suggestions) {
+  const input = searchInput.value.toLowerCase();
+  suggestionsPanel.innerHTML = "";
+  suggestions.forEach(name => appendSuggestion(name));
+  if (input === "") {
+    suggestionsPanel.innerHTML = "";
   }
 }
 

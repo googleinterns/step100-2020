@@ -184,6 +184,7 @@
 
 #suggestions > div:hover {
   background-color: var(--placeholder-gray);
+  cursor: pointer;
 }
 
 .autocomplete-active {
