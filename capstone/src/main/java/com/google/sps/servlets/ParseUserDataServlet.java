@@ -48,6 +48,7 @@ public class ParseUserDataServlet extends HttpServlet {
     while (scanner.hasNextLine()) {
       String line = scanner.nextLine();
       String[] fields = line.split("\t");
+      assert fields.length == 7;
       createUserEntity(fields);
     }
 
