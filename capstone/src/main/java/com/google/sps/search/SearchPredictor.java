@@ -35,7 +35,7 @@ public class SearchPredictor implements Serializable {
       String firstName = (String) userEntity.getProperty("firstName");
       String lastName = (String) userEntity.getProperty("lastName");
       // unique separator to account for names like Marie Rose Shapiro
-      String name = firstName + "+" + lastName;
+      String name = firstName + "@" + lastName;
       names.add(name);
     }
     return names;
@@ -43,12 +43,13 @@ public class SearchPredictor implements Serializable {
 
   private void populateTrie() {
     for (String fullName : names) {
-      String[] split = fullName.split("+");
+      String[] split = fullName.split("@");
       // not robust for internationalization
       String firstName = split[0];
       String lastName = split[1];
-      firstNameTrie.insert(firstName, fullName);
-      lastNameTrie.insert(lastName, fullName);
+      String properName = firstName + " " + lastName;
+      firstNameTrie.insert(firstName, properName);
+      lastNameTrie.insert(lastName, properName);
     }
   }
 
