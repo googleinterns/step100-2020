@@ -1,24 +1,22 @@
 package com.google.sps.Objects;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.sps.Objects.Coordinate;
 
 public final class Location {
 
   private final String locationName;
   private final String address;
-  private final double latitude;
-  private final double longitude;
+  private final Coordinate coordinate;
 
-  public Location(
+  public Location (
     String locationName, 
     String address, 
-    double latitude, 
-    double longitude
+    Coordinate coordinate
   ) {
     this.locationName = locationName;
     this.address = address;
-    this.latitude = latitude;
-    this.longitude = longitude;
+    this.coordinate = coordinate;
   }
 
   public static Location fromEntity(Entity entity) {
@@ -26,15 +24,16 @@ public final class Location {
     String address = (String) entity.getProperty("address");
     double latitude = (double) entity.getProperty("latitude");  
     double longitude = (double) entity.getProperty("longitude");
-    return new Location(locationName, address, latitude, longitude);
+    Coordinate coordinate = new Coordinate(latitude, longitude);
+    return new Location(locationName, address, coordinate);
   }
 
   public Entity toEntity() {
     Entity entity = new Entity("Location");
     entity.setProperty("locationName", this.locationName);
     entity.setProperty("address", this.address);
-    entity.setProperty("latitude", this.latitude);
-    entity.setProperty("longitude", this.longitude);
+    entity.setProperty("latitude", this.coordinate.getLat());
+    entity.setProperty("longitude", this.coordinate.getLng());
     return entity;
   }
 
@@ -44,26 +43,25 @@ public final class Location {
     if (other == this) return true;
     if (!(other instanceof Location)) return false;
     Location location = (Location) other;
-    return latitude == location.latitude &&
-      longitude == location.longitude &&
+    return coordinate.getLat() == location.coordinate.getLat() &&
+      coordinate.getLng() == location.coordinate.getLng() &&
       locationName.equals(location.locationName) &&
       address.equals(location.address);
   }
 
   public String getLocationName() {
-    return locationName;
+    return this.locationName;
   }
 
   public String getAddress() {
-    return address;
+    return this.address;
   }
 
   public double getLatitude() {
-    return latitude;
+    return this.coordinate.getLat();
   }
 
   public double getLongitude() {
-    return longitude;
+    return this.coordinate.getLng();
   }
-  
 }

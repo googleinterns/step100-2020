@@ -179,4 +179,3 @@ public class GroupLocationTest {
     assertTrue(coordReturned.getLng() == MID_LNG);
   }
 }
-
