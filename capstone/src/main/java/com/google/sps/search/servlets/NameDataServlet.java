@@ -21,20 +21,60 @@ import com.google.sps.servlets.ServletHelper;
 @WebServlet("/name-data")
 public class NameDataServlet extends AuthenticatedServlet {
 
-  SearchPredictor searchPredictor;
-  String trieFile = "../../data/trie";
+  private SearchPredictor searchPredictor;
+  private final String TRIE_FILE = "../../data/trie";
+
+  //  @Override
+  //  public void init(ServletConfig config) throws ServletException {
+  //    super.init(config);
+  //    FileInputStream fileInput = null;
+  //    ObjectInputStream objectInput = null;
+  //    try {
+  //      fileInput = new FileInputStream(new File(TRIE_FILE));
+  //      objectInput = new ObjectInputStream(fileInput);
+  //    } catch (FileNotFoundException e) {
+  //      System.err.println("File does not exist");
+  //    } catch (IOException e) {
+  //      System.err.println("Cannot read from file");
+  //    } finally {
+  //      if (fileInput != null) {
+  //        try {
+  //          fileInput.close();
+  //        } catch (IOException e) {
+  //          System.err.println("Cannot close file");
+  //        }
+  //      }
+  //      if (objectInput != null) {
+  //        try {
+  //          objectInput.close();
+  //        } catch (IOException e) {
+  //          System.err.println("Cannot close file");
+  //        }
+  //      }
+  //    }
+  //
+  //    try {
+  //      searchPredictor = (SearchPredictor) objectInput.readObject();
+  //      return;
+  //    } catch (ClassNotFoundException | IOException e) {
+  //      System.err.println("Class not found");
+  //    }
+  //
+  //    searchPredictor = new SearchPredictor();
+  //  }
 
   @Override
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
+    FileInputStream fileInput = null;
+    ObjectInputStream objectInput = null;
+    searchPredictor = new SearchPredictor();
+
     try {
-      FileInputStream fileInput = new FileInputStream(new File(trieFile));
-      ObjectInputStream objectInput = new ObjectInputStream(fileInput);
+      fileInput = new FileInputStream(new File(TRIE_FILE));
+      objectInput = new ObjectInputStream(fileInput);
       searchPredictor = (SearchPredictor) objectInput.readObject();
 
-      fileInput.close();
-      objectInput.close();
-      return;
     } catch (FileNotFoundException e) {
       System.err.println("File does not exist");
     } catch (IOException e) {
@@ -42,7 +82,16 @@ public class NameDataServlet extends AuthenticatedServlet {
     } catch (ClassNotFoundException e) {
       System.err.println("Class not found");
     }
-    searchPredictor = new SearchPredictor();
+    try {
+      if (fileInput != null) {
+        fileInput.close();
+      }
+      if (objectInput != null) {
+        objectInput.close();
+      }
+    } catch (IOException e) {
+      System.err.println("Cannot close file");
+    }
   }
 
   @Override
@@ -53,7 +102,7 @@ public class NameDataServlet extends AuthenticatedServlet {
   public void saveState() {
     FileOutputStream fileOutputStream;
     try {
-      fileOutputStream = new FileOutputStream(new File(trieFile));
+      fileOutputStream = new FileOutputStream(new File(TRIE_FILE));
       ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
       objectOutputStream.writeObject(searchPredictor);
 
