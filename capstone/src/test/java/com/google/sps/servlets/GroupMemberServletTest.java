@@ -39,6 +39,7 @@ import com.google.sps.Objects.Badge;
 import com.google.sps.Objects.Challenge;
 import com.google.sps.Objects.Group;
 import com.google.sps.Objects.User;
+import com.google.sps.Objects.Tag;
 
 public class GroupMemberServletTest {
 
@@ -127,7 +128,8 @@ public class GroupMemberServletTest {
     groupEntity.setProperty("memberIds", new ArrayList<String>(Arrays.asList(USER_ID)));
     groupEntity.setProperty("posts", null);
     groupEntity.setProperty("options", new ArrayList<Long>());
-    groupEntity.setProperty("challenges", new ArrayList<Challenge>());
+    groupEntity.setProperty("challenges", new ArrayList<Long>());
+    groupEntity.setProperty("tags", new ArrayList<Tag>());    
     return groupEntity;
   }
 

@@ -1,13 +1,12 @@
 package com.google.sps.Objects;
-import com.google.appengine.api.datastore.Entity;
+
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.sps.servlets.ServletHelper;
 
 public final class Group {
@@ -16,6 +15,7 @@ public final class Group {
   private final ArrayList<Long> challengeIds;
   private final ArrayList<Long> postIds;
   private final ArrayList<Long> optionIds;
+  private final ArrayList<Tag> tags;
   private final String groupName;
   private final String headerImg;
   private final long groupId;
@@ -25,6 +25,7 @@ public final class Group {
       ArrayList<Long> challenges,
       ArrayList<Long> posts,
       ArrayList<Long> options,
+      ArrayList<Tag> tags,
       String groupName,
       String headerImg,
       long groupId) {
@@ -32,6 +33,7 @@ public final class Group {
     this.challengeIds = challenges;
     this.postIds = posts;
     this.optionIds = options;
+    this.tags = tags;
     this.groupName = groupName;
     this.headerImg = headerImg;
     this.groupId = groupId;
@@ -62,6 +64,10 @@ public final class Group {
     return optionIds;
   }
 
+  public ArrayList<Tag> getTags() {
+    return tags;
+  }
+
   public String getGroupName() {
     return groupName;
   }
@@ -86,6 +92,10 @@ public final class Group {
     this.postIds.add(newPost);
   }
 
+  public void addPost(Tag newTag) {
+    this.tags.add(newTag);
+  }
+
   /* Given a Group entity, creates and returns a Group object. */
   public static Group fromEntity(Entity entity) {
     ArrayList<String> memberIds = (ArrayList<String>) entity.getProperty("memberIds");
@@ -96,7 +106,12 @@ public final class Group {
     String headerImg = (String) entity.getProperty("headerImg");
     long groupId = entity.getKey().getId();
 
-    return new Group(memberIds, challenges, posts, options, groupName, headerImg, groupId);
+    ArrayList<Tag> tags = new ArrayList<>();
+    if (entity.getProperty("tags") != null) {
+      createTagList(tags, entity);
+    }
+
+    return new Group(memberIds, challenges, posts, options, tags, groupName, headerImg, groupId);
   }
 
   private static ArrayList<Long> getPropertyList(String property, Entity entity) {
@@ -105,5 +120,13 @@ public final class Group {
             ? new ArrayList<Long>()
             : (ArrayList<Long>) entity.getProperty(property);
     return propertyList;
+  }
+
+  private static void createTagList(ArrayList<Tag> tags, Entity groupEntity) {
+    ArrayList<EmbeddedEntity> tagEntities = 
+        (ArrayList<EmbeddedEntity>) groupEntity.getProperty("tags");
+    for (EmbeddedEntity tag: tagEntities) {
+      tags.add(Tag.fromEntity(tag));
+    }
   }
 }

@@ -33,6 +33,7 @@ import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig
 import com.google.common.collect.ImmutableMap;
 import com.google.sps.Objects.Badge;
 import com.google.sps.Objects.Challenge;
+import com.google.sps.Objects.Tag;
 import com.google.sps.Objects.User;
 
 public class AllGroupMembersServletTest {
@@ -129,6 +130,7 @@ public class AllGroupMembersServletTest {
     groupEntity.setProperty("memberIds", new ArrayList<String>(Arrays.asList(USER_ID, OTHER_ID)));
     groupEntity.setProperty("posts", null);
     groupEntity.setProperty("options", new ArrayList<Long>());
+    groupEntity.setProperty("tags", new ArrayList<Tag>());    
     groupEntity.setProperty("challenges", new ArrayList<Challenge>());
     return groupEntity;
   }

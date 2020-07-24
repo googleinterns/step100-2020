@@ -14,6 +14,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
+import com.google.sps.Objects.Tag;
 import error.ErrorHandler;
 
 @WebServlet("/createGroup")
@@ -41,6 +42,7 @@ public class CreateGroupServlet extends AuthenticatedServlet {
     groupEntity.setProperty("challenges", new ArrayList<Long>());
     groupEntity.setProperty("posts", new ArrayList<Long>());
     groupEntity.setProperty("options", new ArrayList<Long>());
+    groupEntity.setProperty("tags", new ArrayList<Tag>());
     groupEntity.setProperty("groupName", groupName);
     groupEntity.setProperty("headerImg", "");
     return groupEntity;
