@@ -24,6 +24,7 @@ function loadPage() {
   createLoginUrl();
 }
 
+
 /*
  * Create the login url for the Users API.
  * Fetch the authentication status of the user from the server.
