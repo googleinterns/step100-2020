@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Set;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -73,7 +73,7 @@ public class NameDataServlet extends AuthenticatedServlet {
       throws IOException {
     System.out.println("in do get");
     String input = request.getParameter("input");
-    Set<String> suggestions = searchPredictor.suggest(input);
+    List<String> suggestions = searchPredictor.suggest(input);
     ServletHelper.write(response, suggestions, "application/json");
   }
 

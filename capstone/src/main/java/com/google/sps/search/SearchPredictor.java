@@ -2,8 +2,11 @@ package com.google.sps.search;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -14,6 +17,7 @@ import com.google.appengine.api.datastore.Query;
 
 public class SearchPredictor implements Serializable {
 
+  private static final int FIVE = 5;
   private static final long serialVersionUID = 1L;
   private List<String> names;
   private Trie firstNameTrie;
@@ -54,17 +58,65 @@ public class SearchPredictor implements Serializable {
   }
 
   // incomplete
-  public Set<String> suggest(String input) {
-    Set<String> names = new HashSet<String>();
+  public List<String> suggest(String input) {
+    Map<String, Integer> namesScore = new HashMap<String, Integer>();
     String[] split = input.split(" ");
     for (int i = 0; i < split.length; i++) {
       String partialName = split[i];
-      names.addAll(firstNameTrie.searchWithPrefix(partialName, partialName));
-      names.addAll(lastNameTrie.searchWithPrefix(partialName, partialName));
+      System.out.println(partialName);
+      Set<String> firstNameSuggestions = firstNameTrie.searchWithPrefix(partialName, partialName);
+      Set<String> lastNameSuggestions = lastNameTrie.searchWithPrefix(partialName, partialName);
+      // Matching prefix first name is weighted more heavily
+      this.addToMap(namesScore, firstNameSuggestions, partialName, 2);
+      this.addToMap(namesScore, lastNameSuggestions, partialName, 1);
+    }
+    System.out.println(namesScore);
+    List<String> sortedNames = this.sortNames(namesScore);
+    System.out.println(sortedNames);
+    return sortedNames;
+  }
+
+  public List<String> sortNames(Map<String, Integer> namesScore) {
+    List<String> sortedNames = new ArrayList<String>();
+
+    List<Map.Entry<String, Integer>> entries =
+        new ArrayList<Map.Entry<String, Integer>>(namesScore.entrySet());
+
+    Collections.sort(
+        entries,
+        new Comparator<Map.Entry<String, Integer>>() {
+          @Override
+          public int compare(Map.Entry<String, Integer> a, Map.Entry<String, Integer> b) {
+            return Integer.compare(b.getValue(), a.getValue());
+          }
+        });
+
+    for (Map.Entry<String, Integer> entry : entries) {
+      sortedNames.add(entry.getKey());
     }
 
-    System.out.println(names);
-    return names;
+    return sortedNames;
+  }
+
+  private Map<String, Integer> addToMap(
+      Map<String, Integer> namesScore, Set<String> set, String partialName, int increment) {
+    for (String name : set) {
+      if (!namesScore.containsKey(name)) {
+        namesScore.put(name, increment);
+      } else {
+        int score = namesScore.get(name) + 1;
+        namesScore.put(name, score);
+      }
+
+      // If there is a complete name match for first or last name, increment score by 5
+      String[] split = name.split(" ");
+      partialName = partialName.toUpperCase();
+      if (partialName.equals(split[0]) || partialName.equals(split[1])) {
+        int score = namesScore.get(name) + FIVE;
+        namesScore.put(name, score);
+      }
+    }
+    return namesScore;
   }
 
   public Trie getFirstNameTrie() {
