@@ -56,6 +56,7 @@ public class TagsTFIDFServlet extends HttpServlet {
       long groupId = (long) entity.getKey().getId();
       groupIds.add(groupId);
     }
+
     return groupIds;
   }
 
@@ -80,6 +81,7 @@ public class TagsTFIDFServlet extends HttpServlet {
       }
       groupMap.put(groupId, TFIDFStringHelper.combineMaps(ngramsList));
     }
+
     return groupMap;
   }
 
@@ -95,6 +97,7 @@ public class TagsTFIDFServlet extends HttpServlet {
       String postText = (String) postEntity.getProperty("postText");
       postTexts.add(postText);
     }
+
     return postTexts;
   }
 
@@ -129,8 +132,8 @@ public class TagsTFIDFServlet extends HttpServlet {
       for (Map.Entry<String, Integer> ngramEntry : ngramMap.entrySet()) {
         String ngram = ngramEntry.getKey(); 
 
-        double tf = ngramEntry.getValue() / ngramMap.size();
-        double idf = Math.log( groupMap.size() / occurenceMap.get(ngram) );
+        double tf = (double) ngramEntry.getValue() / ngramMap.size();
+        double idf = Math.log( (double) groupMap.size() / occurenceMap.get(ngram) );
         double score = tf * idf;
 
         Tag tag = new Tag(ngram, score);
@@ -156,5 +159,6 @@ public class TagsTFIDFServlet extends HttpServlet {
 
     Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     groupEntity.setProperty("tags", tags);
+    datastore.put(groupEntity);
   }
 }
