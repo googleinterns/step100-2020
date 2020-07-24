@@ -72,5 +72,3 @@ function appendSuggestion(suggested) {
 function completeName(fullname) {
   searchInput.value = fullname;
 }
-
-autocomplete();
