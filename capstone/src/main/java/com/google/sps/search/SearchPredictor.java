@@ -63,16 +63,13 @@ public class SearchPredictor implements Serializable {
     String[] split = input.split(" ");
     for (int i = 0; i < split.length; i++) {
       String partialName = split[i];
-      System.out.println(partialName);
       Set<String> firstNameSuggestions = firstNameTrie.searchWithPrefix(partialName, partialName);
       Set<String> lastNameSuggestions = lastNameTrie.searchWithPrefix(partialName, partialName);
       // Matching prefix first name is weighted more heavily
       this.addToMap(namesScore, firstNameSuggestions, partialName, 2);
       this.addToMap(namesScore, lastNameSuggestions, partialName, 1);
     }
-    System.out.println(namesScore);
     List<String> sortedNames = this.sortNames(namesScore);
-    System.out.println(sortedNames);
     return sortedNames;
   }
 

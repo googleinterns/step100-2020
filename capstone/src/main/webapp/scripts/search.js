@@ -70,6 +70,8 @@ function appendUser(user, suggestionsContainer) {
   userDiv.appendChild(profile);
   userDiv.appendChild(plusIcon);
   suggestionsContainer.appendChild(userDiv);
+
+  document.getElementById("search-btn").style.display = "none";
 }
 
 function getSuggestions() {
