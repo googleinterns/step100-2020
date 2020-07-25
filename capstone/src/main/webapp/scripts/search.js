@@ -39,7 +39,19 @@ function getSearchResults(list) {
       names = names.concat(`${list[i].innerHTML},`);
     }
   }
-  fetch(`/search-results?names=${names}`);
+  fetch(`/search-results?names=${names}`).then(response =>
+    response.json().then(results => displayResults(results))
+  );
+}
+
+function displayResults(results) {
+  results.forEach(user => appendUser(user));
+}
+
+function appendUser(user) {
+  let userId = user.userId;
+  let name = `${user.firstName} ${user.lastName}`;
+  console.log(name);
 }
 
 function getSuggestions() {

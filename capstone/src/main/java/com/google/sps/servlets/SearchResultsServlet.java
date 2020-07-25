@@ -32,6 +32,7 @@ public class SearchResultsServlet extends AuthenticatedServlet {
     String[] namesSplit = names.split(",");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     List<User> users = this.getUserSuggestions(namesSplit, datastore, response);
+    // TODO: sort users for results
     ServletHelper.write(response, users, "application/json");
   }
 

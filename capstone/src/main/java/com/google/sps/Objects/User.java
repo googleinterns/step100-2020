@@ -13,7 +13,6 @@ import com.google.appengine.api.datastore.KeyFactory;
 public final class User {
 
   private final String userId;
-  private String name;
   private String firstName;
   private String lastName;
   private String fullName;
@@ -36,7 +35,6 @@ public final class User {
       LinkedHashSet<Long> groups,
       ArrayList<String> interests) {
     this.userId = userId;
-    this.name = firstName + " " + lastName;
     this.firstName = firstName;
     this.lastName = lastName;
     this.fullName = fullName;
@@ -53,7 +51,7 @@ public final class User {
   }
 
   public String getName() {
-    return name;
+    return fullName;
   }
 
   public String getFirstName() {
@@ -90,12 +88,12 @@ public final class User {
 
   public void setFirstName(String firstName) {
     this.firstName = firstName;
-    this.name = firstName + " " + getLastName();
+    this.fullName = firstName.toUpperCase() + " " + getLastName().toUpperCase();
   }
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
-    this.name = getFirstName() + " " + lastName;
+    this.fullName = getFirstName().toUpperCase() + " " + lastName.toUpperCase();
   }
 
   public void setPhoneNumber(String newPhoneNumber) {

@@ -43,7 +43,7 @@ public class EditProfileServletTest {
   private static final String EDIT_EMAIL = "test2@mctest.com";
   private static final String EDIT_FIRST = "Mister";
   private static final String EDIT_LAST = "McTest";
-  private static final String FULL_NAME = "TEST MCTEST";
+  private static final String FULL_NAME = "MISTER MCTEST";
   private static final String EDIT_PHONE = "808-808-8080";
   private static final ArrayList<String> INTERESTS_LIST =
       new ArrayList<String>(Arrays.asList("Testing", "Dancing"));
