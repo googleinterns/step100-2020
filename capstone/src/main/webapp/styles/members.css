@@ -191,6 +191,25 @@
   background-color: var(--light-green);
 }
 
+.user-suggestion {
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
+.add-user-icon {
+  height: 20px;
+  float: right;
+  margin-right: 10px;
+}
+
+.profile-icon {
+  float: left;
+  margin-right: 10px;
+  height: 30px;
+  justify-content: center;
+  align-content: center;
+}
+
 @media (max-width: 1600px) {
   #members-container {
     margin-right: 1%;

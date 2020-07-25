@@ -27,7 +27,6 @@ public class SearchResultsServlet extends AuthenticatedServlet {
   @Override
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    System.out.println(request.getRequestURL());
     String names = request.getParameter("names");
     String[] namesSplit = names.split(",");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -47,7 +46,6 @@ public class SearchResultsServlet extends AuthenticatedServlet {
       Query query = new Query("User").setFilter(propertyFilter);
       PreparedQuery pq = datastore.prepare(query);
       for (Entity result : pq.asIterable()) {
-        System.out.println(result);
         try {
           users.add(User.fromEntity(result));
         } catch (EntityNotFoundException e) {

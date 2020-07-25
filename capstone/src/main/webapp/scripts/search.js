@@ -45,13 +45,31 @@ function getSearchResults(list) {
 }
 
 function displayResults(results) {
-  results.forEach(user => appendUser(user));
+  const suggestionsContainer = document.getElementById("suggestions");
+  suggestionsContainer.innerHTML = "";
+  results.forEach(user => appendUser(user, suggestionsContainer));
 }
 
-function appendUser(user) {
+function appendUser(user, suggestionsContainer) {
   let userId = user.userId;
   let name = `${user.firstName} ${user.lastName}`;
-  console.log(name);
+
+  const userDiv = document.createElement("div");
+  userDiv.innerHTML = name;
+  userDiv.setAttribute("id", userId);
+  userDiv.setAttribute("class", "user-suggestion");
+
+  const profile = document.createElement("img");
+  profile.setAttribute("src", "https://i.imgur.com/JMUNgVq.jpeg");
+  profile.setAttribute("class", "profile-icon");
+
+  const plusIcon = document.createElement("img");
+  plusIcon.setAttribute("src", "images/plus_icon.png");
+  plusIcon.setAttribute("class", "add-user-icon");
+
+  userDiv.appendChild(profile);
+  userDiv.appendChild(plusIcon);
+  suggestionsContainer.appendChild(userDiv);
 }
 
 function getSuggestions() {
