@@ -79,6 +79,7 @@ public class GroupPostDataServletTest {
           USER_ID,
           "Test",
           "McTest",
+          "Test McTest",
           USER_EMAIL,
           /* phoneNumber= */ "123-456-7890",
           /* profilePic= */ "",

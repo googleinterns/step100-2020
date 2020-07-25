@@ -134,6 +134,7 @@ public final class User {
     return userId.equals(user.userId)
         && firstName.equals(user.firstName)
         && lastName.equals(user.lastName)
+        && fullName.equals(user.fullName)
         && email.equals(user.email)
         && phoneNumber.equals(user.phoneNumber)
         && profilePic.equals(user.profilePic)
@@ -191,7 +192,7 @@ public final class User {
     userEntity.setProperty("userId", userId);
     userEntity.setProperty("firstName", firstName);
     userEntity.setProperty("lastName", lastName);
-    userEntity.setProperty("fullName", fullName);
+    userEntity.setProperty("fullName", fullName.toUpperCase());
     userEntity.setProperty("email", email);
     userEntity.setProperty("phoneNumber", phoneNumber);
     userEntity.setProperty("profilePic", profilePic);

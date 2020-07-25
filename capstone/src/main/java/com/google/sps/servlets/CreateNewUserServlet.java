@@ -14,52 +14,52 @@
 
 package com.google.sps.servlets;
 
-import com.google.sps.Objects.Badge;
-import com.google.sps.Objects.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.Objects.Badge;
+import com.google.sps.Objects.User;
 
 @WebServlet("/createNewUser")
 public class CreateNewUserServlet extends AuthenticatedServlet {
 
   @Override
-  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) 
-    throws IOException {
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     String first = request.getParameter("first");
     String last = request.getParameter("last");
+    String fullName = first + " " + last;
     String phone = request.getParameter("phone");
     ArrayList<String> interests = getInterests(request);
-    
+
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    User user = new User(userId,
-                        first,
-                        last, 
-                        /* email= */ userService.getCurrentUser().getEmail(),
-                        phone, 
-                        /* profilePic= */ "", 
-                        /* badges= */ new LinkedHashSet<Badge>(), 
-                        /* groups= */ new LinkedHashSet<Long>(), 
-                        interests);
+    User user =
+        new User(
+            userId,
+            first,
+            last,
+            fullName,
+            /* email= */ userService.getCurrentUser().getEmail(),
+            phone,
+            /* profilePic= */ "",
+            /* badges= */ new LinkedHashSet<Badge>(),
+            /* groups= */ new LinkedHashSet<Long>(),
+            interests);
     datastore.put(user.toEntity());
   }
 
-  /**
-   * Gets the list of interests entered by user.
-   */
+  /** Gets the list of interests entered by user. */
   private ArrayList<String> getInterests(HttpServletRequest request) {
     // Get input from the form.
     String interests = request.getParameter("interests");

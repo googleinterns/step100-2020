@@ -76,6 +76,7 @@ public class UserGroupsServletTest {
           USER_ID,
           "Test",
           "McTest",
+          "Test McTest",
           USER_EMAIL,
           /* phoneNumber= */ "123-456-7890",
           /* profilePic= */ "",

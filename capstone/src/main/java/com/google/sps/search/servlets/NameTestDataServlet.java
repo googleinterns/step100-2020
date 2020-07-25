@@ -18,14 +18,17 @@ public class NameTestDataServlet extends HttpServlet {
     CsvReader reader = new CsvReader();
     List<String> userInfo = reader.parseCorpus("../../data/user_data.csv");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    int counter = 0;
     for (String str : userInfo) {
       String[] split = str.split(" ");
       String firstName = split[0];
       String lastName = split[1];
-      String userId = firstName + "_" + lastName;
+      String fullName = firstName + " " + lastName;
+      String userId = firstName + "_" + lastName + counter;
       String email = userId + "@gmail.com";
-      User user = new User(userId, firstName, lastName, email, "", "", null, null, null);
+      User user = new User(userId, firstName, lastName, fullName, email, "", "", null, null, null);
       datastore.put(user.toEntity());
+      counter++;
     }
   }
 }

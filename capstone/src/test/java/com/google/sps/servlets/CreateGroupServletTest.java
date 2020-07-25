@@ -52,6 +52,7 @@ public class CreateGroupServletTest {
           USER_ID,
           "Test",
           "McTest",
+          "TEST MCTEST",
           USER_EMAIL,
           /* phoneNumber= */ "123-456-7890",
           /* profilePic= */ "",
