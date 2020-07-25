@@ -1,5 +1,10 @@
 const searchInput = document.getElementById("name-search");
 const suggestionsPanel = document.getElementById("suggestions");
+const KeyCodes = {
+  UP: "38",
+  DOWN: "40",
+  ENTER: "13"
+};
 
 let currentFocus = -1;
 
@@ -8,23 +13,21 @@ function autocomplete() {
 }
 
 function checkKey(e) {
-  let list = document.getElementById("suggestions");
-  if (list) {
-    list = list.getElementsByTagName("div");
+  let suggestions = document.getElementById("suggestions");
+  let list;
+  if (suggestions) {
+    list = suggestions.getElementsByTagName("div");
+    if (e.keyCode == KeyCodes.UP) {
+      currentFocus--;
+      addActive(list);
+    } else if (e.keyCode == KeyCodes.DOWN) {
+      currentFocus++;
+      addActive(list);
+    } else if (e.keyCode == KeyCodes.ENTER) {
+      console.log("pressing enter");
+    }
   }
-  if (e.keyCode == "38") {
-    //if up arrow is pressed, highlight name
-    currentFocus--;
-    addActive(list);
-  } else if (e.keyCode == "40") {
-    //down arrow
-    currentFocus++;
-    addActive(list);
-  } else if (e.keyCode == 13) {
-    //press enter
-  } else {
-    getSuggestions();
-  }
+  getSuggestions();
 }
 
 function getSuggestions() {
@@ -33,20 +36,18 @@ function getSuggestions() {
     fetch(`name-data?input=${input}`)
       .then(response => response.json())
       .then(suggestions => suggest(suggestions));
-  }
-}
-
-function suggest(suggestions) {
-  const input = searchInput.value.toLowerCase();
-  suggestionsPanel.innerHTML = "";
-  suggestions.forEach(name => appendSuggestion(name));
-  if (input === "") {
+  } else {
     suggestionsPanel.innerHTML = "";
   }
 }
 
+function suggest(suggestions) {
+  suggestionsPanel.innerHTML = "";
+  suggestions.forEach(name => appendSuggestion(name));
+}
+
 function addActive(list) {
-  removeActive(list);
+  removeActive();
   if (currentFocus >= list.length) {
     currentFocus = 0;
   }
@@ -56,9 +57,10 @@ function addActive(list) {
   list[currentFocus].classList.add("autocomplete-active");
 }
 
-function removeActive(list) {
-  for (let i = 0; i < list.length; i++) {
-    list[i].classList.remove("autocomplete-active");
+function removeActive() {
+  const active = document.getElementsByClassName("autocomplete-active")[0];
+  if (active) {
+    active.classList.remove("autocomplete-active");
   }
 }
 

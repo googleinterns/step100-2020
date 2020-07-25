@@ -23,28 +23,28 @@ public class TrieTest {
   @Test
   public void insertNameTest() {
     trie.insert("Lucy", "Lucy Qu");
-    Set<String> keySet = trie.getChildren().keySet();
-    String firstLetter = keySet.iterator().next();
-    Map<String, Trie> lChildren = trie.getChildren().get(firstLetter).getChildren();
-    Set<String> keySet2 = lChildren.keySet();
-    String secondLetter = keySet2.iterator().next();
-    Map<String, Trie> uChildren = lChildren.get(secondLetter).getChildren();
-    Set<String> keySet3 = uChildren.keySet();
-    String thirdLetter = keySet3.iterator().next();
-    Map<String, Trie> cChildren = uChildren.get(thirdLetter).getChildren();
-    Set<String> keySet4 = cChildren.keySet();
-    String forthLetter = keySet4.iterator().next();
+    Set<Character> keySet = trie.getChildren().keySet();
+    Character firstLetter = keySet.iterator().next();
+    Map<Character, Trie> lChildren = trie.getChildren().get(firstLetter).getChildren();
+    Set<Character> keySet2 = lChildren.keySet();
+    Character secondLetter = keySet2.iterator().next();
+    Map<Character, Trie> uChildren = lChildren.get(secondLetter).getChildren();
+    Set<Character> keySet3 = uChildren.keySet();
+    Character thirdLetter = keySet3.iterator().next();
+    Map<Character, Trie> cChildren = uChildren.get(thirdLetter).getChildren();
+    Set<Character> keySet4 = cChildren.keySet();
+    Character forthLetter = keySet4.iterator().next();
     Set<String> fullNames = cChildren.get(forthLetter).getFullNames();
 
     assertEquals(keySet.size(), 1);
-    assertEquals(firstLetter, "L");
+    assertEquals(firstLetter, (Character) 'L');
     assertEquals(keySet2.size(), 1);
-    assertEquals(secondLetter, "U");
+    assertEquals(secondLetter, (Character) 'U');
     assertEquals(keySet3.size(), 1);
-    assertEquals(thirdLetter, "C");
+    assertEquals(thirdLetter, (Character) 'C');
     assertEquals(keySet4.size(), 1);
-    assertEquals(forthLetter, "Y");
-    assertTrue(cChildren.get("Y").getIsName());
+    assertEquals(forthLetter, (Character) 'Y');
+    assertTrue(cChildren.get('Y').getIsName());
     assertEquals(fullNames.size(), 1);
     assertTrue(fullNames.contains("Lucy Qu"));
   }
@@ -53,28 +53,28 @@ public class TrieTest {
   public void insertSameFirstNameTest() {
     trie.insert("Lucy", "Lucy Qu");
     trie.insert("Lucy", "Lucy Chen");
-    Set<String> keySet = trie.getChildren().keySet();
-    String firstLetter = keySet.iterator().next();
-    Map<String, Trie> lChildren = trie.getChildren().get(firstLetter).getChildren();
-    Set<String> keySet2 = lChildren.keySet();
-    String secondLetter = keySet2.iterator().next();
-    Map<String, Trie> uChildren = lChildren.get(secondLetter).getChildren();
-    Set<String> keySet3 = uChildren.keySet();
-    String thirdLetter = keySet3.iterator().next();
-    Map<String, Trie> cChildren = uChildren.get(thirdLetter).getChildren();
-    Set<String> keySet4 = cChildren.keySet();
-    String forthLetter = keySet4.iterator().next();
+    Set<Character> keySet = trie.getChildren().keySet();
+    Character firstLetter = keySet.iterator().next();
+    Map<Character, Trie> lChildren = trie.getChildren().get(firstLetter).getChildren();
+    Set<Character> keySet2 = lChildren.keySet();
+    Character secondLetter = keySet2.iterator().next();
+    Map<Character, Trie> uChildren = lChildren.get(secondLetter).getChildren();
+    Set<Character> keySet3 = uChildren.keySet();
+    Character thirdLetter = keySet3.iterator().next();
+    Map<Character, Trie> cChildren = uChildren.get(thirdLetter).getChildren();
+    Set<Character> keySet4 = cChildren.keySet();
+    Character forthLetter = keySet4.iterator().next();
     Set<String> fullNames = cChildren.get(forthLetter).getFullNames();
 
     assertEquals(keySet.size(), 1);
-    assertEquals(firstLetter, "L");
+    assertEquals(firstLetter, (Character) 'L');
     assertEquals(keySet2.size(), 1);
-    assertEquals(secondLetter, "U");
+    assertEquals(secondLetter, (Character) 'U');
     assertEquals(keySet3.size(), 1);
-    assertEquals(thirdLetter, "C");
+    assertEquals(thirdLetter, (Character) 'C');
     assertEquals(keySet4.size(), 1);
-    assertEquals(forthLetter, "Y");
-    assertTrue(cChildren.get("Y").getIsName());
+    assertEquals(forthLetter, (Character) 'Y');
+    assertTrue(cChildren.get('Y').getIsName());
     assertEquals(fullNames.size(), 2);
     assertTrue(fullNames.contains("Lucy Qu"));
     assertTrue(fullNames.contains("Lucy Chen"));
@@ -85,28 +85,28 @@ public class TrieTest {
   public void insertDuplicateNamesTest() {
     trie.insert("Lucy", "Lucy Qu");
     trie.insert("Lucy", "Lucy Qu");
-    Set<String> keySet = trie.getChildren().keySet();
-    String firstLetter = keySet.iterator().next();
-    Map<String, Trie> lChildren = trie.getChildren().get(firstLetter).getChildren();
-    Set<String> keySet2 = lChildren.keySet();
-    String secondLetter = keySet2.iterator().next();
-    Map<String, Trie> uChildren = lChildren.get(secondLetter).getChildren();
-    Set<String> keySet3 = uChildren.keySet();
-    String thirdLetter = keySet3.iterator().next();
-    Map<String, Trie> cChildren = uChildren.get(thirdLetter).getChildren();
-    Set<String> keySet4 = cChildren.keySet();
-    String forthLetter = keySet4.iterator().next();
+    Set<Character> keySet = trie.getChildren().keySet();
+    Character firstLetter = keySet.iterator().next();
+    Map<Character, Trie> lChildren = trie.getChildren().get(firstLetter).getChildren();
+    Set<Character> keySet2 = lChildren.keySet();
+    Character secondLetter = keySet2.iterator().next();
+    Map<Character, Trie> uChildren = lChildren.get(secondLetter).getChildren();
+    Set<Character> keySet3 = uChildren.keySet();
+    Character thirdLetter = keySet3.iterator().next();
+    Map<Character, Trie> cChildren = uChildren.get(thirdLetter).getChildren();
+    Set<Character> keySet4 = cChildren.keySet();
+    Character forthLetter = keySet4.iterator().next();
     Set<String> fullNames = cChildren.get(forthLetter).getFullNames();
 
     assertEquals(keySet.size(), 1);
-    assertEquals(firstLetter, "L");
+    assertEquals(firstLetter, (Character) 'L');
     assertEquals(keySet2.size(), 1);
-    assertEquals(secondLetter, "U");
+    assertEquals(secondLetter, (Character) 'U');
     assertEquals(keySet3.size(), 1);
-    assertEquals(thirdLetter, "C");
+    assertEquals(thirdLetter, (Character) 'C');
     assertEquals(keySet4.size(), 1);
-    assertEquals(forthLetter, "Y");
-    assertTrue(cChildren.get("Y").getIsName());
+    assertEquals(forthLetter, (Character) 'Y');
+    assertTrue(cChildren.get('Y').getIsName());
     assertEquals(fullNames.size(), 1);
     assertTrue(fullNames.contains("Lucy Qu"));
   }
@@ -119,32 +119,32 @@ public class TrieTest {
   public void insertOverlappingNamesTest() {
     trie.insert("Rose", "Rose Smith");
     trie.insert("Rosie", "Rosie Brown");
-    Set<String> keySet = trie.getChildren().keySet();
-    String firstLetter = keySet.iterator().next();
-    Map<String, Trie> rChildren = trie.getChildren().get(firstLetter).getChildren();
-    Set<String> keySet2 = rChildren.keySet();
-    String secondLetter = keySet2.iterator().next();
-    Map<String, Trie> oChildren = rChildren.get(secondLetter).getChildren();
-    Set<String> keySet3 = oChildren.keySet();
-    String thirdLetter = keySet3.iterator().next();
-    Map<String, Trie> sChildren = oChildren.get(thirdLetter).getChildren();
-    Set<String> keySet4 = sChildren.keySet();
-    Map<String, Trie> iChildren = sChildren.get("I").getChildren();
+    Set<Character> keySet = trie.getChildren().keySet();
+    Character firstLetter = keySet.iterator().next();
+    Map<Character, Trie> rChildren = trie.getChildren().get(firstLetter).getChildren();
+    Set<Character> keySet2 = rChildren.keySet();
+    Character secondLetter = keySet2.iterator().next();
+    Map<Character, Trie> oChildren = rChildren.get(secondLetter).getChildren();
+    Set<Character> keySet3 = oChildren.keySet();
+    Character thirdLetter = keySet3.iterator().next();
+    Map<Character, Trie> sChildren = oChildren.get(thirdLetter).getChildren();
+    Set<Character> keySet4 = sChildren.keySet();
+    Map<Character, Trie> iChildren = sChildren.get('I').getChildren();
 
     assertEquals(keySet.size(), 1);
-    assertEquals(firstLetter, "R");
+    assertEquals(firstLetter, (Character) 'R');
     assertEquals(keySet2.size(), 1);
-    assertEquals(secondLetter, "O");
+    assertEquals(secondLetter, (Character) 'O');
     assertEquals(keySet3.size(), 1);
-    assertEquals(thirdLetter, "S");
+    assertEquals(thirdLetter, (Character) 'S');
     assertEquals(keySet4.size(), 2);
-    assertTrue(keySet4.contains("I"));
-    assertTrue(keySet4.contains("E"));
-    assertTrue(sChildren.get("E").getIsName());
-    assertFalse(sChildren.get("I").getIsName());
+    assertTrue(keySet4.contains('I'));
+    assertTrue(keySet4.contains('E'));
+    assertTrue(sChildren.get('E').getIsName());
+    assertFalse(sChildren.get('I').getIsName());
     assertEquals(iChildren.size(), 1);
-    assertTrue(iChildren.containsKey("E"));
-    assertTrue(iChildren.get("E").getIsName());
+    assertTrue(iChildren.containsKey('E'));
+    assertTrue(iChildren.get('E').getIsName());
   }
 
   /** Inserts two names into the trie, where one name is the substring of other names. */
@@ -153,22 +153,22 @@ public class TrieTest {
     trie.insert("Qu", "Lucy Qu");
     trie.insert("Qui", "Jane Qui");
     trie.insert("Squirrel", "Jane Squirrel");
-    Set<String> keySet = trie.getChildren().keySet();
-    Map<String, Trie> qChildren = trie.getChildren().get("Q").getChildren();
-    Map<String, Trie> sChildren = trie.getChildren().get("S").getChildren();
-    Trie uTrie = qChildren.get("U");
+    Set<Character> keySet = trie.getChildren().keySet();
+    Map<Character, Trie> qChildren = trie.getChildren().get('Q').getChildren();
+    Map<Character, Trie> sChildren = trie.getChildren().get('S').getChildren();
+    Trie uTrie = qChildren.get('U');
 
     assertEquals(keySet.size(), 2);
-    assertTrue(keySet.contains("Q"));
-    assertTrue(keySet.contains("S"));
-    assertTrue(sChildren.containsKey("Q"));
+    assertTrue(keySet.contains('Q'));
+    assertTrue(keySet.contains('S'));
+    assertTrue(sChildren.containsKey('Q'));
     assertEquals(qChildren.size(), 1);
-    assertTrue(qChildren.containsKey("U"));
+    assertTrue(qChildren.containsKey('U'));
     assertTrue(uTrie.getIsName());
     assertEquals(uTrie.getFullNames().size(), 1);
     assertTrue(uTrie.getFullNames().contains("Lucy Qu"));
     assertEquals(uTrie.getChildren().size(), 1);
-    assertTrue(uTrie.getChildren().containsKey("I"));
+    assertTrue(uTrie.getChildren().containsKey('I'));
   }
 
   @Test
