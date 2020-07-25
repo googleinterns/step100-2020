@@ -74,7 +74,7 @@
 
           <form id="search-name" autocomplete="off">
             <label for="member-name-input">Search by name</label>
-            <input type="text" class="input-field" name="name-search" id="name-search" placeholder="Name">
+            <input type="text" class="input-field" name="name-search" id="name-search" placeholder="Name" onkeydown="return event.key != 'Enter';">
             <div id="suggestions">
             </div>
             <button class="add-member-btn">Search</button>

@@ -24,7 +24,9 @@ function checkKey(e) {
       currentFocus++;
       addActive(list);
     } else if (e.keyCode == KeyCodes.ENTER) {
-      console.log("pressing enter");
+      e.preventDefault();
+      const input = document.getElementById("name-search").value;
+      fetch(`/search-results?name=${input}`);
     }
   }
   getSuggestions();

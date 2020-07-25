@@ -27,7 +27,6 @@ public class Trie implements Serializable {
    */
   public Trie() {
     this.children = new HashMap<Character, Trie>();
-    this.isName = false;
     this.fullNames = new HashSet<String>();
   }
 
@@ -39,8 +38,6 @@ public class Trie implements Serializable {
    */
   public void insert(String name, String fullName) {
     if (name.contentEquals("")) {
-      // indicates the end of first name or last name
-      this.isName = true;
       fullNames.add(fullName);
     } else {
       Character firstChar = Character.toUpperCase(name.charAt(0));
@@ -81,7 +78,7 @@ public class Trie implements Serializable {
   private Set<String> findAll(Set<String> names, String prefix) {
     Map<Character, Trie> possibilities = children;
     /* If current node is the end of the a first name or last name, add the full name nodes to set of names to be returned. */
-    if (this.isName) {
+    if (!this.fullNames.isEmpty()) {
       for (String fullName : this.fullNames) {
         StringBuilder sb = new StringBuilder();
         sb.append(fullName);
@@ -112,7 +109,7 @@ public class Trie implements Serializable {
    * @return boolean
    */
   public boolean getIsName() {
-    return this.isName;
+    return !this.fullNames.isEmpty();
   }
 
   public Set<String> getFullNames() {
