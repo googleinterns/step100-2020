@@ -69,6 +69,9 @@ function appendUser(user, suggestionsContainer) {
   plusIcon.addEventListener("click", function() {
     fetch(`group-member?userId=${userId}&groupId=${groupId}`, {
       method: "POST"
+    }).then(() => {
+      userDiv.classList.add("add-user-active");
+      plusIcon.setAttribute("src", "images/tick.png");
     });
   });
 

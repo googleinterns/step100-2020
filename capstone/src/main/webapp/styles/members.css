@@ -210,6 +210,10 @@
   align-content: center;
 }
 
+.add-user-active {
+  background-color: var(--yellow-green);
+}
+
 @media (max-width: 1600px) {
   #members-container {
     margin-right: 1%;
