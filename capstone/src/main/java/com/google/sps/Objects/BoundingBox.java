@@ -1,26 +1,26 @@
 package com.google.sps.Objects;
 
 public class BoundingBox {
-	private double xMin;
+  private double xMin;
 	private double yMin;
 	private double xMax;
 	private double yMax;
 
 	public BoundingBox(double xMin, double yMin, double xMax, double yMax) {
-		this.xMin = xMin;
+	  this.xMin = xMin;
 		this.yMin = yMin;
 		this.xMax = xMax;
 		this.yMax = yMax;
   }
-  
+
 	/* 
   * Checks if location is within boundary
   */
 	public boolean containsPoint(Location loc) {
 		return (loc.getLatitude() >= this.getXMin() 
-        && loc.getLatitude() <= this.getXMax() 
-        && loc.getLongitude() >= this.getYMin() 
-        && loc.getLongitude() <= this.getYMax());
+      && loc.getLatitude() <= this.getXMax() 
+      && loc.getLongitude() >= this.getYMin() 
+      && loc.getLongitude() <= this.getYMax());
 	}
 
   /* 
@@ -53,19 +53,19 @@ public class BoundingBox {
 		return (cornerDistance <= distance*distance);
   }
 
-	double getXMin() {
+  double getXMin() {
 		return xMin;
 	}
 
-	double getYMin() {
+  double getYMin() {
 		return yMin;
 	}
 
-	double getXMax() {
+  double getXMax() {
 		return xMax;
 	}
 
-	double getYMax() {
+  double getYMax() {
 		return yMax;
 	}
 }
