@@ -16,8 +16,8 @@ public class BoundingBox {
 	/* 
   * Checks if location is within boundary
   */
-	public boolean containsPoint(Location loc) {
-		return (loc.getLatitude() >= this.getXMin() 
+  public boolean containsPoint(Location loc) {
+    return (loc.getLatitude() >= this.getXMin() 
       && loc.getLatitude() <= this.getXMax() 
       && loc.getLongitude() >= this.getYMin() 
       && loc.getLongitude() <= this.getYMax());
@@ -30,10 +30,10 @@ public class BoundingBox {
   public boolean intersectsCircle(Location center, double distance) {
     double boundaryX = (this.xMin + this.xMax)/2;
     double boundaryY = (this.yMin + this.yMax)/2;
-		double boundaryWidth = this.xMax - this.yMin;
-		double boundaryHeight = this.yMax - this.yMin;
-		double circleDistanceX = Math.abs(center.getLatitude() - boundaryX);
-		double circleDistanceY = Math.abs(center.getLongitude() - boundaryY);
+    double boundaryWidth = this.xMax - this.yMin; 
+    double boundaryHeight = this.yMax - this.yMin;
+    double circleDistanceX = Math.abs(center.getLatitude() - boundaryX);
+    double circleDistanceY = Math.abs(center.getLongitude() - boundaryY);
 		
 	  if(circleDistanceX > distance + boundaryWidth/2) {
 			return false;
@@ -50,22 +50,22 @@ public class BoundingBox {
 
     double cornerDistance = (circleDistanceX - boundaryWidth/2)*(circleDistanceX - boundaryWidth/2) + 
 				(circleDistanceY - boundaryHeight/2)*(circleDistanceY - boundaryHeight/2);
-		return (cornerDistance <= distance*distance);
+    return (cornerDistance <= distance*distance);
+  }
+  
+  double getXMin() {
+    return xMin;
   }
 
-  double getXMin() {
-		return xMin;
-	}
-
   double getYMin() {
-		return yMin;
-	}
+    return yMin;
+  }
 
-  double getXMax() {
-		return xMax;
-	}
+  double getXMax() {  
+    return xMax;
+  }
 
   double getYMax() {
-		return yMax;
-	} 
+    return yMax;
+  } 
 }
