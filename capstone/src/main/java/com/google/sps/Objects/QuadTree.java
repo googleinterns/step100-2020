@@ -30,6 +30,30 @@ public class QuadTree {
     this.botRightTree = null; 
   }
 
+  public List<QuadTree> getChildren() {
+    return this.children;
+  }
+
+  public List<Location> getLocations() {
+    return this.locations;
+  }
+
+  public QuadTree getTopLeftTree() {
+    return topLeftTree;
+  }
+
+  public QuadTree getTopRightTree() {
+    return topRightTree;
+  }
+
+  public QuadTree getBottomLeftTree() {
+    return bottomLeftTree;
+  }
+
+  public QuadTree getBottomRightTree() {
+    return bottomRightTree;
+  }
+
   public double euclidianDistance(Location loc1, Location loc2) {
     return Math.sqrt(Math.pow(loc1.getLatitude() - loc2.getLatitude(), 2) + Math.pow(loc1.getLongitude() - loc2.getLongitude(), 2));
   }
@@ -47,12 +71,12 @@ public class QuadTree {
 			return true;
 		}
 
-		// Exceeded the capacity so split it in FOUR
+		// Exceeded the capacity so split into four quadrants
 		if (topLeftTree == null) {
 			split();
 		}
 
-		// Check coordinates belongs to which partition
+		// Add point to correct quadrant 
 		for (QuadTree qt: children) {
       if (qt.insert(node)) {
         numPoints ++;
@@ -72,13 +96,14 @@ public class QuadTree {
 		double xOffset = xMin + (xMax - xMin) / 2;
 		double yOffset = yMin + (yMax - yMin) / 2;
 
-		topLeftTree = new QuadTree(NODE_CAPACITY, level + 1, 
+    // Split space into 4 quadrant trees and create new bounding boxes 
+		botRightTree = new QuadTree(NODE_CAPACITY, level + 1, 
         new BoundingBox(xMin, yOffset, xOffset, yMax));
     topRightTree = new QuadTree(NODE_CAPACITY, level + 1, 
         new BoundingBox(xOffset, yOffset, xMax, yMax));
     botLeftTree = new QuadTree(NODE_CAPACITY, level + 1, 
         new BoundingBox(xMin, yMin, xOffset, yOffset));
-    botRightTree = new QuadTree(NODE_CAPACITY, level + 1, 
+    topLeftTree = new QuadTree(NODE_CAPACITY, level + 1, 
         new BoundingBox(xOffset, yMin, xMax, yOffset));
 
     children.add(topRightTree);
@@ -88,7 +113,7 @@ public class QuadTree {
 	}
 
   public Location nearestNeighbor(Location loc) {
-    Location firstInList = locations.get(0);
+    Location firstInList = this.locations.get(0);
     return nearestNeighbor(loc, firstInList);
   }
 
@@ -108,7 +133,7 @@ public class QuadTree {
       }
     }
 
-    // Check distance between location and points from all children
+    // Check distance between location and points within all children
     if(!(topLeftTree == null)) {
       for(QuadTree qt : children) {
         closest = qt.nearestNeighbor(loc, closest);
