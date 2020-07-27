@@ -21,7 +21,7 @@ public class BoundingBox {
       && loc.getLatitude() <= this.getXMax() 
       && loc.getLongitude() >= this.getYMin() 
       && loc.getLongitude() <= this.getYMax());
-	}
+  }
 
   /* 
   * Checks if bounding box intersects with circle area of center location and 
@@ -35,17 +35,17 @@ public class BoundingBox {
     double circleDistanceX = Math.abs(center.getLatitude() - boundaryX);
     double circleDistanceY = Math.abs(center.getLongitude() - boundaryY);
 		
-	  if(circleDistanceX > distance + boundaryWidth/2) {
-			return false;
-		}
-		if(circleDistanceY > distance + boundaryHeight/2) {
-			return false;
-		}
-		if(circleDistanceX <= boundaryWidth/2) {
-			return true;
-		}
-		if(circleDistanceY <=boundaryHeight/2) {
-			return true;
+    if(circleDistanceX > distance + boundaryWidth/2) {
+      return false;
+    }
+    if(circleDistanceY > distance + boundaryHeight/2) {
+      return false;
+    }
+    if(circleDistanceX <= boundaryWidth/2) {
+      return true;
+    }
+    if(circleDistanceY <=boundaryHeight/2) {
+      return true;
     }
 
     double cornerDistance = (circleDistanceX - boundaryWidth/2)*(circleDistanceX - boundaryWidth/2) + 

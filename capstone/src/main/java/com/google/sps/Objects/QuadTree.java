@@ -65,16 +65,16 @@ public class QuadTree {
     if (locations.size() < NODE_CAPACITY) {
       locations.add(node);
       numPoints++;
-			return true;
-		}
+      return true;
+    }
 
-		// Exceeded the capacity so split into four quadrants
-		if (topLeftTree == null) {
-			split();
-		}
+    // Exceeded the capacity so split into four quadrants
+    if (topLeftTree == null) {
+      split();
+    }
 
-		// Add point to correct quadrant 
-		for (QuadTree qt: children) {
+    // Add point to correct quadrant 
+    for (QuadTree qt: children) {
       if (qt.insert(node)) {
         numPoints ++;
         return true;
@@ -90,11 +90,11 @@ public class QuadTree {
     double yMin = bounds.getYMin();
     double xMax = bounds.getXMax();
     double yMax = bounds.getYMax();
-		double xOffset = xMin + (xMax - xMin) / 2;
-		double yOffset = yMin + (yMax - yMin) / 2;
+    double xOffset = xMin + (xMax - xMin) / 2;
+    double yOffset = yMin + (yMax - yMin) / 2;
 
     // Split space into 4 quadrant trees and create new bounding boxes 
-		botRightTree = new QuadTree(NODE_CAPACITY, level + 1, 
+    botRightTree = new QuadTree(NODE_CAPACITY, level + 1, 
         new BoundingBox(xMin, yOffset, xOffset, yMax));
     topRightTree = new QuadTree(NODE_CAPACITY, level + 1, 
         new BoundingBox(xOffset, yOffset, xMax, yMax));
@@ -107,7 +107,7 @@ public class QuadTree {
     children.add(topLeftTree);
     children.add(botLeftTree);
     children.add(botRightTree);
-	}
+  }
 
   public Location nearestNeighbor(Location loc) {
     Location firstInList = this.locations.get(0);
