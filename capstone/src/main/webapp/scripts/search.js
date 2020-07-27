@@ -22,7 +22,6 @@ function checkKey(e) {
     currentFocus++;
     addActive(list);
   } else if (e.keyCode == KeyCodes.ENTER) {
-    // e.preventDefault();
     getSearchResults(list);
   } else {
     getSuggestions();
@@ -99,7 +98,7 @@ function addSuggestions(suggestions) {
 function appendSuggestion(suggested) {
   const name = document.createElement("div");
   name.innerHTML = suggested;
-  name.addEventListener("click", () => completeName(suggested));
+  name.addEventListener("click", () => completeNameAndSearch(suggested));
   suggestionsPanel.appendChild(name);
 }
 
@@ -121,6 +120,10 @@ function removeActive() {
   }
 }
 
-function completeName(fullname) {
+function completeNameAndSearch(fullname) {
   searchInput.value = fullname;
+
+  let suggestionsContainer = document.getElementById("suggestions");
+  let list = suggestionsContainer.getElementsByTagName("div");
+  getSearchResults(list);
 }
