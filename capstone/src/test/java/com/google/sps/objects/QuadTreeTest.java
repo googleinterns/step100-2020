@@ -70,7 +70,7 @@ public class QuadTreeTest {
   }
 
   @Test 
-  public void insertTest_oneLayer() {
+  public void insertTest_noSplits() {
     quadTree.insert(LOC_1);
     quadTree.insert(LOC_2);
     quadTree.insert(LOC_3);
@@ -78,8 +78,8 @@ public class QuadTreeTest {
     
     assertTrue(quadTree.numPoints == 4);
     assertTrue(quadTree.level == 0);
-
     assertTrue(quadTree.getChildren().size() == 0);
+    
     assertTrue(quadTree.getLocations().contains(LOC_1));
     assertTrue(quadTree.getLocations().contains(LOC_2));
     assertTrue(quadTree.getLocations().contains(LOC_3));
@@ -87,7 +87,7 @@ public class QuadTreeTest {
   }
 
   @Test 
-  public void insertTest_twoLayers() {
+  public void insertTest_oneSplit() {
     quadTree.insert(LOC_1);
     quadTree.insert(LOC_2);
     quadTree.insert(LOC_3);

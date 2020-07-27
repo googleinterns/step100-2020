@@ -13,6 +13,7 @@ public class QuadTree {
   private QuadTree topLeftTree, topRightTree, botLeftTree, botRightTree; 
   private BoundingBox bounds;
 
+  // For keeping track of splits and number of points within each quadtree
   public int level;
   public int numPoints;
 
@@ -59,11 +60,7 @@ public class QuadTree {
   }
 
   public boolean insert(Location node) { 
-    if (node == null) return false; 
-
-    if (!bounds.containsPoint(node)) {
-      return false;
-    }
+    if (node == null || !bounds.containsPoint(node)) return false; 
 
     if (locations.size() < NODE_CAPACITY) {
       locations.add(node);

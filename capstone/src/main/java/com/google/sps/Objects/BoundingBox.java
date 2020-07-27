@@ -11,9 +11,11 @@ public class BoundingBox {
 		this.yMin = yMin;
 		this.xMax = xMax;
 		this.yMax = yMax;
-	}
-	
-  // Checks if location is within boundary
+  }
+  
+	/* 
+  * Checks if location is within boundary
+  */
 	public boolean containsPoint(Location loc) {
 		return (loc.getLatitude() >= this.getXMin() 
         && loc.getLatitude() <= this.getXMax() 
@@ -21,6 +23,10 @@ public class BoundingBox {
         && loc.getLongitude() <= this.getYMax());
 	}
 
+  /* 
+  * Checks if bounding box intersects with circle area of center location and 
+  * distance to closest point 
+  */
   public boolean intersectsCircle(Location center, double distance) {
     double boundaryX = (this.xMin + this.xMax)/2;
 		double boundaryY = (this.yMin + this.yMax)/2;
