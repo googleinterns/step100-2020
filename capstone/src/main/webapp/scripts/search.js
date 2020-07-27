@@ -28,6 +28,11 @@ function checkKey(e) {
   }
 }
 
+/**
+ * Gets user results from server based on user input.
+ * @param {list} list
+ * @param {string} selectedName
+ */
 function getSearchResults(list, selectedName) {
   let names = "";
   if (list.length >= 5) {
@@ -65,12 +70,21 @@ function sort(names, selectedName) {
   return names;
 }
 
+/**
+ * Adds user results to DOM.
+ * @param {list} results
+ */
 function displayResults(results) {
   const suggestionsContainer = document.getElementById("suggestions");
   suggestionsContainer.innerHTML = "";
   results.forEach(user => appendUser(user, suggestionsContainer));
 }
 
+/**
+ * Adds each user result to DOM.
+ * @param {json} user
+ * @param {html} suggestionsContainer
+ */
 function appendUser(user, suggestionsContainer) {
   let userId = user.userId;
   let name = `${user.firstName} ${user.lastName}`;
@@ -101,6 +115,9 @@ function appendUser(user, suggestionsContainer) {
   suggestionsContainer.appendChild(userDiv);
 }
 
+/**
+ * Gets name suggestions from server based on user input.
+ */
 function getSuggestions() {
   const input = document.getElementById("name-search").value;
   if (input.trim() != "") {
@@ -112,11 +129,19 @@ function getSuggestions() {
   }
 }
 
+/**
+ * Adds name suggestions to DOM.
+ * @param {list} suggestions
+ */
 function addSuggestions(suggestions) {
   suggestionsPanel.innerHTML = "";
   suggestions.forEach(name => appendSuggestion(name));
 }
 
+/**
+ * Adds each suggestion to DOM.
+ * @param {string} suggested
+ */
 function appendSuggestion(suggested) {
   const name = document.createElement("div");
   name.innerHTML = suggested;
@@ -124,6 +149,10 @@ function appendSuggestion(suggested) {
   suggestionsPanel.appendChild(name);
 }
 
+/**
+ * Highlights the current suggestion based on user arrow clicks.
+ * @param {array} list
+ */
 function addActive(list) {
   removeActive();
   if (currentFocus >= list.length) {
@@ -135,6 +164,9 @@ function addActive(list) {
   list[currentFocus].classList.add("autocomplete-active");
 }
 
+/**
+ * Removes highlight on name suggestion.
+ */
 function removeActive() {
   const active = document.getElementsByClassName("autocomplete-active")[0];
   if (active) {
@@ -142,6 +174,10 @@ function removeActive() {
   }
 }
 
+/**
+ * Fills in the search bar with the name of the suggested name that the user pressed on.
+ * @param {string} fullname
+ */
 function completeNameAndSearch(fullname) {
   searchInput.value = fullname;
 
