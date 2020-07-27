@@ -3,14 +3,14 @@ package com.google.sps.Objects;
 public class BoundingBox {
   private double xMin;
   private double xMax;
-	private double yMin;
+  private double yMin;
   private double yMax;
 
-	public BoundingBox(double xMin, double yMin, double xMax, double yMax) {
-	  this.xMin = xMin;
-		this.yMin = yMin;
-		this.xMax = xMax;
-		this.yMax = yMax;
+  public BoundingBox(double xMin, double yMin, double xMax, double yMax){
+    this.xMin = xMin;
+    this.yMin = yMin;
+    this.xMax = xMax;
+    this.yMax = yMax;
   }
 
 	/* 
@@ -29,13 +29,13 @@ public class BoundingBox {
   */
   public boolean intersectsCircle(Location center, double distance) {
     double boundaryX = (this.xMin + this.xMax)/2;
-		double boundaryY = (this.yMin + this.yMax)/2;
+    double boundaryY = (this.yMin + this.yMax)/2;
 		double boundaryWidth = this.xMax - this.yMin;
 		double boundaryHeight = this.yMax - this.yMin;
 		double circleDistanceX = Math.abs(center.getLatitude() - boundaryX);
 		double circleDistanceY = Math.abs(center.getLongitude() - boundaryY);
 		
-		if(circleDistanceX > distance + boundaryWidth/2) {
+	  if(circleDistanceX > distance + boundaryWidth/2) {
 			return false;
 		}
 		if(circleDistanceY > distance + boundaryHeight/2) {
@@ -67,5 +67,5 @@ public class BoundingBox {
 
   double getYMax() {
 		return yMax;
-	}
+	} 
 }
