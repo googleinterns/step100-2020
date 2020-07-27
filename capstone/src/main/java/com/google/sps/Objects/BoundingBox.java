@@ -2,8 +2,8 @@ package com.google.sps.Objects;
 
 public class BoundingBox {
   private double xMin;
+  private double xMax;
 	private double yMin;
-	private double xMax;
 	private double yMax;
 
 	public BoundingBox(double xMin, double yMin, double xMax, double yMax) {
