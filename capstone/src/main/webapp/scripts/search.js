@@ -28,7 +28,7 @@ function checkKey(e) {
   }
 }
 
-function getSearchResults(list, clickedName) {
+function getSearchResults(list, selectedName) {
   let names = "";
   if (list.length >= 5) {
     //Gets top 5 suggested names
@@ -38,12 +38,32 @@ function getSearchResults(list, clickedName) {
       names = names.concat(`${list[i].innerHTML},`);
     }
   }
+  if (selectedName) {
+    names = sort(names, selectedName);
+  }
   fetch(`/search-results?names=${names}`).then(response =>
     response.json().then(results => displayResults(results))
   );
 }
 
-function sort(names) {}
+/**
+ * Sorts list of names based off of name that user selected from suggestions. The suggested name
+ * now goes to the front of the list.
+ * @param {string} names
+ * @param {string} selectedName
+ */
+function sort(names, selectedName) {
+  let namesArray = names.split(",");
+  for (let i = 0; i < namesArray.length; i++) {
+    if (namesArray[i] === selectedName) {
+      let currName = namesArray[i];
+      namesArray.splice(i, 1);
+      namesArray.unshift(currName);
+      return namesArray.join(",");
+    }
+  }
+  return names;
+}
 
 function displayResults(results) {
   const suggestionsContainer = document.getElementById("suggestions");
