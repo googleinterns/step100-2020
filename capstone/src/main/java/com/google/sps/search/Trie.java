@@ -18,7 +18,6 @@ public class Trie implements Serializable {
 
   private static final long serialVersionUID = 1L;
   private Map<Character, Trie> children;
-  private boolean isName;
   private Set<String> fullNames;
 
   /**

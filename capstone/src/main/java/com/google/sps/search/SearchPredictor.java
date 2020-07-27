@@ -27,7 +27,7 @@ public class SearchPredictor implements Serializable {
     this.names = this.getNamesFromDb();
     this.firstNameTrie = new Trie();
     this.lastNameTrie = new Trie();
-    this.populateTrie();
+    this.populateTries();
   }
 
   public List<String> getNamesFromDb() {
@@ -45,7 +45,7 @@ public class SearchPredictor implements Serializable {
     return names;
   }
 
-  private void populateTrie() {
+  private void populateTries() {
     for (String fullName : names) {
       String[] split = fullName.split("@");
       // not robust for internationalization
@@ -55,6 +55,12 @@ public class SearchPredictor implements Serializable {
       firstNameTrie.insert(firstName, properName);
       lastNameTrie.insert(lastName, properName);
     }
+  }
+
+  public void insertName(String firstName, String lastName) {
+    String fullName = firstName + " " + lastName;
+    firstNameTrie.insert(firstName, fullName);
+    lastNameTrie.insert(lastName, fullName);
   }
 
   // incomplete
