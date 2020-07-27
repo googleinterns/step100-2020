@@ -62,7 +62,7 @@ public class SearchPredictor implements Serializable {
     Map<String, Integer> namesScore = new HashMap<String, Integer>();
     String[] split = input.split(" ");
     for (int i = 0; i < split.length; i++) {
-      String partialName = split[i];
+      String partialName = split[i].toUpperCase();
       Set<String> firstNameSuggestions = firstNameTrie.searchWithPrefix(partialName, partialName);
       Set<String> lastNameSuggestions = lastNameTrie.searchWithPrefix(partialName, partialName);
       // Matching prefix first name is weighted more heavily
@@ -108,7 +108,8 @@ public class SearchPredictor implements Serializable {
       // If there is a complete name match for first or last name, increment score by 5
       String[] split = name.split(" ");
       partialName = partialName.toUpperCase();
-      if (partialName.equals(split[0]) || partialName.equals(split[1])) {
+      if (partialName.equals(split[0].toUpperCase())
+          || partialName.equals(split[1].toUpperCase())) {
         int score = namesScore.get(name) + FIVE;
         namesScore.put(name, score);
       }

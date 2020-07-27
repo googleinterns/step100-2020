@@ -22,13 +22,13 @@ function checkKey(e) {
     currentFocus++;
     addActive(list);
   } else if (e.keyCode == KeyCodes.ENTER) {
-    getSearchResults(list);
+    getSearchResults(list, "");
   } else {
     getSuggestions();
   }
 }
 
-function getSearchResults(list) {
+function getSearchResults(list, clickedName) {
   let names = "";
   if (list.length >= 5) {
     //Gets top 5 suggested names
@@ -42,6 +42,8 @@ function getSearchResults(list) {
     response.json().then(results => displayResults(results))
   );
 }
+
+function sort(names) {}
 
 function displayResults(results) {
   const suggestionsContainer = document.getElementById("suggestions");
@@ -125,5 +127,5 @@ function completeNameAndSearch(fullname) {
 
   let suggestionsContainer = document.getElementById("suggestions");
   let list = suggestionsContainer.getElementsByTagName("div");
-  getSearchResults(list);
+  getSearchResults(list, fullname);
 }

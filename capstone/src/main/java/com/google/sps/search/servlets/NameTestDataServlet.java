@@ -23,12 +23,9 @@ public class NameTestDataServlet extends HttpServlet {
       String[] split = str.split(" ");
       String firstName = split[0];
       String lastName = split[1];
-      String fullName = firstName + " " + lastName;
       String userId = firstName + "_" + lastName + counter;
       String email = userId + "@gmail.com";
-      User user =
-          new User(
-              userId, firstName, lastName, fullName.toUpperCase(), email, "", "", null, null, null);
+      User user = new User(userId, firstName, lastName, email, "", "", null, null, null);
       datastore.put(user.toEntity());
       counter++;
     }

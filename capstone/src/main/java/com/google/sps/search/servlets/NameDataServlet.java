@@ -71,7 +71,7 @@ public class NameDataServlet extends AuthenticatedServlet {
   @Override
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    String input = request.getParameter("input");
+    String input = request.getParameter("input").toUpperCase();
     List<String> suggestions = searchPredictor.suggest(input);
     ServletHelper.write(response, suggestions, "application/json");
   }

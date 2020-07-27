@@ -27,7 +27,6 @@ public final class User {
       String userId,
       String firstName,
       String lastName,
-      String fullName,
       String email,
       String phoneNumber,
       String profilePic,
@@ -37,7 +36,7 @@ public final class User {
     this.userId = userId;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.fullName = fullName;
+    this.fullName = firstName.toUpperCase() + " " + lastName.toUpperCase();
     this.email = email;
     this.phoneNumber = phoneNumber;
     this.profilePic = profilePic;
@@ -174,7 +173,6 @@ public final class User {
             userId,
             firstName,
             lastName,
-            fullName,
             email,
             phoneNumber,
             profilePic,

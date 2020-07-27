@@ -49,7 +49,6 @@ public class CreateNewUserServlet extends AuthenticatedServlet {
             userId,
             first,
             last,
-            fullName,
             /* email= */ userService.getCurrentUser().getEmail(),
             phone,
             /* profilePic= */ "",

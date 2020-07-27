@@ -1,4 +1,4 @@
-package com.google.sps.servlets;
+package com.google.sps.search.servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +18,8 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.sps.Objects.User;
+import com.google.sps.servlets.AuthenticatedServlet;
+import com.google.sps.servlets.ServletHelper;
 
 import error.ErrorHandler;
 

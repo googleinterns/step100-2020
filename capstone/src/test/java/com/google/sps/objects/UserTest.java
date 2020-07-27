@@ -53,7 +53,6 @@ public class UserTest {
           USER_ID,
           "Test",
           "McTest",
-          FULL_NAME,
           USER_EMAIL,
           /* phoneNumber= */ "123-456-7890",
           /* profilePic= */ "",
