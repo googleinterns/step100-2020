@@ -1,6 +1,8 @@
 package com.google.sps.Objects;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.Comparator;
 
 import com.google.sps.Objects.Location;
 import com.google.sps.Objects.Coordinate;
@@ -48,11 +50,11 @@ public class QuadTree {
   }
 
   public QuadTree getBottomLeftTree() {
-    return bottomLeftTree;
+    return botLeftTree;
   }
 
   public QuadTree getBottomRightTree() {
-    return bottomRightTree;
+    return botRightTree;
   }
 
   public double euclidianDistance(Location loc1, Location loc2) {
@@ -132,11 +134,59 @@ public class QuadTree {
 
     // Check distance between location and points within all children
     if (!(topLeftTree == null)) {
-      for QuadTree qt : children) {
+      for (QuadTree qt : children) {
         closest = qt.nearestNeighbor(loc, closest);
       }
     }
     return closest;
+  }
+
+  public ArrayList<Location> findKNearestNeighbors(Location loc, int k) {
+    PriorityQueue<Location> pq = new PriorityQueue<Location>(k, Comparator.comparingDouble( locationPQ -> -euclidianDistance(loc, locationPQ)));
+
+    pq = findKNearestNeighborsHelper(loc, k, pq);
+
+    ArrayList<Location> nearestLocations = new ArrayList<>();
+
+    while(!pq.isEmpty()) {
+      nearestLocations.add(0, pq.poll());
+    }
+
+    return nearestLocations;
+  }
+
+  public PriorityQueue<Location> findKNearestNeighborsHelper(Location loc, int k, PriorityQueue<Location> pq) {
+
+    if (locations.size() == 0 || loc == null) {
+      return pq;
+    }
+
+    Location maxClosest = pq.peek();
+    double maxClosestDistance = maxClosest == null ? Double.MAX_VALUE : euclidianDistance(maxClosest, loc);
+
+    // Check distance between location and points in this box
+    for (Location location: locations) {
+      if (euclidianDistance(loc, location) < maxClosestDistance) {
+        if (pq.size() >= k) {
+          // Remove current maxClosest
+          pq.poll();
+        } 
+        // Insert next maxClosest into queue
+        pq.add(location);
+      } else if (pq.size() < k) {
+        pq.add(location);
+      }
+      maxClosestDistance = euclidianDistance(loc, pq.peek());
+    }
+
+    // Check distance between location and points within all children
+    if (!(topLeftTree == null)) {
+      for (QuadTree qt : children) {
+        pq = qt.findKNearestNeighborsHelper(loc, k, pq);
+      }
+    }
+
+    return pq;
   }
 	
 }

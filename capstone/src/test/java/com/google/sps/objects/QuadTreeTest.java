@@ -108,14 +108,60 @@ public class QuadTreeTest {
 
   @Test 
   public void nearestNeighborTest() {
+    quadTree.insert(LOC_1);
+    quadTree.insert(LOC_2);
     quadTree.insert(LOC_5);
     quadTree.insert(LOC_7);
     quadTree.insert(LOC_8);
     quadTree.insert(LOC_3);
-    quadTree.insert(LOC_4);
 
     Location closest = quadTree.nearestNeighbor(LOC_6);
 
-    assertTrue(closest == LOC_5);
+    assertTrue(closest == LOC_2);
+  }
+
+  @Test 
+  public void nearestKNeighborTest_oneNeighbor() {
+    quadTree.insert(LOC_1);
+    quadTree.insert(LOC_2);
+    quadTree.insert(LOC_5);
+    quadTree.insert(LOC_7);
+    quadTree.insert(LOC_8);
+    quadTree.insert(LOC_3);
+
+    ArrayList<Location> closest = quadTree.findKNearestNeighbors(LOC_6, 1);
+
+    assertTrue(closest.get(0) == LOC_2);
+  }
+
+  @Test 
+  public void nearestKNeighborTest_twoNeighbors() {
+    quadTree.insert(LOC_1);
+    quadTree.insert(LOC_2);
+    quadTree.insert(LOC_5);
+    quadTree.insert(LOC_7);
+    quadTree.insert(LOC_8);
+    quadTree.insert(LOC_3);
+
+    ArrayList<Location> closest = quadTree.findKNearestNeighbors(LOC_6, 2);
+
+    assertTrue(closest.get(0) == LOC_2);
+    assertTrue(closest.get(1) == LOC_5);
+  }
+
+  @Test 
+  public void nearestKNeighborTest_threeNeighbors() {
+    quadTree.insert(LOC_1);
+    quadTree.insert(LOC_2);
+    quadTree.insert(LOC_5);
+    quadTree.insert(LOC_7);
+    quadTree.insert(LOC_8);
+    quadTree.insert(LOC_3);
+
+    ArrayList<Location> closest = quadTree.findKNearestNeighbors(LOC_6, 3);
+
+    assertTrue(closest.get(0) == LOC_2);
+    assertTrue(closest.get(1) == LOC_5);
+    assertTrue(closest.get(2) == LOC_1);
   }
 }
