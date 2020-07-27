@@ -23,16 +23,21 @@ function checkKey(e) {
     addActive(list);
   } else if (e.keyCode == KeyCodes.ENTER) {
     findSelected(list);
-    // getSearchResults(list, "");
   } else {
     getSuggestions();
   }
 }
 
+/**
+ * Handles pulling up results if user pressing enter after cycling through suggestions using arrow
+ * keys.
+ * @param {list} list
+ */
 function findSelected(list) {
   const active = document.getElementsByClassName("autocomplete-active")[0];
   if (active) {
-    getSearchResults(list, active.innerHTML);
+    const name = active.innerHTML;
+    completeNameAndSearch(name);
   } else {
     getSearchResults(list, "");
   }
