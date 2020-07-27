@@ -66,12 +66,15 @@ function appendUser(user, suggestionsContainer) {
   const plusIcon = document.createElement("img");
   plusIcon.setAttribute("src", "images/plus_icon.png");
   plusIcon.setAttribute("class", "add-user-icon");
+  plusIcon.addEventListener("click", function() {
+    fetch(`group-member?userId=${userId}&groupId=${groupId}`, {
+      method: "POST"
+    });
+  });
 
   userDiv.appendChild(profile);
   userDiv.appendChild(plusIcon);
   suggestionsContainer.appendChild(userDiv);
-
-  document.getElementById("search-btn").style.display = "none";
 }
 
 function getSuggestions() {
