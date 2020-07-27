@@ -35,16 +35,16 @@ public class BoundingBox {
     double circleDistanceX = Math.abs(center.getLatitude() - boundaryX);
     double circleDistanceY = Math.abs(center.getLongitude() - boundaryY);
 		
-    if(circleDistanceX > distance + boundaryWidth/2) {
+    if (circleDistanceX > distance + boundaryWidth/2) {
       return false;
     }
-    if(circleDistanceY > distance + boundaryHeight/2) {
+    if (circleDistanceY > distance + boundaryHeight/2) {
       return false;
     }
-    if(circleDistanceX <= boundaryWidth/2) {
+    if (circleDistanceX <= boundaryWidth/2) {
       return true;
     }
-    if(circleDistanceY <=boundaryHeight/2) {
+    if (circleDistanceY <=boundaryHeight/2) {
       return true;
     }
 

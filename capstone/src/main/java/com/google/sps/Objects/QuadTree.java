@@ -17,7 +17,7 @@ public class QuadTree {
   public int level;
   public int numPoints;
 
-	public QuadTree(int NODE_CAPACITY, int level, BoundingBox bounds) {
+  public QuadTree(int NODE_CAPACITY, int level, BoundingBox bounds) {
     this.NODE_CAPACITY = NODE_CAPACITY;
     this.bounds = bounds;
     this.children = new ArrayList<QuadTree>();
@@ -118,12 +118,12 @@ public class QuadTree {
 
     double closestDistance = euclidianDistance(loc, closest);
 
-    if(!bounds.intersectsCircle(loc, closestDistance)) {
+    if (!bounds.intersectsCircle(loc, closestDistance)) {
       return closest;
     }
 
     // Check distance between location and points in this box
-    for(Location location: locations) {
+    for (Location location: locations) {
       if (euclidianDistance(loc, location) < closestDistance) {
         closest = location;
         closestDistance = euclidianDistance(loc, location);
@@ -131,8 +131,8 @@ public class QuadTree {
     }
 
     // Check distance between location and points within all children
-    if(!(topLeftTree == null)) {
-      for(QuadTree qt : children) {
+    if (!(topLeftTree == null)) {
+      for QuadTree qt : children) {
         closest = qt.nearestNeighbor(loc, closest);
       }
     }
