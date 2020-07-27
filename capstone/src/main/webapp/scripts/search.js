@@ -22,9 +22,19 @@ function checkKey(e) {
     currentFocus++;
     addActive(list);
   } else if (e.keyCode == KeyCodes.ENTER) {
-    getSearchResults(list, "");
+    findSelected(list);
+    // getSearchResults(list, "");
   } else {
     getSuggestions();
+  }
+}
+
+function findSelected(list) {
+  const active = document.getElementsByClassName("autocomplete-active")[0];
+  if (active) {
+    getSearchResults(list, active.innerHTML);
+  } else {
+    getSearchResults(list, "");
   }
 }
 
