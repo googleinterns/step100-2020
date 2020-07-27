@@ -170,12 +170,4 @@ public class GroupLocationTest {
 
     assertTrue(coordReturned == null);
   }
-
-  @Test
-  public void findMidPointTest() {
-    Coordinate coordReturned = groupLocation.findMidPoint(groupCoordinates);
-
-    assertTrue(coordReturned.getLat() == MID_LAT);
-    assertTrue(coordReturned.getLng() == MID_LNG);
-  }
 }

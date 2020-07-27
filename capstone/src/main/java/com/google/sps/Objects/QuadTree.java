@@ -148,7 +148,7 @@ public class QuadTree {
 
     ArrayList<Location> nearestLocations = new ArrayList<>();
 
-    while(!pq.isEmpty()) {
+    while (!pq.isEmpty()) {
       nearestLocations.add(0, pq.poll());
     }
 
