@@ -63,7 +63,8 @@ public class CreateNewUserServletTest {
       Arrays.asList("Testing", "Dancing"));
   private static final User USER_1 = new User(USER_ID, "Test", "McTest", USER_EMAIL, 
                           /* phoneNumber= */ "123-456-7890", 
-                          /* profilePic= */ "", 
+                          /* profilePic= */ "",
+                          /* address= */ "",
                           /* latitude= */ 0,
                           /* longitude= */ 0,
                           /* badges= */ new LinkedHashSet<Badge>(), 
@@ -100,6 +101,9 @@ public class CreateNewUserServletTest {
     when(mockRequest.getParameter("first")).thenReturn(USER_1.getFirstName());
     when(mockRequest.getParameter("last")).thenReturn(USER_1.getLastName());
     when(mockRequest.getParameter("phone")).thenReturn(USER_1.getPhoneNumber());
+    when(mockRequest.getParameter("address")).thenReturn(USER_1.getAddress());
+    when(mockRequest.getParameter("latitude")).thenReturn(Double.toString(USER_1.getLatitude()));
+    when(mockRequest.getParameter("longitude")).thenReturn(Double.toString(USER_1.getLongitude()));
     when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
 
     createNewUserServlet.doPost(mockRequest, mockResponse);
@@ -119,6 +123,7 @@ public class CreateNewUserServletTest {
     when(mockRequest.getParameter("first")).thenReturn(USER_1.getFirstName());
     when(mockRequest.getParameter("last")).thenReturn(USER_1.getLastName());
     when(mockRequest.getParameter("phone")).thenReturn(USER_1.getPhoneNumber());
+    when(mockRequest.getParameter("address")).thenReturn(USER_1.getAddress());
     when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
 
     createNewUserServlet.doPost(mockRequest, mockResponse);

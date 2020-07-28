@@ -32,9 +32,10 @@ public class EditProfileServlet extends AuthenticatedServlet {
     String last = request.getParameter("last");
     String email = request.getParameter("email");
     String phone = request.getParameter("phone");
+    String address = request.getParameter("address");
     ArrayList<String> interests = getInterests(request);
 
-    updateProfile(userId, first, last, email, phone, interests, response);
+    updateProfile(userId, first, last, email, phone, address, interests, response);
   }
 
   /**
@@ -57,11 +58,11 @@ public class EditProfileServlet extends AuthenticatedServlet {
   /** 
    * Updates a user's profile information.
    */
-  private void updateProfile(String userId, String first, String last, String email, String phone, 
+  private void updateProfile(String userId, String first, String last, String email, String phone, String address,
       ArrayList<String> interests, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity userEntity = getExistingUser(userId, response, datastore);
-    User user = getUpdatedUser(userEntity, first, last, email, phone, interests, response);
+    User user = getUpdatedUser(userEntity, first, last, email, phone, address, interests, response);
     datastore.put(user.toEntity());
   }
 
@@ -84,7 +85,7 @@ public class EditProfileServlet extends AuthenticatedServlet {
   /**
    * Creates updated user object to return.
    */
-  private User getUpdatedUser(Entity entity, String first, String last, String email, String phone, 
+  private User getUpdatedUser(Entity entity, String first, String last, String email, String phone, String address,
       ArrayList<String> interests, HttpServletResponse response) throws IOException {
     User user;
     try {
@@ -97,6 +98,7 @@ public class EditProfileServlet extends AuthenticatedServlet {
     user.setLastName(last);
     user.setEmail(email);
     user.setPhoneNumber(phone);
+    user.setAddress(address);
     user.setInterests(interests);
     return user;
   }
