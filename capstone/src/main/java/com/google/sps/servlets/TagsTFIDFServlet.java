@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.sps.servlets.ServletHelper;
 import com.google.sps.Objects.TFIDFStringHelper;
 import com.google.sps.Objects.Tag;
+import com.google.sps.Objects.Comment;
 import error.ErrorHandler;
 
 /**
@@ -72,12 +73,13 @@ public class TagsTFIDFServlet extends HttpServlet {
     for (long groupId : groupIds) {
       Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
       List<Long> postIds = (ArrayList<Long>) groupEntity.getProperty("posts");
-      List<String> postTexts = getGroupPostsText(postIds, response);
+      List<String> textData = getGroupPostsText(postIds, response);
+      addChallengeText(textData);
 
-      // TODO: Parallelize this process to occur for posts concurrently.
+      // TODO: Parallelize this process to occur for each string concurrently.
       ArrayList<LinkedHashMap<String, Integer>> ngramsList = new ArrayList<>();
-      for (String postText : postTexts) {
-        ngramsList.add(TFIDFStringHelper.ngramTokenizer(postText));
+      for (String text : textData) {
+        ngramsList.add(TFIDFStringHelper.ngramTokenizer(text));
       }
       groupMap.put(groupId, TFIDFStringHelper.combineMaps(ngramsList));
     }
@@ -91,15 +93,40 @@ public class TagsTFIDFServlet extends HttpServlet {
   private List<String> getGroupPostsText(List<Long> postIds, HttpServletResponse response) 
       throws IOException {
 
-    List<String> postTexts = new ArrayList<>();
+    List<String> textData = new ArrayList<>();
     for (long postId : postIds) {
       Entity postEntity = ServletHelper.getEntityFromId(response, postId, datastore, "Post");
       String postText = (String) postEntity.getProperty("postText");
-      postTexts.add(postText);
+      textData.add(postText);
+      addCommentsText(postEntity, textData);
     }
 
-    return postTexts;
+    return textData;
   }
+
+  /**
+   * Given a post, adds that post's comments to a list of group text data.
+   */
+  private void addCommentsText(Entity postEntity, List<String> textData) {
+    
+    ArrayList<EmbeddedEntity> comments = 
+        (ArrayList<EmbeddedEntity>) postEntity.getProperty("comments");
+
+    if (comments != null) {
+      for (EmbeddedEntity commentEntity : comments) {
+        String commentText = (String) commentEntity.getProperty("commentText");
+        textData.add(commentText);
+      }
+    }
+  }
+
+  /**
+   * Given a post, adds that post's comments to a list of group text data.
+   */
+  private void addChallengeText() {
+
+  }
+
 
   /**
    * Creates and returns a map of each ngram along with its occurence count among all groups.
