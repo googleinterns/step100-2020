@@ -185,8 +185,15 @@ public final class User {
     String phoneNumber = (String) entity.getProperty("phoneNumber");
     String profilePic = ""; // TODO: add profilePic url to datastore/figure out Blobstore
     String address = (String) entity.getProperty("address");
-    double latitude = (double) entity.getProperty("latitude");
-    double longitude = (double) entity.getProperty("longitude");
+    double latitude;
+    double longitude;
+    if (entity.getProperty("latitude") == null || entity.getProperty("longitude") == null) {
+      latitude = 0;
+      longitude = 0;
+    } else {
+      latitude = (double) entity.getProperty("latitude");
+      longitude = (double) entity.getProperty("longitude");
+    }
     ArrayList<String> interests = (entity.getProperty("interests") == null)
         ? new ArrayList<>()
         : (ArrayList<String>) entity.getProperty("interests");

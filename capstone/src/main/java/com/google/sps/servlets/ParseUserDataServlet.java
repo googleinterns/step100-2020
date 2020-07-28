@@ -68,10 +68,19 @@ public class ParseUserDataServlet extends HttpServlet {
     LinkedHashSet<Long> groupIds = getGroups(fields[6]);
   
     User testUser = new User(
-      userId, firstName, lastName, email, /*phoneNumber*/ "0", 
-      /* Profile Picture */ "",  /* Address */ "", 
-      latitude, longitude, /* badges */ new LinkedHashSet<Badge>(), 
-      /* groups */ groupIds, /* interests */ new ArrayList<String>());
+      userId, 
+      firstName, 
+      lastName, 
+      email, 
+      /*phoneNumber*/ "0", 
+      /* Profile Picture */ "",  
+      /* Address */ "", 
+      latitude, 
+      longitude, 
+      /* badges */ new LinkedHashSet<Badge>(), 
+      /* groups */ groupIds, 
+      /* interests */ new ArrayList<String>()
+    );
     datastore.put(testUser.toEntity());
   }
 

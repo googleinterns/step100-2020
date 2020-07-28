@@ -28,28 +28,28 @@ public class BoundingBox {
   * distance to closest point 
   */
   public boolean intersectsCircle(Location center, double distance) {
-    double boundaryX = (this.xMin + this.xMax)/2;
-    double boundaryY = (this.yMin + this.yMax)/2;
+    double boundaryX = (this.xMin + this.xMax) /2;
+    double boundaryY = (this.yMin + this.yMax) / 2;
     double boundaryWidth = this.xMax - this.yMin; 
     double boundaryHeight = this.yMax - this.yMin;
     double circleDistanceX = Math.abs(center.getLatitude() - boundaryX);
     double circleDistanceY = Math.abs(center.getLongitude() - boundaryY);
 		
-    if (circleDistanceX > distance + boundaryWidth/2) {
+    if (circleDistanceX > distance + boundaryWidth / 2) {
       return false;
     }
-    if (circleDistanceY > distance + boundaryHeight/2) {
+    if (circleDistanceY > distance + boundaryHeight / 2) {
       return false;
     }
-    if (circleDistanceX <= boundaryWidth/2) {
+    if (circleDistanceX <= boundaryWidth / 2) {
       return true;
     }
-    if (circleDistanceY <=boundaryHeight/2) {
+    if (circleDistanceY <= boundaryHeight / 2) {
       return true;
     }
 
-    double cornerDistance = (circleDistanceX - boundaryWidth/2)*(circleDistanceX - boundaryWidth/2) + 
-				(circleDistanceY - boundaryHeight/2)*(circleDistanceY - boundaryHeight/2);
+    double cornerDistance = (circleDistanceX - boundaryWidth / 2) * (circleDistanceX - boundaryWidth / 2) + 
+				(circleDistanceY - boundaryHeight / 2) * (circleDistanceY - boundaryHeight / 2);
     return (cornerDistance <= distance*distance);
   }
   

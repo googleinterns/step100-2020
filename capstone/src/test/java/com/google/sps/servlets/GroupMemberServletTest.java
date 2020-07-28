@@ -39,6 +39,7 @@ import com.google.sps.Objects.Badge;
 import com.google.sps.Objects.Challenge;
 import com.google.sps.Objects.Group;
 import com.google.sps.Objects.User;
+import com.google.sps.Objects.Tag;
 
 public class GroupMemberServletTest {
 
@@ -133,6 +134,7 @@ public class GroupMemberServletTest {
     groupEntity.setProperty("challenges", new ArrayList<Challenge>());
     groupEntity.setProperty("midLatitude", 0.0);
     groupEntity.setProperty("midLongitude", 0.0);
+    groupEntity.setProperty("tags", new ArrayList<Tag>());    
     return groupEntity;
   }
 

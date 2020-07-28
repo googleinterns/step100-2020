@@ -23,6 +23,8 @@
 function loadPage() {
   getUserData();
   createLogoutUrl();
+
+  tfidf(); // test - won't always be called from here
 }
 
 /*
@@ -216,4 +218,12 @@ function createGroup() {
     // Send a POST request to the servlet which creates a new group.
     fetch('/createGroup', {method: 'POST', body: params});
   }
+}
+
+/** 
+ * Call servlet to generate group tags. 
+ * This is just a test function, eventually it will be called via cron job. 
+ */
+function tfidf() {
+  fetch('/tags-tfidf');
 }
