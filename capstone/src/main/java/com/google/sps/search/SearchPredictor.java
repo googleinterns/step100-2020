@@ -17,7 +17,7 @@ import com.google.appengine.api.datastore.Query;
 
 public class SearchPredictor implements Serializable {
 
-  private static final int FIVE = 5;
+  private static final int COMPLETE_PARTIAL_NAME_MATCH = 5;
   private static final long serialVersionUID = 1L;
   private List<String> names;
   private Trie firstNameTrie;
@@ -66,9 +66,9 @@ public class SearchPredictor implements Serializable {
   // incomplete
   public List<String> suggest(String input) {
     Map<String, Integer> namesScore = new HashMap<String, Integer>();
-    String[] split = input.split(" ");
-    for (int i = 0; i < split.length; i++) {
-      String partialName = split[i].toUpperCase();
+    String[] firstAndLastName = input.split(" ");
+    for (int i = 0; i < firstAndLastName.length; i++) {
+      String partialName = firstAndLastName[i].toUpperCase();
       Set<String> firstNameSuggestions = firstNameTrie.searchWithPrefix(partialName, partialName);
       Set<String> lastNameSuggestions = lastNameTrie.searchWithPrefix(partialName, partialName);
       // Matching prefix first name is weighted more heavily
@@ -112,11 +112,11 @@ public class SearchPredictor implements Serializable {
       }
 
       // If there is a complete name match for first or last name, increment score by 5
-      String[] split = name.split(" ");
+      String[] firstAndLastName = name.split(" ");
       partialName = partialName.toUpperCase();
-      if (partialName.equals(split[0].toUpperCase())
-          || partialName.equals(split[1].toUpperCase())) {
-        int score = namesScore.get(name) + FIVE;
+      if (partialName.equals(firstAndLastName[0].toUpperCase())
+          || partialName.equals(firstAndLastName[1].toUpperCase())) {
+        int score = namesScore.get(name) + COMPLETE_PARTIAL_NAME_MATCH;
         namesScore.put(name, score);
       }
     }

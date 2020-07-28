@@ -77,7 +77,7 @@ public class Trie implements Serializable {
   private Set<String> findAll(Set<String> names, String prefix) {
     Map<Character, Trie> possibilities = children;
     /* If current node is the end of the a first name or last name, add the full name nodes to set of names to be returned. */
-    if (!this.fullNames.isEmpty()) {
+    if (this.getIsName()) {
       for (String fullName : this.fullNames) {
         StringBuilder sb = new StringBuilder();
         sb.append(fullName);

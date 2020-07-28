@@ -56,10 +56,4 @@ public class SearchPredictorTest {
     helper.tearDown();
     datastore = null;
   }
-
-  //  @Test
-  //  public void suggestTest() {
-  //    List<String> names = new ArrayList<String>();
-  //    when(searchPredictor.getNamesFromDb()).thenReturn(names);
-  //  }
 }
