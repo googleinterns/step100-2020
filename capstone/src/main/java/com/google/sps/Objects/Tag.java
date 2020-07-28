@@ -30,7 +30,7 @@ public final class Tag implements Comparable<Tag> {
 
   public static ArrayList<EmbeddedEntity> createTagEntities(ArrayList<Tag> tags) {
     ArrayList<EmbeddedEntity> allTags = new ArrayList<>();
-    for (Tag tag: tags) {
+    for (Tag tag : tags) {
       allTags.add(tag.toEntity());
     } 
     return allTags;
