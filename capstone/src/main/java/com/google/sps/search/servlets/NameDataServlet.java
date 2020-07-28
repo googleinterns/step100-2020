@@ -42,9 +42,6 @@ public class NameDataServlet extends AuthenticatedServlet {
       ObjectInputStream objectInput = new ObjectInputStream(fileInput);
       searchPredictor = (SearchPredictor) objectInput.readObject();
 
-      fileInput.close();
-      objectInput.close();
-      return;
     } catch (FileNotFoundException e) {
       System.err.println("File does not exist");
     } catch (IOException e) {
@@ -52,7 +49,16 @@ public class NameDataServlet extends AuthenticatedServlet {
     } catch (ClassNotFoundException e) {
       System.err.println("Class not found");
     }
-    searchPredictor = new SearchPredictor();
+    try {
+      if (fileInput != null) {
+        fileInput.close();
+      }
+      if (objectInput != null) {
+        objectInput.close();
+      }
+    } catch (IOException e) {
+      System.err.println("Cannot close file");
+    }
   }
 
   private void saveState() {
@@ -62,13 +68,22 @@ public class NameDataServlet extends AuthenticatedServlet {
       ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
       objectOutputStream.writeObject(searchPredictor);
 
-      objectOutputStream.close();
-      fileOutputStream.close();
       System.out.println("successfully written to file");
     } catch (FileNotFoundException e1) {
       System.err.println("File does not exist");
     } catch (IOException e) {
       System.err.println("Cannot write to file");
+    }
+
+    try {
+      if (objectOutputStream != null) {
+        objectOutputStream.close();
+      }
+      if (fileOutputStream != null) {
+        fileOutputStream.close();
+      }
+    } catch (IOException e) {
+      System.err.println("Cannot close file");
     }
   }
 
