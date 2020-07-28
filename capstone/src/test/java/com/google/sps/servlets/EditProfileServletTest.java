@@ -1,28 +1,19 @@
 package com.google.sps.servlets;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
 
-import com.google.sps.Objects.User;
-import com.google.sps.Objects.Badge;
-import com.google.gson.Gson;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
-import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,21 +21,29 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.ArrayList;
-import java.util.Arrays;
 
-/**
- * Unit tests for {@link EditProfileServlet}.
- */
- @RunWith(JUnit4.class)
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.sps.Objects.Badge;
+import com.google.sps.Objects.User;
+
+/** Unit tests for {@link EditProfileServlet}. */
+@RunWith(JUnit4.class)
 public class EditProfileServletTest {
   private static final String CURRENT_USER_EMAIL = "test@mctest.com";
   private static final String CURRENT_USER_ID = "testy-mc-test";
   private static final String EDIT_EMAIL = "test2@mctest.com";
   private static final String EDIT_FIRST = "Mister";
   private static final String EDIT_LAST = "McTest";
+  private static final String FULL_NAME = "MISTER MCTEST";
   private static final String EDIT_PHONE = "808-808-8080";
   private static final String EDIT_ADDRESS = "1234 Rainbow Avenue, Candy, CA, 4321";
   private static final ArrayList<String> INTERESTS_LIST = new ArrayList<String>( 
@@ -52,9 +51,9 @@ public class EditProfileServletTest {
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
-            new LocalDatastoreServiceTestConfig()
-                .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
-            new LocalUserServiceTestConfig())
+              new LocalDatastoreServiceTestConfig()
+                  .setDefaultHighRepJobPolicyUnappliedJobPercentage(0),
+              new LocalUserServiceTestConfig())
           .setEnvEmail(CURRENT_USER_EMAIL)
           .setEnvIsLoggedIn(true)
           .setEnvAuthDomain("gmail.com")
@@ -117,7 +116,7 @@ public class EditProfileServletTest {
   public void doPost_editProfile() throws Exception {
     when(mockRequest.getParameter("first")).thenReturn(EDIT_FIRST);
     when(mockRequest.getParameter("last")).thenReturn(EDIT_LAST);
-    when(mockRequest.getParameter("email")).thenReturn(EDIT_EMAIL);    
+    when(mockRequest.getParameter("email")).thenReturn(EDIT_EMAIL);
     when(mockRequest.getParameter("phone")).thenReturn(EDIT_PHONE);
     when(mockRequest.getParameter("address")).thenReturn(EDIT_ADDRESS);
     when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
@@ -129,7 +128,7 @@ public class EditProfileServletTest {
     String jsonOriginal = new Gson().toJson(CURRENT_USER);
     String jsonStored = new Gson().toJson(User.fromEntity(user));
     String jsonExpected = new Gson().toJson(EDIT_USER);
-    
+
     assertEquals(jsonStored, jsonExpected);
     assertFalse(jsonStored.equals(jsonOriginal));
   }

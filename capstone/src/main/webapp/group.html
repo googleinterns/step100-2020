@@ -82,9 +82,21 @@
         <div class="add-member-content">
           <span id="add-close" onclick="addModalListeners('add-member-modal', 'add-close')">&times;</span>
           <h2>Add Group Member</h2>
+
+          <form id="search-name" autocomplete="off">
+            <label for="member-name-input">Search by name</label>
+            <input type="text" class="input-field" name="name-search" id="name-search" placeholder="Name" onkeydown="return event.key != 'Enter';">
+            <div id="suggestions">
+            </div>
+          </form>
+          
+          <br></br>
+          <hr></hr>
+          <br></br>
+
           <form id="add-member" onsubmit="addMember()" method="POST">
-            <label for="member-email-input">Enter an email</label>
-            <input type="text" class="input-field" name="email-input" id="email-input">
+            <label for="member-email-input">Add by email</label>
+            <input type="text" class="input-field" name="email-input" id="email-input" placeholder="Email">
             <p id=memberUpdate></p>
             <button class="add-member-btn">Add</button>
           </form>
@@ -157,5 +169,6 @@
       </div>
     </template>
 
+    <script src="scripts/search.js"></script>
   </body>
 </html>

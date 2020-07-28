@@ -1,20 +1,21 @@
 package com.google.sps.Objects;
 
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 public final class User {
 
   private final String userId;
-  private String name;
   private String firstName;
   private String lastName;
+  private String fullName;
   private String email;
   private String phoneNumber;
   private String profilePic;
@@ -39,9 +40,9 @@ public final class User {
       LinkedHashSet<Long> groups, 
       ArrayList<String> interests) {
     this.userId = userId;
-    this.name = firstName + " " + lastName;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.fullName = firstName.toUpperCase() + " " + lastName.toUpperCase();
     this.email = email;
     this.phoneNumber = phoneNumber;
     this.profilePic = profilePic;
@@ -58,7 +59,7 @@ public final class User {
   }
 
   public String getName() {
-    return name;
+    return fullName;
   }
 
   public String getFirstName() {
@@ -107,12 +108,12 @@ public final class User {
 
   public void setFirstName(String firstName) {
     this.firstName = firstName;
-    this.name = firstName + " " + getLastName();
+    this.fullName = firstName.toUpperCase() + " " + getLastName().toUpperCase();
   }
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
-    this.name = getFirstName() + " " + lastName;
+    this.fullName = getFirstName().toUpperCase() + " " + lastName.toUpperCase();
   }
 
   public void setPhoneNumber(String newPhoneNumber) {
@@ -181,6 +182,7 @@ public final class User {
     String userId = (String) entity.getProperty("userId");
     String firstName = (String) entity.getProperty("firstName");
     String lastName = (String) entity.getProperty("lastName");
+    String fullName = (String) entity.getProperty("fullName");
     String email = (String) entity.getProperty("email");
     String phoneNumber = (String) entity.getProperty("phoneNumber");
     String profilePic = ""; // TODO: add profilePic url to datastore/figure out Blobstore
@@ -212,14 +214,13 @@ public final class User {
     return user;
   }
 
-  /**
-   * Creates and returns a User Entity from the current User object.
-   */
+  /** Creates and returns a User Entity from the current User object. */
   public Entity toEntity() {
     Entity userEntity = new Entity("User", userId);
     userEntity.setProperty("userId", userId);
     userEntity.setProperty("firstName", firstName);
     userEntity.setProperty("lastName", lastName);
+    userEntity.setProperty("fullName", fullName.toUpperCase());
     userEntity.setProperty("email", email);
     userEntity.setProperty("phoneNumber", phoneNumber);
     userEntity.setProperty("profilePic", profilePic);
@@ -232,11 +233,9 @@ public final class User {
     return userEntity;
   }
 
-  /**
-   * Helper method for {@code fromEntity()}. Returns a list of badges given a list of badge ids.
-   */
-  private static LinkedHashSet<Badge> getBadgeList(LinkedHashSet<Long> badgeIds) 
-      throws EntityNotFoundException { 
+  /** Helper method for {@code fromEntity()}. Returns a list of badges given a list of badge ids. */
+  private static LinkedHashSet<Badge> getBadgeList(LinkedHashSet<Long> badgeIds)
+      throws EntityNotFoundException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     LinkedHashSet<Badge> badges = new LinkedHashSet<>();
     for (long badgeId : badgeIds) {
