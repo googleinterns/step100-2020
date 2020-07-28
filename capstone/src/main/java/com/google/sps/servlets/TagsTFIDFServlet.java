@@ -74,7 +74,7 @@ public class TagsTFIDFServlet extends HttpServlet {
       Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
       List<Long> postIds = (ArrayList<Long>) groupEntity.getProperty("posts");
       List<String> textData = getGroupPostsText(postIds, response);
-      addChallengeText(textData);
+      addChallengeText(groupEntity, textData, response);
 
       // TODO: Parallelize this process to occur for each string concurrently.
       ArrayList<LinkedHashMap<String, Integer>> ngramsList = new ArrayList<>();
@@ -123,8 +123,18 @@ public class TagsTFIDFServlet extends HttpServlet {
   /**
    * Given a post, adds that post's comments to a list of group text data.
    */
-  private void addChallengeText() {
+  private void addChallengeText(Entity groupEntity, List<String> textData,
+      HttpServletResponse response) throws IOException {
+    List<Long> challengeIds = (ArrayList<Long>) groupEntity.getProperty("challenges");
 
+    if (challengeIds != null) {
+      for (long challengeId : challengeIds) {
+        Entity challengeEntity =
+          ServletHelper.getEntityFromId(response, challengeId, datastore, "Challenge");
+        String challengeName = (String) challengeEntity.getProperty("name");
+        textData.add(challengeName);
+      }
+    }
   }
 
 
