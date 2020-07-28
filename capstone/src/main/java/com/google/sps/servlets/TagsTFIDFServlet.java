@@ -135,6 +135,7 @@ public class TagsTFIDFServlet extends HttpServlet {
         double tf = (double) ngramEntry.getValue() / ngramMap.size();
         double idf = Math.log( (double) groupMap.size() / occurenceMap.get(ngram) );
         double score = tf * idf;
+        score = weightScore(score, ngram);
 
         Tag tag = new Tag(ngram, score);
         tagQueue.add(tag);
@@ -142,6 +143,16 @@ public class TagsTFIDFServlet extends HttpServlet {
       
       putTagsInDatastore(tagQueue, groupId, response);
     }
+  }
+
+  /**
+   * Weights the tf-idf score of a given ngram by taking into account its length.
+   */
+  public double weightScore(double score, String ngram) {
+    int n = ngram.split(" ").length;
+    score *= 1 + (n / 4.0);
+    score *= 1 + ((double) ngram.length() / Integer.MAX_VALUE);
+    return score;
   }
 
   /**
@@ -153,12 +164,35 @@ public class TagsTFIDFServlet extends HttpServlet {
     ArrayList<Tag> topTags = new ArrayList<>();
     int tagsLength = (tagQueue.size() >= 3) ? 3 : tagQueue.size();
     for (int i = 0; i < tagsLength; i++) {
-      topTags.add(tagQueue.poll());
+      Tag next = tagQueue.poll();
+      if (checkIfDuplicate(topTags, next)) {
+        i--;
+      } else {
+        topTags.add(next);
+      }
     }
     ArrayList<EmbeddedEntity> tags = Tag.createTagEntities(topTags);
 
     Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     groupEntity.setProperty("tags", tags);
     datastore.put(groupEntity);
+  }
+
+  /**
+   * Checks if a potential group tag is redundant.
+   */
+  public boolean checkIfDuplicate(ArrayList<Tag> topTags, Tag next) {
+    for (Tag tag : topTags) {
+      String[] existingWords = tag.getText().split(" ");
+      String[] nextWords = next.getText().split(" ");
+      for (String existingWord : existingWords) {
+        for (String word : nextWords) {
+          if (word.equals(existingWord)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 }
