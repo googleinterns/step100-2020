@@ -125,6 +125,37 @@ public class Trie implements Serializable {
     return fullNames;
   }
 
+  public Set<String> autocorrect(String input) {
+    Set<String> fullNames = new TreeSet<String>();
+    return fullNames;
+  }
+
+  public static int getEditDistance(String word1, String word2) {
+    int size1 = word1.length();
+    int size2 = word2.length();
+    int[][] ledMatrix = new int[size1 + 1][size2 + 1];
+
+    for (int i = 0; i < ledMatrix.length; i++) {
+      for (int j = 0; j < ledMatrix[0].length; j++) {
+        if (i == 0) {
+          ledMatrix[i][j] = j;
+        } else if (j == 0) {
+          ledMatrix[i][j] = i;
+        } else {
+          // check whether the current characters in each of the two words are equal
+          if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+            ledMatrix[i][j] = ledMatrix[i - 1][j - 1];
+          }
+          ledMatrix[i][j] =
+              1
+                  + Math.min(
+                      Math.min(ledMatrix[i][j - 1], ledMatrix[i - 1][j]), ledMatrix[i - 1][j - 1]);
+        }
+      }
+    }
+    return ledMatrix[size1][size2];
+  }
+
   /**
    * Helper method that checks whether the trie contains the full name by recurring down the tree
    * using the name that is passed in.
