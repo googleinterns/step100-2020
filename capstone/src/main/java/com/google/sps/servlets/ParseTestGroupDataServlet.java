@@ -24,6 +24,7 @@ import com.google.sps.Objects.User;
 import com.google.sps.Objects.Post;
 import com.google.sps.Objects.Comment;
 import com.google.sps.Objects.Group;
+import com.google.sps.Objects.Tag;
 import com.google.sps.Objects.response.PostResponse;
 import com.google.sps.servlets.ServletHelper;
 import error.ErrorHandler;
@@ -102,6 +103,7 @@ public class ParseTestGroupDataServlet extends HttpServlet {
     groupEntity.setProperty("challenges", new ArrayList<Long>());
     groupEntity.setProperty("posts", posts);
     groupEntity.setProperty("options", new ArrayList<Long>());
+    groupEntity.setProperty("tags", new ArrayList<Tag>());
     groupEntity.setProperty("groupName", groupName);
     groupEntity.setProperty("headerImg", "");
     return groupEntity;

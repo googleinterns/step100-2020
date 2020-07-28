@@ -8,6 +8,7 @@ function init() {
   getPollOptions();
   fetchBlobstoreUrlAndShowForm();
   loadMembers();
+  loadTags();
 }
 
 function getGroupId() {
