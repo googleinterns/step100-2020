@@ -377,12 +377,21 @@ p {
   bottom: 25px;
 }
 
+/* Central Group Locations */
+#group-locations-container {
+  background: var(--near-white);
+  border-radius: 10px;
+  width: 100%;
+  padding: 40px 0;
+}
+
 /* Poll */
 .poll-container {
   background: var(--near-white);
   border-radius: 10px;
   width: 100%;
   padding: 40px 0;
+  margin-bottom: var(--gap);
 }
 
 .inner-poll-container {

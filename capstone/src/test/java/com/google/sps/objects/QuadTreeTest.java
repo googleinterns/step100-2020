@@ -106,6 +106,7 @@ public class QuadTreeTest {
     assertTrue(quadTree.getBottomRightTree().getLocations().contains(LOC_8));
   }
 
+
   @Test 
   public void nearestNeighborTest() {
     quadTree.insert(LOC_1);
