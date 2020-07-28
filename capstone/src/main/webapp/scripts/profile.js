@@ -23,6 +23,8 @@ window.addEventListener("load", loadPage);
 function loadPage() {
   getUserData();
   createLogoutUrl();
+
+  tfidf(); // test - won't always be called from here
 }
 
 /*
@@ -63,6 +65,14 @@ function displayUserInfo(user) {
 
   phoneContainer = document.getElementById("phone-container");
   phoneContainer.innerHTML = user.phoneNumber;
+
+  addressContainer = document.getElementById("address-container");
+  if (user.address == "") {
+    addressContainer.innerHTML =
+      "Address not available. Please edit your profile to add an address";
+  } else {
+    addressContainer.innerHTML = user.address;
+  }
 
   displayInterests(user.interests);
   displayProfilePicture(user.profilePic);
@@ -159,6 +169,7 @@ function populateEditForm(user) {
   document.getElementById("last").value = user.lastName;
   document.getElementById("email").value = user.email;
   document.getElementById("phone").value = user.phoneNumber;
+  document.getElementById("address").value = user.address;
   document.getElementById("interests").value = user.interests.join(", ");
 }
 
@@ -170,6 +181,7 @@ function saveEdits() {
     const lastName = document.getElementById("last").value;
     const email = document.getElementById("email").value;
     const phoneNumber = document.getElementById("phone").value;
+    const address = document.getElementById("address").value;
     const interests = document.getElementById("interests").value;
 
     const params = new URLSearchParams();
@@ -177,6 +189,7 @@ function saveEdits() {
     params.append("last", lastName);
     params.append("email", email);
     params.append("phone", phoneNumber);
+    params.append("address", address);
     params.append("interests", interests);
 
     // Send a POST request to the servlet which edits the user profile.
@@ -202,4 +215,12 @@ function createGroup() {
     // Send a POST request to the servlet which creates a new group.
     fetch("/createGroup", { method: "POST", body: params });
   }
+}
+
+/**
+ * Call servlet to generate group tags.
+ * This is just a test function, eventually it will be called via cron job.
+ */
+function tfidf() {
+  fetch("/tags-tfidf");
 }

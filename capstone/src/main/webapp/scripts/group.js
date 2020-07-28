@@ -9,6 +9,7 @@ function init() {
   fetchBlobstoreUrlAndShowForm();
   loadMembers();
   autocomplete();
+  loadTags();
 }
 
 function getGroupId() {

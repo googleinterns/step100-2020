@@ -46,19 +46,21 @@ public class UserTest {
                   ImmutableMap.of(
                       "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
-  private static final ArrayList<String> INTERESTS_LIST =
-      new ArrayList<String>(Arrays.asList("Testing", "Dancing"));
-  private static final User USER_1 =
-      new User(
-          USER_ID,
-          "Test",
-          "McTest",
-          USER_EMAIL,
-          /* phoneNumber= */ "123-456-7890",
-          /* profilePic= */ "",
-          /* badges= */ new LinkedHashSet<Badge>(),
-          /* groups= */ new LinkedHashSet<Long>(),
-          /* interests= */ INTERESTS_LIST);
+  private static final ArrayList<String> INTERESTS_LIST = new ArrayList<String>( 
+      Arrays.asList("Testing", "Dancing"));
+  private static final User USER_1 = new User(
+                          USER_ID, 
+                          "Test", 
+                          "McTest", 
+                          USER_EMAIL, 
+                          /* phoneNumber= */ "123-456-7890", 
+                          /* profilePic= */ "",
+                          /* address= */ "", 
+                          /* latitude= */ 0,
+                          /* longitude= */ 0,
+                          /* badges= */ new LinkedHashSet<Badge>(), 
+                          /* groups= */ new LinkedHashSet<Long>(), 
+                          /* interests= */ INTERESTS_LIST);
 
   private DatastoreService datastore;
 

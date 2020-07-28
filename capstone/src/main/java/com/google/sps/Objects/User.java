@@ -19,19 +19,25 @@ public final class User {
   private String email;
   private String phoneNumber;
   private String profilePic;
+  private String address;
+  private double longitude;
+  private double latitude;
   private final LinkedHashSet<Badge> badges;
   private final LinkedHashSet<Long> groups;
   private ArrayList<String> interests;
 
   public User(
-      String userId,
-      String firstName,
-      String lastName,
-      String email,
-      String phoneNumber,
-      String profilePic,
-      LinkedHashSet<Badge> badges,
-      LinkedHashSet<Long> groups,
+      String userId, 
+      String firstName, 
+      String lastName, 
+      String email, 
+      String phoneNumber, 
+      String profilePic, 
+      String address,
+      double latitude, 
+      double longitude, 
+      LinkedHashSet<Badge> badges, 
+      LinkedHashSet<Long> groups, 
       ArrayList<String> interests) {
     this.userId = userId;
     this.firstName = firstName;
@@ -40,6 +46,9 @@ public final class User {
     this.email = email;
     this.phoneNumber = phoneNumber;
     this.profilePic = profilePic;
+    this.address = address;
+    this.longitude = longitude;
+    this.latitude = latitude;
     this.badges = badges;
     this.groups = groups;
     this.interests = interests;
@@ -85,6 +94,18 @@ public final class User {
     return interests;
   }
 
+  public String getAddress() {
+    return address;
+  }
+
+  public double getLatitude() {
+    return latitude;
+  }
+
+  public double getLongitude() {
+    return longitude;
+  }
+
   public void setFirstName(String firstName) {
     this.firstName = firstName;
     this.fullName = firstName.toUpperCase() + " " + getLastName().toUpperCase();
@@ -119,8 +140,20 @@ public final class User {
     this.groups.add(newGroupId);
   }
 
-  /*
-   * Overrides the equals() method to effectively compare two User objects.
+  public void setLatitude(double latitude) {
+    this.latitude = latitude;
+  }
+
+  public void setLongitude(double longitude) {
+    this.longitude = longitude;
+  }
+
+  public void setAddress(String address) {
+    this.address = address;
+  }
+
+  /* 
+   * Overrides the equals() method to effectively compare two User objects. 
    */
   @Override
   public boolean equals(Object other) {
@@ -128,22 +161,23 @@ public final class User {
     if (other == this) return true;
     if (!(other instanceof User)) return false;
     User user = (User) other;
-    return userId.equals(user.userId)
-        && firstName.equals(user.firstName)
-        && lastName.equals(user.lastName)
-        && fullName.equals(user.fullName)
-        && email.equals(user.email)
-        && phoneNumber.equals(user.phoneNumber)
-        && profilePic.equals(user.profilePic)
-        && interests.containsAll(user.interests)
-        && user.interests.containsAll(interests)
-        && groups.containsAll(user.groups)
-        && user.groups.containsAll(groups)
-        && badges.containsAll(user.badges)
-        && user.badges.containsAll(badges);
+    return userId.equals(user.userId) &&
+        firstName.equals(user.firstName) &&
+        lastName.equals(user.lastName) &&
+        email.equals(user.email) &&
+        phoneNumber.equals(user.phoneNumber) &&
+        profilePic.equals(user.profilePic) &&
+        address.equals(user.address) &&
+        latitude == user.latitude &&
+        longitude == user.longitude &&
+        interests.containsAll(user.interests) && user.interests.containsAll(interests) &&
+        groups.containsAll(user.groups) && user.groups.containsAll(groups) &&
+        badges.containsAll(user.badges) && user.badges.containsAll(badges);
   }
 
-  /** Creates and returns a User object given a user Entity. */
+  /**
+   * Creates and returns a User object given a user Entity.
+   */
   public static User fromEntity(Entity entity) throws EntityNotFoundException {
     String userId = (String) entity.getProperty("userId");
     String firstName = (String) entity.getProperty("firstName");
@@ -152,33 +186,31 @@ public final class User {
     String email = (String) entity.getProperty("email");
     String phoneNumber = (String) entity.getProperty("phoneNumber");
     String profilePic = ""; // TODO: add profilePic url to datastore/figure out Blobstore
-    ArrayList<String> interests =
-        (entity.getProperty("interests") == null)
-            ? new ArrayList<>()
-            : (ArrayList<String>) entity.getProperty("interests");
-    LinkedHashSet<Long> groupIds =
-        (entity.getProperty("groups") == null)
-            ? new LinkedHashSet<>()
-            : new LinkedHashSet<Long>((ArrayList<Long>) entity.getProperty("groups"));
+    String address = (String) entity.getProperty("address");
+    double latitude;
+    double longitude;
+    if (entity.getProperty("latitude") == null || entity.getProperty("longitude") == null) {
+      latitude = 0;
+      longitude = 0;
+    } else {
+      latitude = (double) entity.getProperty("latitude");
+      longitude = (double) entity.getProperty("longitude");
+    }
+    ArrayList<String> interests = (entity.getProperty("interests") == null)
+        ? new ArrayList<>()
+        : (ArrayList<String>) entity.getProperty("interests");
+    LinkedHashSet<Long> groupIds = (entity.getProperty("groups") == null)
+        ? new LinkedHashSet<>()
+        : new LinkedHashSet<Long>((ArrayList<Long>) entity.getProperty("groups"));
 
-    LinkedHashSet<Long> badgeIds =
-        (entity.getProperty("badges") == null)
-            ? new LinkedHashSet<>()
-            : new LinkedHashSet<Long>((ArrayList<Long>) entity.getProperty("badges"));
+    LinkedHashSet<Long> badgeIds = (entity.getProperty("badges") == null)
+        ? new LinkedHashSet<>()
+        : new LinkedHashSet<Long>((ArrayList<Long>) entity.getProperty("badges"));
 
     LinkedHashSet<Badge> badges = getBadgeList(badgeIds);
 
-    User user =
-        new User(
-            userId,
-            firstName,
-            lastName,
-            email,
-            phoneNumber,
-            profilePic,
-            badges,
-            groupIds,
-            interests);
+    User user = new User(userId, firstName, lastName, email, phoneNumber, profilePic, address, latitude, longitude,
+                         badges, groupIds, interests);
     return user;
   }
 
@@ -192,6 +224,9 @@ public final class User {
     userEntity.setProperty("email", email);
     userEntity.setProperty("phoneNumber", phoneNumber);
     userEntity.setProperty("profilePic", profilePic);
+    userEntity.setProperty("address", address);
+    userEntity.setProperty("latitude", latitude);
+    userEntity.setProperty("longitude", longitude);
     userEntity.setProperty("badges", badges);
     userEntity.setProperty("groups", groups);
     userEntity.setProperty("interests", interests);

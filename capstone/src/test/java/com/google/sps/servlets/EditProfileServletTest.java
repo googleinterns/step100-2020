@@ -45,8 +45,9 @@ public class EditProfileServletTest {
   private static final String EDIT_LAST = "McTest";
   private static final String FULL_NAME = "MISTER MCTEST";
   private static final String EDIT_PHONE = "808-808-8080";
-  private static final ArrayList<String> INTERESTS_LIST =
-      new ArrayList<String>(Arrays.asList("Testing", "Dancing"));
+  private static final String EDIT_ADDRESS = "1234 Rainbow Avenue, Candy, CA, 4321";
+  private static final ArrayList<String> INTERESTS_LIST = new ArrayList<String>( 
+      Arrays.asList("Testing", "Dancing"));
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -61,29 +62,28 @@ public class EditProfileServletTest {
                   ImmutableMap.of(
                       "com.google.appengine.api.users.UserService.user_id_key", CURRENT_USER_ID)));
 
-  private static final User CURRENT_USER =
-      new User(
-          CURRENT_USER_ID,
-          "Test",
-          "McTest",
-          CURRENT_USER_EMAIL,
-          /* phoneNumber= */ "123-456-7890",
-          /* profilePic= */ "",
-          /* badges= */ new LinkedHashSet<Badge>(),
-          /* groups= */ new LinkedHashSet<Long>(),
-          /* interests= */ INTERESTS_LIST);
+  private static final User CURRENT_USER = new User(CURRENT_USER_ID, "Test", "McTest", 
+                          CURRENT_USER_EMAIL, 
+                          /* phoneNumber= */ "123-456-7890", 
+                          /* profilePic= */ "",
+                          /* address= */ "", 
+                          /* latitude= */ 0,
+                          /* longitude= */ 0,
+                          /* badges= */ new LinkedHashSet<Badge>(), 
+                          /* groups= */ new LinkedHashSet<Long>(), 
+                          /* interests= */ INTERESTS_LIST);
+  
+  private static final User EDIT_USER = new User(CURRENT_USER_ID, EDIT_FIRST, EDIT_LAST, 
+                          EDIT_EMAIL, 
+                          /* phoneNumber= */ EDIT_PHONE, 
+                          /* profilePic= */ "", 
+                          /* address= */ EDIT_ADDRESS,
+                          /* latitude= */ 0,
+                          /* longitude= */ 0,
+                          /* badges= */ new LinkedHashSet<Badge>(), 
+                          /* groups= */ new LinkedHashSet<Long>(), 
+                          /* interests= */ INTERESTS_LIST);                        
 
-  private static final User EDIT_USER =
-      new User(
-          CURRENT_USER_ID,
-          EDIT_FIRST,
-          EDIT_LAST,
-          EDIT_EMAIL,
-          /* phoneNumber= */ EDIT_PHONE,
-          /* profilePic= */ "",
-          /* badges= */ new LinkedHashSet<Badge>(),
-          /* groups= */ new LinkedHashSet<Long>(),
-          /* interests= */ INTERESTS_LIST);
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -118,6 +118,7 @@ public class EditProfileServletTest {
     when(mockRequest.getParameter("last")).thenReturn(EDIT_LAST);
     when(mockRequest.getParameter("email")).thenReturn(EDIT_EMAIL);
     when(mockRequest.getParameter("phone")).thenReturn(EDIT_PHONE);
+    when(mockRequest.getParameter("address")).thenReturn(EDIT_ADDRESS);
     when(mockRequest.getParameter("interests")).thenReturn("Testing, Dancing");
 
     editProfileServlet.doPost(mockRequest, mockResponse);

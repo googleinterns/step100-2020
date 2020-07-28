@@ -49,21 +49,25 @@ public class CreateNewUserServlet extends AuthenticatedServlet {
     String first = request.getParameter("first");
     String last = request.getParameter("last");
     String phone = request.getParameter("phone");
+    String address = request.getParameter("address");
+    double latitude = Double.parseDouble(request.getParameter("latitude"));
+    double longitude = Double.parseDouble(request.getParameter("longitude"));
     ArrayList<String> interests = getInterests(request);
 
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    User user =
-        new User(
-            userId,
-            first,
-            last,
-            /* email= */ userService.getCurrentUser().getEmail(),
-            phone,
-            /* profilePic= */ "",
-            /* badges= */ new LinkedHashSet<Badge>(),
-            /* groups= */ new LinkedHashSet<Long>(),
-            interests);
+    User user = new User(userId,
+                        first,
+                        last, 
+                        /* email= */ userService.getCurrentUser().getEmail(),
+                        phone, 
+                        /* profilePic= */ "", 
+                        /* address= */ address, 
+                        /* latitude= */ latitude, 
+                        /* longitude= */ longitude, 
+                        /* badges= */ new LinkedHashSet<Badge>(), 
+                        /* groups= */ new LinkedHashSet<Long>(), 
+                        interests);
     datastore.put(user.toEntity());
 
     this.insertNameIntoTries(first, last);

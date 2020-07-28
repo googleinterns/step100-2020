@@ -37,6 +37,7 @@ import com.google.gson.Gson;
 import com.google.sps.Objects.Badge;
 import com.google.sps.Objects.Group;
 import com.google.sps.Objects.User;
+import com.google.sps.Objects.Tag;
 
 /** Unit tests for {@link CreateGroupServlet}. */
 @RunWith(JUnit4.class)
@@ -55,6 +56,9 @@ public class CreateGroupServletTest {
           USER_EMAIL,
           /* phoneNumber= */ "123-456-7890",
           /* profilePic= */ "",
+          /* address= */ "",
+          /* latitude= */ 0,
+          /* longitude= */ 0,
           /* badges= */ new LinkedHashSet<Badge>(),
           /* groups= */ new LinkedHashSet<Long>(),
           /* interests= */ new ArrayList<String>());
@@ -65,9 +69,13 @@ public class CreateGroupServletTest {
           /* challenges= */ new ArrayList<Long>(),
           /* posts= */ new ArrayList<Long>(),
           /* options= */ new ArrayList<Long>(),
+          /* locationIds= */ new ArrayList<Long>(),
+          /* tags= */ new ArrayList<Tag>(),
           /* groupName= */ GROUP_NAME,
           /* headerImg= */ "",
-          /* groupId= */ GROUP_ID);
+          /* groupId= */ GROUP_ID, 
+          /* midLatitude= */ 0,
+          /* midLongitude= */ 0);
 
   private static final Group GROUP_2 =
       new Group(
@@ -75,9 +83,13 @@ public class CreateGroupServletTest {
           /* challenges= */ new ArrayList<Long>(),
           /* posts= */ new ArrayList<Long>(),
           /* options= */ new ArrayList<Long>(),
+          /* locationIds= */ new ArrayList<Long>(),
+          /* tags= */ new ArrayList<Tag>(),
           /* groupName= */ GROUP_NAME,
           /* headerImg= */ "",
-          /* groupId= */ GROUP_ID_2);
+          /* groupId= */ GROUP_ID_2, 
+          /* midLatitude= */ 0,
+          /* midLongitude= */ 0);
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
