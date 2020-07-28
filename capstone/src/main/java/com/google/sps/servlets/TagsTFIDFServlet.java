@@ -33,6 +33,7 @@ import error.ErrorHandler;
 public class TagsTFIDFServlet extends HttpServlet {
 
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private int longestNgramLength = 0;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -140,8 +141,9 @@ public class TagsTFIDFServlet extends HttpServlet {
 
   /**
    * Creates and returns a map of each ngram along with its occurence count among all groups.
+   * Also checks the length of each ngram in order to determine the longest string.
    */
-  private LinkedHashMap<String, Integer> getTotalOccurences(
+  public LinkedHashMap<String, Integer> getTotalOccurences(
       LinkedHashMap<Long, LinkedHashMap<String, Integer>> groupMap) {
 
     LinkedHashMap<String, Integer> occurences = new LinkedHashMap<String, Integer>();
@@ -152,6 +154,10 @@ public class TagsTFIDFServlet extends HttpServlet {
         String ngram = ngramEntry.getKey();
         Integer count = occurences.getOrDefault(ngram, 0);
         occurences.put(ngram, count + 1);
+
+        if (ngram.length() > longestNgramLength) {
+          longestNgramLength = ngram.length();
+        }
       }
     }
     return occurences;
@@ -185,10 +191,13 @@ public class TagsTFIDFServlet extends HttpServlet {
   /**
    * Weights the tf-idf score of a given ngram by taking into account its length.
    */
-  public double weightScore(double score, String ngram) {
-    int n = ngram.split(" ").length;
-    score *= 1 + (n / 4.0);
-    score *= 1 + ((double) ngram.length() / Integer.MAX_VALUE);
+  private double weightScore(double score, String ngram) {
+    double wordsWeight = (ngram.split(" ").length / 3.1);
+    double lengthWeight = ((double) ngram.length() / longestNgramLength);
+
+    double totalWeight = 1 + wordsWeight + lengthWeight;
+    score *= totalWeight;
+
     return score;
   }
 

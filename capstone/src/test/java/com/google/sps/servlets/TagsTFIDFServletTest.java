@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -36,6 +37,8 @@ import com.google.sps.Objects.Challenge;
  */
  @RunWith(JUnit4.class)
 public class TagsTFIDFServletTest {
+  private final long GROUP_ID_1 = 1;
+  private final long GROUP_ID_2 = 2;
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -48,14 +51,21 @@ public class TagsTFIDFServletTest {
   @Mock private HttpServletResponse mockResponse;
   private StringWriter responseWriter;
   private DatastoreService datastore;
+  private LinkedHashMap<Long, LinkedHashMap<String, Integer>> groupMap;
   private TagsTFIDFServlet tagsTFIDFServlet;
 
   @Before
-  public void setUp() {
+  public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     helper.setUp();
+
     datastore = DatastoreServiceFactory.getDatastoreService();
     populateDatabase(datastore);
+    setUpGroupMap();
+
+    // Set up a fake HTTP response.
+    responseWriter = new StringWriter();
+    when(mockResponse.getWriter()).thenReturn(new PrintWriter(responseWriter));
 
     tagsTFIDFServlet = new TagsTFIDFServlet();
   }
@@ -66,8 +76,39 @@ public class TagsTFIDFServletTest {
   }
 
   @Test
-  public void doGet_checkIfTagGenerated() {
-    assertEquals(1, 1);
+  public void checkIfDuplicate_test() throws Exception {
+    ArrayList<Tag> topTags = new ArrayList<Tag>();
+    topTags.add(new Tag("world", 0.5));
+    topTags.add(new Tag("hello world", 2.5));
+    topTags.add(new Tag("greetings pals", 2.0));
+    Tag next = new Tag("hello", 0.3);
+
+    assertTrue(tagsTFIDFServlet.checkIfDuplicate(topTags, next));
+  }
+
+  @Test
+  public void getTotalOccurences_test() throws Exception {
+    LinkedHashMap<String, Integer> expectedMap = new LinkedHashMap<>();
+    expectedMap.put("hello", 2);
+    expectedMap.put("my friends", 2);
+    expectedMap.put("why hello", 1);
+    expectedMap.put("nice to see", 1);
+
+    LinkedHashMap<String, Integer> occurenceMap = tagsTFIDFServlet.getTotalOccurences(groupMap);
+
+    assertEquals(occurenceMap, expectedMap);
+  }
+
+  @Test
+  public void calculateTFIDF_test() throws Exception {
+    LinkedHashMap<String, Integer> occurenceMap = tagsTFIDFServlet.getTotalOccurences(groupMap);
+
+    tagsTFIDFServlet.calculateTFIDF(groupMap, occurenceMap, mockResponse);
+
+    Key groupKey = KeyFactory.createKey("Group", GROUP_ID_1);
+    Entity groupEntity = datastore.get(groupKey);
+    
+    assertTrue(groupEntity.getProperty("tags") != null);
   }
 
   private void populateDatabase(DatastoreService datastore) {
@@ -84,14 +125,31 @@ public class TagsTFIDFServletTest {
     groupEntity.setProperty("posts", new ArrayList<Long>(postIds));
     groupEntity.setProperty("options", new ArrayList<Long>());
     groupEntity.setProperty("challenges", new ArrayList<Challenge>());
+    groupEntity.setProperty("tags", new ArrayList<Tag>());
     return groupEntity;
   }
 
   private ArrayList<Long> createPosts() {
     ArrayList<Long> postIds = new ArrayList<>();
 
-    
     return postIds;
     //finish implementing
+  }
+
+  private void setUpGroupMap() {
+    groupMap = new LinkedHashMap<Long, LinkedHashMap<String, Integer>>();
+
+    LinkedHashMap<String, Integer> ngramMap1 = new LinkedHashMap<>();
+    ngramMap1.put("hello", 1);
+    ngramMap1.put("my friends", 1);
+    ngramMap1.put("why hello", 1);
+
+    LinkedHashMap<String, Integer> ngramMap2 = new LinkedHashMap<>();
+    ngramMap2.put("hello", 1);
+    ngramMap2.put("my friends", 1);
+    ngramMap2.put("nice to see", 1);
+
+    groupMap.put(GROUP_ID_1, ngramMap1);
+    groupMap.put(GROUP_ID_2, ngramMap2);
   }
 } 
