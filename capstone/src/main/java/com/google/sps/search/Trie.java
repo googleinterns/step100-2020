@@ -94,6 +94,63 @@ public class Trie implements Serializable {
   }
 
   /**
+   * Checks whether the input can be split into a full name by splitting input at each index and
+   * checking whether the newly created first and last name exist in the set of full names in the
+   * trie. For example, input "andrewsweet" can be split in "Andrew Sweet," and if this name is in
+   * the trie, then the name will be added to the set. Boolean reversed indicates whether to search
+   * for the name but first and last name are reversed. For example, "sweetandrew" is reversed and
+   * it can be split but into "Sweet Andrew," for which we can check that the reverse ("Andrew
+   * Sweet") is in the trie.
+   *
+   * @param input user input
+   * @param reversed boolean representing whether name is reversed
+   * @return Set of name suggestions
+   */
+  public Set<String> whitespace(String input, boolean reversed) {
+    Set<String> fullNames = new TreeSet<String>();
+
+    for (int i = 0; i < input.length(); i++) {
+      String firstName = input.substring(0, i);
+      String lastName = input.substring(i);
+      String fullName = "";
+      if (reversed) {
+        fullName = lastName + " " + firstName;
+      } else {
+        fullName = firstName + " " + lastName;
+      }
+      if (this.hasFullName(firstName, fullName)) {
+        fullNames.add(fullName);
+      }
+    }
+    return fullNames;
+  }
+
+  /**
+   * Helper method that checks whether the trie contains the full name by recurring down the tree
+   * using the name that is passed in.
+   *
+   * @param name either first or last name
+   * @param fullName both first and last name
+   * @return boolean whether full name is in trie.
+   */
+  private boolean hasFullName(String name, String fullName) {
+    if (name.equals("")) {
+      if (this.fullNames.contains(fullName)) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      char firstChar = name.charAt(0);
+      if (children.containsKey(firstChar)) {
+        return children.get(firstChar).hasFullName(name.substring(1), fullName);
+      } else {
+        return false;
+      }
+    }
+  }
+
+  /**
    * Returns children of current Trie node.
    *
    * @return map from string to Trie object

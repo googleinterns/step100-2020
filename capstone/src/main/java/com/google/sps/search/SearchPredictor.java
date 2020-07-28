@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.Query;
 public class SearchPredictor implements Serializable {
 
   private static final int COMPLETE_PARTIAL_NAME_MATCH = 5;
+  private static final int COMPLETE_MATCH = 10;
   private static final long serialVersionUID = 1L;
   private List<String> names;
   private Trie firstNameTrie;
@@ -67,6 +68,13 @@ public class SearchPredictor implements Serializable {
   public List<String> suggest(String input) {
     Map<String, Integer> namesScore = new HashMap<String, Integer>();
     String[] firstAndLastName = input.split(" ");
+
+    Set<String> whitespaceSuggestionsFirstName =
+        firstNameTrie.whitespace(input, /* reversed */ false);
+    Set<String> whitespaceSuggestionsLastName = lastNameTrie.whitespace(input, /* reversed */ true);
+    this.addToMap(namesScore, whitespaceSuggestionsFirstName, COMPLETE_MATCH);
+    this.addToMap(namesScore, whitespaceSuggestionsLastName, COMPLETE_MATCH);
+
     for (int i = 0; i < firstAndLastName.length; i++) {
       String partialName = firstAndLastName[i].toUpperCase();
       Set<String> firstNameSuggestions = firstNameTrie.searchWithPrefix(partialName, partialName);
@@ -75,6 +83,7 @@ public class SearchPredictor implements Serializable {
       this.addToMap(namesScore, firstNameSuggestions, partialName, 2);
       this.addToMap(namesScore, lastNameSuggestions, partialName, 1);
     }
+
     List<String> sortedNames = this.sortNames(namesScore);
     return sortedNames;
   }
@@ -117,6 +126,19 @@ public class SearchPredictor implements Serializable {
       if (partialName.equals(firstAndLastName[0].toUpperCase())
           || partialName.equals(firstAndLastName[1].toUpperCase())) {
         int score = namesScore.get(name) + COMPLETE_PARTIAL_NAME_MATCH;
+        namesScore.put(name, score);
+      }
+    }
+    return namesScore;
+  }
+
+  private Map<String, Integer> addToMap(
+      Map<String, Integer> namesScore, Set<String> set, int increment) {
+    for (String name : set) {
+      if (!namesScore.containsKey(name)) {
+        namesScore.put(name, increment);
+      } else {
+        int score = namesScore.get(name) + 1;
         namesScore.put(name, score);
       }
     }
