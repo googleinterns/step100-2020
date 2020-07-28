@@ -1,6 +1,7 @@
 package com.google.sps.search;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +40,7 @@ public class SearchPredictorTest {
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
+  @Mock private Serializable serial;
   @Spy private SearchPredictor searchPredictor;
   private DatastoreService datastore;
 

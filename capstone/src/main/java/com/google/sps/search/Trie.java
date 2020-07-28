@@ -17,8 +17,7 @@ import java.util.TreeSet;
 public class Trie implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  private Map<String, Trie> children;
-  private boolean isName;
+  private Map<Character, Trie> children;
   private Set<String> fullNames;
 
   /**
@@ -26,8 +25,7 @@ public class Trie implements Serializable {
    * name.
    */
   public Trie() {
-    this.children = new HashMap<String, Trie>();
-    this.isName = false;
+    this.children = new HashMap<Character, Trie>();
     this.fullNames = new HashSet<String>();
   }
 
@@ -39,11 +37,9 @@ public class Trie implements Serializable {
    */
   public void insert(String name, String fullName) {
     if (name.contentEquals("")) {
-      // indicates the end of first name or last name
-      this.isName = true;
       fullNames.add(fullName);
     } else {
-      String firstChar = name.substring(0, 1).toUpperCase();
+      Character firstChar = Character.toUpperCase(name.charAt(0));
       if (!(this.children.containsKey(firstChar))) {
         this.children.put(firstChar, new Trie());
       }
@@ -62,7 +58,7 @@ public class Trie implements Serializable {
     if (prefix.equals("")) {
       return findAll(new TreeSet<String>(), totalPrefix);
     } else {
-      String firstChar = prefix.substring(0, 1).toUpperCase();
+      Character firstChar = Character.toUpperCase(prefix.charAt(0));
       if (this.children.containsKey(firstChar)) {
         return this.children.get(firstChar).searchWithPrefix(prefix.substring(1), totalPrefix);
       } else {
@@ -79,16 +75,16 @@ public class Trie implements Serializable {
    * @return set of full names formed from node in Trie
    */
   private Set<String> findAll(Set<String> names, String prefix) {
-    Map<String, Trie> possibilities = children;
+    Map<Character, Trie> possibilities = children;
     /* If current node is the end of the a first name or last name, add the full name nodes to set of names to be returned. */
-    if (this.isName) {
+    if (this.getIsName()) {
       for (String fullName : this.fullNames) {
         StringBuilder sb = new StringBuilder();
         sb.append(fullName);
         names.add(sb.toString());
       }
     }
-    for (String letter : possibilities.keySet()) {
+    for (Character letter : possibilities.keySet()) {
       StringBuilder sb = new StringBuilder();
       sb.append(prefix);
       sb.append(letter);
@@ -102,7 +98,7 @@ public class Trie implements Serializable {
    *
    * @return map from string to Trie object
    */
-  public Map<String, Trie> getChildren() {
+  public Map<Character, Trie> getChildren() {
     return this.children;
   }
 
@@ -112,7 +108,7 @@ public class Trie implements Serializable {
    * @return boolean
    */
   public boolean getIsName() {
-    return this.isName;
+    return !this.fullNames.isEmpty();
   }
 
   public Set<String> getFullNames() {
