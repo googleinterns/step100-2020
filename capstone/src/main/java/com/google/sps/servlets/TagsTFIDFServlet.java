@@ -121,7 +121,7 @@ public class TagsTFIDFServlet extends HttpServlet {
   }
 
   /**
-   * Given a post, adds that post's comments to a list of group text data.
+   * Add's a group's challenge names into a list of group text data.
    */
   private void addChallengeText(Entity groupEntity, List<String> textData,
       HttpServletResponse response) throws IOException {
