@@ -58,7 +58,7 @@ public class QuadTreeTest {
     bounds = new BoundingBox(40.19651063, -80.24141311, 40.67455069, -79.76228567);
     quadTree = 
       new QuadTree(
-        /* NODE_CAPACITY */ 4,
+        /* NODE_CAPACITY */ 2,
         /* level */ 0,
         /* BoundingBox */ bounds);
   }
@@ -73,21 +73,44 @@ public class QuadTreeTest {
   public void insertTest_noSplits() {
     quadTree.insert(LOC_1);
     quadTree.insert(LOC_2);
-    quadTree.insert(LOC_3);
-    quadTree.insert(LOC_4);
     
-    assertTrue(quadTree.numPoints == 4);
+    assertTrue(quadTree.numPoints == 2);
     assertTrue(quadTree.level == 0);
     assertTrue(quadTree.getChildren().size() == 0);
     
     assertTrue(quadTree.getLocations().contains(LOC_1));
     assertTrue(quadTree.getLocations().contains(LOC_2));
-    assertTrue(quadTree.getLocations().contains(LOC_3));
-    assertTrue(quadTree.getLocations().contains(LOC_4));
   }
 
   @Test 
   public void insertTest_oneSplit() {
+    quadTree.insert(LOC_2);
+    quadTree.insert(LOC_3);
+    quadTree.insert(LOC_4);
+    quadTree.insert(LOC_5);
+    quadTree.insert(LOC_6);
+    quadTree.insert(LOC_7);
+    quadTree.insert(LOC_8);
+
+    assertTrue(quadTree.numPoints == 7);
+    assertTrue(quadTree.getChildren().size() == 4);
+
+    // level 0
+    assertTrue(quadTree.level == 0);
+    assertTrue(quadTree.getLocations().contains(LOC_2));
+    assertTrue(quadTree.getLocations().contains(LOC_3));
+
+    // level 1 (after 1 split)
+    assertTrue(quadTree.getTopLeftTree().level == 1);
+    assertTrue(quadTree.getTopLeftTree().getLocations().contains(LOC_5));
+    assertTrue(quadTree.getTopLeftTree().getLocations().contains(LOC_6));
+    assertTrue(quadTree.getTopRightTree().getLocations().contains(LOC_7));
+    assertTrue(quadTree.getBottomRightTree().getLocations().contains(LOC_8));
+    assertTrue(quadTree.getBottomRightTree().getLocations().contains(LOC_4));
+  }
+
+  @Test 
+  public void insertTest_twoSplits() {
     quadTree.insert(LOC_1);
     quadTree.insert(LOC_2);
     quadTree.insert(LOC_3);
@@ -100,10 +123,22 @@ public class QuadTreeTest {
     assertTrue(quadTree.numPoints == 8);
     assertTrue(quadTree.getChildren().size() == 4);
 
+    // level 0 
+    assertTrue(quadTree.level == 0);
+    assertTrue(quadTree.getLocations().contains(LOC_1));
+    assertTrue(quadTree.getLocations().contains(LOC_2));
+
+    // level 1 (after 1 split)
+    assertTrue(quadTree.getTopLeftTree().level == 1);
+    assertTrue(quadTree.getTopLeftTree().getLocations().contains(LOC_3));
     assertTrue(quadTree.getTopLeftTree().getLocations().contains(LOC_5));
-    assertTrue(quadTree.getTopLeftTree().getLocations().contains(LOC_6));
     assertTrue(quadTree.getTopRightTree().getLocations().contains(LOC_7));
     assertTrue(quadTree.getBottomRightTree().getLocations().contains(LOC_8));
+    assertTrue(quadTree.getBottomRightTree().getLocations().contains(LOC_4));
+
+    // level 2 (after 2 splits)
+    assertTrue(quadTree.getTopLeftTree().getBottomRightTree().level == 2);
+    assertTrue(quadTree.getTopLeftTree().getBottomRightTree().getLocations().contains(LOC_6));
   }
 
   @Test 
