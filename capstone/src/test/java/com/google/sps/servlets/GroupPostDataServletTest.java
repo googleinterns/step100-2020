@@ -36,6 +36,7 @@ import com.google.sps.Objects.Challenge;
 import com.google.sps.Objects.Comment;
 import com.google.sps.Objects.Post;
 import com.google.sps.Objects.User;
+import com.google.sps.Objects.Tag;
 
 public class GroupPostDataServletTest {
 
@@ -132,7 +133,8 @@ public class GroupPostDataServletTest {
     groupEntity.setProperty("memberIds", new ArrayList<String>(Arrays.asList(USER_ID)));
     groupEntity.setProperty("posts", new ArrayList<Long>(Arrays.asList(POST_ID)));
     groupEntity.setProperty("options", new ArrayList<Long>());
-    groupEntity.setProperty("challenges", new ArrayList<Challenge>());
+    groupEntity.setProperty("challenges", new ArrayList<Long>());
+    groupEntity.setProperty("tags", new ArrayList<Tag>());
     return groupEntity;
   }
 

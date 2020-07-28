@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import com.google.sps.Objects.TFIDFStringHelper;
 
 /**
@@ -134,7 +135,10 @@ public class TFIDFStringHelperTest {
     expectedMap.put("how about them", 1);
     expectedMap.put("about them how", 1);
 
-    assertEquals(expectedMap, TFIDFStringHelper.combineMaps(ngramsMap1, ngramsMap2));
+    ArrayList<LinkedHashMap<String, Integer>> maps = new ArrayList<>();
+    maps.add(ngramsMap1);
+    maps.add(ngramsMap2);
+    assertEquals(expectedMap, TFIDFStringHelper.combineMaps(maps));
   }
 
   @Test
@@ -164,6 +168,10 @@ public class TFIDFStringHelperTest {
     expectedMap.put("how about them", 1);
     expectedMap.put("about them how", 1);
 
-    assertEquals(expectedMap, TFIDFStringHelper.combineMaps(ngramsMap1, ngramsMap1, ngramsMap2));
+    ArrayList<LinkedHashMap<String, Integer>> maps = new ArrayList<>();
+    maps.add(ngramsMap1);
+    maps.add(ngramsMap1);
+    maps.add(ngramsMap2);
+    assertEquals(expectedMap, TFIDFStringHelper.combineMaps(maps));
   }
 }
