@@ -86,19 +86,8 @@ function createNewUser() {
     params.append('phone', phoneNumber);
     params.append('address', address);
     params.append('interests', interests);
-
-    var geocoder = new google.maps.Geocoder();
-    geocoder.geocode( { 'address': address}, function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        var latitude = results[0].geometry.location.lat();
-        var longitude = results[0].geometry.location.lng();
-        params.append('latitude', latitude);
-        params.append('longitude', longitude);
-      } else {
-        params.append('latitude', 0.0);
-        params.append('longitude', 0.0);
-      }
-    }); 
+    params.append('latitude', 0.0);
+    params.append('longitude', 0.0);
 
     // Send a POST request to the servlet which registers a new user.
     fetch('/createNewUser', {method: 'POST', body: params})

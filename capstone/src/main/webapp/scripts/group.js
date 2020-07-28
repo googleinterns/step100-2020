@@ -8,10 +8,29 @@ function init() {
   getPollOptions();
   fetchBlobstoreUrlAndShowForm();
   loadMembers();
+  findClosestGroupLocations();
 }
 
 function getGroupId() {
   groupId = window.location.search.substring(1).split("=")[1];
+}
+
+function findClosestGroupLocations() {
+  fetch(`/create-quadtree?groupId=${groupId}`, { method: "POST" });
+  fetch(`/central-group-locations?groupId=${groupId}`).then(response => response.json()).then((allCentralGroupLocations) => {
+    const groupLocations = document.getElementById("group-locations-container");
+    groupLocations.innerHTML = '';
+    for (let i = 0; i < allCentralGroupLocations.length; i++) {
+      groupLocations.appendChild(createLocationComponent(allCentralGroupLocations[i]));
+    }
+  });
+}
+
+function createLocationComponent(location){
+  const locationContent = document.createElement("p");
+  locationContent.className = "location-content";
+  locationContent.innerText = location.locationName + " " + location.address + " " + location.coordinate.latitude + " " + location.coordinate.longitude;
+  return locationContent;
 }
 
 function checkMembership() {

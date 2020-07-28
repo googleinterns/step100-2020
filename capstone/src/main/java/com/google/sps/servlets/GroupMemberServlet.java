@@ -35,7 +35,7 @@ public class GroupMemberServlet extends AuthenticatedServlet {
   // Adds a new member to a group 
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    String email = request.getParameter("email");
+    String email = request.getParameter("email").replaceAll("\\s","");
     Long groupId = Long.parseLong(request.getParameter("groupId"));
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -83,10 +83,12 @@ public class GroupMemberServlet extends AuthenticatedServlet {
   }
 
   private Entity getMemberEntity(String email, HttpServletResponse response, DatastoreService datastore) throws IOException {
+    System.out.println("EMAIL" + email);
     Filter findMemberEntity =
     new FilterPredicate("email", FilterOperator.EQUAL, email);
     Query query = new Query("User").setFilter(findMemberEntity);
     PreparedQuery pq = datastore.prepare(query);
+    System.out.println("FILTER" + pq.asSingleEntity());
     if (pq.asSingleEntity() == null) {
       ErrorHandler.sendError(response, "Cannot get entity from datastore");
       return null;
