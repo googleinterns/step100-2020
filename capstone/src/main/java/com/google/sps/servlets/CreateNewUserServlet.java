@@ -14,52 +14,101 @@
 
 package com.google.sps.servlets;
 
-import com.google.sps.Objects.Badge;
-import com.google.sps.Objects.User;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.Objects.Badge;
+import com.google.sps.Objects.User;
+import com.google.sps.search.SearchPredictor;
+
 @WebServlet("/createNewUser")
 public class CreateNewUserServlet extends AuthenticatedServlet {
 
+  private SearchPredictor searchPredictor;
+  private final String TRIE_FILE = "../../data/trie";
+
   @Override
-  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) 
-    throws IOException {
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     String first = request.getParameter("first");
     String last = request.getParameter("last");
     String phone = request.getParameter("phone");
     ArrayList<String> interests = getInterests(request);
-    
+
     UserService userService = UserServiceFactory.getUserService();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    User user = new User(userId,
-                        first,
-                        last, 
-                        /* email= */ userService.getCurrentUser().getEmail(),
-                        phone, 
-                        /* profilePic= */ "", 
-                        /* badges= */ new LinkedHashSet<Badge>(), 
-                        /* groups= */ new LinkedHashSet<Long>(), 
-                        interests);
+    User user =
+        new User(
+            userId,
+            first,
+            last,
+            /* email= */ userService.getCurrentUser().getEmail(),
+            phone,
+            /* profilePic= */ "",
+            /* badges= */ new LinkedHashSet<Badge>(),
+            /* groups= */ new LinkedHashSet<Long>(),
+            interests);
     datastore.put(user.toEntity());
+
+    this.insertNameIntoTries(first, last);
+    this.saveState();
   }
 
-  /**
-   * Gets the list of interests entered by user.
-   */
+  private void insertNameIntoTries(String firstName, String lastName) {
+    try {
+      FileInputStream fileInput = new FileInputStream(new File(TRIE_FILE));
+      ObjectInputStream objectInput = new ObjectInputStream(fileInput);
+      searchPredictor = (SearchPredictor) objectInput.readObject();
+      searchPredictor.insertName(firstName, lastName);
+
+      fileInput.close();
+      objectInput.close();
+      return;
+    } catch (FileNotFoundException e) {
+      System.err.println("File does not exist");
+    } catch (IOException e) {
+      System.err.println("Cannot read from file");
+    } catch (ClassNotFoundException e) {
+      System.err.println("Class not found");
+    }
+    searchPredictor = new SearchPredictor();
+    searchPredictor.insertName(firstName, lastName);
+  }
+
+  private void saveState() {
+    FileOutputStream fileOutputStream;
+    try {
+      fileOutputStream = new FileOutputStream(new File(TRIE_FILE));
+      ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+      objectOutputStream.writeObject(searchPredictor);
+
+      objectOutputStream.close();
+      fileOutputStream.close();
+      System.out.println("successfully written to file");
+    } catch (FileNotFoundException e1) {
+      System.err.println("File does not exist");
+    } catch (IOException e) {
+      System.err.println("Cannot write to file");
+    }
+  }
+
+  /** Gets the list of interests entered by user. */
   private ArrayList<String> getInterests(HttpServletRequest request) {
     // Get input from the form.
     String interests = request.getParameter("interests");

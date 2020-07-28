@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -27,13 +28,18 @@ public class NameDataServlet extends AuthenticatedServlet {
   @Override
   public void init(ServletConfig config) throws ServletException {
     super.init(config);
-    FileInputStream fileInput = null;
-    ObjectInputStream objectInput = null;
-    searchPredictor = new SearchPredictor();
+    this.getSearchPredictorFromFile();
+  }
 
+  @Override
+  public void destroy() {
+    this.saveState();
+  }
+
+  private void getSearchPredictorFromFile() {
     try {
-      fileInput = new FileInputStream(new File(TRIE_FILE));
-      objectInput = new ObjectInputStream(fileInput);
+      FileInputStream fileInput = new FileInputStream(new File(TRIE_FILE));
+      ObjectInputStream objectInput = new ObjectInputStream(fileInput);
       searchPredictor = (SearchPredictor) objectInput.readObject();
 
     } catch (FileNotFoundException e) {
@@ -55,17 +61,11 @@ public class NameDataServlet extends AuthenticatedServlet {
     }
   }
 
-  @Override
-  public void destroy() {
-    this.saveState();
-  }
-
-  public void saveState() {
-    FileOutputStream fileOutputStream = null;
-    ObjectOutputStream objectOutputStream = null;
+  private void saveState() {
+    FileOutputStream fileOutputStream;
     try {
       fileOutputStream = new FileOutputStream(new File(TRIE_FILE));
-      objectOutputStream = new ObjectOutputStream(fileOutputStream);
+      ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
       objectOutputStream.writeObject(searchPredictor);
 
       System.out.println("successfully written to file");
@@ -90,7 +90,10 @@ public class NameDataServlet extends AuthenticatedServlet {
   @Override
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
-    ServletHelper.write(response, searchPredictor, "application/json");
+    this.getSearchPredictorFromFile();
+    String input = request.getParameter("input").toUpperCase();
+    List<String> suggestions = searchPredictor.suggest(input);
+    ServletHelper.write(response, suggestions, "application/json");
   }
 
   @Override
