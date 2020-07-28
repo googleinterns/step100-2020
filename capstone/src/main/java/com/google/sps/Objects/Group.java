@@ -135,7 +135,7 @@ public final class Group {
     ArrayList<Long> challenges = getPropertyList("challenges", entity);
     ArrayList<Long> posts = getPropertyList("posts", entity);
     ArrayList<Long> options = getPropertyList("options", entity);
-    ArrayList<Long> locationIds = getPropertyList("locations", entity);
+    ArrayList<Long> locationIds = getPropertyList("locationIds", entity);
     String groupName = (String) entity.getProperty("groupName");
     String headerImg = (String) entity.getProperty("headerImg");
     double midLatitude = (double) entity.getProperty("midLatitude");
@@ -146,7 +146,7 @@ public final class Group {
       createTagList(tags, entity);
     }
 
-    return new Group(memberIds, challenges, posts, options, locationIds, tags, groupName, headerImg, groupId);
+    return new Group(memberIds, challenges, posts, options, locationIds, tags, groupName, headerImg, groupId, midLatitude, midLongitude);
   }
 
   private static ArrayList<Long> getPropertyList(String property, Entity entity) {
