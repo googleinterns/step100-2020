@@ -37,9 +37,12 @@ public class NameDataServlet extends AuthenticatedServlet {
   }
 
   private void getSearchPredictorFromFile() {
+    FileInputStream fileInput = null;
+    ObjectInputStream objectInput = null;
+
     try {
-      FileInputStream fileInput = new FileInputStream(new File(TRIE_FILE));
-      ObjectInputStream objectInput = new ObjectInputStream(fileInput);
+      fileInput = new FileInputStream(new File(TRIE_FILE));
+      objectInput = new ObjectInputStream(fileInput);
       searchPredictor = (SearchPredictor) objectInput.readObject();
 
     } catch (FileNotFoundException e) {
@@ -62,10 +65,11 @@ public class NameDataServlet extends AuthenticatedServlet {
   }
 
   private void saveState() {
-    FileOutputStream fileOutputStream;
+    FileOutputStream fileOutputStream = null;
+    ObjectOutputStream objectOutputStream = null;
     try {
       fileOutputStream = new FileOutputStream(new File(TRIE_FILE));
-      ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+      objectOutputStream = new ObjectOutputStream(fileOutputStream);
       objectOutputStream.writeObject(searchPredictor);
 
       System.out.println("successfully written to file");
