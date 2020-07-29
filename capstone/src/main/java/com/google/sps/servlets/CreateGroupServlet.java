@@ -42,9 +42,12 @@ public class CreateGroupServlet extends AuthenticatedServlet {
     groupEntity.setProperty("challenges", new ArrayList<Long>());
     groupEntity.setProperty("posts", new ArrayList<Long>());
     groupEntity.setProperty("options", new ArrayList<Long>());
+    groupEntity.setProperty("locationIds", new ArrayList<Long>());
     groupEntity.setProperty("tags", new ArrayList<Tag>());
     groupEntity.setProperty("groupName", groupName);
     groupEntity.setProperty("headerImg", "");
+    groupEntity.setProperty("midLatitude", 0.0);
+    groupEntity.setProperty("midLongitude", 0.0);
     return groupEntity;
   }
 

@@ -8,11 +8,12 @@ function init() {
   getPollOptions();
   fetchBlobstoreUrlAndShowForm();
   loadMembers();
+  autocomplete();
   loadTags();
 }
 
 function getGroupId() {
-  groupId = window.location.search.substring(1).split("=")[1];
+  groupId = window.location.search.substring(1).split("groupId=")[1];
 }
 
 function checkMembership() {
