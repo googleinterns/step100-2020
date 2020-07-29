@@ -116,9 +116,9 @@ public class TagsTFIDFServletTest {
     String tagsJson = new Gson().toJson(tags);
 
     // expected score for "why hello" is tf * idf * weight =
-    // (1/3) * (natural log of 2) * (1 + (9/11) + (2/3.1)) = 0.56915311013...
+    // (1/3) * (natural log of 2) * (1 + 0.5(9/11) + 0.5(2/3.1)) = 0.40010108516...
 
-    assertTrue(tagsJson.contains("why hello") && tagsJson.contains("0.56915311013"));
+    assertTrue(tagsJson.contains("why hello") && tagsJson.contains("0.40010108516"));
   }
 
   private void populateDatabase(DatastoreService datastore) {

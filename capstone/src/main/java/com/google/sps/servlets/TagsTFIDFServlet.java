@@ -199,7 +199,7 @@ public class TagsTFIDFServlet extends HttpServlet {
     double wordsWeight = (ngram.split(" ").length / 3.1);
     double lengthWeight = ((double) ngram.length() / longestNgramLength);
 
-    double totalWeight = 1 + wordsWeight + lengthWeight;
+    double totalWeight = 1 + (0.5 * wordsWeight) + (0.5 * lengthWeight);
     score *= totalWeight;
 
     return score;
