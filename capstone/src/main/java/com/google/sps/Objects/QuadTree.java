@@ -95,7 +95,20 @@ public class QuadTree {
     double xOffset = xMin + (xMax - xMin) / 2;
     double yOffset = yMin + (yMax - yMin) / 2;
 
-    // Split space into 4 quadrant trees and create new bounding boxes 
+    /*
+    * Split space into 4 quadrant trees and create new bounding boxes 
+    * 
+    *xMax    ************************
+    *        *          *           *
+    *        * topLeft  *  topRight *
+    *        *          *           *
+    *xOffset ************************ 
+    *        *          *           *
+    *        * botLeft  *  botRight *
+    *        *          *           *
+    *xMin    ************************
+    *        yMin     yOffset     yMax
+    */
     botRightTree = new QuadTree(NODE_CAPACITY, level + 1, 
         new BoundingBox(xMin, yOffset, xOffset, yMax));
     topRightTree = new QuadTree(NODE_CAPACITY, level + 1, 
@@ -120,11 +133,12 @@ public class QuadTree {
 
     double closestDistance = euclidianDistance(loc, closest);
 
+    // Only check quadrants within radius of loc and closest
     if (!bounds.intersectsCircle(loc, closestDistance)) {
       return closest;
     }
 
-    // Check distance between location and points in this box
+    // Check distance between location and points in this quadrant
     for (Location location: locations) {
       if (euclidianDistance(loc, location) < closestDistance) {
         closest = location;
@@ -142,6 +156,11 @@ public class QuadTree {
   }
 
   public ArrayList<Location> findKNearestNeighbors(Location loc, int k) {
+    /*
+    * Create priority queue of size k ordered by distance between point and 
+    * midpoint 
+    * Last point is the maxClosest distance 
+    */
     PriorityQueue<Location> pq = new PriorityQueue<Location>(k, Comparator.comparingDouble( locationPQ -> -euclidianDistance(loc, locationPQ)));
 
     pq = findKNearestNeighborsHelper(loc, k, pq);
