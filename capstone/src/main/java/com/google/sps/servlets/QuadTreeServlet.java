@@ -132,7 +132,9 @@ public class QuadTreeServlet extends HttpServlet {
     Coordinate midPoint = groupLocation.findGroupMidPoint(groupId);
     Location groupMidPoint = new Location("Group Midpoint", "", midPoint, 0.0);
 
+    // Create list of closest 20 locations, add midPoint to front of list
     ArrayList<Location> closest20Locations = quadTree.findKNearestNeighbors(groupMidPoint, 20);
+    closest20Locations.add(0, groupMidPoint);
 
     addCentralLocationIdsToGroup(response, groupId, datastore, closest20Locations);
   }

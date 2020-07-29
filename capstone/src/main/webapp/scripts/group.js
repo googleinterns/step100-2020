@@ -21,9 +21,10 @@ function findClosestGroupLocations() {
   fetch(`/central-group-locations?groupId=${groupId}`).then(response => response.json()).then((allCentralGroupLocations) => {
     const groupLocations = document.getElementById("locations-container");
     groupLocations.innerHTML = "";
-    for (let i = 0; i < locationsLimit; i++) {
+    for (let i = 1; i < locationsLimit; i++) {
       groupLocations.appendChild(createLocationComponent(allCentralGroupLocations[i]));
     }
+    createMap(groupLocations);
   });
 }
 
