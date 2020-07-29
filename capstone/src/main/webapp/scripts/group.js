@@ -10,10 +10,12 @@ function init() {
   fetchBlobstoreUrlAndShowForm();
   loadMembers();
   findClosestGroupLocations();
+  autocomplete();
+  loadTags();
 }
 
 function getGroupId() {
-  groupId = window.location.search.substring(1).split("=")[1];
+  groupId = window.location.search.substring(1).split("groupId=")[1];
 }
 
 function findClosestGroupLocations() {
@@ -21,7 +23,7 @@ function findClosestGroupLocations() {
   fetch(`/central-group-locations?groupId=${groupId}`).then(response => response.json()).then((allCentralGroupLocations) => {
     const groupLocations = document.getElementById("locations-container");
     groupLocations.innerHTML = "";
-    for (let i = 1; i < locationsLimit; i++) {
+    for (let i = 1; i < locationsLimit + 1; i++) {
       groupLocations.appendChild(createLocationComponent(allCentralGroupLocations[i]));
     }
     createMap(groupLocations);

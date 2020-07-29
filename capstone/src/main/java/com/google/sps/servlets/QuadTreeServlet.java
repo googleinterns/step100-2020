@@ -49,7 +49,7 @@ import error.ErrorHandler;
 public class QuadTreeServlet extends HttpServlet {
 
   private QuadTree quadTree;
-  private final String QUADTREE_FILE = "/WEB-INF/quadtree";
+  private final String QUADTREE_FILE = "../../data/quadtree";
 
   @Override
   public void init(ServletConfig config) throws ServletException {

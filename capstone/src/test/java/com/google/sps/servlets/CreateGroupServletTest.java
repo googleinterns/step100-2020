@@ -37,6 +37,7 @@ import com.google.gson.Gson;
 import com.google.sps.Objects.Badge;
 import com.google.sps.Objects.Group;
 import com.google.sps.Objects.User;
+import com.google.sps.Objects.Tag;
 
 /** Unit tests for {@link CreateGroupServlet}. */
 @RunWith(JUnit4.class)
@@ -69,6 +70,7 @@ public class CreateGroupServletTest {
           /* posts= */ new ArrayList<Long>(),
           /* options= */ new ArrayList<Long>(),
           /* locationIds= */ new ArrayList<Long>(),
+          /* tags= */ new ArrayList<Tag>(),
           /* groupName= */ GROUP_NAME,
           /* headerImg= */ "",
           /* groupId= */ GROUP_ID, 
@@ -82,6 +84,7 @@ public class CreateGroupServletTest {
           /* posts= */ new ArrayList<Long>(),
           /* options= */ new ArrayList<Long>(),
           /* locationIds= */ new ArrayList<Long>(),
+          /* tags= */ new ArrayList<Tag>(),
           /* groupName= */ GROUP_NAME,
           /* headerImg= */ "",
           /* groupId= */ GROUP_ID_2, 

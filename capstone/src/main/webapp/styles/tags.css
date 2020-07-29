@@ -1,0 +1,94 @@
+#tags-container {
+  background-color: var(--near-white);
+  border-radius: 10%;
+  color: var(--badges-gray);
+  height: 210px;
+  margin-top: 50px;
+  padding: 25px;
+  width: 200px;
+}
+
+#tags-container h4 {
+  margin: 0 0 10px;
+  align-content: left;
+  position: flex;
+}
+
+#group-tags #tag {
+  border-radius: 20px;
+  color: white;
+  display: inline-block;
+  margin: 10px;
+  min-width: 90px;
+  padding: 10px;
+  text-align: center;
+}
+
+#tag:nth-child(3n+1) {
+  background-color: var(--light-pink);
+}
+
+#tag:nth-child(3n+2) {
+  background-color: var(--light-blue);
+}
+
+#tag:nth-child(3n+0) {
+  background-color: var(--header-green);
+}
+
+.about-icon {
+  background: none;
+  border: none;
+  outline: none;
+  align-content: left;
+  position: flex;
+  float: right;
+}
+
+/* Modal background */
+.about-tags-modal {
+  display: none;
+  visibility: none;
+  position: fixed;
+  z-index: 50;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+/* Modal Content */
+.about-tags-content {
+  background-color: var(--near-white);
+  margin: auto;
+  padding: 15px 20px;
+  border: 1px solid #888;
+  width: 20%;
+}
+
+.about-tags-content h2 {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 10px 10px 20px 0px;
+}
+
+.about-tags-content p {
+  font-size: 16px;
+}
+
+#about-close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+#about-close:hover, 
+#about-close:focus {
+  color: var(--black);
+  text-decoration: none;
+  cursor: pointer;
+}
