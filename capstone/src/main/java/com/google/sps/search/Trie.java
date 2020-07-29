@@ -3,7 +3,6 @@ package com.google.sps.search;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -134,7 +133,7 @@ public class Trie implements Serializable {
     return fullNames;
   }
 
-  public List<String> searchLed(String input) {
+  public Map<String, Integer> searchLed(String input) {
     input = input.toUpperCase();
 
     Map<String, Integer> suggestionsMap = new HashMap<String, Integer>();
@@ -152,14 +151,7 @@ public class Trie implements Serializable {
       suggestedNames.putAll(suggestionsMap);
     }
 
-    suggestedNames
-        .entrySet()
-        .forEach(
-            entry -> {
-              System.out.println(entry.getKey() + " " + entry.getValue());
-            });
-
-    return this.sortNames(suggestedNames);
+    return suggestedNames;
   }
 
   private void searchLedRecursive(
@@ -202,32 +194,6 @@ public class Trie implements Serializable {
         this.searchLedRecursive(currNode.children.get(c), c, input, currRow, suggestions);
       }
     }
-  }
-
-  private List<String> sortNames(Map<String, Integer> namesScore) {
-    System.out.println("in sorting names");
-
-    List<String> sortedNames = new ArrayList<String>();
-
-    List<Map.Entry<String, Integer>> entries =
-        new ArrayList<Map.Entry<String, Integer>>(namesScore.entrySet());
-
-    Collections.sort(
-        entries,
-        new Comparator<Map.Entry<String, Integer>>() {
-          @Override
-          public int compare(Map.Entry<String, Integer> a, Map.Entry<String, Integer> b) {
-            return Integer.compare(a.getValue(), b.getValue());
-          }
-        });
-
-    for (Map.Entry<String, Integer> entry : entries) {
-      System.out.println(entry.getKey());
-      sortedNames.add(entry.getKey());
-    }
-
-    System.out.println(sortedNames);
-    return sortedNames;
   }
 
   /**

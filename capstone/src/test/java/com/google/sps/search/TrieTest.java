@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -234,12 +233,12 @@ public class TrieTest {
     trie.insert("John", "John Liu");
     trie.insert("Johnny", "Johnny Sterling");
 
-    List<String> suggestions = trie.searchLed("Jane");
+    Map<String, Integer> suggestions = trie.searchLed("Jane");
 
     assertEquals(3, suggestions.size());
-    assertTrue(suggestions.contains("Jack Rose"));
-    assertTrue(suggestions.contains("Jane Doe"));
-    assertTrue(suggestions.contains("Joe Qu"));
+    assertTrue(suggestions.containsKey("Jack Rose"));
+    assertTrue(suggestions.containsKey("Jane Doe"));
+    assertTrue(suggestions.containsKey("Joe Qu"));
   }
 
   @Test
@@ -248,11 +247,11 @@ public class TrieTest {
     trie.insert("Lucie", "Lucie Wang");
     trie.insert("Lucie", "Lucie Cart");
 
-    List<String> suggestions = trie.searchLed("Lucy");
+    Map<String, Integer> suggestions = trie.searchLed("Lucy");
 
     assertEquals(3, suggestions.size());
-    assertTrue(suggestions.contains("Lucy Qu"));
-    assertTrue(suggestions.contains("Lucie Wang"));
-    assertTrue(suggestions.contains("Lucie Cart"));
+    assertTrue(suggestions.containsKey("Lucy Qu"));
+    assertTrue(suggestions.containsKey("Lucie Wang"));
+    assertTrue(suggestions.containsKey("Lucie Cart"));
   }
 }

@@ -17,8 +17,8 @@ import com.google.appengine.api.datastore.Query;
 
 public class SearchPredictor implements Serializable {
 
-  private static final int COMPLETE_PARTIAL_NAME_MATCH = 5;
-  private static final int COMPLETE_MATCH = 10;
+  private static final double COMPLETE_PARTIAL_NAME_MATCH = 5;
+  private static final double COMPLETE_MATCH = 10;
   private static final long serialVersionUID = 1L;
   private List<String> names;
   private Trie firstNameTrie;
@@ -65,7 +65,7 @@ public class SearchPredictor implements Serializable {
   }
 
   public List<String> suggest(String input) {
-    Map<String, Integer> namesScore = new HashMap<String, Integer>();
+    Map<String, Double> namesScore = new HashMap<String, Double>();
     String[] firstAndLastName = input.split(" ");
 
     Set<String> whitespaceSuggestionsFirstName =
@@ -81,51 +81,45 @@ public class SearchPredictor implements Serializable {
       // Matching prefix first name is weighted more heavily
       this.addToMap(namesScore, firstNameSuggestions, partialName, 2);
       this.addToMap(namesScore, lastNameSuggestions, partialName, 1);
+
+      Map<String, Integer> ledSuggestionsFirstName = firstNameTrie.searchLed(partialName);
+      Map<String, Integer> ledSuggestionsLastName = lastNameTrie.searchLed(partialName);
+      this.addToMap(namesScore, ledSuggestionsFirstName);
+      this.addToMap(namesScore, ledSuggestionsLastName);
     }
 
-    List<String> sortedNames = this.sortNames(namesScore);
-
-    for (int i = 0; i < firstAndLastName.length; i++) {
-      String partialName = firstAndLastName[i].toUpperCase();
-      List<String> ledSuggestionsFirstName = firstNameTrie.searchLed(partialName);
-      List<String> ledSuggestionsLastName = lastNameTrie.searchLed(partialName);
-      sortedNames.addAll(ledSuggestionsFirstName);
-      sortedNames.addAll(ledSuggestionsLastName);
-    }
-
-    System.out.println("sorted in search predictor " + sortedNames);
-    return sortedNames;
+    return this.sortNames(namesScore);
   }
 
-  public List<String> sortNames(Map<String, Integer> namesScore) {
+  public List<String> sortNames(Map<String, Double> namesScore) {
     List<String> sortedNames = new ArrayList<String>();
 
-    List<Map.Entry<String, Integer>> entries =
-        new ArrayList<Map.Entry<String, Integer>>(namesScore.entrySet());
+    List<Map.Entry<String, Double>> entries =
+        new ArrayList<Map.Entry<String, Double>>(namesScore.entrySet());
 
     Collections.sort(
         entries,
-        new Comparator<Map.Entry<String, Integer>>() {
+        new Comparator<Map.Entry<String, Double>>() {
           @Override
-          public int compare(Map.Entry<String, Integer> a, Map.Entry<String, Integer> b) {
-            return Integer.compare(b.getValue(), a.getValue());
+          public int compare(Map.Entry<String, Double> a, Map.Entry<String, Double> b) {
+            return Double.compare(b.getValue(), a.getValue());
           }
         });
 
-    for (Map.Entry<String, Integer> entry : entries) {
+    for (Map.Entry<String, Double> entry : entries) {
       sortedNames.add(entry.getKey());
     }
 
     return sortedNames;
   }
 
-  private Map<String, Integer> addToMap(
-      Map<String, Integer> namesScore, Set<String> set, String partialName, int increment) {
+  private Map<String, Double> addToMap(
+      Map<String, Double> namesScore, Set<String> set, String partialName, double increment) {
     for (String name : set) {
       if (!namesScore.containsKey(name)) {
         namesScore.put(name, increment);
       } else {
-        int score = namesScore.get(name) + 1;
+        double score = namesScore.get(name) + 1;
         namesScore.put(name, score);
       }
 
@@ -134,20 +128,35 @@ public class SearchPredictor implements Serializable {
       partialName = partialName.toUpperCase();
       if (partialName.equals(firstAndLastName[0].toUpperCase())
           || partialName.equals(firstAndLastName[1].toUpperCase())) {
-        int score = namesScore.get(name) + COMPLETE_PARTIAL_NAME_MATCH;
+        double score = namesScore.get(name) + COMPLETE_PARTIAL_NAME_MATCH;
         namesScore.put(name, score);
       }
     }
     return namesScore;
   }
 
-  private Map<String, Integer> addToMap(
-      Map<String, Integer> namesScore, Set<String> set, int increment) {
+  private Map<String, Double> addToMap(
+      Map<String, Double> namesScore, Set<String> set, double increment) {
     for (String name : set) {
       if (!namesScore.containsKey(name)) {
         namesScore.put(name, increment);
       } else {
-        int score = namesScore.get(name) + 1;
+        namesScore.put(name, namesScore.get(name) + 1);
+      }
+    }
+    return namesScore;
+  }
+
+  private Map<String, Double> addToMap(
+      Map<String, Double> namesScore, Map<String, Integer> nameToLedMap) {
+    for (String name : nameToLedMap.keySet()) {
+      double score = 0;
+      if (nameToLedMap.get(name) != 0) {
+        score = 1 / nameToLedMap.get(name);
+      }
+      if (namesScore.containsKey(name)) {
+        namesScore.put(name, namesScore.get(name) + score);
+      } else {
         namesScore.put(name, score);
       }
     }
