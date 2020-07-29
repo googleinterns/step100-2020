@@ -73,8 +73,8 @@ public class TagsTFIDFServlet extends HttpServlet {
         
     for (long groupId : groupIds) {
       Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
-      List<Long> postIds = (ArrayList<Long>) groupEntity.getProperty("posts");
-      List<String> textData = getGroupPostsText(postIds, response);
+      
+      List<String> textData = getGroupPostsText(groupEntity, response);
       addChallengeText(groupEntity, textData, response);
 
       // TODO: Parallelize this process to occur for each string concurrently.
@@ -91,15 +91,19 @@ public class TagsTFIDFServlet extends HttpServlet {
   /** 
    * Returns a list of Post content Strings, given a list of postIds. 
    */
-  private List<String> getGroupPostsText(List<Long> postIds, HttpServletResponse response) 
+  private List<String> getGroupPostsText(Entity groupEntity, HttpServletResponse response) 
       throws IOException {
 
+    List<Long> postIds = (ArrayList<Long>) groupEntity.getProperty("posts");
     List<String> textData = new ArrayList<>();
-    for (long postId : postIds) {
-      Entity postEntity = ServletHelper.getEntityFromId(response, postId, datastore, "Post");
-      String postText = (String) postEntity.getProperty("postText");
-      textData.add(postText);
-      addCommentsText(postEntity, textData);
+    
+    if (postIds != null) {
+      for (long postId : postIds) {
+        Entity postEntity = ServletHelper.getEntityFromId(response, postId, datastore, "Post");
+        String postText = (String) postEntity.getProperty("postText");
+        textData.add(postText);
+        addCommentsText(postEntity, textData);
+      }
     }
 
     return textData;
@@ -206,15 +210,17 @@ public class TagsTFIDFServlet extends HttpServlet {
    */
   public void putTagsInDatastore(PriorityQueue<Tag> tagQueue, long groupId, 
       HttpServletResponse response) throws IOException {
-
+    
     ArrayList<Tag> topTags = new ArrayList<>();
     int tagsLength = (tagQueue.size() >= 3) ? 3 : tagQueue.size();
     for (int i = 0; i < tagsLength; i++) {
       Tag next = tagQueue.poll();
-      if (checkIfDuplicate(topTags, next)) {
-        i--;
-      } else {
-        topTags.add(next);
+      if (next != null) {
+        if (checkIfDuplicate(topTags, next)) {
+          i--;
+        } else {
+          topTags.add(next);
+        }
       }
     }
     ArrayList<EmbeddedEntity> tags = Tag.createTagEntities(topTags);

@@ -36,8 +36,12 @@ public class GroupTagsServlet extends AuthenticatedServlet {
     Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
 
     ArrayList<Tag> tags = new ArrayList<>();
-    for (EmbeddedEntity tag: (ArrayList<EmbeddedEntity>) groupEntity.getProperty("tags")) {
-      tags.add(Tag.fromEntity(tag));
+    ArrayList<EmbeddedEntity> tagEntities = 
+        (ArrayList<EmbeddedEntity>) groupEntity.getProperty("tags");
+    if (tagEntities != null) {
+      for (EmbeddedEntity tag: tagEntities) {
+        tags.add(Tag.fromEntity(tag));
+      }
     }
 
     // Convert to json

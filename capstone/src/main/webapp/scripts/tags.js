@@ -12,7 +12,7 @@ function displayTags(tags) {
   const tagContainer = document.getElementById('group-tags');
   if (Object.keys(tags).length === 0) {
       const text = document.createElement('p');
-      text.innerText = 'Your group has no tags yet. Try adding some content!';
+      text.innerText = 'Your group doesn\'t have any tags yet. Try adding some content!';
       tagContainer.appendChild(text);
   } else {
     for (tag of tags) {
