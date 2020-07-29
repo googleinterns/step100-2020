@@ -74,8 +74,6 @@ public class SearchPredictor implements Serializable {
     Set<String> whitespaceSuggestionsLastName = lastNameTrie.whitespace(input, /* reversed */ true);
     this.addToMap(namesScore, whitespaceSuggestionsFirstName, COMPLETE_MATCH);
     this.addToMap(namesScore, whitespaceSuggestionsLastName, COMPLETE_MATCH);
-    Set<String> ledSuggestions = firstNameTrie.searchLed(input.toUpperCase());
-    this.addToMap(namesScore, ledSuggestions, 1);
     // for autocorrect make input upper case!
 
     for (int i = 0; i < firstAndLastName.length; i++) {
@@ -85,6 +83,11 @@ public class SearchPredictor implements Serializable {
       // Matching prefix first name is weighted more heavily
       this.addToMap(namesScore, firstNameSuggestions, partialName, 2);
       this.addToMap(namesScore, lastNameSuggestions, partialName, 1);
+
+      Set<String> ledSuggestionsFirstName = firstNameTrie.searchLed(partialName);
+      Set<String> ledSuggestionsLastName = lastNameTrie.searchLed(partialName);
+      this.addToMap(namesScore, ledSuggestionsFirstName, 1);
+      this.addToMap(namesScore, ledSuggestionsLastName, 1);
     }
 
     List<String> sortedNames = this.sortNames(namesScore);

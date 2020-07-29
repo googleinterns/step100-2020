@@ -233,12 +233,25 @@ public class TrieTest {
     trie.insert("John", "John Liu");
     trie.insert("Johnny", "Johnny Sterling");
 
-    Set<String> suggestions = trie.searchLed("JANE");
+    Set<String> suggestions = trie.searchLed("Jane");
 
-    System.out.println(suggestions);
     assertEquals(3, suggestions.size());
     assertTrue(suggestions.contains("Jack Rose"));
     assertTrue(suggestions.contains("Jane Doe"));
     assertTrue(suggestions.contains("Joe Qu"));
+  }
+
+  @Test
+  public void searchLedDuplicateTest() {
+    trie.insert("Lucy", "Lucy Qu");
+    trie.insert("Lucie", "Lucie Wang");
+    trie.insert("Lucie", "Lucie Cart");
+
+    Set<String> suggestions = trie.searchLed("Lucy");
+
+    assertEquals(3, suggestions.size());
+    assertTrue(suggestions.contains("Lucy Qu"));
+    assertTrue(suggestions.contains("Lucie Wang"));
+    assertTrue(suggestions.contains("Lucie Cart"));
   }
 }

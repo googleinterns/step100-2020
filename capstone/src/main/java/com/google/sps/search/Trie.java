@@ -134,6 +134,7 @@ public class Trie implements Serializable {
   }
 
   public Set<String> searchLed(String input) {
+    input = input.toUpperCase();
     Set<String> suggestions = new TreeSet<String>();
     int inputLength = input.length();
     List<Integer> currRow = new ArrayList<Integer>();
@@ -146,7 +147,6 @@ public class Trie implements Serializable {
       this.searchLedRecursive(this.children.get(c), c, input, currRow, suggestions);
       this.fullNames.addAll(suggestions);
     }
-    System.out.println(fullNames);
     return fullNames;
   }
 
