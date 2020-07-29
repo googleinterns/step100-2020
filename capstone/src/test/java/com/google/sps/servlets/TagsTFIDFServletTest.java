@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -107,33 +108,34 @@ public class TagsTFIDFServletTest {
 
     Key groupKey = KeyFactory.createKey("Group", GROUP_ID_1);
     Entity groupEntity = datastore.get(groupKey);
-    
-    assertTrue(groupEntity.getProperty("tags") != null);
+
+    ArrayList<Tag> tags = new ArrayList<>();
+    for (EmbeddedEntity tag : (ArrayList<EmbeddedEntity>) groupEntity.getProperty("tags")) {
+      tags.add(Tag.fromEntity(tag));
+    }
+    String tagsJson = new Gson().toJson(tags);
+
+    // expected score for "why hello" is tf * idf * weight =
+    // (1/3) * (natural log of 2) * (1 + (9/11) + (2/3.1)) = 0.56915311013...
+
+    assertTrue(tagsJson.contains("why hello") && tagsJson.contains("0.56915311013"));
   }
 
   private void populateDatabase(DatastoreService datastore) {
-    // Add test data.
-    ArrayList<Long> postIds =  createPosts();
-    datastore.put(createGroupEntity(postIds));
+    datastore.put(createGroupEntity(GROUP_ID_1));
+    datastore.put(createGroupEntity(GROUP_ID_2));
   }
 
-  private Entity createGroupEntity(ArrayList<Long> postIds) {
-    Entity groupEntity = new Entity("Group");
+  private Entity createGroupEntity(Long id) {
+    Entity groupEntity = new Entity("Group", id);
     groupEntity.setProperty("groupName", "Name");
     groupEntity.setProperty("headerImg", "");
     groupEntity.setProperty("memberIds", new ArrayList<String>());
-    groupEntity.setProperty("posts", new ArrayList<Long>(postIds));
+    groupEntity.setProperty("posts", new ArrayList<Long>());
     groupEntity.setProperty("options", new ArrayList<Long>());
     groupEntity.setProperty("challenges", new ArrayList<Challenge>());
     groupEntity.setProperty("tags", new ArrayList<Tag>());
     return groupEntity;
-  }
-
-  private ArrayList<Long> createPosts() {
-    ArrayList<Long> postIds = new ArrayList<>();
-
-    return postIds;
-    //finish implementing
   }
 
   private void setUpGroupMap() {

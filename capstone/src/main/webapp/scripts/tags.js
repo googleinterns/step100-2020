@@ -10,11 +10,17 @@ function loadTags() {
 /** Display group tags. */
 function displayTags(tags) {
   const tagContainer = document.getElementById('group-tags');
-  for (tag of tags) {
-    const tagElement = document.createElement('span');
-    tagElement.id = 'tag';
-    tagElement.innerText = tag.text;
-    tagContainer.appendChild(tagElement);
+  if (Object.keys(tags).length === 0) {
+      const text = document.createElement('p');
+      text.innerText = 'Your group has no tags yet. Try adding some content!';
+      tagContainer.appendChild(text);
+  } else {
+    for (tag of tags) {
+      const tagElement = document.createElement('span');
+      tagElement.id = 'tag';
+      tagElement.innerText = tag.text;
+      tagContainer.appendChild(tagElement);
+    }
   }
 }
 
