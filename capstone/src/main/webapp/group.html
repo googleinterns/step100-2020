@@ -107,7 +107,25 @@
       </div>
 
       <div class="group-locations">
-        <div id="group-locations-container"></div>
+        <div id="group-locations-container">
+          <h2> Near Group </h2>
+
+          <label class="drop-menu" for="number">Items:</label>
+          <select name="number" id="number" onchange="locationAmount()">
+          <option value="1">1</option>
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+          </select>
+
+          <div id="locations-container"></div>
+
+          <div class="map" id="map-container">
+            <div id="map"></div>
+            <div id="legend"><h3>Legend</h3></div>
+          </div>
+        </div>
       </div>
 
       <div class="post-feed">

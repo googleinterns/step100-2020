@@ -209,5 +209,4 @@ public class QuadTree {
 
     return pq;
   }
-	
 }

@@ -382,7 +382,21 @@ p {
   background: var(--near-white);
   border-radius: 10px;
   width: 100%;
-  padding: 40px 0;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.location-name {
+  font-size: 24px;
+  margin-block-end: 0.3em;
+  margin-block-start: 1em;
+}
+
+.location-detail {
+  font-size: 20px;
+  color: var(--text-gray);
+  margin-block-start: 0.2em;
+  margin-block-end: 0.2em;
 }
 
 /* Poll */

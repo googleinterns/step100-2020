@@ -1,4 +1,5 @@
 let groupId;
+let locationsLimit = 1;
 
 function init() {
   getGroupId();
@@ -18,19 +19,55 @@ function getGroupId() {
 function findClosestGroupLocations() {
   fetch(`/create-quadtree?groupId=${groupId}`, { method: "POST" });
   fetch(`/central-group-locations?groupId=${groupId}`).then(response => response.json()).then((allCentralGroupLocations) => {
-    const groupLocations = document.getElementById("group-locations-container");
-    groupLocations.innerHTML = '';
-    for (let i = 0; i < allCentralGroupLocations.length; i++) {
+    const groupLocations = document.getElementById("locations-container");
+    groupLocations.innerHTML = "";
+    for (let i = 0; i < locationsLimit; i++) {
       groupLocations.appendChild(createLocationComponent(allCentralGroupLocations[i]));
     }
   });
 }
 
+function locationAmount() {
+  const amount = document.getElementById("number");
+  const value = amount.value;
+  if (value === "1") {
+    locationsLimit = 1;
+  } else if (value === "5") {
+    locationsLimit = 5;
+  } else if (value === "10") {
+    locationsLimit = 10;
+  } else if(value === "15") {
+    locationsLimit = 15;
+  } else if(value === "20") {
+    locationsLimit = 20;
+  } 
+  findClosestGroupLocations();
+}
+
 function createLocationComponent(location){
-  const locationContent = document.createElement("p");
-  locationContent.className = "location-content";
-  locationContent.innerText = location.locationName + " " + location.address + " " + location.coordinate.latitude + " " + location.coordinate.longitude + " " + location.distance;
-  return locationContent;
+  const locationDiv = document.createElement("div");
+
+  const locationName = document.createElement("p");
+  locationName.className = "location-name";
+  locationName.innerText = location.locationName;
+  locationDiv.append(locationName);
+
+  const locationAddress = document.createElement("p");
+  locationAddress.className = "location-detail";
+  locationAddress.innerText = location.address;
+  locationDiv.append(locationAddress);
+
+  const locationLatLon = document.createElement("p");
+  locationLatLon.className = "location-detail";
+  locationLatLon.innerText = location.coordinate.latitude + ", " + location.coordinate.longitude;
+  locationDiv.append(locationLatLon);
+
+  const locationDistance = document.createElement("p");
+  locationDistance.className = "location-detail";
+  locationDistance.innerText = location.distance + "mi";
+  locationDiv.append(locationDistance);
+
+  return locationDiv;
 }
 
 function checkMembership() {
