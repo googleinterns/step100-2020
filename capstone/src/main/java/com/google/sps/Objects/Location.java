@@ -2,8 +2,9 @@ package com.google.sps.Objects;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.Objects.Coordinate;
+import java.io.Serializable;
 
-public final class Location {
+public final class Location implements Serializable{
 
   private final String locationName;
   private final String address;

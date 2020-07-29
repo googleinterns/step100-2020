@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.Comparator;
 import java.text.DecimalFormat;
+import java.io.Serializable;
 
 import com.google.sps.Objects.Location;
 import com.google.sps.Objects.Coordinate;
 import com.google.sps.Objects.BoundingBox;
 
-public class QuadTree {
+public class QuadTree implements Serializable {
   private final int NODE_CAPACITY;
   private List<QuadTree> children;
   private List<Location> locations;

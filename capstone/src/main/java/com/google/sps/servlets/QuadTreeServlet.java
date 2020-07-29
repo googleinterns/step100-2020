@@ -84,6 +84,7 @@ public class QuadTreeServlet extends HttpServlet {
         /*level*/ 0, 
         /*BoudingBox*/ new BoundingBox(25.641526, -130.429688, 50.847573, -66.269531));
     populateQuadTree(quadTree);
+    saveState();
   }
 
   private void populateQuadTree(QuadTree quadTree) {
@@ -107,9 +108,10 @@ public class QuadTreeServlet extends HttpServlet {
 
   private void saveState() {
     FileOutputStream fileOutputStream;
+    ObjectOutputStream objectOutputStream;
     try {
       fileOutputStream = new FileOutputStream(new File(QUADTREE_FILE));
-      ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+      objectOutputStream = new ObjectOutputStream(fileOutputStream);
       objectOutputStream.writeObject(quadTree);
 
       objectOutputStream.close();
@@ -118,7 +120,7 @@ public class QuadTreeServlet extends HttpServlet {
     } catch (FileNotFoundException e1) {
       System.err.println("File does not exist");
     } catch (IOException e) {
-      System.err.println("Cannot write to file");
+      e.printStackTrace();
     }
   }
 
