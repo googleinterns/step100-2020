@@ -79,6 +79,7 @@ public class UserGroupsServletTest {
           USER_EMAIL,
           /* phoneNumber= */ "123-456-7890",
           /* profilePic= */ "",
+          /* address= */ "",
           /* latitude= */ 0,
           /* longitude= */ 0,
           /* badges= */ new LinkedHashSet<Badge>(),

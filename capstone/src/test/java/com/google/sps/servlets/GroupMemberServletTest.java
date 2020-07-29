@@ -72,6 +72,7 @@ public class GroupMemberServletTest {
           USER_EMAIL,
           /* phoneNumber= */ "123-456-7890",
           /* profilePic= */ "",
+          /* address= */ "",
           /* latitude= */ 0,
           /* longitude= */ 0,
           /* badges= */ new LinkedHashSet<Badge>(),
@@ -86,6 +87,7 @@ public class GroupMemberServletTest {
           OTHER_EMAIL,
           /* phoneNumber= */ "123-456-0000",
           /* profilePic= */ "",
+          /* address= */ "",
           /* latitude= */ 0,
           /* longitude= */ 0,
           /* badges= */ new LinkedHashSet<Badge>(),
@@ -126,9 +128,12 @@ public class GroupMemberServletTest {
     groupEntity.setProperty("groupName", GROUP_NAME);
     groupEntity.setProperty("headerImg", HEADER_IMAGE);
     groupEntity.setProperty("memberIds", new ArrayList<String>(Arrays.asList(USER_ID)));
+    groupEntity.setProperty("locationIds", new ArrayList<Long>());
     groupEntity.setProperty("posts", null);
     groupEntity.setProperty("options", new ArrayList<Long>());
-    groupEntity.setProperty("challenges", new ArrayList<Long>());
+    groupEntity.setProperty("challenges", new ArrayList<Challenge>());
+    groupEntity.setProperty("midLatitude", 0.0);
+    groupEntity.setProperty("midLongitude", 0.0);
     groupEntity.setProperty("tags", new ArrayList<Tag>());    
     return groupEntity;
   }
@@ -212,7 +217,7 @@ public class GroupMemberServletTest {
   }
 
   @Test
-  public void doPost_memberNotInGroup() throws IOException, EntityNotFoundException {
+  public void doPost_memberNotInGroup_email() throws IOException, EntityNotFoundException {
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_1_ID);
     when(mockRequest.getParameter("email")).thenReturn(OTHER_EMAIL);
     Key groupKey = KeyFactory.createKey("Group", Long.parseLong(GROUP_1_ID));
@@ -224,6 +229,22 @@ public class GroupMemberServletTest {
 
     String jsonDs = new Gson().toJson(Group.fromEntity(group));
     assertTrue(jsonDs.contains(OTHER_ID));
+    assertThat(User.fromEntity(user).getGroups().contains(GROUP_1_ID));
+  }
+
+  @Test
+  public void doPost_memberNotInGroup_userId() throws IOException, EntityNotFoundException {
+    when(mockRequest.getParameter("groupId")).thenReturn(GROUP_1_ID);
+    when(mockRequest.getParameter("userId")).thenReturn(USER_ID);
+    Key groupKey = KeyFactory.createKey("Group", Long.parseLong(GROUP_1_ID));
+    Key userKey = KeyFactory.createKey("User", USER_ID);
+
+    groupMemberServlet.doPost(mockRequest, mockResponse);
+    Entity group = datastore.get(groupKey);
+    Entity user = datastore.get(userKey);
+
+    String jsonDs = new Gson().toJson(Group.fromEntity(group));
+    assertTrue(jsonDs.contains(USER_ID));
     assertThat(User.fromEntity(user).getGroups().contains(GROUP_1_ID));
   }
 }

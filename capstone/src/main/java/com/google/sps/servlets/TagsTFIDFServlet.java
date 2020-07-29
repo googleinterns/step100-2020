@@ -1,34 +1,30 @@
 package com.google.sps.servlets;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EmbeddedEntity;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
-import java.io.PrintWriter;
-import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.PriorityQueue;
-import java.util.Collections;
-import com.google.gson.JsonObject;
-import com.google.gson.Gson;
-import com.google.sps.servlets.ServletHelper;
+import com.google.appengine.api.datastore.Query;
 import com.google.sps.Objects.TFIDFStringHelper;
 import com.google.sps.Objects.Tag;
 import com.google.sps.Objects.Comment;
 import error.ErrorHandler;
 
-/**
- * This servlet generates groups "tags" for all groups - calculated using TF-IDF.
- */
+/** This servlet generates groups "tags" for all groups - calculated using TF-IDF. */
 @WebServlet("/tags-tfidf")
 public class TagsTFIDFServlet extends HttpServlet {
 
@@ -45,9 +41,7 @@ public class TagsTFIDFServlet extends HttpServlet {
     calculateTFIDF(groupMap, occurenceMap, response);
   }
 
-  /** 
-   * Queries the database to return a list of all groupIds. 
-   */
+  /** Queries the database to return a list of all groupIds. */
   private List<Long> getGroupIds() {
     // Preparing query instance to retrieve all Groups
     Query query = new Query("Group");
@@ -55,25 +49,23 @@ public class TagsTFIDFServlet extends HttpServlet {
 
     List<Long> groupIds = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-      long groupId = (long) entity.getKey().getId();
+      long groupId = entity.getKey().getId();
       groupIds.add(groupId);
     }
 
     return groupIds;
   }
 
-  /** 
-   * Returns a mapping of all groupIds to their n-grams (and occurences). 
-   */
+  /** Returns a mapping of all groupIds to their n-grams (and occurences). */
   private LinkedHashMap<Long, LinkedHashMap<String, Integer>> getGroupMap(
       List<Long> groupIds, HttpServletResponse response) throws IOException {
 
-    LinkedHashMap<Long, LinkedHashMap<String, Integer>> groupMap = 
+    LinkedHashMap<Long, LinkedHashMap<String, Integer>> groupMap =
         new LinkedHashMap<Long, LinkedHashMap<String, Integer>>();
-        
+
     for (long groupId : groupIds) {
       Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
-      
+
       List<String> textData = getGroupPostsText(groupEntity, response);
       addChallengeText(groupEntity, textData, response);
 
@@ -88,8 +80,9 @@ public class TagsTFIDFServlet extends HttpServlet {
     return groupMap;
   }
 
+
   /** 
-   * Returns a list of Post content Strings, given a list of postIds. 
+   * Returns a list of Post content Strings, given a Group entity. 
    */
   private List<String> getGroupPostsText(Entity groupEntity, HttpServletResponse response) 
       throws IOException {
@@ -167,30 +160,33 @@ public class TagsTFIDFServlet extends HttpServlet {
     return occurences;
   }
 
-  public void calculateTFIDF(LinkedHashMap<Long, LinkedHashMap<String, Integer>> groupMap, 
-      LinkedHashMap<String, Integer> occurenceMap, HttpServletResponse response) 
+  public void calculateTFIDF(
+      LinkedHashMap<Long, LinkedHashMap<String, Integer>> groupMap,
+      LinkedHashMap<String, Integer> occurenceMap,
+      HttpServletResponse response)
       throws IOException {
-    
+
     for (Map.Entry<Long, LinkedHashMap<String, Integer>> groupEntry : groupMap.entrySet()) {
       Long groupId = groupEntry.getKey();
       LinkedHashMap<String, Integer> ngramMap = groupEntry.getValue();
       PriorityQueue<Tag> tagQueue = new PriorityQueue<>(Collections.reverseOrder());
 
       for (Map.Entry<String, Integer> ngramEntry : ngramMap.entrySet()) {
-        String ngram = ngramEntry.getKey(); 
+        String ngram = ngramEntry.getKey();
 
         double tf = (double) ngramEntry.getValue() / ngramMap.size();
-        double idf = Math.log( (double) groupMap.size() / occurenceMap.get(ngram) );
+        double idf = Math.log((double) groupMap.size() / occurenceMap.get(ngram));
         double score = tf * idf;
         score = weightScore(score, ngram);
 
         Tag tag = new Tag(ngram, score);
         tagQueue.add(tag);
       }
-      
+
       putTagsInDatastore(tagQueue, groupId, response);
     }
   }
+
 
   /**
    * Weights the tf-idf score of a given ngram by taking into account its length.
@@ -205,12 +201,10 @@ public class TagsTFIDFServlet extends HttpServlet {
     return score;
   }
 
-  /**
-   * Given a priority queue of tags, stores the top 3 tag values in the Group's datastore.
-   */
-  public void putTagsInDatastore(PriorityQueue<Tag> tagQueue, long groupId, 
-      HttpServletResponse response) throws IOException {
-    
+  /** Given a priority queue of tags, stores the top 3 tag values in the Group's datastore. */
+  public void putTagsInDatastore(
+      PriorityQueue<Tag> tagQueue, long groupId, HttpServletResponse response) throws IOException {
+
     ArrayList<Tag> topTags = new ArrayList<>();
     int tagsLength = (tagQueue.size() >= 3) ? 3 : tagQueue.size();
     for (int i = 0; i < tagsLength; i++) {
