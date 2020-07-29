@@ -128,11 +128,6 @@ public class Trie implements Serializable {
     return fullNames;
   }
 
-  public Set<String> findLedWithinRoot(String input) {
-    Set<String> fullNames = new TreeSet<String>();
-    return fullNames;
-  }
-
   public Map<String, Integer> searchLed(String input) {
     input = input.toUpperCase();
 
