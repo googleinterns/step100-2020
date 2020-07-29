@@ -1,9 +1,11 @@
 package com.google.sps.search;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -19,6 +21,7 @@ public class Trie implements Serializable {
   private static final long serialVersionUID = 1L;
   private Map<Character, Trie> children;
   private Set<String> fullNames;
+  private static final int MAX_LED = 2;
 
   /**
    * Constructor that sets the children of trie node and whether current node marks the end of the
@@ -125,12 +128,69 @@ public class Trie implements Serializable {
     return fullNames;
   }
 
-  public Set<String> autocorrect(String input) {
+  public Set<String> findLedWithinRoot(String input) {
     Set<String> fullNames = new TreeSet<String>();
     return fullNames;
   }
 
-  public static int getEditDistance(String word1, String word2) {
+  public Set<String> searchLed(String input) {
+    Set<String> suggestions = new TreeSet<String>();
+    int inputLength = input.length();
+    List<Integer> currRow = new ArrayList<Integer>();
+
+    for (int i = 0; i <= inputLength; i++) {
+      currRow.add(i);
+    }
+
+    for (Character c : this.children.keySet()) {
+      this.searchLedRecursive(this.children.get(c), c, input, currRow, suggestions);
+      this.fullNames.addAll(suggestions);
+    }
+    System.out.println(fullNames);
+    return fullNames;
+  }
+
+  private void searchLedRecursive(
+      Trie currNode,
+      Character currChar,
+      String input,
+      List<Integer> prevRow,
+      Set<String> suggestions) {
+
+    int numColumns = input.length() + 1;
+    List<Integer> currRow = new ArrayList<Integer>();
+    currRow.add(prevRow.get(0) + 1);
+
+    for (int j = 1; j < numColumns; j++) {
+      if (input.charAt(j - 1) == currChar) {
+        currRow.add(prevRow.get(j - 1));
+      } else {
+        currRow.add(1 + Math.min(Math.min(prevRow.get(j), currRow.get(j - 1)), prevRow.get(j - 1)));
+      }
+    }
+
+    /*
+     * If current row indicates end of name and is less than or equal to max LED, add all full names
+     * to set of suggestions.
+     */
+    if (currRow.get(currRow.size() - 1) <= MAX_LED && currNode.getIsName()) {
+      //      System.out.println("adding to suggestions");
+      suggestions.addAll(currNode.fullNames);
+    }
+
+    /*
+     * If any entry in the current row are less than or equal to the maximum allowed LED
+     * distance, recursively search each branch of the trie from current character.
+     */
+    int minRowVal = Collections.min(currRow);
+    if (minRowVal <= MAX_LED) {
+      for (Character c : currNode.children.keySet()) {
+        this.searchLedRecursive(currNode.children.get(c), c, input, currRow, suggestions);
+      }
+    }
+  }
+
+  public int getEditDistance(String word1, String word2) {
     int size1 = word1.length();
     int size2 = word2.length();
     int[][] ledMatrix = new int[size1 + 1][size2 + 1];
@@ -145,11 +205,13 @@ public class Trie implements Serializable {
           // check whether the current characters in each of the two words are equal
           if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
             ledMatrix[i][j] = ledMatrix[i - 1][j - 1];
+          } else {
+            ledMatrix[i][j] =
+                1
+                    + Math.min(
+                        Math.min(ledMatrix[i][j - 1], ledMatrix[i - 1][j]),
+                        ledMatrix[i - 1][j - 1]);
           }
-          ledMatrix[i][j] =
-              1
-                  + Math.min(
-                      Math.min(ledMatrix[i][j - 1], ledMatrix[i - 1][j]), ledMatrix[i - 1][j - 1]);
         }
       }
     }

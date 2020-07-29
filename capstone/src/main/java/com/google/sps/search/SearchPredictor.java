@@ -74,6 +74,9 @@ public class SearchPredictor implements Serializable {
     Set<String> whitespaceSuggestionsLastName = lastNameTrie.whitespace(input, /* reversed */ true);
     this.addToMap(namesScore, whitespaceSuggestionsFirstName, COMPLETE_MATCH);
     this.addToMap(namesScore, whitespaceSuggestionsLastName, COMPLETE_MATCH);
+    Set<String> ledSuggestions = firstNameTrie.searchLed(input.toUpperCase());
+    this.addToMap(namesScore, ledSuggestions, 1);
+    // for autocorrect make input upper case!
 
     for (int i = 0; i < firstAndLastName.length; i++) {
       String partialName = firstAndLastName[i].toUpperCase();

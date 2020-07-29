@@ -224,4 +224,21 @@ public class TrieTest {
 
     assertEquals(names.size(), 0);
   }
+
+  @Test
+  public void searchLedTest() {
+    trie.insert("Jack", "Jack Rose");
+    trie.insert("Jane", "Jane Doe");
+    trie.insert("Joe", "Joe Qu");
+    trie.insert("John", "John Liu");
+    trie.insert("Johnny", "Johnny Sterling");
+
+    Set<String> suggestions = trie.searchLed("JANE");
+
+    System.out.println(suggestions);
+    assertEquals(3, suggestions.size());
+    assertTrue(suggestions.contains("Jack Rose"));
+    assertTrue(suggestions.contains("Jane Doe"));
+    assertTrue(suggestions.contains("Joe Qu"));
+  }
 }
