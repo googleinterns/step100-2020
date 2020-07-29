@@ -55,7 +55,7 @@ p {
   width: 35px;
 }
 
-/* Group Header*/
+/* Group Header */
 .group-header {
   border-radius: 10px;
   width: 100%;
@@ -397,6 +397,12 @@ p {
   color: var(--text-gray);
   margin-block-start: 0.2em;
   margin-block-end: 0.2em;
+}
+
+.scrollbox-locations {
+  margin-top: 15px;
+  overflow: auto;
+  max-height: 400px;
 }
 
 /* Poll */

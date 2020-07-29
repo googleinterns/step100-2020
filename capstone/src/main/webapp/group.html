@@ -35,7 +35,7 @@
       <div id="members-container">
           <h4 class="align-vertical">Members</h4>
           <button class="plus-icon align-vertical" type="image" onclick="openAddGroupMemberModal()"><img class="small-icon" src="images/plus_icon.png" alt/></button>
-          <div class="scrollbox">
+          <div class="scrollbox-members">
             <div class="member-grid-container"></div>
           </div>
       </div>
@@ -147,7 +147,7 @@
         <div id="group-locations-container">
           <h2> Near Group </h2>
 
-          <label class="drop-menu" for="number">Items:</label>
+          <label class="drop-menu" for="number">Locations:</label>
           <select name="number" id="number" onchange="locationAmount()">
           <option value="1">1</option>
           <option value="5">5</option>
@@ -156,7 +156,9 @@
           <option value="20">20</option>
           </select>
 
-          <div id="locations-container"></div>
+          <div class="scrollbox-locations">
+            <div id="locations-container"></div>
+          </div>
 
           <div class="map" id="map-container">
             <div id="map"></div>

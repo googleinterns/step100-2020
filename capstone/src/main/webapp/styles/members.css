@@ -14,7 +14,7 @@
   position: flex;
 }
 
-.scrollbox {
+.scrollbox-members {
   margin-top: 15px;
   overflow: auto;
   max-height: 230px;
