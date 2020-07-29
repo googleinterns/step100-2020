@@ -3,6 +3,7 @@ package com.google.sps.search;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -133,9 +134,11 @@ public class Trie implements Serializable {
     return fullNames;
   }
 
-  public Set<String> searchLed(String input) {
+  public List<String> searchLed(String input) {
     input = input.toUpperCase();
-    Set<String> suggestions = new TreeSet<String>();
+
+    Map<String, Integer> suggestionsMap = new HashMap<String, Integer>();
+
     int inputLength = input.length();
     List<Integer> currRow = new ArrayList<Integer>();
 
@@ -143,11 +146,20 @@ public class Trie implements Serializable {
       currRow.add(i);
     }
 
+    Map<String, Integer> suggestedNames = new HashMap<String, Integer>();
     for (Character c : this.children.keySet()) {
-      this.searchLedRecursive(this.children.get(c), c, input, currRow, suggestions);
-      this.fullNames.addAll(suggestions);
+      this.searchLedRecursive(this.children.get(c), c, input, currRow, suggestionsMap);
+      suggestedNames.putAll(suggestionsMap);
     }
-    return fullNames;
+
+    suggestedNames
+        .entrySet()
+        .forEach(
+            entry -> {
+              System.out.println(entry.getKey() + " " + entry.getValue());
+            });
+
+    return this.sortNames(suggestedNames);
   }
 
   private void searchLedRecursive(
@@ -155,7 +167,7 @@ public class Trie implements Serializable {
       Character currChar,
       String input,
       List<Integer> prevRow,
-      Set<String> suggestions) {
+      Map<String, Integer> suggestions) {
 
     int numColumns = input.length() + 1;
     List<Integer> currRow = new ArrayList<Integer>();
@@ -173,9 +185,11 @@ public class Trie implements Serializable {
      * If current row indicates end of name and is less than or equal to max LED, add all full names
      * to set of suggestions.
      */
-    if (currRow.get(currRow.size() - 1) <= MAX_LED && currNode.getIsName()) {
-      //      System.out.println("adding to suggestions");
-      suggestions.addAll(currNode.fullNames);
+    int ledDistance = currRow.get(currRow.size() - 1);
+    if (ledDistance <= MAX_LED && currNode.getIsName()) {
+      for (String name : currNode.fullNames) {
+        suggestions.put(name, ledDistance);
+      }
     }
 
     /*
@@ -190,32 +204,30 @@ public class Trie implements Serializable {
     }
   }
 
-  public int getEditDistance(String word1, String word2) {
-    int size1 = word1.length();
-    int size2 = word2.length();
-    int[][] ledMatrix = new int[size1 + 1][size2 + 1];
+  private List<String> sortNames(Map<String, Integer> namesScore) {
+    System.out.println("in sorting names");
 
-    for (int i = 0; i < ledMatrix.length; i++) {
-      for (int j = 0; j < ledMatrix[0].length; j++) {
-        if (i == 0) {
-          ledMatrix[i][j] = j;
-        } else if (j == 0) {
-          ledMatrix[i][j] = i;
-        } else {
-          // check whether the current characters in each of the two words are equal
-          if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
-            ledMatrix[i][j] = ledMatrix[i - 1][j - 1];
-          } else {
-            ledMatrix[i][j] =
-                1
-                    + Math.min(
-                        Math.min(ledMatrix[i][j - 1], ledMatrix[i - 1][j]),
-                        ledMatrix[i - 1][j - 1]);
+    List<String> sortedNames = new ArrayList<String>();
+
+    List<Map.Entry<String, Integer>> entries =
+        new ArrayList<Map.Entry<String, Integer>>(namesScore.entrySet());
+
+    Collections.sort(
+        entries,
+        new Comparator<Map.Entry<String, Integer>>() {
+          @Override
+          public int compare(Map.Entry<String, Integer> a, Map.Entry<String, Integer> b) {
+            return Integer.compare(a.getValue(), b.getValue());
           }
-        }
-      }
+        });
+
+    for (Map.Entry<String, Integer> entry : entries) {
+      System.out.println(entry.getKey());
+      sortedNames.add(entry.getKey());
     }
-    return ledMatrix[size1][size2];
+
+    System.out.println(sortedNames);
+    return sortedNames;
   }
 
   /**

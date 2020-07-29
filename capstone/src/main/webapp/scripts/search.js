@@ -40,7 +40,7 @@ function findSelected(list) {
     const name = active.innerHTML;
     completeNameAndSearch(name);
   } else {
-    getSearchResults("");
+    getSearchResults();
   }
 }
 
@@ -48,14 +48,9 @@ function findSelected(list) {
  * Gets user results from server based on user input.
  * @param {string} selectedName
  */
-function getSearchResults(selectedName) {
+function getSearchResults() {
   let names = "";
-
-  if (selectedName) {
-    names = sort(selectedName).join(",");
-  } else {
-    nameSuggestions.forEach(name => (names = names.concat(`${name},`)));
-  }
+  nameSuggestions.forEach(name => (names = names.concat(`${name},`)));
   fetch(`/search-results?names=${names}`).then(response =>
     response.json().then(results => displayResults(results))
   );
@@ -194,5 +189,7 @@ function removeActive() {
  */
 function completeNameAndSearch(fullname) {
   searchInput.value = fullname;
-  getSearchResults(fullname);
+  fetch(`/search-results?names=${fullname}`).then(response =>
+    response.json().then(results => displayResults(results))
+  );
 }

@@ -64,7 +64,6 @@ public class SearchPredictor implements Serializable {
     lastNameTrie.insert(lastName, fullName);
   }
 
-  // incomplete
   public List<String> suggest(String input) {
     Map<String, Integer> namesScore = new HashMap<String, Integer>();
     String[] firstAndLastName = input.split(" ");
@@ -74,7 +73,6 @@ public class SearchPredictor implements Serializable {
     Set<String> whitespaceSuggestionsLastName = lastNameTrie.whitespace(input, /* reversed */ true);
     this.addToMap(namesScore, whitespaceSuggestionsFirstName, COMPLETE_MATCH);
     this.addToMap(namesScore, whitespaceSuggestionsLastName, COMPLETE_MATCH);
-    // for autocorrect make input upper case!
 
     for (int i = 0; i < firstAndLastName.length; i++) {
       String partialName = firstAndLastName[i].toUpperCase();
@@ -83,14 +81,19 @@ public class SearchPredictor implements Serializable {
       // Matching prefix first name is weighted more heavily
       this.addToMap(namesScore, firstNameSuggestions, partialName, 2);
       this.addToMap(namesScore, lastNameSuggestions, partialName, 1);
-
-      Set<String> ledSuggestionsFirstName = firstNameTrie.searchLed(partialName);
-      Set<String> ledSuggestionsLastName = lastNameTrie.searchLed(partialName);
-      this.addToMap(namesScore, ledSuggestionsFirstName, 1);
-      this.addToMap(namesScore, ledSuggestionsLastName, 1);
     }
 
     List<String> sortedNames = this.sortNames(namesScore);
+
+    for (int i = 0; i < firstAndLastName.length; i++) {
+      String partialName = firstAndLastName[i].toUpperCase();
+      List<String> ledSuggestionsFirstName = firstNameTrie.searchLed(partialName);
+      List<String> ledSuggestionsLastName = lastNameTrie.searchLed(partialName);
+      sortedNames.addAll(ledSuggestionsFirstName);
+      sortedNames.addAll(ledSuggestionsLastName);
+    }
+
+    System.out.println("sorted in search predictor " + sortedNames);
     return sortedNames;
   }
 

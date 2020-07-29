@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -233,7 +234,7 @@ public class TrieTest {
     trie.insert("John", "John Liu");
     trie.insert("Johnny", "Johnny Sterling");
 
-    Set<String> suggestions = trie.searchLed("Jane");
+    List<String> suggestions = trie.searchLed("Jane");
 
     assertEquals(3, suggestions.size());
     assertTrue(suggestions.contains("Jack Rose"));
@@ -247,7 +248,7 @@ public class TrieTest {
     trie.insert("Lucie", "Lucie Wang");
     trie.insert("Lucie", "Lucie Cart");
 
-    Set<String> suggestions = trie.searchLed("Lucy");
+    List<String> suggestions = trie.searchLed("Lucy");
 
     assertEquals(3, suggestions.size());
     assertTrue(suggestions.contains("Lucy Qu"));
