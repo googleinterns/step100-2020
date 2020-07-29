@@ -19,6 +19,8 @@ public class SearchPredictor implements Serializable {
 
   private static final double COMPLETE_PARTIAL_NAME_MATCH = 5;
   private static final double COMPLETE_MATCH = 10;
+  private static final double FIRST_NAME_MATCH = 2;
+  private static final double LAST_NAME_MATCH = 1;
   private static final long serialVersionUID = 1L;
   private List<String> names;
   private Trie firstNameTrie;
@@ -76,11 +78,12 @@ public class SearchPredictor implements Serializable {
 
     for (int i = 0; i < firstAndLastName.length; i++) {
       String partialName = firstAndLastName[i].toUpperCase();
+
       Set<String> firstNameSuggestions = firstNameTrie.searchWithPrefix(partialName, partialName);
       Set<String> lastNameSuggestions = lastNameTrie.searchWithPrefix(partialName, partialName);
       // Matching prefix first name is weighted more heavily
-      this.addToMap(namesScore, firstNameSuggestions, partialName, 2);
-      this.addToMap(namesScore, lastNameSuggestions, partialName, 1);
+      this.addToMap(namesScore, firstNameSuggestions, partialName, FIRST_NAME_MATCH);
+      this.addToMap(namesScore, lastNameSuggestions, partialName, LAST_NAME_MATCH);
 
       Map<String, Integer> ledSuggestionsFirstName = firstNameTrie.searchLed(partialName);
       Map<String, Integer> ledSuggestionsLastName = lastNameTrie.searchLed(partialName);
@@ -91,6 +94,13 @@ public class SearchPredictor implements Serializable {
     return this.sortNames(namesScore);
   }
 
+  /**
+   * Sorts the suggestioned names in order of score from lowest to highest and returns the list of
+   * names.
+   *
+   * @param namesScore map from name to score
+   * @return list of names
+   */
   public List<String> sortNames(Map<String, Double> namesScore) {
     List<String> sortedNames = new ArrayList<String>();
 
@@ -113,6 +123,15 @@ public class SearchPredictor implements Serializable {
     return sortedNames;
   }
 
+  /**
+   * Adds names in the set to the map alongside its score.
+   *
+   * @param namesScore map from name to score
+   * @param set set of suggested names
+   * @param partialName either first or last name
+   * @param increment score
+   * @return map from name to score
+   */
   private Map<String, Double> addToMap(
       Map<String, Double> namesScore, Set<String> set, String partialName, double increment) {
     for (String name : set) {
@@ -135,6 +154,14 @@ public class SearchPredictor implements Serializable {
     return namesScore;
   }
 
+  /**
+   * Adds names in a set to the map alongside its score.
+   *
+   * @param namesScore map from name to score
+   * @param set set of suggested names
+   * @param increment score
+   * @return map from name to score
+   */
   private Map<String, Double> addToMap(
       Map<String, Double> namesScore, Set<String> set, double increment) {
     for (String name : set) {
@@ -147,10 +174,19 @@ public class SearchPredictor implements Serializable {
     return namesScore;
   }
 
+  /**
+   * Adds names from the name to led map to the name to score map.
+   *
+   * @param namesScore map from name to score
+   * @param nameToLedMap map from name to its led distance from input
+   * @return map from name to score
+   */
   private Map<String, Double> addToMap(
       Map<String, Double> namesScore, Map<String, Integer> nameToLedMap) {
     for (String name : nameToLedMap.keySet()) {
       double score = 0;
+      /* Get the reciprocal of the edit distance so that names with greater edit distance have a
+      lower score */
       if (nameToLedMap.get(name) != 0) {
         score = 1 / nameToLedMap.get(name);
       }

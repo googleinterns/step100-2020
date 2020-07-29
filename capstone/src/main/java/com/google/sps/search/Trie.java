@@ -128,11 +128,16 @@ public class Trie implements Serializable {
     return fullNames;
   }
 
+  /**
+   * Finds names that are within the maximum LED distance of input by calling a recursive helper
+   * method that uses dynamic programming to find the edit distance between words.
+   *
+   * @param input user input
+   * @return Map from possible names to its edit distance from input
+   */
   public Map<String, Integer> searchLed(String input) {
     input = input.toUpperCase();
-
     Map<String, Integer> suggestionsMap = new HashMap<String, Integer>();
-
     int inputLength = input.length();
     List<Integer> currRow = new ArrayList<Integer>();
 
@@ -149,13 +154,22 @@ public class Trie implements Serializable {
     return suggestedNames;
   }
 
+  /**
+   * Recursive helper method that populates the new row with values indicating edit distance with
+   * input name. These values are based off of the subproblem (the review row that is passed in).
+   *
+   * @param currNode current trie
+   * @param currChar current character
+   * @param input user input
+   * @param prevRow previous row in matrix
+   * @param suggestions map of suggested names
+   */
   private void searchLedRecursive(
       Trie currNode,
       Character currChar,
       String input,
       List<Integer> prevRow,
       Map<String, Integer> suggestions) {
-
     int numColumns = input.length() + 1;
     List<Integer> currRow = new ArrayList<Integer>();
     currRow.add(prevRow.get(0) + 1);
@@ -170,7 +184,7 @@ public class Trie implements Serializable {
 
     /*
      * If current row indicates end of name and is less than or equal to max LED, add all full names
-     * to set of suggestions.
+     * to map of suggestions and indicate edit distance from input.
      */
     int ledDistance = currRow.get(currRow.size() - 1);
     if (ledDistance <= MAX_LED && currNode.getIsName()) {
