@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.Comparator;
+import java.text.DecimalFormat;
 
 import com.google.sps.Objects.Location;
 import com.google.sps.Objects.Coordinate;
@@ -92,10 +93,25 @@ public class QuadTree {
     double yMin = bounds.getYMin();
     double xMax = bounds.getXMax();
     double yMax = bounds.getYMax();
+
+    // Find mid x and y within bounds 
     double xOffset = xMin + (xMax - xMin) / 2;
     double yOffset = yMin + (yMax - yMin) / 2;
 
-    // Split space into 4 quadrant trees and create new bounding boxes 
+    /*
+    * Split space into 4 quadrant trees and create new bounding boxes 
+    * 
+    *xMax    ************************
+    *        *          *           *
+    *        * topLeft  *  topRight *
+    *        *          *           *
+    *xOffset ************************ 
+    *        *          *           *
+    *        * botLeft  *  botRight *
+    *        *          *           *
+    *xMin    ************************
+    *        yMin     yOffset     yMax
+    */
     botRightTree = new QuadTree(NODE_CAPACITY, level + 1, 
         new BoundingBox(xMin, yOffset, xOffset, yMax));
     topRightTree = new QuadTree(NODE_CAPACITY, level + 1, 
@@ -142,6 +158,7 @@ public class QuadTree {
   }
 
   public ArrayList<Location> findKNearestNeighbors(Location loc, int k) {
+    // Order PriorityQueue by distance 
     PriorityQueue<Location> pq = new PriorityQueue<Location>(k, Comparator.comparingDouble( locationPQ -> -euclidianDistance(loc, locationPQ)));
 
     pq = findKNearestNeighborsHelper(loc, k, pq);
@@ -166,16 +183,20 @@ public class QuadTree {
 
     // Check distance between location and points in this box
     for (Location location: locations) {
-      if (euclidianDistance(loc, location) < maxClosestDistance) {
+      DecimalFormat df = new DecimalFormat("#.000");
+      double dist = euclidianDistance(location, loc) * 69;
+      location.setDistance(Double.valueOf(df.format(dist)));
+      if (euclidianDistance(location, loc) < maxClosestDistance) {
         if (pq.size() >= k) {
           // Remove current maxClosest
           pq.poll();
         } 
         // Insert next maxClosest into queue
-        pq.add(location);
+        if (!pq.contains(location)) pq.add(location);
       } else if (pq.size() < k) {
-        pq.add(location);
+        if (!pq.contains(location)) pq.add(location);
       }
+      // Update maxClosestDistance to element last in priority queue
       maxClosestDistance = euclidianDistance(loc, pq.peek());
     }
 

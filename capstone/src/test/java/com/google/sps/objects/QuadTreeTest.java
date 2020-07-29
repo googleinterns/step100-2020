@@ -38,14 +38,14 @@ public class QuadTreeTest {
           new LocalDatastoreServiceTestConfig()
               .setDefaultHighRepJobPolicyUnappliedJobPercentage(0));
   
-  private static final Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.48862915, -80.14141311));
-  private static final Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.50170965, -80.09777729));
-  private static final Location LOC_3 = new Location("Test3", "address3", new Coordinate(40.57455069, -80.00992621)); 
-  private static final Location LOC_4 = new Location("Test4", "address4", new Coordinate(40.29651063, -79.98241256)); 
-  private static final Location LOC_5 = new Location("Test5", "address5", new Coordinate(40.49303469, -80.10254273)); 
-  private static final Location LOC_6 = new Location("Test6", "address6", new Coordinate(40.50245938, -80.08270203)); 
-  private static final Location LOC_7 = new Location("Test7", "address7", new Coordinate(40.4513275, -79.86228567)); 
-  private static final Location LOC_8 = new Location("Test8", "address8", new Coordinate(40.41427404,	-79.99527299)); 
+  private static final Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.48862915, -80.14141311), 0.0);
+  private static final Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.50170965, -80.09777729), 0.0);
+  private static final Location LOC_3 = new Location("Test3", "address3", new Coordinate(40.57455069, -80.00992621), 0.0); 
+  private static final Location LOC_4 = new Location("Test4", "address4", new Coordinate(40.29651063, -79.98241256), 0.0); 
+  private static final Location LOC_5 = new Location("Test5", "address5", new Coordinate(40.49303469, -80.10254273), 0.0); 
+  private static final Location LOC_6 = new Location("Test6", "address6", new Coordinate(40.50245938, -80.08270203), 0.0); 
+  private static final Location LOC_7 = new Location("Test7", "address7", new Coordinate(40.4513275, -79.86228567), 0.0); 
+  private static final Location LOC_8 = new Location("Test8", "address8", new Coordinate(40.41427404,	-79.99527299), 0.0); 
 
   private DatastoreService datastore;
   private QuadTree quadTree;

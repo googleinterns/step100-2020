@@ -29,7 +29,7 @@ function findClosestGroupLocations() {
 function createLocationComponent(location){
   const locationContent = document.createElement("p");
   locationContent.className = "location-content";
-  locationContent.innerText = location.locationName + " " + location.address + " " + location.coordinate.latitude + " " + location.coordinate.longitude;
+  locationContent.innerText = location.locationName + " " + location.address + " " + location.coordinate.latitude + " " + location.coordinate.longitude + " " + location.distance;
   return locationContent;
 }
 

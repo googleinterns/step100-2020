@@ -94,7 +94,11 @@ public class QuadTreeServlet extends HttpServlet {
       String line = scanner.nextLine();
       String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
       assert fields.length == 9;
-      Location newLocation = new Location(fields[7], fields[0], new Coordinate(Double.valueOf(fields[4]), Double.valueOf(fields[5])));
+      Location newLocation = new Location(
+        /* location name */ fields[7], 
+        /* address */ fields[0], 
+        /* coordinate*/ new Coordinate(Double.valueOf(fields[4]), Double.valueOf(fields[5])), 
+        /*. distance */ 0.0);
       quadTree.insert(newLocation);
     }
 
@@ -126,7 +130,7 @@ public class QuadTreeServlet extends HttpServlet {
 
     GroupLocation groupLocation = new GroupLocation(groupId);
     Coordinate midPoint = groupLocation.findGroupMidPoint(groupId);
-    Location groupMidPoint = new Location("Group Midpoint", "", midPoint);
+    Location groupMidPoint = new Location("Group Midpoint", "", midPoint, 0.0);
 
     ArrayList<Location> closest20Locations = quadTree.findKNearestNeighbors(groupMidPoint, 20);
 
