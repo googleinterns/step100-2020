@@ -16,13 +16,11 @@ function openAddGroupMemberModal() {
 }
 
 function addMember(){
-  console.log("add member");
   const emailInput = document.getElementById('email-input').value;
   const params = new URLSearchParams();
   params.append('groupId', groupId);
   params.append('email', emailInput);
   fetch(`/group-member`, { method: "POST", body: params });
-  console.log("add member");
 }
 
 function createMemberComponents(memberInfo) {

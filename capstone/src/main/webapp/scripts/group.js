@@ -16,10 +16,18 @@ function init() {
 }
 
 function createAPIKey() {
-  let script = document.createElement('script');
-  let key = JSON.parse('/api_key.json').GOOGLE_MAPS_API_KEY;
-  script.src = "https://maps.googleapis.com/maps/api/js?key=" + key;
-  document.getElementsByTagName('head')[0].appendChild(script);
+  var xmlhttp = new XMLHttpRequest();
+
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var myArr = JSON.parse(this.responseText);
+      let script = document.createElement('script');
+      script.src = "https://maps.googleapis.com/maps/api/js?key=" + myArr[0].GOOGLE_MAPS_API_KEY;
+      document.getElementsByTagName('head')[0].appendChild(script);
+    }
+  };
+  xmlhttp.open("GET", "scripts/api_key.json", true);
+  xmlhttp.send();
 }
 
 function getGroupId() {
