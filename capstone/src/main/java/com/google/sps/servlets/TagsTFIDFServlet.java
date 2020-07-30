@@ -228,21 +228,31 @@ public class TagsTFIDFServlet extends HttpServlet {
    * Checks if a potential group tag is redundant.
    */
   public boolean checkIfDuplicate(ArrayList<Tag> topTags, Tag next) {
+    String[] nextWords = next.getText().split(" ");
+
     for (Tag tag : topTags) {
       String[] existingWords = tag.getText().split(" ");
-      String[] nextWords = next.getText().split(" ");
-      if (existingWords.length >= 2 && nextWords.length >= 2) {
 
-      } else {
-        for (String existingWord : existingWords) {
-          for (String word : nextWords) {
-            if (word.equals(existingWord)) {
-              return true;
-            }
+      int matches = 0;
+      for (String existingWord : existingWords) {
+        for (String word : nextWords) {
+          if (word.equals(existingWord)) {
+            matches++;
           }
+        }
+      }
+
+      if (existingWords.length >= 2 && nextWords.length >= 2) {
+        if (matches > 1) {
+          return true;
+        }
+      } else {
+        if (matches > 0) {
+          return true;
         }
       }
     }
     return false;
   }
+
 }
