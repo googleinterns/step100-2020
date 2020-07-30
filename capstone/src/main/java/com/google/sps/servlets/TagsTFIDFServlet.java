@@ -87,8 +87,7 @@ public class TagsTFIDFServlet extends HttpServlet {
     // A synchronized list guarantees that a list is thread-safe.
     ngramsList = Collections.synchronizedList(new ArrayList<LinkedHashMap<String, Integer>>());
 
-    // Partition textData into sublists of equal size. 
-    // This number can be scaled up as appropriate.
+    // Partition textData into sublists of equal size, which can be scaled up/down as appropriate.
     List<List<String>> textLists = Lists.partition(textData, 20);
 
     // Start a new thread for each sublist.
