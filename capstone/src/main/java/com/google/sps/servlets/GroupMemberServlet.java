@@ -92,7 +92,6 @@ public class GroupMemberServlet extends AuthenticatedServlet {
     Filter findMemberEntity = new FilterPredicate("email", FilterOperator.EQUAL, email);
     Query query = new Query("User").setFilter(findMemberEntity);
     PreparedQuery pq = datastore.prepare(query);
-    System.out.println("FILTER" + pq.asSingleEntity());
     if (pq.asSingleEntity() == null) {
       ErrorHandler.sendError(response, "Cannot get entity from datastore");
       return null;

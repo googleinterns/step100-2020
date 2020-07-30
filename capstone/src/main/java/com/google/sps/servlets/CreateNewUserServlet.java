@@ -50,8 +50,6 @@ public class CreateNewUserServlet extends AuthenticatedServlet {
     String last = request.getParameter("last");
     String phone = request.getParameter("phone");
     String address = request.getParameter("address");
-    System.out.println("LATITUDE: " + request.getParameter("latitude"));
-    System.out.println("LONG: " + request.getParameter("longitude"));
     double latitude = Double.parseDouble(request.getParameter("latitude"));
     double longitude = Double.parseDouble(request.getParameter("longitude"));
     ArrayList<String> interests = getInterests(request);

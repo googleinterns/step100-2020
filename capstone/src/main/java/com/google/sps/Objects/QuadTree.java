@@ -184,6 +184,10 @@ public class QuadTree implements Serializable {
 
     // Check distance between location and points in this box
     for (Location location: locations) {
+      /* 
+      * Convert euclidianDistance to miles (one degree of latitude is approx.
+      * 69miles)
+      */
       DecimalFormat df = new DecimalFormat("#.000");
       double dist = euclidianDistance(location, loc) * 69;
       location.setDistance(Double.valueOf(df.format(dist)));
