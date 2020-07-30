@@ -180,12 +180,12 @@ public class QuadTree {
       return closestLocationPQ;
     }
 
-    Location maxKClosest = closestLocationPQ.peek();
-    double maxKClosestDistance = maxKClosest == null ? Double.MAX_VALUE : euclidianDistance(maxKClosest, loc);
+    Location kthClosestLocation = closestLocationPQ.peek();
+    double kthClosestDistance = kthClosestLocation == null ? Double.MAX_VALUE : euclidianDistance(kthClosestLocation, loc);
 
     // Check distance between location and points in this box
     for (Location location: locations) {
-      if (euclidianDistance(loc, location) < maxKClosestDistance) {
+      if (euclidianDistance(loc, location) < kthClosestDistance) {
         if (closestLocationPQ.size() >= k) {
           // Remove current maxClosest
           closestLocationPQ.poll();
@@ -195,7 +195,7 @@ public class QuadTree {
       } else if (closestLocationPQ.size() < k) {
         closestLocationPQ.add(location);
       }
-      maxKClosestDistance = euclidianDistance(loc, closestLocationPQ.peek());
+      kthClosestDistance = euclidianDistance(loc, closestLocationPQ.peek());
     }
 
     // Check distance between location and points within all children
