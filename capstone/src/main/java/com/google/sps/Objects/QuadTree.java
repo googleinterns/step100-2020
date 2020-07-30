@@ -185,7 +185,7 @@ public class QuadTree {
 
     // Check distance between location and points in this box
     for (Location location: locations) {
-      if (euclidianDistance(loc, location) < maxClosestDistance) {
+      if (euclidianDistance(loc, location) < maxKClosestDistance) {
         if (closestLocationPQ.size() >= k) {
           // Remove current maxClosest
           closestLocationPQ.poll();
