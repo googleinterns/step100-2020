@@ -13,7 +13,6 @@ function init() {
   findClosestGroupLocations();
   autocomplete();
   loadTags();
-
 }
 
 function createAPIKey() {
