@@ -113,12 +113,17 @@ public class TagsTFIDFServletTest {
     for (EmbeddedEntity tag : (ArrayList<EmbeddedEntity>) groupEntity.getProperty("tags")) {
       tags.add(Tag.fromEntity(tag));
     }
-    String tagsJson = new Gson().toJson(tags);
 
     // expected score for "why hello" is tf * idf * weight =
     // (1/3) * (natural log of 2) * (1 + 0.5(9/11) + 0.5(2/3.1)) = 0.40010108516...
 
-    assertTrue(tagsJson.contains("why hello") && tagsJson.contains("0.40010108516"));
+    // expected score for "my friends" is tf * idf * weight =
+    // (1/3) * (natural log of 1) * (1 + 0.5(10/11) + 0.5(2/3.1)) = 0;
+
+    // so the first tag should be "why hello", and the second "my friends"
+
+    assertTrue(tags.get(0).getText().equals("why hello") && 
+              tags.get(1).getText().equals("my friends"));
   }
 
   private void populateDatabase(DatastoreService datastore) {

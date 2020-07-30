@@ -231,10 +231,14 @@ public class TagsTFIDFServlet extends HttpServlet {
     for (Tag tag : topTags) {
       String[] existingWords = tag.getText().split(" ");
       String[] nextWords = next.getText().split(" ");
-      for (String existingWord : existingWords) {
-        for (String word : nextWords) {
-          if (word.equals(existingWord)) {
-            return true;
+      if (existingWords.length >= 2 && nextWords.length >= 2) {
+
+      } else {
+        for (String existingWord : existingWords) {
+          for (String word : nextWords) {
+            if (word.equals(existingWord)) {
+              return true;
+            }
           }
         }
       }
