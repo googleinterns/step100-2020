@@ -2,6 +2,7 @@ let groupId;
 let locationsLimit = 1;
 
 function init() {
+  createAPIKey();
   getGroupId();
   checkMembership();
   createLogoutUrl();
@@ -12,6 +13,14 @@ function init() {
   findClosestGroupLocations();
   autocomplete();
   loadTags();
+
+}
+
+function createAPIKey() {
+  let script = document.createElement('script');
+  let key = JSON.parse('/api_key.json').GOOGLE_MAPS_API_KEY;
+  script.src = "https://maps.googleapis.com/maps/api/js?key=" + key;
+  document.getElementsByTagName('head')[0].appendChild(script);
 }
 
 function getGroupId() {
@@ -26,7 +35,7 @@ function findClosestGroupLocations() {
     for (let i = 1; i < locationsLimit + 1; i++) {
       groupLocations.appendChild(createLocationComponent(allCentralGroupLocations[i]));
     }
-    createMap(groupLocations);
+    createMap(allCentralGroupLocations, locationsLimit);
   });
 }
 

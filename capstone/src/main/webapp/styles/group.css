@@ -405,6 +405,16 @@ p {
   max-height: 400px;
 }
 
+#map {
+  margin-top: 20px;
+  height: 500px;
+  width: 100%;
+}
+
+.marker-text {
+  font-size: 10px;
+}
+
 /* Poll */
 .poll-container {
   background: var(--near-white);

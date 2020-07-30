@@ -86,6 +86,25 @@ function createNewUser() {
     params.append('phone', phoneNumber);
     params.append('address', address);
     params.append('interests', interests);
+
+    var geocoder = new google.maps.Geocoder();
+    var addressFull = "372 3 AVENUE, 10016, NY";
+    geocoder.geocode({"address": addressFull} , function(results, status) {
+      console.log(status);
+      if (status === "OK") {
+        var latitude = results[0].geometry.location.lat();
+        var longitude = results[0].geometry.location.lng();
+        params.append('latitude', latitude);
+        params.append('longitude', longitude);
+        console.log(latitude);
+        console.log(longitude);
+      } else {
+        params.append('latitude', 0.0);
+        params.append('longitude', 0.0);
+        console.log(0.0);
+        console.log(0.0);
+      }
+    });
     params.append('latitude', 0.0);
     params.append('longitude', 0.0);
 
