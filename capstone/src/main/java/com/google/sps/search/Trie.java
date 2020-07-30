@@ -129,8 +129,10 @@ public class Trie implements Serializable {
   }
 
   /**
-   * Finds names that are within the maximum LED distance of input by calling a recursive helper
-   * method that uses dynamic programming to find the edit distance between words.
+   * Finds names that are within the maximum Levenshtein distance (AKA edit distance: minimum number
+   * of single character edits (i.e. insertions, deletions, or substitutions) required to change one
+   * word into the other) of input by calling a recursive helper method that uses dynamic
+   * programming to find the edit distance between words.
    *
    * @param input user input
    * @return Map from possible names to its edit distance from input
@@ -160,25 +162,27 @@ public class Trie implements Serializable {
    *
    * @param currNode current trie
    * @param currChar current character
-   * @param input user input
-   * @param prevRow previous row in matrix
-   * @param suggestions map of suggested names
+   * @param searchString user input string representing search for a user by first and/or last name
+   * @param prevRow row of edit distances between previous string and search string
+   * @param suggestions map of suggested names to score
    */
   private void searchLedRecursive(
       Trie currNode,
       Character currChar,
-      String input,
+      String searchString,
       List<Integer> prevRow,
       Map<String, Integer> suggestions) {
-    int numColumns = input.length() + 1;
+    int numColumns = searchString.length() + 1;
     List<Integer> currRow = new ArrayList<Integer>();
     currRow.add(prevRow.get(0) + 1);
 
     for (int j = 1; j < numColumns; j++) {
-      if (input.charAt(j - 1) == currChar) {
+      /* If characters are the same, take the edit distance of subproblem disregarding current character */
+      if (searchString.charAt(j - 1) == currChar) {
         currRow.add(prevRow.get(j - 1));
       } else {
-        currRow.add(1 + Math.min(Math.min(prevRow.get(j), currRow.get(j - 1)), prevRow.get(j - 1)));
+        int minEditDistanceOfSubproblems = Math.min(prevRow.get(j), currRow.get(j - 1));
+        currRow.add(1 + Math.min(minEditDistanceOfSubproblems, prevRow.get(j - 1)));
       }
     }
 
@@ -186,10 +190,10 @@ public class Trie implements Serializable {
      * If current row indicates end of name and is less than or equal to max LED, add all full names
      * to map of suggestions and indicate edit distance from input.
      */
-    int ledDistance = currRow.get(currRow.size() - 1);
-    if (ledDistance <= MAX_LED && currNode.getIsName()) {
+    int editDistance = currRow.get(currRow.size() - 1);
+    if (editDistance <= MAX_LED && currNode.getIsName()) {
       for (String name : currNode.fullNames) {
-        suggestions.put(name, ledDistance);
+        suggestions.put(name, editDistance);
       }
     }
 
@@ -197,16 +201,16 @@ public class Trie implements Serializable {
      * If any entry in the current row are less than or equal to the maximum allowed LED
      * distance, recursively search each branch of the trie from current character.
      */
-    int minRowVal = Collections.min(currRow);
-    if (minRowVal <= MAX_LED) {
+    int minEditDistanceForRow = Collections.min(currRow);
+    if (minEditDistanceForRow <= MAX_LED) {
       for (Character c : currNode.children.keySet()) {
-        this.searchLedRecursive(currNode.children.get(c), c, input, currRow, suggestions);
+        this.searchLedRecursive(currNode.children.get(c), c, searchString, currRow, suggestions);
       }
     }
   }
 
   /**
-   * Helper method that checks whether the trie contains the full name by recurring down the tree
+   * Helper method that checks whether the trie contains the full name by recursing down the tree
    * using the name that is passed in.
    *
    * @param name either first or last name

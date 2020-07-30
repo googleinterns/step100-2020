@@ -87,8 +87,8 @@ public class SearchPredictor implements Serializable {
 
       Map<String, Integer> ledSuggestionsFirstName = firstNameTrie.searchLed(partialName);
       Map<String, Integer> ledSuggestionsLastName = lastNameTrie.searchLed(partialName);
-      this.addToMap(namesScore, ledSuggestionsFirstName);
-      this.addToMap(namesScore, ledSuggestionsLastName);
+      this.addToMapWithEditDistance(namesScore, ledSuggestionsFirstName);
+      this.addToMapWithEditDistance(namesScore, ledSuggestionsLastName);
     }
 
     return this.sortNames(namesScore);
@@ -175,13 +175,13 @@ public class SearchPredictor implements Serializable {
   }
 
   /**
-   * Adds names from the name to led map to the name to score map.
+   * Adds names from the name to edit distance map to the name to score map.
    *
    * @param namesScore map from name to score
-   * @param nameToLedMap map from name to its led distance from input
+   * @param nameToLedMap map from name to its Levenshtein edit distance from input
    * @return map from name to score
    */
-  private Map<String, Double> addToMap(
+  private Map<String, Double> addToMapWithEditDistance(
       Map<String, Double> namesScore, Map<String, Integer> nameToLedMap) {
     for (String name : nameToLedMap.keySet()) {
       double score = 0;
