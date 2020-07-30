@@ -147,13 +147,11 @@ public class Trie implements Serializable {
       currRow.add(i);
     }
 
-    Map<String, Integer> suggestedNames = new HashMap<String, Integer>();
     for (Character c : this.children.keySet()) {
       this.searchLedRecursive(this.children.get(c), c, input, currRow, suggestionsMap);
-      suggestedNames.putAll(suggestionsMap);
     }
 
-    return suggestedNames;
+    return suggestionsMap;
   }
 
   /**
@@ -164,9 +162,10 @@ public class Trie implements Serializable {
    * @param currChar current character
    * @param searchString user input string representing search for a user by first and/or last name
    * @param prevRow row of edit distances between previous string and search string
-   * @param suggestions map of suggested names to score
+   * @param suggestions map of suggested names to edit distance
+   * @return map from suggested name to edit distance
    */
-  private void searchLedRecursive(
+  private Map<String, Integer> searchLedRecursive(
       Trie currNode,
       Character currChar,
       String searchString,
@@ -207,6 +206,8 @@ public class Trie implements Serializable {
         this.searchLedRecursive(currNode.children.get(c), c, searchString, currRow, suggestions);
       }
     }
+
+    return suggestions;
   }
 
   /**
