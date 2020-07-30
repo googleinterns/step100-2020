@@ -14,7 +14,7 @@ public class BoundingBox implements Serializable {
     this.yMax = yMax;
   }
 
-	/* 
+  /* 
   * Checks if location is within boundary
   */
   public boolean containsPoint(Location loc) {
