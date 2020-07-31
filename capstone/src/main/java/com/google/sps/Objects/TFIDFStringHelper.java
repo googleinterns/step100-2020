@@ -88,7 +88,7 @@ public class TFIDFStringHelper {
    * Combines two or more HashMaps of n-grams into a single map.
    */
   public static LinkedHashMap<String, Integer> combineMaps(
-      ArrayList<LinkedHashMap<String, Integer>> maps) {
+      List<LinkedHashMap<String, Integer>> maps) {
 
     LinkedHashMap<String, Integer> ngrams = new LinkedHashMap<String, Integer>();
     for (LinkedHashMap<String, Integer> map : maps) {

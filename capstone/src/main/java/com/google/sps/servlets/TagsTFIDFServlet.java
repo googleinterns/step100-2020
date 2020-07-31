@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import com.google.common.collect.Lists;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -69,17 +70,48 @@ public class TagsTFIDFServlet extends HttpServlet {
       List<String> textData = getGroupPostsText(groupEntity, response);
       addChallengeText(groupEntity, textData, response);
 
-      // TODO: Parallelize this process to occur for each string concurrently.
-      ArrayList<LinkedHashMap<String, Integer>> ngramsList = new ArrayList<>();
-      for (String text : textData) {
-        ngramsList.add(TFIDFStringHelper.ngramTokenizer(text));
-      }
+      List<LinkedHashMap<String, Integer>> ngramsList = createNgrams(textData, response);
       groupMap.put(groupId, TFIDFStringHelper.combineMaps(ngramsList));
     }
 
     return groupMap;
   }
 
+  /**
+   * Given a list of all textual data in a group, divides the list into 4 and 
+   * return a combined list of all ngrams and their frequencies.
+   */
+  private List<LinkedHashMap<String, Integer>> createNgrams(List<String> textData, 
+      HttpServletResponse response) throws IOException {
+    List<LinkedHashMap<String, Integer>> ngramsList;
+    // A synchronized list guarantees that a list is thread-safe.
+    ngramsList = Collections.synchronizedList(new ArrayList<LinkedHashMap<String, Integer>>());
+
+    // Partition textData into sublists of equal size, which can be scaled up/down as appropriate.
+    List<List<String>> textLists = Lists.partition(textData, 20);
+
+    // Start a new thread for each sublist.
+    List<Thread> threads = new ArrayList<>();
+    for (List<String> textList : textLists) {
+      Thread thread = new Thread(() -> {
+        for (String text : textList) {
+          ngramsList.add(TFIDFStringHelper.ngramTokenizer(text));
+        }
+      });
+      threads.add(thread);
+      thread.start();
+    }
+
+    try {
+      for (Thread thread : threads) {
+        thread.join();
+      }
+    } catch (InterruptedException e) {
+      ErrorHandler.sendError(response, "Thread error when parsing group data. :(");
+    }
+
+    return ngramsList;
+  }
 
   /** 
    * Returns a list of Post content Strings, given a Group entity. 
