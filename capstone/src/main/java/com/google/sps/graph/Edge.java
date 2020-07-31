@@ -5,4 +5,6 @@ public interface Edge<V> {
   V getSourceVertex();
 
   V getDestVertex();
+
+  double getEdgeWeight();
 }
