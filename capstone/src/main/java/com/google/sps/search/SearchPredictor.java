@@ -30,18 +30,6 @@ public class SearchPredictor implements Serializable {
   }
 
   public List<String> getNamesFromDb() {
-    //    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    //    Query query = new Query("User");
-    //    PreparedQuery pq = datastore.prepare(query);
-    //    List<String> names = new ArrayList<String>();
-    //    for (Entity userEntity : pq.asIterable()) {
-    //      String firstName = (String) userEntity.getProperty("firstName");
-    //      String lastName = (String) userEntity.getProperty("lastName");
-    //      // unique separator to account for names like Marie Rose Shapiro
-    //      String name = firstName + "@" + lastName;
-    //      names.add(name);
-    //    }
-    //    return names;
     return this.dbRetriever.getNamesFromDb();
   }
 
