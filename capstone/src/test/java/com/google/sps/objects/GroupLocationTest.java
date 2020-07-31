@@ -40,6 +40,8 @@ public class GroupLocationTest {
   private static final String OTHER_EMAIL = "other@test.com";
   private static final String OTHER_ID2 = "other2";
   private static final String OTHER_EMAIL2 = "other2@test.com";
+  private static final String OTHER_ID3 = "other3";
+  private static final String OTHER_EMAIL3 = "other3@test.com";
 
   private static final double COORD1_LAT = 40.7721984;
   private static final double COORD1_LNG = -73.97933858;
@@ -107,6 +109,20 @@ public class GroupLocationTest {
                           /* longitude= */ COORD3_LNG,
                           /* badges= */ new LinkedHashSet<Badge>(),
                           /* groups= */ new LinkedHashSet<Long>(),
+                          /* interests= */ new ArrayList<String>()); 
+
+  private static final User OTHER_USER3 = new User(
+                          OTHER_ID3,
+                          "Test TwoTwo",
+                          "McTest",
+                          OTHER_EMAIL3,
+                          /* phoneNumber= */ "123-456-2222",
+                          /* profilePic= */ "",
+                          /* address= */ "",
+                          /* latitude= */ 0.0,
+                          /* longitude= */ 0.0,
+                          /* badges= */ new LinkedHashSet<Badge>(),
+                          /* groups= */ new LinkedHashSet<Long>(),
                           /* interests= */ new ArrayList<String>());                       
   Coordinate COORDINATE_1 = new Coordinate(COORD1_LAT, COORD1_LNG);
   Coordinate COORDINATE_2 = new Coordinate(COORD2_LAT, COORD2_LNG);
@@ -171,12 +187,13 @@ public class GroupLocationTest {
     assertTrue(coordReturned == null);
   }
 
-  @Test
-  public void findMidPointTest() {
-    Coordinate coordReturned = groupLocation.findMidPoint(groupCoordinates);
+  @Test 
+  public void findGroupMidPointTest_userWithMissingCoordinates() throws Exception {
+    datastore.put(OTHER_USER3.toEntity());
+
+    Coordinate coordReturned = groupLocation.findGroupMidPoint(Long.parseLong(GROUP_1_ID));
 
     assertTrue(coordReturned.getLat() == MID_LAT);
     assertTrue(coordReturned.getLng() == MID_LNG);
   }
 }
-
