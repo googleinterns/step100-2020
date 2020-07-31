@@ -50,6 +50,7 @@ public class QuadTreeServlet extends HttpServlet {
 
   private QuadTree quadTree;
   private final String QUADTREE_FILE = "../../data/quadtree";
+  private final String FAST_FOOD_DATASET = "/WEB-INF/fast-food-location.csv";
 
   @Override
   public void init(ServletConfig config) throws ServletException {
@@ -89,7 +90,7 @@ public class QuadTreeServlet extends HttpServlet {
 
   private void populateQuadTree(QuadTree quadTree) {
     Scanner scanner = new Scanner(
-      getServletContext().getResourceAsStream("/WEB-INF/fast-food-location.csv"));
+      getServletContext().getResourceAsStream(FAST_FOOD_DATASET));
 
     while (scanner.hasNextLine()) {
       String line = scanner.nextLine();
