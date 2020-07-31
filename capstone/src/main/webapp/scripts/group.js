@@ -36,6 +36,10 @@ function getGroupId() {
 
 function findClosestGroupLocations() {
   fetch(`/create-quadtree?groupId=${groupId}`, { method: "POST" });
+  loadClosestGroupLocations();
+}
+
+function loadClosestGroupLocations() {
   fetch(`/central-group-locations?groupId=${groupId}`).then(response => response.json()).then((allCentralGroupLocations) => {
     const groupLocations = document.getElementById("locations-container");
     groupLocations.innerHTML = "";
@@ -48,19 +52,8 @@ function findClosestGroupLocations() {
 
 function locationAmount() {
   const amount = document.getElementById("number");
-  const value = amount.value;
-  if (value === "1") {
-    locationsLimit = 1;
-  } else if (value === "5") {
-    locationsLimit = 5;
-  } else if (value === "10") {
-    locationsLimit = 10;
-  } else if(value === "15") {
-    locationsLimit = 15;
-  } else if(value === "20") {
-    locationsLimit = 20;
-  } 
-  findClosestGroupLocations();
+  locationsLimit = parseInt(amount.value);
+  loadClosestGroupLocations();
 }
 
 function createLocationComponent(location){

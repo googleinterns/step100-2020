@@ -15,7 +15,7 @@ function createMap(allCentralGroupLocations, locationsLimit) {
   }
 }
 
-function toggle_location_visibility() {
+function toggleLocationVisibility() {
   let locations_content = document.getElementById('group-locations-content');
   if(locations_content.style.display == 'block') {
     locations_content.style.display = 'none';

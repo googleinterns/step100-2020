@@ -2,7 +2,7 @@ package com.google.sps.Objects;
 
 import java.io.Serializable;
 
-public final class Coordinate implements Serializable{
+public final class Coordinate implements Serializable {
   private final double latitude;
   private final double longitude;
 
