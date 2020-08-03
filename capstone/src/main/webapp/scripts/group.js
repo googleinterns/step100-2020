@@ -25,7 +25,6 @@ xmlhttp.onreadystatechange = function() {
   }
 };
 xmlhttp.open("GET", "scripts/api_key.json", true);
-console.log("done");
 xmlhttp.send();
 
 function getGroupId() {
