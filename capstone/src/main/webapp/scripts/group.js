@@ -2,7 +2,6 @@ let groupId;
 let locationsLimit = 1;
 
 function init() {
-  createAPIKey();
   getGroupId();
   checkMembership();
   createLogoutUrl();
@@ -15,20 +14,19 @@ function init() {
   loadTags();
 }
 
-function createAPIKey() {
-  var xmlhttp = new XMLHttpRequest();
-
-  xmlhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      var myArr = JSON.parse(this.responseText);
-      let script = document.createElement('script');
-      script.src = "https://maps.googleapis.com/maps/api/js?key=" + myArr[0].GOOGLE_MAPS_API_KEY;
-      document.getElementsByTagName('head')[0].appendChild(script);
-    }
-  };
-  xmlhttp.open("GET", "scripts/api_key.json", true);
-  xmlhttp.send();
-}
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    var myArr = JSON.parse(this.responseText);
+    let script = document.createElement('script');
+    script.src = "https://maps.googleapis.com/maps/api/js?key=" + myArr[0].GOOGLE_MAPS_API_KEY;
+    script.innerHTML = "async defer";
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+};
+xmlhttp.open("GET", "scripts/api_key.json", true);
+console.log("done");
+xmlhttp.send();
 
 function getGroupId() {
   groupId = window.location.search.substring(1).split("groupId=")[1];

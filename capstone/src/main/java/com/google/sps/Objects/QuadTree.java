@@ -80,7 +80,7 @@ public class QuadTree implements Serializable {
     // Add point to correct quadrant 
     for (QuadTree qt: children) {
       if (qt.insert(node)) {
-        numPoints ++;
+        numPoints++;
         return true;
       }
     }
@@ -137,11 +137,12 @@ public class QuadTree implements Serializable {
 
     double closestDistance = euclidianDistance(loc, closest);
 
+    // Only check quadrants within radius of loc and closest
     if (!bounds.intersectsCircle(loc, closestDistance)) {
       return closest;
     }
 
-    // Check distance between location and points in this box
+    // Check distance between location and points in this quadrant
     for (Location location: locations) {
       if (euclidianDistance(loc, location) < closestDistance) {
         closest = location;
@@ -159,28 +160,32 @@ public class QuadTree implements Serializable {
   }
 
   public ArrayList<Location> findKNearestNeighbors(Location loc, int k) {
-    // Order PriorityQueue by distance 
-    PriorityQueue<Location> pq = new PriorityQueue<Location>(k, Comparator.comparingDouble( locationPQ -> -euclidianDistance(loc, locationPQ)));
+    /*
+    * Create priority queue of size k ordered by distance between point and 
+    * midpoint 
+    * Last point is the maxClosest distance 
+    */
+    PriorityQueue<Location> closestLocationPQ = new PriorityQueue<Location>(k, Comparator.comparingDouble( locationPQ -> -euclidianDistance(loc, locationPQ)));
 
-    pq = findKNearestNeighborsHelper(loc, k, pq);
+    closestLocationPQ = findKNearestNeighborsHelper(loc, k, closestLocationPQ);
 
     ArrayList<Location> nearestLocations = new ArrayList<>();
 
-    while (!pq.isEmpty()) {
-      nearestLocations.add(0, pq.poll());
+    while (!closestLocationPQ.isEmpty()) {
+      nearestLocations.add(0, closestLocationPQ.poll());
     }
 
     return nearestLocations;
   }
 
-  public PriorityQueue<Location> findKNearestNeighborsHelper(Location loc, int k, PriorityQueue<Location> pq) {
+  public PriorityQueue<Location> findKNearestNeighborsHelper(Location loc, int k, PriorityQueue<Location> closestLocationPQ) {
 
     if (locations.size() == 0 || loc == null) {
-      return pq;
+      return closestLocationPQ;
     }
 
-    Location maxClosest = pq.peek();
-    double maxClosestDistance = maxClosest == null ? Double.MAX_VALUE : euclidianDistance(maxClosest, loc);
+    Location kthClosestLocation = closestLocationPQ.peek();
+    double kthClosestDistance = kthClosestLocation == null ? Double.MAX_VALUE : euclidianDistance(kthClosestLocation, loc);
 
     // Check distance between location and points in this box
     for (Location location: locations) {
@@ -191,27 +196,26 @@ public class QuadTree implements Serializable {
       DecimalFormat df = new DecimalFormat("#.000");
       double dist = euclidianDistance(location, loc) * 69;
       location.setDistance(Double.valueOf(df.format(dist)));
-      if (euclidianDistance(location, loc) < maxClosestDistance) {
-        if (pq.size() >= k) {
+      if (euclidianDistance(location, loc) < kthClosestDistance) {
+        if (closestLocationPQ.size() >= k) {
           // Remove current maxClosest
-          pq.poll();
+          closestLocationPQ.poll();
         } 
         // Insert next maxClosest into queue
-        if (!pq.contains(location)) pq.add(location);
-      } else if (pq.size() < k) {
-        if (!pq.contains(location)) pq.add(location);
+        closestLocationPQ.add(location);
+      } else if (closestLocationPQ.size() < k) {
+        closestLocationPQ.add(location);
       }
-      // Update maxClosestDistance to element last in priority queue
-      maxClosestDistance = euclidianDistance(loc, pq.peek());
+      kthClosestDistance = euclidianDistance(loc, closestLocationPQ.peek());
     }
 
     // Check distance between location and points within all children
     if (!(topLeftTree == null)) {
       for (QuadTree qt : children) {
-        pq = qt.findKNearestNeighborsHelper(loc, k, pq);
+        closestLocationPQ = qt.findKNearestNeighborsHelper(loc, k, closestLocationPQ);
       }
     }
 
-    return pq;
+    return closestLocationPQ;
   }
 }
