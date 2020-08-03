@@ -113,7 +113,7 @@ public class UserGroupsServlet extends AuthenticatedServlet {
   }
 
   /**
-   * Returns a list of the user's challenges given a groupEntity.
+   * Returns a list of the user's ongoing challenges given a groupEntity.
    */
   private ArrayList<Challenge> getGroupChallenges(String userId, Entity groupEntity,
       HttpServletResponse response) throws IOException {
@@ -125,23 +125,13 @@ public class UserGroupsServlet extends AuthenticatedServlet {
             : (ArrayList<Long>) groupEntity.getProperty("challenges");
 
     if (challengeIds.size() != 0) {
-      // Add ongoing challenge to list first.
+      // Add ongoing challenge.
       long mostRecentChallengeId = challengeIds.get(challengeIds.size() - 1);
       Entity newestChallengeEntity =
           ServletHelper.getEntityFromId(response, mostRecentChallengeId, datastore, "Challenge");
       if (newestChallengeEntity != null && 
           (long) newestChallengeEntity.getProperty("dueDate") >= System.currentTimeMillis()) {
         challenges.add(Challenge.fromEntity(newestChallengeEntity));
-      }
-
-      // Next, add all completed challenges.
-      for (Long challengeId : challengeIds) {
-        Entity challengeEntity = 
-          ServletHelper.getEntityFromId(response, challengeId, datastore, "Challenge");
-        Challenge challenge = Challenge.fromEntity(challengeEntity);
-        if (challenge.getHasUserCompleted(userId)) {
-          challenges.add(challenge);
-        }
       }
     }
 
