@@ -16,6 +16,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
 import com.google.sps.Objects.Location;
+import com.google.sps.Objects.Coordinate;
 
 /** Unit tests for Location. */
 public class LocationTest {
@@ -26,6 +27,7 @@ public class LocationTest {
   private static final String LOCATION_ADDRESS = "800 N Canal Blvd";
   private static final double LATITUDE = 29.814697;
   private static final double LONGITUDE = -90.814742;
+  private static final double DISTANCE = 0.000555;
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -42,17 +44,19 @@ public class LocationTest {
 
   private Location location;
   private DatastoreService datastore;
+  private Coordinate coordinate;
 
   @Before
   public void setUp() {
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
+    coordinate = new Coordinate(LATITUDE, LONGITUDE);
     location =
         new Location(
             /* locationName */ LOCATION_NAME,
             /* locationAddress */ LOCATION_ADDRESS,
-            /* latitude */ LATITUDE,
-            /* longitude */ LONGITUDE);
+            /* coordinate */ coordinate, 
+            /* distance */ DISTANCE);
   }
 
   @After

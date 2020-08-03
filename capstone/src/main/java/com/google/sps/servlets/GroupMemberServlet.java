@@ -28,9 +28,8 @@ public class GroupMemberServlet extends AuthenticatedServlet {
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
 
-    String email = request.getParameter("email");
+    String email = request.getParameter("email").replaceAll("\\s","");
     String newMemberId = request.getParameter("userId");
-
     Long groupId = Long.parseLong(request.getParameter("groupId"));
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

@@ -14,7 +14,7 @@
   position: flex;
 }
 
-.scrollbox {
+.scrollbox-members {
   margin-top: 15px;
   overflow: auto;
   max-height: 230px;
@@ -63,7 +63,7 @@
 .member-content,
 .add-member-content {
   background-color: var(--near-white);
-  margin: auto;
+  margin: 0 auto;
   padding: 25px 30px;
   border: 1px solid #888;
   width: 30%;

@@ -25,18 +25,23 @@ public class GroupLocation {
 
   /* Find group midpoint by groupId */
   public Coordinate findGroupMidPoint(Long groupId) throws IOException{
+    ArrayList<Coordinate> groupCoordinates = getGroupCoordinates(groupId);
+    return findMidPoint(groupCoordinates);
+  }
+
+   /* Create array of group's coordinate locations from groupId*/
+  private ArrayList<Coordinate> getGroupCoordinates(Long groupId) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     
     Entity groupEntity = getGroupEntity(groupId, datastore);
     if (groupEntity == null) return null;
     ArrayList<String> memberIds = (ArrayList<String>) groupEntity.getProperty("memberIds");
 
-    ArrayList<Coordinate> groupCoordinates = createGroupPointsArray(memberIds);
-    return findMidPoint(groupCoordinates);
+    return createGroupPointsArray(memberIds);
   }
 
-  /* Create array of group's coordinate locations */
-  public ArrayList<Coordinate> createGroupPointsArray(ArrayList<String> allGroupMembers) throws IOException {
+  /* Create array of group's coordinate locations from memberIds*/
+  private ArrayList<Coordinate> createGroupPointsArray(ArrayList<String> allGroupMembers) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     ArrayList<Coordinate> groupPoints = new ArrayList<>();
     for(String memberId: allGroupMembers) {
@@ -51,8 +56,33 @@ public class GroupLocation {
     return groupPoints;
   }
 
+  /* Checks if all members are within specified radius of each other */
+  public boolean isWithinRadiusAndEnoughMembers(Long groupId, Coordinate midpoint, int radius) throws IOException {
+    ArrayList<Coordinate> groupLocations = getGroupCoordinates(groupId);
+    if (groupLocations.size() == 0) {
+      return false;
+    }
+
+    for (Coordinate coord: groupLocations) {
+      double euclidianDist = euclidianDistance(coord, midpoint);
+      /* 
+      * Convert euclidianDistance to miles (one degree of latitude is approx.
+      * 69miles)
+      */
+      if (euclidianDist * 69 > radius) return false;
+    }
+
+    return true;
+  }
+
+  private double euclidianDistance(Coordinate loc1, Coordinate loc2) {
+    return Math.sqrt(Math.pow(loc1.getLat() - loc2.getLat(), 2) + Math.pow(loc1.getLng() - loc2.getLng(), 2));
+  }
+
   /* Calculate geographic midpoint of all group coordinates */
-  public Coordinate findMidPoint(ArrayList<Coordinate> groupLocations) {
+  private Coordinate findMidPoint(ArrayList<Coordinate> groupLocations) {
+    if (groupLocations == null) return null;
+
     double x = 0.0;
     double y = 0.0;
     double z = 0.0;
@@ -98,5 +128,3 @@ public class GroupLocation {
     }
   }
 }
-
-  

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link
-      href="https://fonts.googleapis.com/css?family=Roboto"
+      href="https://fonts.googleapis.com/css?family=Roboto:400,500,700"
       rel="stylesheet"
       type="text/css"
     />
@@ -18,6 +18,7 @@
     <script src="scripts/post.js"></script>
     <script src="scripts/poll.js"></script>
     <script src="scripts/members.js"></script>
+    <script src="scripts/map.js"></script>
     <script src="scripts/logout.js"></script>
     <script src="scripts/tags.js"></script>
     <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
@@ -27,14 +28,14 @@
   <body onload="init()">
     <div class=sidebar>
       <div id=navbar class="navbar">
-        <a id="logout-btn" title="Logout"><img src="images/logout.svg"></img></a>
+        <a id="logout-btn" title="Logout"><img src="images/logout.svg" alt="logout"></a>
         <a id="profile-btn" href="profile.html" title="Profile"></a>
       </div>
 
       <div id="members-container">
           <h4 class="align-vertical">Members</h4>
           <button class="plus-icon align-vertical" type="image" onclick="openAddGroupMemberModal()"><img class="small-icon" src="images/plus_icon.png" alt/></button>
-          <div class="scrollbox">
+          <div class="scrollbox-members">
             <div class="member-grid-container"></div>
           </div>
       </div>
@@ -115,6 +116,14 @@
           </p>
         </div>
       </div>
+
+      <div class="tags-context-modal" id="tags-context-modal">
+        <div class="tags-context-content">
+          <span id="context-close">&times;</span>
+          <h2 id="tag-name"></h2>
+          <div id="context-container"></div>
+        </div>
+      </div>
         
       <div class="challenge-container">
         <h2>
@@ -140,6 +149,30 @@
       </div>
       
       <input id="input-box" name="input-box" placeholder="Add a suggestion" onkeydown="if (event.keyCode == 13) addPollOption()"></input>
+      </div>
+
+      <div class="group-locations">
+        <div id="group-locations-container">
+          <h2 onclick="toggleLocationVisibility()"> Near Group </h2>
+          <div id="group-locations-content">
+            <label class="drop-menu" for="number">Locations:</label>
+            <select name="number" id="number" onchange="locationAmount()">
+            <option value="1">1</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+            </select>
+
+            <div class="scrollbox-locations">
+              <div id="locations-container"></div>
+            </div>
+
+            <div class="map" id="map-container">
+              <div id="map"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="post-feed">

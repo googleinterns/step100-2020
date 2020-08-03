@@ -1,4 +1,5 @@
 let groupId;
+let locationsLimit = 1;
 
 function init() {
   getGroupId();
@@ -8,12 +9,82 @@ function init() {
   getPollOptions();
   fetchBlobstoreUrlAndShowForm();
   loadMembers();
+  findClosestGroupLocations();
   autocomplete();
   loadTags();
 }
 
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    var myArr = JSON.parse(this.responseText);
+    let script = document.createElement('script');
+    script.src = "https://maps.googleapis.com/maps/api/js?key=" + myArr[0].GOOGLE_MAPS_API_KEY;
+    script.innerHTML = "async defer";
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+};
+xmlhttp.open("GET", "scripts/api_key.json", true);
+xmlhttp.send();
+
 function getGroupId() {
   groupId = window.location.search.substring(1).split("groupId=")[1];
+}
+
+function findClosestGroupLocations() {
+  fetch(`/create-quadtree?groupId=${groupId}`, { method: "POST" });
+  loadClosestGroupLocations();
+}
+
+function loadClosestGroupLocations() {
+  fetch(`/central-group-locations?groupId=${groupId}`).then(response => response.json()).then((allCentralGroupLocations) => {
+    const groupLocations = document.getElementById("locations-container");
+    if (allCentralGroupLocations.length == 0) {
+      groupLocations.innerHTML = "No locations available. Please add more members or members are too far away.";
+      let mapElement = document.getElementById('map');
+      mapElement.style.display = "none";
+    } else {
+      groupLocations.innerHTML = "";
+      for (let i = 1; i < locationsLimit + 1; i++) {
+        groupLocations.appendChild(createLocationComponent(allCentralGroupLocations[i]));
+      }
+      let mapElement = document.getElementById('map');
+      mapElement.style.display = "block";
+      createMap(allCentralGroupLocations, locationsLimit);
+    }
+  });
+}
+
+function locationAmount() {
+  const amount = document.getElementById("number");
+  locationsLimit = parseInt(amount.value);
+  loadClosestGroupLocations();
+}
+
+function createLocationComponent(location){
+  const locationDiv = document.createElement("div");
+
+  const locationName = document.createElement("p");
+  locationName.className = "location-name";
+  locationName.innerText = location.locationName;
+  locationDiv.append(locationName);
+
+  const locationAddress = document.createElement("p");
+  locationAddress.className = "location-detail";
+  locationAddress.innerText = location.address;
+  locationDiv.append(locationAddress);
+
+  const locationLatLon = document.createElement("p");
+  locationLatLon.className = "location-detail";
+  locationLatLon.innerText = location.coordinate.latitude + ", " + location.coordinate.longitude;
+  locationDiv.append(locationLatLon);
+
+  const locationDistance = document.createElement("p");
+  locationDistance.className = "location-detail";
+  locationDistance.innerText = location.distance + "mi";
+  locationDiv.append(locationDistance);
+
+  return locationDiv;
 }
 
 function checkMembership() {

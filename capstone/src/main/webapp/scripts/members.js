@@ -21,6 +21,7 @@ function addMember(){
   params.append('groupId', groupId);
   params.append('email', emailInput);
   fetch(`/group-member`, { method: "POST", body: params });
+  findClosestGroupLocations();
 }
 
 function createMemberComponents(memberInfo) {
