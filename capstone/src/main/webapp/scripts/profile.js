@@ -24,7 +24,7 @@ function loadPage() {
   getUserData();
   createLogoutUrl();
 
-  tfidf(); // test - won't always be called from here
+  //tfidf();
 }
 
 /*
@@ -220,7 +220,8 @@ function createGroup() {
 /**
  * Call servlet to generate group tags.
  * This is just a test function, eventually it will be called via cron job.
- */
+ *
 function tfidf() {
   fetch("/tags-tfidf");
 }
+ */

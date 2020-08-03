@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link
-      href="https://fonts.googleapis.com/css?family=Roboto"
+      href="https://fonts.googleapis.com/css?family=Roboto:400,500,700"
       rel="stylesheet"
       type="text/css"
     />
@@ -27,7 +27,7 @@
   <body onload="init()">
     <div class=sidebar>
       <div id=navbar class="navbar">
-        <a id="logout-btn" title="Logout"><img src="images/logout.svg"></img></a>
+        <a id="logout-btn" title="Logout"><img src="images/logout.svg" alt="logout"></a>
         <a id="profile-btn" href="profile.html" title="Profile"></a>
       </div>
 
@@ -113,6 +113,14 @@
              These are updated every day, so if you make new posts or comments,
              check back tomorrow to see if there's a change!
           </p>
+        </div>
+      </div>
+
+      <div class="tags-context-modal" id="tags-context-modal">
+        <div class="tags-context-content">
+          <span id="context-close">&times;</span>
+          <h2 id="tag-name"></h2>
+          <div id="context-container"></div>
         </div>
       </div>
         
