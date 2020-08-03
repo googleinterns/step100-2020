@@ -34,7 +34,6 @@ public class SearchPredictor implements Serializable {
   }
 
   private void populateTries() {
-    System.out.println("populating tries with " + this.names);
     for (String fullName : names) {
       String[] split = fullName.split("@");
       // not robust for internationalization
