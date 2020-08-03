@@ -2,21 +2,25 @@ package com.google.sps.Objects;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.sps.Objects.Coordinate;
+import java.io.Serializable;
 
-public final class Location {
+public final class Location implements Serializable {
 
   private final String locationName;
   private final String address;
   private final Coordinate coordinate;
+  private double distance;
 
   public Location (
     String locationName, 
     String address, 
-    Coordinate coordinate
+    Coordinate coordinate,
+    double distance
   ) {
     this.locationName = locationName;
     this.address = address;
     this.coordinate = coordinate;
+    this.distance = distance;
   }
 
   public static Location fromEntity(Entity entity) {
@@ -25,7 +29,8 @@ public final class Location {
     double latitude = (double) entity.getProperty("latitude");  
     double longitude = (double) entity.getProperty("longitude");
     Coordinate coordinate = new Coordinate(latitude, longitude);
-    return new Location(locationName, address, coordinate);
+    double distance = (double) entity.getProperty("distance");
+    return new Location(locationName, address, coordinate, distance);
   }
 
   public Entity toEntity() {
@@ -34,6 +39,7 @@ public final class Location {
     entity.setProperty("address", this.address);
     entity.setProperty("latitude", this.coordinate.getLat());
     entity.setProperty("longitude", this.coordinate.getLng());
+    entity.setProperty("distance", this.distance);
     return entity;
   }
 
@@ -46,6 +52,7 @@ public final class Location {
     return coordinate.getLat() == location.coordinate.getLat() &&
       coordinate.getLng() == location.coordinate.getLng() &&
       locationName.equals(location.locationName) &&
+      distance == location.distance &&
       address.equals(location.address);
   }
 
@@ -63,5 +70,13 @@ public final class Location {
 
   public double getLongitude() {
     return this.coordinate.getLng();
+  }
+
+  public double getDistance() {
+    return this.distance;
+  }
+
+  public void setDistance(double distance) {
+    this.distance = distance;
   }
 }

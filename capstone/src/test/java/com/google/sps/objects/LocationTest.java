@@ -27,6 +27,7 @@ public class LocationTest {
   private static final String LOCATION_ADDRESS = "800 N Canal Blvd";
   private static final double LATITUDE = 29.814697;
   private static final double LONGITUDE = -90.814742;
+  private static final double DISTANCE = 0.000555;
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -54,7 +55,8 @@ public class LocationTest {
         new Location(
             /* locationName */ LOCATION_NAME,
             /* locationAddress */ LOCATION_ADDRESS,
-            /* coordinate */ coordinate);
+            /* coordinate */ coordinate, 
+            /* distance */ DISTANCE);
   }
 
   @After

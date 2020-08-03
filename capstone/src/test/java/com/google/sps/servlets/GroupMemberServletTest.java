@@ -234,6 +234,7 @@ public class GroupMemberServletTest {
 
   @Test
   public void doPost_memberNotInGroup_userId() throws IOException, EntityNotFoundException {
+    when(mockRequest.getParameter("email")).thenReturn(USER_EMAIL);
     when(mockRequest.getParameter("groupId")).thenReturn(GROUP_1_ID);
     when(mockRequest.getParameter("userId")).thenReturn(USER_ID);
     Key groupKey = KeyFactory.createKey("Group", Long.parseLong(GROUP_1_ID));

@@ -3,12 +3,14 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.Comparator;
+import java.text.DecimalFormat;
+import java.io.Serializable;
 
 import com.google.sps.Objects.Location;
 import com.google.sps.Objects.Coordinate;
 import com.google.sps.Objects.BoundingBox;
 
-public class QuadTree {
+public class QuadTree implements Serializable {
   private final int NODE_CAPACITY;
   private List<QuadTree> children;
   private List<Location> locations;
@@ -92,6 +94,8 @@ public class QuadTree {
     double yMin = bounds.getYMin();
     double xMax = bounds.getXMax();
     double yMax = bounds.getYMax();
+
+    // Find mid x and y within bounds 
     double xOffset = xMin + (xMax - xMin) / 2;
     double yOffset = yMin + (yMax - yMin) / 2;
 
@@ -185,7 +189,14 @@ public class QuadTree {
 
     // Check distance between location and points in this box
     for (Location location: locations) {
-      if (euclidianDistance(loc, location) < kthClosestDistance) {
+      /* 
+      * Convert euclidianDistance to miles (one degree of latitude is approx.
+      * 69miles)
+      */
+      DecimalFormat df = new DecimalFormat("#.000");
+      double dist = euclidianDistance(location, loc) * 69;
+      location.setDistance(Double.valueOf(df.format(dist)));
+      if (euclidianDistance(location, loc) < kthClosestDistance) {
         if (closestLocationPQ.size() >= k) {
           // Remove current maxClosest
           closestLocationPQ.poll();
@@ -207,5 +218,4 @@ public class QuadTree {
 
     return closestLocationPQ;
   }
-	
 }

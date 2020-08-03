@@ -60,14 +60,10 @@ public class QuadTreeTest {
     quadTree = null;
   }
 
-  public void addTestLocation(String name, String address, double lat, double lng) {
-    quadTree.insert(new Location(name, address, new Coordinate(lat, lng)));
-  }
-
   @Test 
   public void insertTest_noSplits() {
-    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.1));
-    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.00, -80.00));
+    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.1), 0.0);
+    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.00, -80.00), 0.0);
     quadTree.insert(LOC_1);
     quadTree.insert(LOC_2);
     
@@ -81,12 +77,12 @@ public class QuadTreeTest {
 
   @Test 
   public void insertTest_oneSplit() {
-    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.1));
-    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.00, -80.00));
-    Location LOC_3 = new Location("Test3", "address3", new Coordinate(39.9, -80.1));
-    Location LOC_4 = new Location("Test4", "address4", new Coordinate(39.9, -79.9));
-    Location LOC_5 = new Location("Test5", "address5", new Coordinate(40.01, -80.1));
-    Location LOC_6 = new Location("Test6", "address6", new Coordinate(40.01, -79.9));
+    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.1), 0.0);
+    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.00, -80.00), 0.0);
+    Location LOC_3 = new Location("Test3", "address3", new Coordinate(39.9, -80.1), 0.0);
+    Location LOC_4 = new Location("Test4", "address4", new Coordinate(39.9, -79.9), 0.0);
+    Location LOC_5 = new Location("Test5", "address5", new Coordinate(40.01, -80.1), 0.0);
+    Location LOC_6 = new Location("Test6", "address6", new Coordinate(40.01, -79.9), 0.0);
     quadTree.insert(LOC_1);
     quadTree.insert(LOC_2);
     quadTree.insert(LOC_3);
@@ -110,13 +106,14 @@ public class QuadTreeTest {
     assertTrue(quadTree.getBottomLeftTree().getLocations().contains(LOC_3));
   }
 
+
   @Test 
   public void insertTest_twoSplits() {
-    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.1));
-    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.00, -80.00));
-    Location LOC_3 = new Location("Test3", "address3", new Coordinate(40.19, -80.1));
-    Location LOC_4 = new Location("Test4", "address4", new Coordinate(40.19, -80.05));
-    Location LOC_5 = new Location("Test5", "address5", new Coordinate(40.19, -80.01));
+    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.1), 0.0);
+    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.00, -80.00), 0.0);
+    Location LOC_3 = new Location("Test3", "address3", new Coordinate(40.19, -80.1), 0.0);
+    Location LOC_4 = new Location("Test4", "address4", new Coordinate(40.19, -80.05), 0.0);
+    Location LOC_5 = new Location("Test5", "address5", new Coordinate(40.19, -80.01), 0.0);
     
     quadTree.insert(LOC_1);
     quadTree.insert(LOC_2);
@@ -144,9 +141,9 @@ public class QuadTreeTest {
 
   @Test 
   public void nearestNeighborTest() {
-    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.00));
-    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.19, -79.78));
-    Location LOC_3 = new Location("Test3", "address3", new Coordinate(40.01, -80.00));
+    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.00), 0.0);
+    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.19, -79.78), 0.0);
+    Location LOC_3 = new Location("Test3", "address3", new Coordinate(40.01, -80.00), 0.0);
 
     quadTree.insert(LOC_3);
     quadTree.insert(LOC_2);
@@ -158,9 +155,9 @@ public class QuadTreeTest {
 
   @Test 
   public void nearestKNeighborTest_oneNeighbor() {
-    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.00));
-    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.19, -79.78));
-    Location LOC_3 = new Location("Test3", "address3", new Coordinate(40.01, -80.00));
+    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.00), 0.0);
+    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.19, -79.78), 0.0);
+    Location LOC_3 = new Location("Test3", "address3", new Coordinate(40.01, -80.00), 0.0);
 
     quadTree.insert(LOC_2);
     quadTree.insert(LOC_3);
@@ -172,10 +169,10 @@ public class QuadTreeTest {
 
   //@Test 
   public void nearestKNeighborTest_twoNeighbors() {
-    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.00));
-    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.19, -79.78));
-    Location LOC_3 = new Location("Test3", "address3", new Coordinate(40.01, -80.00));
-    Location LOC_4 = new Location("Test4", "address4", new Coordinate(40.05, -80.00));
+    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.00), 0.0);
+    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.19, -79.78), 0.0);
+    Location LOC_3 = new Location("Test3", "address3", new Coordinate(40.01, -80.00), 0.0);
+    Location LOC_4 = new Location("Test4", "address4", new Coordinate(40.05, -80.00), 0.0);
 
     quadTree.insert(LOC_2);
     quadTree.insert(LOC_3);
@@ -189,10 +186,10 @@ public class QuadTreeTest {
 
   //@Test 
   public void nearestKNeighborTest_threeNeighbors() {
-    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.00));
-    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.19, -79.78));
-    Location LOC_3 = new Location("Test3", "address3", new Coordinate(40.01, -80.00));
-    Location LOC_4 = new Location("Test4", "address4", new Coordinate(40.05, -80.00));
+    Location LOC_1 = new Location("Test1", "address1", new Coordinate(40.00, -80.00), 0.0);
+    Location LOC_2 = new Location("Test2", "address2", new Coordinate(40.19, -79.78), 0.0);
+    Location LOC_3 = new Location("Test3", "address3", new Coordinate(40.01, -80.00), 0.0);
+    Location LOC_4 = new Location("Test4", "address4", new Coordinate(40.05, -80.00), 0.0);
 
     quadTree.insert(LOC_2);
     quadTree.insert(LOC_3);

@@ -1,6 +1,7 @@
 package com.google.sps.Objects;
+import java.io.Serializable;
 
-public class BoundingBox {
+public class BoundingBox implements Serializable {
   private double xMin;
   private double xMax;
   private double yMin;
@@ -13,7 +14,7 @@ public class BoundingBox {
     this.yMax = yMax;
   }
 
-	/* 
+  /* 
   * Checks if location is within boundary
   */
   public boolean containsPoint(Location loc) {
