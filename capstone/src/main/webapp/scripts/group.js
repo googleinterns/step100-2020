@@ -25,7 +25,6 @@ xmlhttp.onreadystatechange = function() {
   }
 };
 xmlhttp.open("GET", "scripts/api_key.json", true);
-console.log("done");
 xmlhttp.send();
 
 function getGroupId() {
@@ -40,11 +39,19 @@ function findClosestGroupLocations() {
 function loadClosestGroupLocations() {
   fetch(`/central-group-locations?groupId=${groupId}`).then(response => response.json()).then((allCentralGroupLocations) => {
     const groupLocations = document.getElementById("locations-container");
-    groupLocations.innerHTML = "";
-    for (let i = 1; i < locationsLimit + 1; i++) {
-      groupLocations.appendChild(createLocationComponent(allCentralGroupLocations[i]));
+    if (allCentralGroupLocations.length == 0) {
+      groupLocations.innerHTML = "No locations available. Please add more members or members are too far away.";
+      let mapElement = document.getElementById('map');
+      mapElement.style.display = "none";
+    } else {
+      groupLocations.innerHTML = "";
+      for (let i = 1; i < locationsLimit + 1; i++) {
+        groupLocations.appendChild(createLocationComponent(allCentralGroupLocations[i]));
+      }
+      let mapElement = document.getElementById('map');
+      mapElement.style.display = "block";
+      createMap(allCentralGroupLocations, locationsLimit);
     }
-    createMap(allCentralGroupLocations, locationsLimit);
   });
 }
 
