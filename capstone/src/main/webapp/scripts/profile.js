@@ -128,7 +128,53 @@ function displayGroups(groups) {
 }
 
 /** Display the user's ongoing and past challenges  */
-function displayChallenges(groups) {}
+function displayChallenges(groups) {
+  console.log("Displaying challenges"); //test
+
+  let pastChallenges = [];
+
+  for (group of groups) {
+    const length = Object.keys(group.challenges).length;
+    if (length > 0) {
+      for (let i = 0; i < length; i++) {
+        let challenge = (group.challenges)[i];      
+        if (i == 0) {
+          addOngoingChallenge(challenge, group);
+        } else {
+          pastChallenges.push[challenge];
+        }
+      }
+    }
+  }
+
+  addPastChallenges(pastChallenges);
+}
+
+/** Display the user's ongoing and past challenges  */
+function addOngoingChallenge(challenge, group) {
+  const ongoingContainer = document.getElementById("ongoing-container");
+  const challengeElement = document.getElementById("challenge-template");
+
+  let challengeElementNode = document.importNode(challengeElement.content, true);
+
+  let challengeContainer = challengeElementNode.querySelector(".challenge-container");
+
+  let groupName = challengeElementNode.getElementById("challenge-group-name");
+  groupName.innerText = group.groupName;
+
+  let groupLink = challengeElementNode.getElementById("challenge-group-link");
+  groupLink.href = "group.html?groupId=" + group.groupId;
+
+  let challengeName = challengeElementNode.getElementById("challenge-name");
+  challengeName.innerText = challenge.challengeName;
+
+  let dueDateContainer = challengeElementNode.getElementById("due-date");
+  const dueDate = new Date(challenge.dueDate).toString();
+  dueDateContainer.innerText = `Due: ${dueDate}`;
+
+  ongoingContainer.appendChild(challengeElementNode);
+  console.log("Appended an ongoing challenge"); //test
+}
 
 /** Display the user's earned badges  */
 function displayBadges(badges) {

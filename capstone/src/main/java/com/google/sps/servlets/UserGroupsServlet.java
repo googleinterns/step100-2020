@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.sps.Objects.User;
 import com.google.sps.Objects.Group;
 import com.google.sps.Objects.Badge;
+import com.google.sps.Objects.Challenge;
 import com.google.sps.Objects.response.UserGroupResponse;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -65,7 +66,7 @@ public class UserGroupsServlet extends AuthenticatedServlet {
       ? new LinkedHashSet<>()
       : new LinkedHashSet<Long>((ArrayList<Long>) currentUser.getProperty("groups"));
       
-    groups = getGroupsFromIds(groupIds, response);
+    groups = getGroupsFromIds(userId, groupIds, response);
 
     // If either of these values are null, an error occured. Do not continue.
     if (currentUser == null || groups == null) {
@@ -93,7 +94,7 @@ public class UserGroupsServlet extends AuthenticatedServlet {
   /*
    * Returns the list of users groups given a list of group ids.
    */
-  public ArrayList<UserGroupResponse> getGroupsFromIds(LinkedHashSet<Long> groupIds, 
+  public ArrayList<UserGroupResponse> getGroupsFromIds(String userId, LinkedHashSet<Long> groupIds, 
       HttpServletResponse response) throws IOException {
     ArrayList<UserGroupResponse> groups = new ArrayList<>();
     for (long groupId : groupIds) {
@@ -105,9 +106,46 @@ public class UserGroupsServlet extends AuthenticatedServlet {
         return null;
       }
       UserGroupResponse groupResponse = UserGroupResponse.fromEntity(groupEntity);
+      groupResponse.setChallenges(getGroupChallenges(userId, groupEntity, response));
       groups.add(groupResponse);
     }
     return groups;
+  }
+
+  /**
+   * Returns a list of the user's challenges given a groupEntity.
+   */
+  private ArrayList<Challenge> getGroupChallenges(String userId, Entity groupEntity,
+      HttpServletResponse response) throws IOException {
+    ArrayList<Challenge> challenges = new ArrayList<>();
+
+    List<Long> challengeIds =
+        (groupEntity.getProperty("challenges") == null)
+            ? new ArrayList<Long>()
+            : (ArrayList<Long>) groupEntity.getProperty("challenges");
+
+    if (challengeIds.size() != 0) {
+      // Add ongoing challenge to list first.
+      long mostRecentChallengeId = challengeIds.get(challengeIds.size() - 1);
+      Entity newestChallengeEntity =
+          ServletHelper.getEntityFromId(response, mostRecentChallengeId, datastore, "Challenge");
+      if (newestChallengeEntity != null && 
+          (long) newestChallengeEntity.getProperty("dueDate") >= System.currentTimeMillis()) {
+        challenges.add(Challenge.fromEntity(newestChallengeEntity));
+      }
+
+      // Next, add all completed challenges.
+      for (Long challengeId : challengeIds) {
+        Entity challengeEntity = 
+          ServletHelper.getEntityFromId(response, challengeId, datastore, "Challenge");
+        Challenge challenge = Challenge.fromEntity(challengeEntity);
+        if (challenge.getHasUserCompleted(userId)) {
+          challenges.add(challenge);
+        }
+      }
+    }
+
+    return challenges;
   }
 
   @Override
