@@ -25,7 +25,10 @@ import com.google.sps.Objects.Tag;
 import com.google.sps.Objects.Comment;
 import error.ErrorHandler;
 
-/** This servlet generates groups "tags" for all groups - calculated using TF-IDF. */
+/** 
+ * This servlet generates groups "tags" for all groups - calculated using TF-IDF. 
+ * It is called every day via Cloud Scheduler.
+ */
 @WebServlet("/tags-tfidf")
 public class TagsTFIDFServlet extends HttpServlet {
 
