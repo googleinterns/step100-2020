@@ -224,4 +224,98 @@ public class TrieTest {
 
     assertEquals(names.size(), 0);
   }
+
+  @Test
+  public void searchZeroEditDistanceTest() {
+    trie.insert("Patrick", "Patrick Star");
+    trie.insert("Patrick", "Patrick Neilson");
+
+    Map<String, Integer> suggestions = trie.searchLed("Patrick");
+
+    assertEquals(2, suggestions.size());
+    assertTrue(suggestions.containsKey("Patrick Star"));
+    assertTrue(suggestions.containsKey("Patrick Neilson"));
+  }
+
+  @Test
+  public void searchOneEditDistanceTest() {
+    trie.insert("Patrik", "Patrik Star");
+    trie.insert("Patric", "Patric Neilson");
+
+    Map<String, Integer> suggestions = trie.searchLed("Patrick");
+
+    assertEquals(2, suggestions.size());
+    assertTrue(suggestions.containsKey("Patrik Star"));
+    assertTrue(suggestions.containsKey("Patric Neilson"));
+  }
+
+  @Test
+  public void searchTwoEditDistanceTest() {
+    trie.insert("Alisa", "Alisa Star");
+    trie.insert("Alisha", "Alisha Neilson");
+
+    Map<String, Integer> suggestions = trie.searchLed("Alyssa");
+
+    assertEquals(2, suggestions.size());
+    assertTrue(suggestions.containsKey("Alisa Star"));
+    assertTrue(suggestions.containsKey("Alisha Neilson"));
+  }
+
+  @Test
+  public void searchLedNoResultsTest() {
+    trie.insert("Lucinda", "Lucinda Fieldson");
+    trie.insert("Linda", "Linda Peterson");
+    trie.insert("Hayleigh", "Hayleigh Robertson");
+
+    Map<String, Integer> suggestions = trie.searchLed("Lucy");
+
+    assertEquals(0, suggestions.size());
+  }
+
+  @Test
+  public void searchCombinedLedTest() {
+    trie.insert("Jack", "Jack Rose");
+    trie.insert("Jane", "Jane Doe");
+    trie.insert("Joe", "Joe Qu");
+    trie.insert("John", "John Liu");
+    trie.insert("Johnny", "Johnny Sterling");
+
+    Map<String, Integer> suggestions = trie.searchLed("Jane");
+
+    assertEquals(3, suggestions.size());
+    assertTrue(suggestions.containsKey("Jack Rose"));
+    assertTrue(suggestions.containsKey("Jane Doe"));
+    assertTrue(suggestions.containsKey("Joe Qu"));
+  }
+
+  @Test
+  public void searchLedDuplicateTest() {
+    trie.insert("Lucy", "Lucy Qu");
+    trie.insert("Lucie", "Lucie Wang");
+    trie.insert("Lucie", "Lucie Cart");
+
+    Map<String, Integer> suggestions = trie.searchLed("Lucy");
+
+    assertEquals(3, suggestions.size());
+    assertTrue(suggestions.containsKey("Lucy Qu"));
+    assertTrue(suggestions.containsKey("Lucie Wang"));
+    assertTrue(suggestions.containsKey("Lucie Cart"));
+  }
+
+  @Test
+  public void searchLedMapScoreTest() {
+    trie.insert("Jack", "Jack Rose");
+    trie.insert("Jane", "Jane Doe");
+    trie.insert("Joe", "Joe Qu");
+    trie.insert("John", "John Liu");
+    trie.insert("Johnny", "Johnny Sterling");
+    trie.insert("Jene", "Jene Chang");
+
+    Map<String, Integer> suggestions = trie.searchLed("Jane");
+
+    assert suggestions.get("Jane Doe") == 0;
+    assert suggestions.get("Jack Rose") == 2;
+    assert suggestions.get("Joe Qu") == 2;
+    assert suggestions.get("Jene Chang") == 1;
+  }
 }

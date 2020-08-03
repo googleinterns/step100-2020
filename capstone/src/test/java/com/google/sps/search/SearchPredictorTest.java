@@ -1,8 +1,15 @@
 package com.google.sps.search;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,7 +48,7 @@ public class SearchPredictorTest {
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
   @Mock private Serializable serial;
-  @Spy private SearchPredictor searchPredictor;
+  @Spy private DatabaseRetriever dbRetriever;
   private DatastoreService datastore;
 
   @Before
@@ -55,5 +62,22 @@ public class SearchPredictorTest {
   public void tearDown() {
     helper.tearDown();
     datastore = null;
+  }
+
+  //  @Test
+  public void searchPrefixTest() {
+    List<String> names = new ArrayList<String>();
+    names.add("Lucy Qu");
+    names.add("Lucinda Ang");
+    names.add("Jack Doe");
+    when(dbRetriever.getNamesFromDb()).thenReturn(names);
+
+    SearchPredictor searchPredictor = new SearchPredictor();
+    List<String> suggestions = searchPredictor.suggest("Luc");
+
+    assertEquals(2, suggestions.size());
+    assertTrue(suggestions.contains("Lucy Qu"));
+    assertTrue(suggestions.contains("Lucinda Ang"));
+    assertFalse(suggestions.contains("Jack Doe"));
   }
 }

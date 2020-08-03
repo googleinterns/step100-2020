@@ -95,6 +95,9 @@ public class NameDataServlet extends AuthenticatedServlet {
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     this.getSearchPredictorFromFile();
+    if (searchPredictor == null) {
+      this.searchPredictor = new SearchPredictor();
+    }
     String input = request.getParameter("input").toUpperCase();
     List<String> suggestions = searchPredictor.suggest(input);
     ServletHelper.write(response, suggestions, "application/json");
