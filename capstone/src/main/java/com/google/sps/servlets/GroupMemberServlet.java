@@ -28,7 +28,7 @@ public class GroupMemberServlet extends AuthenticatedServlet {
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
 
-    String email = request.getParameter("email").replaceAll("\\s","");
+    String email = request.getParameter("email");
     String newMemberId = request.getParameter("userId");
     Long groupId = Long.parseLong(request.getParameter("groupId"));
 
@@ -36,6 +36,7 @@ public class GroupMemberServlet extends AuthenticatedServlet {
 
     Entity memberEntity = null;
     if (email != null) {
+      email = email.replaceAll("\\s","");
       memberEntity = getMemberEntityFromEmail(email, response, datastore);
       if (memberEntity == null) return;
     } else if (newMemberId != null) {
