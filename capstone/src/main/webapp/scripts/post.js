@@ -1,7 +1,8 @@
-let postResponse;
+let allPostResponse;
 
 function loadPosts() {
   fetch(`/group-post?groupId=${groupId}`).then(response => response.json()).then((postResponse) => {
+    allPostResponse = postResponse;
     const posts = postResponse["posts"];
     const allPostsList = document.getElementById('posts-container');
     allPostsList.innerHTML = '';
@@ -29,7 +30,7 @@ function addLikeButtonListener() {
   for (let i = 0; i < likeBtns.length; i++) {
     likeBtns[i].addEventListener("click", function() {
       const postId = parseInt(getPostIdFromsLikesId(this.id));
-      let userLikedPosts = postResponse["likedPosts"];
+      let userLikedPosts = allPostResponse["likedPosts"];
       if (userLikedPosts.includes(postId)) {
         likeToggled(this.id, false);
       } else {
