@@ -1,8 +1,9 @@
 package com.google.sps.Objects.response;
 
-import com.google.appengine.api.datastore.Entity;
 import java.util.ArrayList;
+import com.google.appengine.api.datastore.Entity;
 import com.google.sps.Objects.Challenge;
+import com.google.sps.servlets.ServletHelper;
 
 /**
  * Used as a wrapper class to contain information needed to convert to JSON to
@@ -13,7 +14,7 @@ import com.google.sps.Objects.Challenge;
  */
 public final class UserGroupResponse {
 
-  private final ArrayList<Challenge> challenges;
+  private ArrayList<Challenge> challenges;
   private final String groupName;
   private final String headerImg;
   private final long groupId;
@@ -33,11 +34,12 @@ public final class UserGroupResponse {
     long groupId = (long) entity.getKey().getId();
     String groupName = (String) entity.getProperty("groupName");
     String headerImg = (String) entity.getProperty("headerImg");
-    // TODO: fix below code, won't work with Challenges as EmbeddedEntities of Groups
-    ArrayList<Challenge> challenges = (entity.getProperty("challenges") == null)
-        ? new ArrayList<>()
-        : (ArrayList<Challenge>) entity.getProperty("challenges");
+    ArrayList<Challenge> challenges = new ArrayList<>();
     UserGroupResponse response = new UserGroupResponse(challenges, groupName, headerImg, groupId);
     return response;
   }
+
+  public void setChallenges(ArrayList<Challenge> challenges) {
+    this.challenges = challenges;
+  } 
 }
