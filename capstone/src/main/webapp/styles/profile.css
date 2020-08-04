@@ -147,13 +147,14 @@
   background-color: var(--header-green);
 }
 
+/* Groups */
 .main .group-container {
   display: flex;
   flex-direction: column;
   width: 600px;
 }
 
-.main .groups-container a,
+.main .groups-container .challenge-container a,
 a:link, a:visited, a:hover, a:active {
   text-decoration: none;
 }
@@ -164,8 +165,10 @@ a:link, a:visited, a:hover, a:active {
   color: white;
   margin: -10px 0 10px;
   padding: 10px 0;
+  position: relative;
   text-align: center;
   width: 100%;
+  z-index: 1;
 }
 
 .main .header-img {
@@ -173,6 +176,33 @@ a:link, a:visited, a:hover, a:active {
   border-radius: 10px;
   height: 200px;
   width: 100%;
+}
+
+/* Challenges */
+.main .challenge-container {
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+}
+
+.main .challenge-content {
+  background: var(--near-white);
+  border-radius: 10px;
+  box-sizing: border-box;
+  color: black;
+  margin: -15px 0 15px;
+  padding: 20px 30px;
+  position: relative;
+  z-index: 0;
+}
+
+#challenge-group-name.group-name {
+  margin: 0;
+}
+
+#due-date {
+  color: var(--text-gray);
+  font-size: 13px;
 }
 
 #logout-btn {

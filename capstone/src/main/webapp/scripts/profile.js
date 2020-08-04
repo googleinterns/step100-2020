@@ -128,7 +128,39 @@ function displayGroups(groups) {
 }
 
 /** Display the user's ongoing and past challenges  */
-function displayChallenges(groups) {}
+function displayChallenges(groups) {
+  for (group of groups) {
+    if (Object.keys(group.challenges).length > 0) {
+      let challenge = (group.challenges)[0];
+      addOngoingChallenge(challenge, group);
+    }
+  }
+}
+
+/** Display the user's ongoing challenges  */
+function addOngoingChallenge(challenge, group) {
+  const ongoingContainer = document.getElementById("ongoing-container");
+  const challengeElement = document.getElementById("challenge-template");
+
+  let challengeElementNode = document.importNode(challengeElement.content, true);
+
+  let challengeContainer = challengeElementNode.querySelector(".challenge-container");
+
+  let groupName = challengeElementNode.getElementById("challenge-group-name");
+  groupName.innerText = group.groupName;
+
+  let groupLink = challengeElementNode.getElementById("challenge-group-link");
+  groupLink.href = "group.html?groupId=" + group.groupId;
+
+  let challengeName = challengeElementNode.getElementById("challenge-name");
+  challengeName.innerText = challenge.challengeName;
+
+  let dueDateContainer = challengeElementNode.getElementById("due-date");
+  const dueDate = new Date(challenge.dueDate).toString();
+  dueDateContainer.innerText = `Due: ${dueDate}`;
+
+  ongoingContainer.appendChild(challengeElementNode);
+}
 
 /** Display the user's earned badges  */
 function displayBadges(badges) {

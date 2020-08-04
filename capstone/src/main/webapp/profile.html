@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>AppName</title>
+    <title>Groupple</title>
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="styles/profile.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
@@ -42,7 +42,7 @@
           <h1 id="groups">Groups</h1>
           <div id="groups-container"></div>
           <h1 id="ongoing-challenges">Ongoing Challenges</h1>
-          <h1 id="past-challenges">Past Challenges</h1>
+          <div id="ongoing-container"></div>
         </div>
       </div>
     </div>
@@ -107,11 +107,13 @@
 
     <template id="challenge-template">
       <div class="challenge-container">
-        <div id="group-name" class="group-name"></div>
-        <div id="challenge-content">
-          <p id="challenge-name" class="challenge-name"></p>
-          <p id="due date"></p>
-        </div>
+        <a id="challenge-group-link">
+          <div id="challenge-group-name" class="group-name"></div>
+          <div class="challenge-content">
+            <p id="challenge-name" class="challenge-name"></p>
+            <p id="due-date"></p>
+          </div>
+        </a>
       </div>
     </template>
 

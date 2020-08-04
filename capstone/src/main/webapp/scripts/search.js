@@ -7,6 +7,7 @@ const KeyCodes = {
 };
 
 let currentFocus = -1;
+let nameSuggestions;
 
 function autocomplete() {
   searchInput.addEventListener("keyup", checkKey);
@@ -39,28 +40,17 @@ function findSelected(list) {
     const name = active.innerHTML;
     completeNameAndSearch(name);
   } else {
-    getSearchResults(list, "");
+    getSearchResults();
   }
 }
 
 /**
  * Gets user results from server based on user input.
- * @param {list} list
  * @param {string} selectedName
  */
-function getSearchResults(list, selectedName) {
+function getSearchResults() {
   let names = "";
-  if (list.length >= 5) {
-    //Gets top 5 suggested names
-    names = `${list[0].innerHTML},${list[1].innerHTML},${list[2].innerHTML},${list[3].innerHTML},${list[4].innerHTML}`;
-  } else {
-    for (let i = 0; i < list.length; i++) {
-      names = names.concat(`${list[i].innerHTML},`);
-    }
-  }
-  if (selectedName) {
-    names = sort(names, selectedName);
-  }
+  nameSuggestions.forEach(name => (names = names.concat(`${name},`)));
   fetch(`/search-results?names=${names}`).then(response =>
     response.json().then(results => displayResults(results))
   );
@@ -69,20 +59,17 @@ function getSearchResults(list, selectedName) {
 /**
  * Sorts list of names based off of name that user selected from suggestions. The suggested name
  * now goes to the front of the list.
- * @param {string} names
  * @param {string} selectedName
  */
-function sort(names, selectedName) {
-  let namesArray = names.split(",");
-  for (let i = 0; i < namesArray.length; i++) {
-    if (namesArray[i] === selectedName) {
-      let currName = namesArray[i];
-      namesArray.splice(i, 1);
-      namesArray.unshift(currName);
-      return namesArray.join(",");
+function sort(selectedName) {
+  for (let i = 0; i < nameSuggestions.length; i++) {
+    if (nameSuggestions[i] === selectedName) {
+      let currName = nameSuggestions[i];
+      nameSuggestions.splice(i, 1);
+      nameSuggestions.unshift(currName);
     }
   }
-  return names;
+  return nameSuggestions;
 }
 
 /**
@@ -149,8 +136,15 @@ function getSuggestions() {
  * @param {list} suggestions
  */
 function addSuggestions(suggestions) {
+  nameSuggestions = suggestions;
   suggestionsPanel.innerHTML = "";
-  suggestions.forEach(name => appendSuggestion(name));
+  if (suggestions.length >= 5) {
+    for (let i = 0; i < 5; i++) {
+      appendSuggestion(suggestions[i]);
+    }
+  } else {
+    suggestions.forEach(name => appendSuggestion(name));
+  }
 }
 
 /**
@@ -195,8 +189,7 @@ function removeActive() {
  */
 function completeNameAndSearch(fullname) {
   searchInput.value = fullname;
-
-  let suggestionsContainer = document.getElementById("suggestions");
-  let list = suggestionsContainer.getElementsByTagName("div");
-  getSearchResults(list, fullname);
+  fetch(`/search-results?names=${fullname}`).then(response =>
+    response.json().then(results => displayResults(results))
+  );
 }
