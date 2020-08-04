@@ -44,18 +44,22 @@ public class DatabaseRetriever implements Serializable {
 
     if (currUserEntity != null) {
       List<Long> groupIds = (List<Long>) currUserEntity.getProperty("groups");
+      System.out.println("group ids size " + groupIds.size());
 
       for (Long groupId : groupIds) {
         Entity groupEntity = getEntityFromId(groupId, "Group", datastore);
         if (groupEntity != null) {
           List<String> memberIds = (List<String>) groupEntity.getProperty("memberIds");
           for (String memberId : memberIds) {
-            UserVertex userVertex = new UserVertex(memberId);
-            if (!friendsToNumSharedGroups.containsKey(userVertex)) {
-              friendsToNumSharedGroups.put(userVertex, 1);
-            } else {
-              friendsToNumSharedGroups.put(
-                  userVertex, 1 + friendsToNumSharedGroups.get(userVertex));
+            if (!memberId.equals(currUserId)) {
+              System.out.println("member ids size " + memberId);
+              UserVertex userVertex = new UserVertex(memberId);
+              if (!friendsToNumSharedGroups.containsKey(userVertex)) {
+                friendsToNumSharedGroups.put(userVertex, 1);
+              } else {
+                friendsToNumSharedGroups.put(
+                    userVertex, 1 + friendsToNumSharedGroups.get(userVertex));
+              }
             }
           }
         }

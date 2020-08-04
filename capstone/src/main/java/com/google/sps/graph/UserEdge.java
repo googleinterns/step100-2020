@@ -12,19 +12,18 @@ public class UserEdge implements Edge<UserVertex> {
     this.destVertex = destVertex;
   }
 
+  @Override
   public double getEdgeWeight() {
     return this.edgeWeight;
   }
 
   @Override
   public UserVertex getSourceVertex() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.sourceVertex;
   }
 
   @Override
   public UserVertex getDestVertex() {
-    // TODO Auto-generated method stub
-    return null;
+    return this.destVertex;
   }
 }

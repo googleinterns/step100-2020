@@ -19,4 +19,6 @@ public interface Vertex<E> {
 
   @Override
   int hashCode();
+
+  String getId();
 }
