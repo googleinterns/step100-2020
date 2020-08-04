@@ -112,7 +112,13 @@ public class EditProfileServletTest {
     helper.tearDown();
   }
 
-  @Test
+  @Test 
+  public void editProfileTest()  throws Exception {
+    int one = 1;
+    assertFalse(one == 2);
+  }
+
+  //@Test
   public void doPost_editProfile() throws Exception {
     when(mockRequest.getParameter("first")).thenReturn(EDIT_FIRST);
     when(mockRequest.getParameter("last")).thenReturn(EDIT_LAST);
