@@ -121,10 +121,11 @@ public class EditProfileServlet extends AuthenticatedServlet {
   private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    if (blobs.isEmpty()) return null;
     List<BlobKey> blobKeys = blobs.get(formInputElementName);
-
+    
     String blobKey;
-    if (blobKeys == null || blobKeys.isEmpty()) {
+    if (blobKeys == null || blobKeys.isEmpty()){
       blobKey = null;
     } else {
       blobKey = blobKeys.get(0).getKeyString();
