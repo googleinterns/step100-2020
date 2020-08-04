@@ -28,7 +28,6 @@
 }
 
 .member-grid-item {
-  padding: 20px;
   font-size: 30px;
   text-align: center;
   border-radius: 50%;
@@ -94,18 +93,38 @@
   background-color: var(--orange);
   align-content: center;
   margin: 0 auto;
+  height: 60px;
+  width: 60px;
+}
+
+.member-img-blank-large {
+  border-radius: 50%;
+  background-color: var(--orange);
+  align-content: center;
+  margin: 0 auto;
+  height: 120px;
+  width: 120px;
 }
 
 .small-member-img {
-  height: 20px;
-  width: 20px;
+  height: 60px;
+  width: 60px;
   margin-bottom: 10px;
+  border-radius: 50%;
+  background-size: cover;
+  background-color: #FFFFFF;
+  background-position: center;
 }
 
 .large-member-img {
-  height: 100px;
-  width: 100px;
-  margin-top: 30px;
+  height: 120px;
+  width: 120px;
+  border-radius: 50%;
+  margin: 0 auto;
+  align-content: center;
+  background-size: cover;
+  background-color: #FFFFFF;
+  background-position: center;
 }
 
 .member-img-div .member-img {
@@ -189,7 +208,7 @@
 
 .autocomplete-active {
   background-color: var(--light-green);
-}
+} 
 
 .user-suggestion {
   border-radius: 10px;

@@ -59,6 +59,7 @@ public class TagsContextServletTest {
       new Post(
           0, /* postId */
           USER_ID, /* authorId */
+          "", /* authorPic */
           POST_TEXT_1, /* postText */
           new ArrayList<Comment>(), /* comments */
           CHALLENGE_NAME, /* challengeName */
@@ -70,6 +71,7 @@ public class TagsContextServletTest {
       new Post(
           0, /* postId */
           USER_ID, /* authorId */
+          "", /* authorPic */
           POST_TEXT_2, /* postText */
           new ArrayList<Comment>(), /* comments */
           CHALLENGE_NAME, /* challengeName */

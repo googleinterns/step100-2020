@@ -9,6 +9,7 @@ public final class Post {
 
   private final long postId;
   private final String authorId;
+  private final String authorPic;
   private final String postText;
   private final ArrayList<Comment> comments;
   private final String challengeName;
@@ -19,6 +20,7 @@ public final class Post {
   public Post(
     long postId, 
     String authorId, 
+    String authorPic,
     String postText, 
     ArrayList<Comment> comments, 
     String challengeName, 
@@ -30,6 +32,7 @@ public final class Post {
     this.timestamp = timestamp;
     this.postText = postText;
     this.authorId = authorId;
+    this.authorPic = authorPic;
     this.comments = comments;
     this.challengeName = challengeName;
     this.img = img;
@@ -40,6 +43,7 @@ public final class Post {
     long postId = entity.getKey().getId();
     long timestamp = (long) entity.getProperty("timestamp");
     String authorId = (String) entity.getProperty("authorId");
+    String authorPic = (String) entity.getProperty("authorPic");
     String postText = (String) entity.getProperty("postText");
     String challengeName = (String) entity.getProperty("challengeName");
     String img = (String) entity.getProperty("img");
@@ -50,7 +54,7 @@ public final class Post {
      if (entity.getProperty("comments") != null) {
       createCommentObjectList(comments, entity);
     }
-    return new Post(postId, authorId, postText, comments, challengeName, timestamp, img, likes);
+    return new Post(postId, authorId, authorPic, postText, comments, challengeName, timestamp, img, likes);
   }
 
   private static void createCommentObjectList(ArrayList<Comment> comments, Entity entity) {
@@ -63,6 +67,7 @@ public final class Post {
   public Entity toEntity() {
     Entity entity = new Entity("Post");
     entity.setProperty("authorId", this.authorId);
+    entity.setProperty("authorPic", this.authorPic);
     entity.setProperty("timestamp", this.timestamp);
     entity.setProperty("postText", this.postText);
     entity.setProperty("challengeName", this.challengeName);
@@ -80,6 +85,7 @@ public final class Post {
     Post post = (Post) other;
     return timestamp == post.timestamp &&
       authorId.equals(post.authorId) &&
+      authorPic.equals(post.authorPic) &&
       postText.equals(post.postText) &&
       challengeName.equals(post.challengeName) &&
       img.equals(post.img) &&
@@ -97,6 +103,10 @@ public final class Post {
 
   public String getPostText() {
     return postText;
+  }
+
+  public String getAuthorPic() {
+    return authorPic;
   }
 
   public String getAuthorId() {

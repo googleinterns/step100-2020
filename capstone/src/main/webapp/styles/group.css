@@ -171,7 +171,7 @@ p {
   border-radius: 10px;
 }
 
-.post-img {
+.post-img-div {
   height: 60px;
   width: 60px;
   border-radius: 50%;
@@ -179,6 +179,16 @@ p {
   align-content: left;
   position: flex;
   margin-left: 20px;
+}
+
+.post-img {
+  height: 60px;
+  width: 60px;
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background-size: cover;
+  background-color: #FFFFFF;
+  background-position: center;
 }
 
 .post-author {
@@ -314,6 +324,15 @@ p {
   border-radius: 50%;
   background-color: var(--light-pink);
   align-content: left;
+}
+
+.comment-user-img {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  background-size: cover;
+  background-color: #FFFFFF;
+  background-position: center;
 }
 
 .comment-text-div {

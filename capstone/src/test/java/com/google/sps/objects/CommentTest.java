@@ -28,6 +28,7 @@ public class CommentTest {
   private static final String USER_ID = "123123123";
   private static final String COMMENT_TEXT = "a great comment";
   private static final long TIMESTAMP = 4324344;
+  private static final String PROFILE_PIC = "";
 
   private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(
@@ -45,7 +46,8 @@ public class CommentTest {
       new Comment(
         TIMESTAMP, /* timestamp */ 
         COMMENT_TEXT, /* commentText */ 
-        USER_ID /* userId */ );
+        USER_ID, /* userId */ 
+        PROFILE_PIC /* userProfilePic */);
   }
 
   @After
@@ -71,5 +73,6 @@ public class CommentTest {
 
     assertTrue(returnedComment.getCommentText().equals(COMMENT_TEXT));
     assertTrue(returnedComment.getUser().equals(USER_ID));
+    assertTrue(returnedComment.getProfilePic().equals(PROFILE_PIC));
   }
 }

@@ -56,6 +56,7 @@ public class PostTest {
         new Post(
             /* postId */ POST_ID,
             /* authorId */ USER_ID,
+            /* authorPic */ "",
             /* postText */ POST_TEXT,
             /* comments */ new ArrayList<Comment>(),
             /* challengeName */ CHALLENGE_NAME,
@@ -106,12 +107,16 @@ public class PostTest {
   public void addCommentTest() {
     Comment testComment1 =
         new Comment(
-            /* userId */ 4324344, /* commentText */ "a great comment", /* userId */ "123123123");
+            4324344, /* userId */
+            "a great comment", /* commentText */
+            "123123123", /* userId */ 
+            "" /* userProfilePic */);
     Comment testComment2 =
         new Comment(
             55555555, /* userId */
             "another great comment", /* commentText */
-            "09090909" /* userId */);
+            "09090909" /* userId */, 
+            "" /* userProfilePic */);
     post.addComment(testComment1);
     post.addComment(testComment2);
 

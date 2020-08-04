@@ -64,6 +64,7 @@ public class UpdateLikesServletTest {
       new Post(
           POST_ID, /* postId */
           AUTHOR_ID, /* authorId */
+          "", /* authorPic */
           POST_TEXT, /* postText */
           new ArrayList<Comment>(), /* comments */
           CHALLENGE_NAME, /* challengeName */

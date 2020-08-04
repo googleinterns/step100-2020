@@ -10,18 +10,22 @@ public final class Comment {
   private final long timestamp;
   private final String commentText;
   private final String userId;
+  private final String userProfilePic;
 
-  public Comment(long timestamp, String commentText, String userId) {
+  public Comment(
+    long timestamp, String commentText, String userId, String userProfilePic) {
     this.timestamp = timestamp;
     this.commentText = commentText;
     this.userId = userId;
+    this.userProfilePic = userProfilePic;
   }
 
   public static Comment fromEntity(EmbeddedEntity entity) {
     Long timestamp = (long) entity.getProperty("timestamp");
     String commentText = (String) entity.getProperty("commentText");
     String userId = (String) entity.getProperty("userId");
-    return new Comment(timestamp, commentText, userId);
+    String userProfilePic = (String) entity.getProperty("userProfilePic");
+    return new Comment(timestamp, commentText, userId, userProfilePic);
   }
 
   public EmbeddedEntity toEntity() {
@@ -29,6 +33,7 @@ public final class Comment {
     commentEntity.setProperty("timestamp", this.timestamp);
     commentEntity.setProperty("commentText", this.commentText);
     commentEntity.setProperty("userId", this.userId);
+    commentEntity.setProperty("userProfilePic", this.userProfilePic);
     return commentEntity;
   }
 
@@ -50,5 +55,9 @@ public final class Comment {
 
   public String getUser() {
     return userId;
+  }
+
+  public String getProfilePic() {
+    return userProfilePic;
   }
 }
