@@ -189,7 +189,7 @@
 
 .autocomplete-active {
   background-color: var(--light-green);
-}
+} 
 
 .user-suggestion {
   border-radius: 10px;
