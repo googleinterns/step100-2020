@@ -43,7 +43,7 @@ public class DatabaseRetriever implements Serializable {
     Entity currUserEntity = getEntityFromId(currUserId, "User", datastore);
 
     if (currUserEntity != null) {
-      List<Long> groupIds = (List<Long>) currUserEntity.getProperty("groups");
+      List<Long> groupIds = (currUserEntity.getProperty("groups") == null) ? new ArrayList<Long>() : (List<Long>) currUserEntity.getProperty("groups");
       System.out.println("group ids size " + groupIds.size());
 
       for (Long groupId : groupIds) {

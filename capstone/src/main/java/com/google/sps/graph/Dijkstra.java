@@ -18,8 +18,8 @@ public class Dijkstra<V extends Vertex<E>, E extends Edge<V>> {
       // Pop off vertex with smallest distance from src
       V current = minHeap.peek();
       visitedSet.add(minHeap.poll());
-      System.out.println("current " + current.getId() + "dest " + dest.getId());
       System.out.println("visited set " + visitedSet);
+      System.out.println("current " + current.getId() + " " + current + " " + "dest " + dest.getId());
       if (current.equals(dest)) {
         System.out.println("current equals dest----------------------");
         return current;
@@ -32,17 +32,22 @@ public class Dijkstra<V extends Vertex<E>, E extends Edge<V>> {
       for (E e : outgoingEdges) {
         // Get the vertex on the other side of the edge
         V adjacent = e.getDestVertex();
+        System.out.println("adjacent " + adjacent.getId() + " " + adjacent);
         // Update the shortest path to adjacent vertex
         double newDistanceToAdjacent = current.getDistance() + e.getEdgeWeight();
+        System.out.println("new calculated distance " + newDistanceToAdjacent + "old distance" + adjacent.getDistance());
         if (newDistanceToAdjacent < adjacent.getDistance()
             || (!minHeap.contains(adjacent) && !visitedSet.contains(adjacent))) {
+          System.out.println("resetting distance");
           adjacent.setDistance(newDistanceToAdjacent);
           // remember path to this vertex
           adjacent.setPrev(e);
           // Trigger reheapify since vertex has been mutated
           if (minHeap.contains(adjacent)) {
+            System.out.println("reheapify");
             minHeap.add(minHeap.remove());
           } else {
+            System.out.println("adding adjacentn to minheap");
             minHeap.add(adjacent);
           }
         }
