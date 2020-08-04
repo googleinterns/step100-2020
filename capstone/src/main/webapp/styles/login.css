@@ -105,12 +105,17 @@ svg {
 
 .content #right-side {
   align-items: center;
-  background-color: var(--dark-green);
+  background-color: var(--light-green);
   display: flex;
   height: 100vh;
   justify-content: center;
   min-height: 100%;
   width: 55%;
+}
+
+#cover-image {
+  width: 100%;
+  height: auto;
 }
 
 .register-modal {
