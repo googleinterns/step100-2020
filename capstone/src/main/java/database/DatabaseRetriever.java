@@ -61,6 +61,7 @@ public class DatabaseRetriever implements Serializable {
                 userVertex = vertexMap.get(memberId);
               } else {
                 userVertex = new UserVertex(memberId);
+                vertexMap.put(memberId, userVertex);
               }
               if (!friendsToNumSharedGroups.containsKey(userVertex)) {
                 friendsToNumSharedGroups.put(userVertex, 1);
