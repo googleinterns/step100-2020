@@ -116,7 +116,7 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
     if (blobs.isEmpty()) return null;
     List<BlobKey> blobKeys = blobs.get(formInputElementName);
     String blobKey;
-    if (blobKeys == null || blobKeys.isEmpty()){
+    if (blobKeys == null || blobKeys.isEmpty()) {
       blobKey = null;
     } else {
       blobKey = blobKeys.get(0).getKeyString();
