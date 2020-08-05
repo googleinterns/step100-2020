@@ -83,6 +83,7 @@ public class CommentsServletTest {
       new Post(
           POST_ID, /* postId */
           AUTHOR_ID, /* authorId */
+          "TEST USER", /* authorName */
           "", /* authorPic */
           POST_TEXT, /* postText */
           new ArrayList<Comment>(), /* comments */

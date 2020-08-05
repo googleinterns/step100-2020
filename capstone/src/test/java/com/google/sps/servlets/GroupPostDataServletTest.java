@@ -68,6 +68,7 @@ public class GroupPostDataServletTest {
       new Post(
           POST_ID, /* postId */
           USER_ID, /* authorId */
+          "TEST USER", /* authorName */
           "", /* authorPic */
           POST_TEXT, /* postText */
           new ArrayList<Comment>(), /* comments */

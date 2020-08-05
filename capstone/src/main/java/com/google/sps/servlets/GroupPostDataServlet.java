@@ -86,7 +86,7 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
     ArrayList<Comment> comments = new ArrayList<>();
 
     // Creates entity with submitted data and add to database
-    Post post = new Post(0, authorName, authorPic, postText, comments, challengeName, System.currentTimeMillis(), img, likes);
+    Post post = new Post(0, userId, authorName, authorPic, postText, comments, challengeName, System.currentTimeMillis(), img, likes);
     Entity postEntity = post.toEntity();
     datastore.put(postEntity);
 

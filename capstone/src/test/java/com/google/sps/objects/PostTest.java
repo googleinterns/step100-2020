@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,6 +21,8 @@ import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig
 import com.google.common.collect.ImmutableMap;
 import com.google.sps.Objects.Comment;
 import com.google.sps.Objects.Post;
+import com.google.sps.Objects.User;
+import com.google.sps.Objects.Badge;
 
 /** Unit tests for Post. */
 public class PostTest {
@@ -45,6 +48,21 @@ public class PostTest {
                   ImmutableMap.of(
                       "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
+  private static final User CURRENT_USER =
+      new User(
+          USER_ID,
+          "Test",
+          "McTest",
+          USER_EMAIL,
+          /* phoneNumber= */ "123-456-7890",
+          /* profilePic= */ "",
+          /* address= */ "",
+          /* latitude= */ 0,
+          /* longitude= */ 0,
+          /* badges= */ new LinkedHashSet<Badge>(),
+          /* groups= */ new LinkedHashSet<Long>(),
+          /* interests= */ new ArrayList<String>());
+
   private Post post;
   private DatastoreService datastore;
 
@@ -52,10 +70,12 @@ public class PostTest {
   public void setUp() {
     helper.setUp();
     datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(CURRENT_USER.toEntity());
     post =
         new Post(
             /* postId */ POST_ID,
             /* authorId */ USER_ID,
+            /* authorName */ "TEST USER",
             /* authorPic */ "",
             /* postText */ POST_TEXT,
             /* comments */ new ArrayList<Comment>(),

@@ -100,7 +100,7 @@ function createProfileImg(post) {
 function createAuthor(post) {
   const postAuthor = document.createElement("h3");
   postAuthor.className = "post-author align-vertical";
-  postAuthor.innerText = post.authorId;
+  postAuthor.innerText = post.authorName;
   return postAuthor;
 }
 

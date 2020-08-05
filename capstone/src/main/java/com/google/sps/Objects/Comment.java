@@ -2,6 +2,11 @@ package com.google.sps.Objects;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EmbeddedEntity;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 import java.util.ArrayList;
 
@@ -24,7 +29,15 @@ public final class Comment {
     Long timestamp = (long) entity.getProperty("timestamp");
     String commentText = (String) entity.getProperty("commentText");
     String userId = (String) entity.getProperty("userId");
-    String userProfilePic = (String) entity.getProperty("userProfilePic");
+    // Get user profile pic from userId 
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    String userProfilePic;
+    try {
+      Entity userEntity = datastore.get(KeyFactory.createKey("User", userId));
+      userProfilePic = (String) userEntity.getProperty("profilePic");
+    } catch (EntityNotFoundException e) {
+      userProfilePic = null;
+    }
     return new Comment(timestamp, commentText, userId, userProfilePic);
   }
 
