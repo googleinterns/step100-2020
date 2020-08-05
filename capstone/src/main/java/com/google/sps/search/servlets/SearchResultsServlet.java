@@ -91,6 +91,7 @@ public class SearchResultsServlet extends AuthenticatedServlet {
       namesScore.put(destUser, 1 / distance);
     }
 
+    // If search string is a complete match with result name, increment score
     String destUserName = destUser.getFirstName() + " " + destUser.getLastName();
     if (searchString.toUpperCase().equals(destUserName.toUpperCase())) {
       namesScore.put(destUser, namesScore.get(destUser) + COMPLETE_MATCH);
