@@ -1,4 +1,4 @@
-package com.google.sps.search;
+package database;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,6 +22,8 @@ public class DatabaseRetriever implements Serializable {
 
   public DatabaseRetriever() {}
 
+  static Map<String, UserVertex> vertexMap = new HashMap<String, UserVertex>();
+
   public List<String> getNamesFromDb() {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = new Query("User");
@@ -43,8 +45,10 @@ public class DatabaseRetriever implements Serializable {
     Entity currUserEntity = getEntityFromId(currUserId, "User", datastore);
 
     if (currUserEntity != null) {
-      List<Long> groupIds = (currUserEntity.getProperty("groups") == null) ? new ArrayList<Long>() : (List<Long>) currUserEntity.getProperty("groups");
-      System.out.println("group ids size " + groupIds.size());
+      List<Long> groupIds =
+          (currUserEntity.getProperty("groups") == null)
+              ? new ArrayList<Long>()
+              : (List<Long>) currUserEntity.getProperty("groups");
 
       for (Long groupId : groupIds) {
         Entity groupEntity = getEntityFromId(groupId, "Group", datastore);
@@ -52,8 +56,12 @@ public class DatabaseRetriever implements Serializable {
           List<String> memberIds = (List<String>) groupEntity.getProperty("memberIds");
           for (String memberId : memberIds) {
             if (!memberId.equals(currUserId)) {
-              System.out.println("member ids size " + memberId);
-              UserVertex userVertex = new UserVertex(memberId);
+              UserVertex userVertex = null;
+              if (vertexMap.containsKey(memberId)) {
+                userVertex = vertexMap.get(memberId);
+              } else {
+                userVertex = new UserVertex(memberId);
+              }
               if (!friendsToNumSharedGroups.containsKey(userVertex)) {
                 friendsToNumSharedGroups.put(userVertex, 1);
               } else {
@@ -67,6 +75,10 @@ public class DatabaseRetriever implements Serializable {
     }
 
     return friendsToNumSharedGroups;
+  }
+
+  private UserVertex getVertex(String userId) {
+    return new UserVertex(userId);
   }
 
   public static Entity getEntityFromId(String id, String type, DatastoreService datastore) {

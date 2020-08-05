@@ -14,10 +14,13 @@ public class Dijkstra<V extends Vertex<E>, E extends Edge<V>> {
     minHeap.add(src);
     Set<V> visitedSet = new HashSet<V>();
     while (!minHeap.isEmpty()) {
+      System.out.println("MINHEAP: " + minHeap);
       // Pop off vertex with smallest distance from src
       V current = minHeap.peek();
-      visitedSet.add(minHeap.poll()););
+      visitedSet.add(minHeap.poll());
+      System.out.println("CURRENT " + current + " |DEST " + dest);
       if (current.equals(dest)) {
+        System.out.println("EQUALS, RETURNING ----------------");
         return current;
       }
       List<E> outgoingEdges = current.getOutgoingEdges();
@@ -29,6 +32,7 @@ public class Dijkstra<V extends Vertex<E>, E extends Edge<V>> {
         V adjacent = e.getDestVertex();
         // Update the shortest path to adjacent vertex
         double newDistanceToAdjacent = current.getDistance() + e.getEdgeWeight();
+        System.out.println("ADJACENT: " + adjacent.getId() + " " + adjacent.getDistance());
         if (newDistanceToAdjacent < adjacent.getDistance()
             || (!minHeap.contains(adjacent) && !visitedSet.contains(adjacent))) {
           adjacent.setDistance(newDistanceToAdjacent);
@@ -38,6 +42,8 @@ public class Dijkstra<V extends Vertex<E>, E extends Edge<V>> {
           if (minHeap.contains(adjacent)) {
             minHeap.add(minHeap.remove());
           } else {
+            System.out.println(
+                "adding " + adjacent + " " + adjacent.getId() + " " + adjacent.getDistance());
             minHeap.add(adjacent);
           }
         }

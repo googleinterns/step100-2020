@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import database.DatabaseRetriever;
+
 public class SearchPredictor implements Serializable {
 
   private static final double COMPLETE_PARTIAL_NAME_MATCH = 5;

@@ -27,6 +27,8 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
 
+import database.DatabaseRetriever;
+
 public class SearchPredictorTest {
 
   private static final String USER_EMAIL = "test@test.com";
