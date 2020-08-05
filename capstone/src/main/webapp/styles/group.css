@@ -47,12 +47,21 @@ p {
   width: 30px;
 }
 
-.navbar #profile-btn {
+.profile-btn-blank {
   background-color: var(--orange);
   border-radius: 50%;
   height: 35px;
   margin: 0 1em;
   width: 35px;
+}
+
+.profile-btn-img {
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  background-size: cover;
+  background-color: #FFFFFF;
+  background-position: center;
 }
 
 /* Group Header */
@@ -94,7 +103,7 @@ p {
   position: relative;
 }
 
-.user-img {
+.user-img-blank {
   height: 60px;
   width: 60px;
   border-radius: 50%;
@@ -104,6 +113,19 @@ p {
   transform: translateY(-50%);
   margin-left: 20px;
   position: absolute;
+}
+
+.user-img {
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  align-content: left;
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+  background-size: cover;
+  background-color: #FFFFFF;
+  background-position: center;
 }
 
 #post-input {
@@ -217,6 +239,7 @@ p {
   margin-top: 30px;
   margin-bottom: 30px;
   position: relative;
+  max-height: 600px;
 }
 
 .uploadedImage {
@@ -224,7 +247,7 @@ p {
   margin-right: 20px;
   margin-left: 20px;
   max-width: 100%;
-  max-height: 100%;
+  max-height: 600px;
 }
 
 .likes-div {

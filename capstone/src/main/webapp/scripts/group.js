@@ -1,7 +1,9 @@
 let groupId;
 let locationsLimit = 1;
+let groupUser;
 
 function init() {
+  getUserData();
   getGroupId();
   checkMembership();
   createLogoutUrl();
@@ -12,6 +14,30 @@ function init() {
   findClosestGroupLocations();
   autocomplete();
   loadTags();
+}
+
+/** Fetch current user's data from the server */
+function getUserData() {
+  fetch("/user")
+    .then(response => response.json())
+    .then(user => {
+      groupUser = user;
+      const formImg = document.getElementById("post-form-img");
+      formImg.className = "user-img-blank align-vertical";
+      const navImg = document.getElementById("profile-btn");
+      navImg.className = "profile-btn-blank";
+      if (user.profilePic != null && user.profilePic != "") {
+        const authorProfileImg = document.createElement("img");
+        authorProfileImg.className = "user-img align-vertical";
+        authorProfileImg.src = "serve?blob-key=" + user.profilePic;
+        formImg.append(authorProfileImg);
+
+        const navProfileImg = document.createElement("img");
+        navProfileImg.className = "profile-btn-img";
+        navProfileImg.src = "serve?blob-key=" + user.profilePic;
+        navImg.append(navProfileImg);
+      }  
+    });
 }
 
 var xmlhttp = new XMLHttpRequest();
