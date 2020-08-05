@@ -202,7 +202,7 @@ function closeModal(type) {
 
 /** Populate form with user values */
 function populateEditForm(user) {
-  document.getElementById("modal-name-container").innerText = user.name;
+  document.getElementById("modal-name-container").innerText = user.firstName + " " + user.lastName;
   document.getElementById("first").value = user.firstName;
   document.getElementById("last").value = user.lastName;
   document.getElementById("email").value = user.email;
