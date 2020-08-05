@@ -82,7 +82,7 @@ public class SearchPredictor implements Serializable {
   }
 
   /**
-   * Sorts the suggestioned names in order of score from lowest to highest and returns the list of
+   * Sorts the suggested names in order of score from lowest to highest and returns the list of
    * names.
    *
    * @param namesScore map from name to score

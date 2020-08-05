@@ -35,19 +35,24 @@ import error.ErrorHandler;
 @WebServlet("/search-results")
 public class SearchResultsServlet extends AuthenticatedServlet {
 
+  private static double COMPLETE_MATCH = 10;
+
   @Override
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     String names = request.getParameter("names");
+    String searchString = request.getParameter("searchString");
     String[] namesSplit = names.split(",");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    List<User> users = this.getUserSuggestions(namesSplit, datastore, response);
-    // TODO: sort users for results
+    List<User> users = this.getUserSuggestions(namesSplit, searchString, datastore, response);
     ServletHelper.write(response, users, "application/json");
   }
 
   private List<User> getUserSuggestions(
-      String[] namesSplit, DatastoreService datastore, HttpServletResponse response)
+      String[] namesSplit,
+      String searchString,
+      DatastoreService datastore,
+      HttpServletResponse response)
       throws IOException {
     List<User> users = new ArrayList<User>();
     Map<User, Double> namesScore = new LinkedHashMap<User, Double>();
@@ -65,19 +70,18 @@ public class SearchResultsServlet extends AuthenticatedServlet {
       for (Entity result : pq.asIterable()) {
         try {
           users.add(User.fromEntity(result));
-          namesScore = this.runDijkstra(namesScore, userId, User.fromEntity(result));
+          namesScore = this.runDijkstra(namesScore, userId, searchString, User.fromEntity(result));
         } catch (EntityNotFoundException e) {
           ErrorHandler.sendError(response, "Entity not found.");
         }
       }
     }
 
-    //    return users;
     return this.sortUsers(namesScore);
   }
 
   private Map<User, Double> runDijkstra(
-      Map<User, Double> namesScore, String currUserId, User destUser) {
+      Map<User, Double> namesScore, String currUserId, String searchString, User destUser) {
     Dijkstra<UserVertex, UserEdge> dijkstra = new Dijkstra<UserVertex, UserEdge>();
     UserVertex srcVertex = new UserVertex(currUserId);
     UserVertex destVertex = new UserVertex(destUser.getUserId());
@@ -85,6 +89,11 @@ public class SearchResultsServlet extends AuthenticatedServlet {
 
     if (!namesScore.containsKey(destUser)) {
       namesScore.put(destUser, 1 / distance);
+    }
+
+    String destUserName = destUser.getFirstName() + " " + destUser.getLastName();
+    if (searchString.toUpperCase().equals(destUserName.toUpperCase())) {
+      namesScore.put(destUser, namesScore.get(destUser) + COMPLETE_MATCH);
     }
 
     return namesScore;

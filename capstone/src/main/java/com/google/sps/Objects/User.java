@@ -27,17 +27,17 @@ public final class User {
   private ArrayList<String> interests;
 
   public User(
-      String userId, 
-      String firstName, 
-      String lastName, 
-      String email, 
-      String phoneNumber, 
-      String profilePic, 
+      String userId,
+      String firstName,
+      String lastName,
+      String email,
+      String phoneNumber,
+      String profilePic,
       String address,
-      double latitude, 
-      double longitude, 
-      LinkedHashSet<Badge> badges, 
-      LinkedHashSet<Long> groups, 
+      double latitude,
+      double longitude,
+      LinkedHashSet<Badge> badges,
+      LinkedHashSet<Long> groups,
       ArrayList<String> interests) {
     this.userId = userId;
     this.firstName = firstName;
@@ -152,8 +152,8 @@ public final class User {
     this.address = address;
   }
 
-  /* 
-   * Overrides the equals() method to effectively compare two User objects. 
+  /*
+   * Overrides the equals() method to effectively compare two User objects.
    */
   @Override
   public boolean equals(Object other) {
@@ -161,28 +161,28 @@ public final class User {
     if (other == this) return true;
     if (!(other instanceof User)) return false;
     User user = (User) other;
-    return userId.equals(user.userId) &&
-        firstName.equals(user.firstName) &&
-        lastName.equals(user.lastName) &&
-        email.equals(user.email) &&
-        phoneNumber.equals(user.phoneNumber) &&
-        profilePic.equals(user.profilePic) &&
-        address.equals(user.address) &&
-        latitude == user.latitude &&
-        longitude == user.longitude &&
-        interests.containsAll(user.interests) && user.interests.containsAll(interests) &&
-        groups.containsAll(user.groups) && user.groups.containsAll(groups) &&
-        badges.containsAll(user.badges) && user.badges.containsAll(badges);
+    return userId.equals(user.userId)
+        && firstName.equals(user.firstName)
+        && lastName.equals(user.lastName)
+        && email.equals(user.email)
+        && phoneNumber.equals(user.phoneNumber)
+        && profilePic.equals(user.profilePic)
+        && address.equals(user.address)
+        && latitude == user.latitude
+        && longitude == user.longitude
+        && interests.containsAll(user.interests)
+        && user.interests.containsAll(interests)
+        && groups.containsAll(user.groups)
+        && user.groups.containsAll(groups)
+        && badges.containsAll(user.badges)
+        && user.badges.containsAll(badges);
   }
 
-  /**
-   * Creates and returns a User object given a user Entity.
-   */
+  /** Creates and returns a User object given a user Entity. */
   public static User fromEntity(Entity entity) throws EntityNotFoundException {
     String userId = (String) entity.getProperty("userId");
     String firstName = (String) entity.getProperty("firstName");
     String lastName = (String) entity.getProperty("lastName");
-    String fullName = (String) entity.getProperty("fullName");
     String email = (String) entity.getProperty("email");
     String phoneNumber = (String) entity.getProperty("phoneNumber");
     String profilePic = ""; // TODO: add profilePic url to datastore/figure out Blobstore
@@ -196,21 +196,36 @@ public final class User {
       latitude = (double) entity.getProperty("latitude");
       longitude = (double) entity.getProperty("longitude");
     }
-    ArrayList<String> interests = (entity.getProperty("interests") == null)
-        ? new ArrayList<>()
-        : (ArrayList<String>) entity.getProperty("interests");
-    LinkedHashSet<Long> groupIds = (entity.getProperty("groups") == null)
-        ? new LinkedHashSet<>()
-        : new LinkedHashSet<Long>((ArrayList<Long>) entity.getProperty("groups"));
+    ArrayList<String> interests =
+        (entity.getProperty("interests") == null)
+            ? new ArrayList<>()
+            : (ArrayList<String>) entity.getProperty("interests");
+    LinkedHashSet<Long> groupIds =
+        (entity.getProperty("groups") == null)
+            ? new LinkedHashSet<>()
+            : new LinkedHashSet<Long>((ArrayList<Long>) entity.getProperty("groups"));
 
-    LinkedHashSet<Long> badgeIds = (entity.getProperty("badges") == null)
-        ? new LinkedHashSet<>()
-        : new LinkedHashSet<Long>((ArrayList<Long>) entity.getProperty("badges"));
+    LinkedHashSet<Long> badgeIds =
+        (entity.getProperty("badges") == null)
+            ? new LinkedHashSet<>()
+            : new LinkedHashSet<Long>((ArrayList<Long>) entity.getProperty("badges"));
 
     LinkedHashSet<Badge> badges = getBadgeList(badgeIds);
 
-    User user = new User(userId, firstName, lastName, email, phoneNumber, profilePic, address, latitude, longitude,
-                         badges, groupIds, interests);
+    User user =
+        new User(
+            userId,
+            firstName,
+            lastName,
+            email,
+            phoneNumber,
+            profilePic,
+            address,
+            latitude,
+            longitude,
+            badges,
+            groupIds,
+            interests);
     return user;
   }
 

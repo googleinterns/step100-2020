@@ -49,11 +49,12 @@ function findSelected(list) {
  * @param {string} selectedName
  */
 function getSearchResults() {
+  const searchString = searchInput.value;
   let names = "";
   nameSuggestions.forEach(name => (names = names.concat(`${name},`)));
-  fetch(`/search-results?names=${names}`).then(response =>
-    response.json().then(results => displayResults(results))
-  );
+  fetch(
+    `/search-results?names=${names}&searchString=${searchString}`
+  ).then(response => response.json().then(results => displayResults(results)));
 }
 
 /**
@@ -188,8 +189,9 @@ function removeActive() {
  * @param {string} fullname
  */
 function completeNameAndSearch(fullname) {
+  const searchString = searchInput.value;
   searchInput.value = fullname;
-  fetch(`/search-results?names=${fullname}`).then(response =>
-    response.json().then(results => displayResults(results))
-  );
+  fetch(
+    `/search-results?names=${fullname}&searchString=${searchString}`
+  ).then(response => response.json().then(results => displayResults(results)));
 }
