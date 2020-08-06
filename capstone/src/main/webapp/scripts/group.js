@@ -60,7 +60,7 @@ function getGroupId() {
 function findClosestGroupLocations() {
   fetch(`/create-quadtree?groupId=${groupId}`, { method: "POST" }).then(() => {
 		loadClosestGroupLocations();
-	});
+  });
 }
 
 function loadClosestGroupLocations() {
