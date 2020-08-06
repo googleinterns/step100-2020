@@ -11,7 +11,7 @@ function init() {
   getPollOptions();
   fetchBlobstoreUrlAndShowForm();
   loadMembers();
-  findClosestGroupLocations();
+  loadClosestGroupLocations();
   autocomplete();
   loadTags();
 }
@@ -58,8 +58,9 @@ function getGroupId() {
 }
 
 function findClosestGroupLocations() {
-  fetch(`/create-quadtree?groupId=${groupId}`, { method: "POST" });
-  loadClosestGroupLocations();
+  fetch(`/create-quadtree?groupId=${groupId}`, { method: "POST" }).then(() => {
+		loadClosestGroupLocations();
+	});
 }
 
 function loadClosestGroupLocations() {
