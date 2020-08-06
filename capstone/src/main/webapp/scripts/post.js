@@ -84,9 +84,15 @@ function createSinglePost(post, likedPosts) {
 }
 
 // Create HTML element for post profile img
-function createProfileImg() {
+function createProfileImg(post) {
   const profileImgDiv = document.createElement("div");
-  profileImgDiv.className = "post-img align-vertical";
+  profileImgDiv.className = "post-img-div align-vertical";
+  if (post.authorPic != null && post.authorPic != "") {
+    const authorProfileImg = document.createElement("img");
+    authorProfileImg.className = "post-img";
+    authorProfileImg.src = "serve?blob-key=" + post.authorPic;
+    profileImgDiv.append(authorProfileImg);
+  } 
   return profileImgDiv;
 }
 
@@ -94,7 +100,7 @@ function createProfileImg() {
 function createAuthor(post) {
   const postAuthor = document.createElement("h3");
   postAuthor.className = "post-author align-vertical";
-  postAuthor.innerText = post.authorId;
+  postAuthor.innerText = post.authorName;
   return postAuthor;
 }
 
@@ -161,9 +167,16 @@ function createSingleComment(comment) {
   const commentContainer = document.createElement("li");
   commentContainer.className = "comment-content";
 
-  const commentUserImg = document.createElement("span");
-  commentUserImg.className = "comment-user align-vertical";
-  commentContainer.appendChild(commentUserImg);
+  const commentUser = document.createElement("span");
+  commentUser.className = "comment-user align-vertical";
+  commentContainer.appendChild(commentUser);
+
+  if (comment.userProfilePic != null && comment.userProfilePic != "") {
+    const commentUserImg = document.createElement("img");
+    commentUserImg.className = "comment-user-img";
+    commentUserImg.src = "serve?blob-key=" + comment.userProfilePic;
+    commentUser.append(commentUserImg);
+  }
 
   const commentTextDiv = document.createElement("div");
   commentTextDiv.className = "comment-text-div align-vertical";

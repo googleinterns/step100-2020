@@ -106,6 +106,10 @@ public final class User {
     return longitude;
   }
 
+  public void setProfilePic(String pic) {
+    this.profilePic = pic;
+  }
+
   public void setFirstName(String firstName) {
     this.firstName = firstName;
     this.fullName = firstName.toUpperCase() + " " + getLastName().toUpperCase();
@@ -185,7 +189,7 @@ public final class User {
     String fullName = (String) entity.getProperty("fullName");
     String email = (String) entity.getProperty("email");
     String phoneNumber = (String) entity.getProperty("phoneNumber");
-    String profilePic = ""; // TODO: add profilePic url to datastore/figure out Blobstore
+    String profilePic = (String) entity.getProperty("profilePic");
     String address = (String) entity.getProperty("address");
     double latitude;
     double longitude;

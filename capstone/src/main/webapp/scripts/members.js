@@ -34,13 +34,10 @@ function createMemberComponents(memberInfo) {
   memberImgDiv.id = memberInfo.userId;
   memberImgDiv.title = memberInfo.firstName + " " + memberInfo.lastName;
   // If user doesn't have image, replace with blank small yellow profile circle
-  if (memberInfo.profilePic == null || memberInfo.profilePic == "") {
-    memberImgDiv.className =
-      "member-grid-item member-img-blank small-member-img";
-  } else {
-    memberImgDiv.className = "member-grid-item member-img-div small-member-img";
+  memberImgDiv.className = "member-grid-item member-img-blank";
+  if (memberInfo.profilePic != null && memberInfo.profilePic != "") {
     const memberImg = document.createElement("img");
-    memberImg.className = "member-img small-member-img";
+    memberImg.className = "small-member-img";
     memberImg.src = "serve?blob-key=" + memberInfo.profilePic;
     memberImgDiv.append(memberImg);
   }
@@ -97,15 +94,13 @@ function createMemberModal(memResponse) {
 function createMemberProfileImg(memResponse) {
   const memberProfileImgDiv = document.createElement("div");
   // If user doesn't have image, replace with blank large yellow profile circle
-  if (memResponse.profilePic == null || memResponse.profilePic == "") {
-    memberProfileImgDiv.className = "member-img-blank large-member-img";
-  } else {
-    memberProfileImgDiv.className = "member-img-div large-member-img";
+  memberProfileImgDiv.className = "member-img-blank-large";
+  if (memResponse.profilePic != null && memResponse.profilePic != "") {
     const memberProfileImg = document.createElement("img");
-    memberProfileImg.className = "member-img large-member-img";
+    memberProfileImg.className = "large-member-img";
     memberProfileImg.src = "serve?blob-key=" + memResponse.profilePic;
     memberProfileImgDiv.append(memberProfileImg);
-  }
+  } 
   return memberProfileImgDiv;
 }
 

@@ -64,6 +64,8 @@ public class UpdateLikesServletTest {
       new Post(
           POST_ID, /* postId */
           AUTHOR_ID, /* authorId */
+          "TEST USER", /* authorName */
+          "", /* authorPic */
           POST_TEXT, /* postText */
           new ArrayList<Comment>(), /* comments */
           CHALLENGE_NAME, /* challengeName */
@@ -139,9 +141,7 @@ public class UpdateLikesServletTest {
 
     POST_1.getLikes().add(USER_ID);
 
-    String jsonOriginal = new Gson().toJson(POST_1);
-    String jsonStored = new Gson().toJson(Post.fromEntity(post));
-    assertEquals(jsonOriginal, jsonStored);
+    assertEquals(POST_1.getLikes(), Post.fromEntity(post).getLikes());
   }
 
   @Test
@@ -160,9 +160,7 @@ public class UpdateLikesServletTest {
 
     POST_1.getLikes().remove(USER_ID);
 
-    String jsonOriginal = new Gson().toJson(POST_1);
-    String jsonStored = new Gson().toJson(Post.fromEntity(post));
-    assertEquals(jsonOriginal, jsonStored);
+    assertEquals(POST_1.getLikes(), Post.fromEntity(post).getLikes());
   }
 
   private void addLikestoPost() throws IOException, EntityNotFoundException {

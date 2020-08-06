@@ -10,6 +10,15 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import java.util.Map;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.annotation.WebServlet;
@@ -28,6 +37,7 @@ public class EditProfileServlet extends AuthenticatedServlet {
   @Override
   public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) 
       throws IOException {
+    String profilePic = getUploadedFileUrl(request, "image");
     String first = request.getParameter("first");
     String last = request.getParameter("last");
     String email = request.getParameter("email");
@@ -35,7 +45,9 @@ public class EditProfileServlet extends AuthenticatedServlet {
     String address = request.getParameter("address");
     ArrayList<String> interests = getInterests(request);
 
-    updateProfile(userId, first, last, email, phone, address, interests, response);
+    updateProfile(userId, first, last, email, phone, address, profilePic, interests, response);
+
+    response.sendRedirect("/profile.html");
   }
 
   /**
@@ -58,11 +70,11 @@ public class EditProfileServlet extends AuthenticatedServlet {
   /** 
    * Updates a user's profile information.
    */
-  private void updateProfile(String userId, String first, String last, String email, String phone, String address,
+  private void updateProfile(String userId, String first, String last, String email, String phone, String address, String pic,
       ArrayList<String> interests, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity userEntity = getExistingUser(userId, response, datastore);
-    User user = getUpdatedUser(userEntity, first, last, email, phone, address, interests, response);
+    User user = getUpdatedUser(userEntity, first, last, email, phone, address, pic, interests, response);
     datastore.put(user.toEntity());
   }
 
@@ -85,7 +97,7 @@ public class EditProfileServlet extends AuthenticatedServlet {
   /**
    * Creates updated user object to return.
    */
-  private User getUpdatedUser(Entity entity, String first, String last, String email, String phone, String address,
+  private User getUpdatedUser(Entity entity, String first, String last, String email, String phone, String address, String pic,
       ArrayList<String> interests, HttpServletResponse response) throws IOException {
     User user;
     try {
@@ -94,6 +106,8 @@ public class EditProfileServlet extends AuthenticatedServlet {
       ErrorHandler.sendError(response, "Unable to get " + e.getKey().getKind());
       return null;
     }
+
+    if (pic != null && pic != "") user.setProfilePic(pic);
     user.setFirstName(first);
     user.setLastName(last);
     user.setEmail(email);
@@ -101,6 +115,22 @@ public class EditProfileServlet extends AuthenticatedServlet {
     user.setAddress(address);
     user.setInterests(interests);
     return user;
+  }
+
+  /** Returns a key that points to the uploaded file, or null if the user didn't upload a file. */
+  private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    if (blobs.isEmpty()) return null;
+    List<BlobKey> blobKeys = blobs.get(formInputElementName);
+    
+    String blobKey;
+    if (blobKeys == null || blobKeys.isEmpty()){
+      blobKey = null;
+    } else {
+      blobKey = blobKeys.get(0).getKeyString();
+    }
+    return blobKey;
   }
 
   @Override

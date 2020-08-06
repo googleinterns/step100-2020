@@ -158,7 +158,7 @@ public class GroupLocationTest {
     datastore.put(OTHER_USER2.toEntity());
   }
 
-   /* Create a Group entity */
+  /* Create a Group entity */
   private Entity createGroupEntity() {
     Entity groupEntity = new Entity("Group");
     groupEntity.setProperty("groupName", GROUP_NAME);

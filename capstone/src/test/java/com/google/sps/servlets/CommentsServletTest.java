@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,6 +36,8 @@ import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig
 import com.google.common.collect.ImmutableMap;
 import com.google.sps.Objects.Comment;
 import com.google.sps.Objects.Post;
+import com.google.sps.Objects.User;
+import com.google.sps.Objects.Badge;
 
 public class CommentsServletTest {
 
@@ -61,10 +64,27 @@ public class CommentsServletTest {
                   ImmutableMap.of(
                       "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
 
+  private static final User CURRENT_USER =
+      new User(
+          USER_ID,
+          "Test",
+          "McTest",
+          USER_EMAIL,
+          /* phoneNumber= */ "123-456-7890",
+          /* profilePic= */ "",
+          /* address= */ "",
+          /* latitude= */ 0,
+          /* longitude= */ 0,
+          /* badges= */ new LinkedHashSet<Badge>(),
+          /* groups= */ new LinkedHashSet<Long>(),
+          /* interests= */ new ArrayList<String>());
+
   private final Post POST_1 =
       new Post(
           POST_ID, /* postId */
           AUTHOR_ID, /* authorId */
+          "TEST USER", /* authorName */
+          "", /* authorPic */
           POST_TEXT, /* postText */
           new ArrayList<Comment>(), /* comments */
           CHALLENGE_NAME, /* challengeName */
@@ -76,7 +96,8 @@ public class CommentsServletTest {
       new Comment(
           System.currentTimeMillis(), /* timestamp */
           COMMENT_TEXT, /* commentText */
-          USER_ID /* userId */);
+          USER_ID, /* userId */
+          "" /* userProfilePic */);
 
   @Mock private HttpServletRequest mockRequest;
   @Mock private HttpServletResponse mockResponse;
@@ -108,6 +129,7 @@ public class CommentsServletTest {
 
   private void populateDatabase(DatastoreService datastore) {
     // Add test data.
+    datastore.put(CURRENT_USER.toEntity());
     datastore.put(POST_1.toEntity());
   }
 

@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import com.google.sps.Objects.Badge;
 import java.util.LinkedHashSet;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EmbeddedEntity;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 
 /**
  * Contains information for the response sent by GroupMembersServlet.
@@ -43,7 +49,6 @@ public final class MemberResponse {
    * @param userId user id 
    */
   public static MemberResponse fromEntity(Entity entity, boolean includeBadges) {
-    String profilePic = (String) entity.getProperty("profilePic");
     String firstName = (String) entity.getProperty("firstName");
     String lastName = (String) entity.getProperty("lastName");
     String userId = (String) entity.getProperty("userId");
@@ -54,6 +59,15 @@ public final class MemberResponse {
         : new LinkedHashSet<Badge>((ArrayList<Badge>) entity.getProperty("badges"));
     } else {
       badges = null;
+    }
+    // Get author profile pic from authorId 
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    String profilePic;
+    try {
+      Entity userEntity = datastore.get(KeyFactory.createKey("User", userId));
+      profilePic = (String) userEntity.getProperty("profilePic");
+    } catch (EntityNotFoundException e) {
+      profilePic = null;
     }
     return new MemberResponse(profilePic, firstName, lastName, badges, userId);
   }

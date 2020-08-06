@@ -52,7 +52,9 @@
         <span class="close" onclick="closeModal('edit')">&times;</span>
         <div id="modal-profile-pic"></div>
         <h2 id="modal-name-container"></h2>
-        <form id="edit-profile">
+        <form id="edit-profile" method="POST" enctype="multipart/form-data">
+          <label for="profilePic">Profile Picture</label>
+          <input id='fileid' type='file' name='image' />
           <li class="form-row">
             <label for="first">First</label>
             <input type="text" class="input-field" name="first" id="first">
@@ -76,7 +78,7 @@
             <input type="text" class="input-field" placeholder="Add an interest" 
               name="interests" id="interests">
           </li>          
-          <button class="save-btn" onclick="saveEdits()">SAVE</button>
+          <button class="save-btn">SAVE</button>
         </form>
       </div>
     </div>

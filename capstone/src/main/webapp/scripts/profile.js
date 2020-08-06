@@ -23,7 +23,7 @@ window.addEventListener("load", loadPage);
 function loadPage() {
   getUserData();
   createLogoutUrl();
-
+  fetchBlobstoreUrlAndShowProfileForm();
   //tfidf();
 }
 
@@ -75,10 +75,10 @@ function displayUserInfo(user) {
   }
 
   displayInterests(user.interests);
-  displayProfilePicture(user.profilePic);
-
+  if (user.profilePic != null & user.profilePic != "") {
+    displayProfilePicture(user.profilePic);
+  }
   getGroupData(user.groups);
-
   displayBadges(user.badges);
 }
 
@@ -180,7 +180,13 @@ function createBadgeElement(badge) {
 }
 
 /** Display the user's profile picture */
-function displayProfilePicture(picUrl) {}
+function displayProfilePicture(picUrl) {
+  let profileImgDiv = document.getElementById("profile-pic");
+  let imageContent = document.createElement("img");
+  imageContent.className = "profile-pic-img";
+  imageContent.src = "serve?blob-key=" + picUrl;
+  profileImgDiv.appendChild(imageContent);
+}
 
 /** Open a modal form for users to edit their profile information */
 function editProfile() {
@@ -196,36 +202,21 @@ function closeModal(type) {
 
 /** Populate form with user values */
 function populateEditForm(user) {
-  document.getElementById("modal-name-container").innerText = user.name;
+  document.getElementById("modal-name-container").innerText = user.firstName + " " + user.lastName;
   document.getElementById("first").value = user.firstName;
   document.getElementById("last").value = user.lastName;
   document.getElementById("email").value = user.email;
   document.getElementById("phone").value = user.phoneNumber;
   document.getElementById("address").value = user.address;
   document.getElementById("interests").value = user.interests.join(", ");
-}
 
-/** Save updated profile information */
-function saveEdits() {
-  const editForm = document.getElementById("edit-profile");
-  if (editForm.reportValidity()) {
-    const firstName = document.getElementById("first").value;
-    const lastName = document.getElementById("last").value;
-    const email = document.getElementById("email").value;
-    const phoneNumber = document.getElementById("phone").value;
-    const address = document.getElementById("address").value;
-    const interests = document.getElementById("interests").value;
-
-    const params = new URLSearchParams();
-    params.append("first", firstName);
-    params.append("last", lastName);
-    params.append("email", email);
-    params.append("phone", phoneNumber);
-    params.append("address", address);
-    params.append("interests", interests);
-
-    // Send a POST request to the servlet which edits the user profile.
-    fetch("/editProfile", { method: "POST", body: params });
+  // Add user profile picture if previously uploaded 
+  if (user.profilePic != null & user.profilePic != "") {
+    let profilePicDiv = document.getElementById("modal-profile-pic");
+    let imageContent = document.createElement("img");
+    imageContent.className = "profile-pic-img";
+    imageContent.src = "serve?blob-key=" + user.profilePic;
+    profilePicDiv.appendChild(imageContent);
   }
 }
 
@@ -247,6 +238,18 @@ function createGroup() {
     // Send a POST request to the servlet which creates a new group.
     fetch("/createGroup", { method: "POST", body: params });
   }
+}
+
+// Gets URL for uploaded profile image
+function fetchBlobstoreUrlAndShowProfileForm() {
+  fetch(`/profile-image-servlet`)
+    .then(response => {
+      return response.text();
+    })
+    .then(imageUploadUrl => {
+      const messageForm = document.getElementById("edit-profile");
+      messageForm.action = imageUploadUrl;
+    });
 }
 
 /**

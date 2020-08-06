@@ -53,8 +53,8 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
     Long groupId = Long.parseLong(request.getParameter("groupId"));
     Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     ArrayList<Long> postIds = (groupEntity.getProperty("posts") == null) 
-            ? new ArrayList<Long>() 
-            : (ArrayList<Long>) groupEntity.getProperty("posts");
+      ? new ArrayList<Long>()
+      : (ArrayList<Long>) groupEntity.getProperty("posts");
 
     List<Post> posts = new ArrayList<>();
     List<Long> likedPosts = new ArrayList<>();
@@ -81,6 +81,7 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
         ServletHelper.getUserFromId(response, userId, datastore);
     String authorName = 
         userEntity.getProperty("firstName") + " " + userEntity.getProperty("lastName");
+    String authorPic = (String) userEntity.getProperty("profilePic");
     String postText = request.getParameter("post-input");
     String challengeName = "Challenge Name";
     String img = getUploadedFileUrl(request, "image");
@@ -89,7 +90,7 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
 
     // Creates entity with submitted data and add to database
     Post post = new Post(
-          0, authorName, postText, comments, challengeName, System.currentTimeMillis(), img, likes);
+          0, userId, authorName, authorPic, postText, comments, challengeName, System.currentTimeMillis(), img, likes);
     Entity postEntity = post.toEntity();
     datastore.put(postEntity);
 
@@ -113,7 +114,7 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
     datastore.put(groupEntity);
   }
 
-   /** Returns a key that points to the uploaded file, or null if the user didn't upload a file. */
+  /** Returns a key that points to the uploaded file, or null if the user didn't upload a file. */
   private String getUploadedFileUrl(HttpServletRequest request, String formInputElementName) {
     BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
