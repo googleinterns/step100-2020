@@ -24,25 +24,30 @@ public class Dijkstra<V extends Vertex<E>, E extends Edge<V>> {
       if (outgoingEdges == null) {
         return null;
       }
-      for (E e : outgoingEdges) {
-        // Get the vertex on the other side of the edge
-        V adjacent = e.getDestVertex();
-        // Update the shortest path to adjacent vertex
-        double newDistanceToAdjacent = current.getDistance() + e.getEdgeWeight();
-        if (newDistanceToAdjacent < adjacent.getDistance()
-            || (!minHeap.contains(adjacent) && !visitedSet.contains(adjacent))) {
-          adjacent.setDistance(newDistanceToAdjacent);
-          // remember path to this vertex
-          adjacent.setPrev(e);
-          // Trigger reheapify since vertex has been mutated
-          if (minHeap.contains(adjacent)) {
-            minHeap.add(minHeap.remove());
-          } else {
-            minHeap.add(adjacent);
-          }
+      this.processNeighbors(current, outgoingEdges, visitedSet, minHeap);
+    }
+    return dest;
+  }
+
+  private void processNeighbors(
+      V current, List<E> outgoingEdges, Set<V> visitedSet, PriorityQueue<V> minHeap) {
+    for (E e : outgoingEdges) {
+      // Get the vertex on the other side of the edge
+      V adjacent = e.getDestVertex();
+      // Update the shortest path to adjacent vertex
+      double newDistanceToAdjacent = current.getDistance() + e.getEdgeWeight();
+      if (newDistanceToAdjacent < adjacent.getDistance()
+          || (!minHeap.contains(adjacent) && !visitedSet.contains(adjacent))) {
+        adjacent.setDistance(newDistanceToAdjacent);
+        // remember path to this vertex
+        adjacent.setPrev(e);
+        // Trigger reheapify since vertex has been mutated
+        if (minHeap.contains(adjacent)) {
+          minHeap.add(minHeap.remove());
+        } else {
+          minHeap.add(adjacent);
         }
       }
     }
-    return dest;
   }
 }

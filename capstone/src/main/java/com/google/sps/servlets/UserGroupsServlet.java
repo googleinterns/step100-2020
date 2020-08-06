@@ -18,6 +18,7 @@ import com.google.sps.Objects.User;
 import com.google.sps.Objects.Group;
 import com.google.sps.Objects.Badge;
 import com.google.sps.Objects.response.UserGroupResponse;
+import com.google.sps.error.ErrorHandler;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -39,7 +40,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import com.google.gson.Gson;
-import error.ErrorHandler;
 
 /**
  * Servlet that returns a user's groups data from the Datastore.

@@ -26,8 +26,7 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
-
-import database.DatabaseRetriever;
+import com.google.sps.database.DatabaseRetriever;
 
 public class SearchPredictorTest {
 

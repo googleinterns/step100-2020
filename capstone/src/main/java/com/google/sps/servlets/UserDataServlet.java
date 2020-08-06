@@ -15,6 +15,7 @@
 package com.google.sps.servlets;
 
 import com.google.sps.Objects.User;
+import com.google.sps.error.ErrorHandler;
 import com.google.sps.Objects.Group;
 import com.google.sps.Objects.Badge;
 import com.google.appengine.api.users.UserService;
@@ -38,7 +39,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import com.google.gson.Gson;
-import error.ErrorHandler;
 
 /**
  * Servlet to handle returning User data from the Datastore.

@@ -24,18 +24,17 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.Objects.User;
+import com.google.sps.error.ErrorHandler;
 import com.google.sps.graph.Dijkstra;
 import com.google.sps.graph.UserEdge;
 import com.google.sps.graph.UserVertex;
 import com.google.sps.servlets.AuthenticatedServlet;
 import com.google.sps.servlets.ServletHelper;
 
-import error.ErrorHandler;
-
 @WebServlet("/search-results")
 public class SearchResultsServlet extends AuthenticatedServlet {
 
-  private static double COMPLETE_MATCH = 10;
+  private static final double COMPLETE_MATCH = 10;
 
   @Override
   public void doGet(String userId, HttpServletRequest request, HttpServletResponse response)

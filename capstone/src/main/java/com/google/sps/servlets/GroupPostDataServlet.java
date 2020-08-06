@@ -38,8 +38,8 @@ import com.google.sps.Objects.Post;
 import com.google.sps.Objects.Comment;
 import com.google.sps.Objects.Group;
 import com.google.sps.Objects.response.PostResponse;
+import com.google.sps.error.ErrorHandler;
 import com.google.sps.servlets.ServletHelper;
-import error.ErrorHandler;
 
 @WebServlet("/group-post")
 public class GroupPostDataServlet extends AuthenticatedServlet {

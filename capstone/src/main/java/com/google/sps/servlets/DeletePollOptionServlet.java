@@ -15,8 +15,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-
-import error.ErrorHandler;
+import com.google.sps.error.ErrorHandler;
 
 /**
  * This servlet is called weekly to delete the top challenge suggestion so that the new weekly

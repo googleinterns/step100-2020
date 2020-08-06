@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import database.DatabaseRetriever;
+import com.google.sps.database.DatabaseRetriever;
 
 public class SearchPredictor implements Serializable {
 

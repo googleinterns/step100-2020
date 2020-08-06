@@ -18,10 +18,10 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.PrintWriter;
 import com.google.sps.Objects.Post;
+import com.google.sps.error.ErrorHandler;
 import com.google.sps.Objects.Comment;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.sps.servlets.ServletHelper;
-import error.ErrorHandler;
 
 @WebServlet("/post-comment")
 

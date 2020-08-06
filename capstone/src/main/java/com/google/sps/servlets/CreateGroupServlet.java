@@ -15,7 +15,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 
 import com.google.sps.Objects.Tag;
-import error.ErrorHandler;
+import com.google.sps.error.ErrorHandler;
 
 @WebServlet("/createGroup")
 public class CreateGroupServlet extends AuthenticatedServlet {

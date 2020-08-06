@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import database.DatabaseRetriever;
+import com.google.sps.database.DatabaseRetriever;
 
 public class UserVertex implements Vertex<UserEdge> {
 

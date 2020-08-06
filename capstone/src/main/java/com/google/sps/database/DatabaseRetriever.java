@@ -1,4 +1,4 @@
-package database;
+package com.google.sps.database;
 
 import java.io.Serializable;
 import java.util.ArrayList;

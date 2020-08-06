@@ -17,8 +17,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.gson.Gson;
 import com.google.sps.Objects.response.MemberResponse;
-
-import error.ErrorHandler;
+import com.google.sps.error.ErrorHandler;
 
 @WebServlet("/group-member")
 public class GroupMemberServlet extends AuthenticatedServlet {
