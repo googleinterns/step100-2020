@@ -15,8 +15,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.google.sps.error.ErrorHandler;
 import com.google.sps.servlets.ServletHelper;
-import error.ErrorHandler;
 
 @WebServlet("/update-likes")
 public class UpdateLikesServlet extends AuthenticatedServlet {

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
 import com.google.sps.Objects.response.MemberResponse;
-import error.ErrorHandler;
+import com.google.sps.error.ErrorHandler;
 import com.google.sps.servlets.ServletHelper;
 
 @WebServlet("/all-group-members")

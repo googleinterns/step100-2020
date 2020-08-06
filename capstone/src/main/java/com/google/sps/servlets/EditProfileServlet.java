@@ -2,6 +2,7 @@ package com.google.sps.servlets;
 
 import com.google.sps.Objects.Badge;
 import com.google.sps.Objects.User;
+import com.google.sps.error.ErrorHandler;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -29,7 +30,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import error.ErrorHandler;
 
 @WebServlet("/editProfile")
 public class EditProfileServlet extends AuthenticatedServlet {

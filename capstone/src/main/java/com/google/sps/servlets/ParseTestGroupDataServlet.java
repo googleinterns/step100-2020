@@ -26,8 +26,8 @@ import com.google.sps.Objects.Comment;
 import com.google.sps.Objects.Group;
 import com.google.sps.Objects.Tag;
 import com.google.sps.Objects.response.PostResponse;
+import com.google.sps.error.ErrorHandler;
 import com.google.sps.servlets.ServletHelper;
-import error.ErrorHandler;
 
 /**
  * Parses a TSV file of fake group data and populates the Datastore with Group and Post entities.

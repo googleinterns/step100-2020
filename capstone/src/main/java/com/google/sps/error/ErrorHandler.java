@@ -1,4 +1,4 @@
-package error;
+package com.google.sps.error;
 
 import java.io.IOException;
 

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.sps.database.DatabaseRetriever;
+
 public class SearchPredictor implements Serializable {
 
   private static final double COMPLETE_PARTIAL_NAME_MATCH = 5;
@@ -80,7 +82,7 @@ public class SearchPredictor implements Serializable {
   }
 
   /**
-   * Sorts the suggestioned names in order of score from lowest to highest and returns the list of
+   * Sorts the suggested names in order of score from lowest to highest and returns the list of
    * names.
    *
    * @param namesScore map from name to score
