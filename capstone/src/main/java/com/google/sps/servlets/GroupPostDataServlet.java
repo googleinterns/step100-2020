@@ -47,11 +47,14 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
   private ErrorHandler errorHandler = new ErrorHandler();
 
   @Override
-  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doGet(String userId, HttpServletRequest request, HttpServletResponse response) 
+      throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Long groupId = Long.parseLong(request.getParameter("groupId"));
     Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
-    ArrayList<Long> postIds = (groupEntity.getProperty("posts") == null) ? new ArrayList<Long>() : (ArrayList<Long>) groupEntity.getProperty("posts");
+    ArrayList<Long> postIds = (groupEntity.getProperty("posts") == null) 
+            ? new ArrayList<Long>() 
+            : (ArrayList<Long>) groupEntity.getProperty("posts");
 
     List<Post> posts = new ArrayList<>();
     List<Long> likedPosts = new ArrayList<>();
@@ -69,13 +72,15 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
     response.getWriter().println(new Gson().toJson(postsRes));
   }
 
-  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(String userId, HttpServletRequest request, HttpServletResponse response) 
+      throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     // Receives submitted post 
     Long groupId = Long.parseLong(request.getParameter("groupId"));
     Entity userEntity = 
         ServletHelper.getUserFromId(response, userId, datastore);
-    String authorName = userEntity.getProperty("firstName") + " " + userEntity.getProperty("lastName");
+    String authorName = 
+        userEntity.getProperty("firstName") + " " + userEntity.getProperty("lastName");
     String postText = request.getParameter("post-input");
     String challengeName = "Challenge Name";
     String img = getUploadedFileUrl(request, "image");
@@ -83,7 +88,8 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
     ArrayList<Comment> comments = new ArrayList<>();
 
     // Creates entity with submitted data and add to database
-    Post post = new Post(0, authorName, postText, comments, challengeName, System.currentTimeMillis(), img, likes);
+    Post post = new Post(
+          0, authorName, postText, comments, challengeName, System.currentTimeMillis(), img, likes);
     Entity postEntity = post.toEntity();
     datastore.put(postEntity);
 
@@ -94,14 +100,15 @@ public class GroupPostDataServlet extends AuthenticatedServlet {
     response.sendRedirect("/group.html?groupId=" + groupId);
   }
 
-  private void addPostToGroup(HttpServletResponse response, Long groupId, DatastoreService datastore, Entity postEntity) throws IOException {
+  private void addPostToGroup(HttpServletResponse response, Long groupId, 
+      DatastoreService datastore, Entity postEntity) throws IOException {
     Entity groupEntity = ServletHelper.getEntityFromId(response, groupId, datastore, "Group");
     ArrayList<Long> postIds = 
         (ArrayList<Long>) groupEntity.getProperty("posts");
     if (postIds == null) {
       postIds = new ArrayList<Long>();
     }
-    postIds.add(postEntity.getKey().getId());
+    postIds.add(0, postEntity.getKey().getId());
     groupEntity.setProperty("posts", postIds);
     datastore.put(groupEntity);
   }
