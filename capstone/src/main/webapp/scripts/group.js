@@ -77,7 +77,11 @@ function loadClosestGroupLocations() {
       }
       let mapElement = document.getElementById('map');
       mapElement.style.display = "block";
-      createMap(allCentralGroupLocations, locationsLimit);
+      if (map == null) {
+        createMap(allCentralGroupLocations, locationsLimit);
+      } else {
+        addMarkers(allCentralGroupLocations, locationsLimit);
+      }
     }
   });
 }
