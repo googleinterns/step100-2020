@@ -11,9 +11,14 @@ function init() {
   getPollOptions();
   fetchBlobstoreUrlAndShowForm();
   loadMembers();
-  loadClosestGroupLocations();
+  initializeNearestLocations();
   autocomplete();
   loadTags();
+}
+
+function initializeNearestLocations() {
+  let locations_content = document.getElementById('group-locations-content');
+  locations_content.style.display = 'none';
 }
 
 /** Fetch current user's data from the server */
@@ -77,7 +82,11 @@ function loadClosestGroupLocations() {
       }
       let mapElement = document.getElementById('map');
       mapElement.style.display = "block";
-      createMap(allCentralGroupLocations, locationsLimit);
+      if (map == null) {
+        createMap(allCentralGroupLocations, locationsLimit);
+      } else {
+        addMarkers(allCentralGroupLocations, locationsLimit);
+      }
     }
   });
 }
