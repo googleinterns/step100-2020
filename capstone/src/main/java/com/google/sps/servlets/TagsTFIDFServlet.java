@@ -7,7 +7,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import com.google.common.collect.Lists;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,14 +19,14 @@ import com.google.appengine.api.datastore.EmbeddedEntity;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.common.collect.Lists;
 import com.google.sps.Objects.TFIDFStringHelper;
 import com.google.sps.Objects.Tag;
-import com.google.sps.Objects.Comment;
-import error.ErrorHandler;
+import com.google.sps.error.ErrorHandler;
 
-/** 
- * This servlet generates groups "tags" for all groups - calculated using TF-IDF. 
- * It is called every day via Cloud Scheduler.
+/**
+ * This servlet generates groups "tags" for all groups - calculated using TF-IDF. It is called every
+ * day via Cloud Scheduler.
  */
 @WebServlet("/tags-tfidf")
 public class TagsTFIDFServlet extends HttpServlet {
@@ -81,11 +80,11 @@ public class TagsTFIDFServlet extends HttpServlet {
   }
 
   /**
-   * Given a list of all textual data in a group, divides the list into 4 and 
-   * return a combined list of all ngrams and their frequencies.
+   * Given a list of all textual data in a group, divides the list into 4 and return a combined list
+   * of all ngrams and their frequencies.
    */
-  private List<LinkedHashMap<String, Integer>> createNgrams(List<String> textData, 
-      HttpServletResponse response) throws IOException {
+  private List<LinkedHashMap<String, Integer>> createNgrams(
+      List<String> textData, HttpServletResponse response) throws IOException {
     List<LinkedHashMap<String, Integer>> ngramsList;
     // A synchronized list guarantees that a list is thread-safe.
     ngramsList = Collections.synchronizedList(new ArrayList<LinkedHashMap<String, Integer>>());
@@ -96,11 +95,13 @@ public class TagsTFIDFServlet extends HttpServlet {
     // Start a new thread for each sublist.
     List<Thread> threads = new ArrayList<>();
     for (List<String> textList : textLists) {
-      Thread thread = new Thread(() -> {
-        for (String text : textList) {
-          ngramsList.add(TFIDFStringHelper.ngramTokenizer(text));
-        }
-      });
+      Thread thread =
+          new Thread(
+              () -> {
+                for (String text : textList) {
+                  ngramsList.add(TFIDFStringHelper.ngramTokenizer(text));
+                }
+              });
       threads.add(thread);
       thread.start();
     }
@@ -116,15 +117,13 @@ public class TagsTFIDFServlet extends HttpServlet {
     return ngramsList;
   }
 
-  /** 
-   * Returns a list of Post content Strings, given a Group entity. 
-   */
-  private List<String> getGroupPostsText(Entity groupEntity, HttpServletResponse response) 
+  /** Returns a list of Post content Strings, given a Group entity. */
+  private List<String> getGroupPostsText(Entity groupEntity, HttpServletResponse response)
       throws IOException {
 
     List<Long> postIds = (ArrayList<Long>) groupEntity.getProperty("posts");
     List<String> textData = new ArrayList<>();
-    
+
     if (postIds != null) {
       for (long postId : postIds) {
         Entity postEntity = ServletHelper.getEntityFromId(response, postId, datastore, "Post");
@@ -137,12 +136,10 @@ public class TagsTFIDFServlet extends HttpServlet {
     return textData;
   }
 
-  /**
-   * Given a post, adds that post's comments to a list of group text data.
-   */
+  /** Given a post, adds that post's comments to a list of group text data. */
   private void addCommentsText(Entity postEntity, List<String> textData) {
-    
-    ArrayList<EmbeddedEntity> comments = 
+
+    ArrayList<EmbeddedEntity> comments =
         (ArrayList<EmbeddedEntity>) postEntity.getProperty("comments");
 
     if (comments != null) {
@@ -153,27 +150,24 @@ public class TagsTFIDFServlet extends HttpServlet {
     }
   }
 
-  /**
-   * Add's a group's challenge names into a list of group text data.
-   */
-  private void addChallengeText(Entity groupEntity, List<String> textData,
-      HttpServletResponse response) throws IOException {
+  /** Add's a group's challenge names into a list of group text data. */
+  private void addChallengeText(
+      Entity groupEntity, List<String> textData, HttpServletResponse response) throws IOException {
     List<Long> challengeIds = (ArrayList<Long>) groupEntity.getProperty("challenges");
 
     if (challengeIds != null) {
       for (long challengeId : challengeIds) {
         Entity challengeEntity =
-          ServletHelper.getEntityFromId(response, challengeId, datastore, "Challenge");
+            ServletHelper.getEntityFromId(response, challengeId, datastore, "Challenge");
         String challengeName = (String) challengeEntity.getProperty("name");
         textData.add(challengeName);
       }
     }
   }
 
-
   /**
-   * Creates and returns a map of each ngram along with its occurence count among all groups.
-   * Also checks the length of each ngram in order to determine the longest string.
+   * Creates and returns a map of each ngram along with its occurence count among all groups. Also
+   * checks the length of each ngram in order to determine the longest string.
    */
   public LinkedHashMap<String, Integer> getTotalOccurences(
       LinkedHashMap<Long, LinkedHashMap<String, Integer>> groupMap) {
@@ -222,10 +216,7 @@ public class TagsTFIDFServlet extends HttpServlet {
     }
   }
 
-
-  /**
-   * Weights the tf-idf score of a given ngram by taking into account its length.
-   */
+  /** Weights the tf-idf score of a given ngram by taking into account its length. */
   private double weightScore(double score, String ngram) {
     double wordsWeight = (ngram.split(" ").length / 3.1);
     double lengthWeight = ((double) ngram.length() / longestNgramLength);
@@ -259,9 +250,7 @@ public class TagsTFIDFServlet extends HttpServlet {
     datastore.put(groupEntity);
   }
 
-  /**
-   * Checks if a potential group tag is redundant.
-   */
+  /** Checks if a potential group tag is redundant. */
   public boolean checkIfDuplicate(ArrayList<Tag> topTags, Tag next) {
     String[] nextWords = next.getText().split(" ");
 
@@ -289,5 +278,4 @@ public class TagsTFIDFServlet extends HttpServlet {
     }
     return false;
   }
-
 }
