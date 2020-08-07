@@ -34,6 +34,7 @@ function toggleLocationVisibility() {
     locations_content.style.display = 'none';
   } else {
     locations_content.style.display = 'block';
+    loadClosestGroupLocations();
   }
 }
 
